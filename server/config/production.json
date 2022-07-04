@@ -1,0 +1,12 @@
+{
+    "port": 5000,
+    "dbconnection": "mongodb+srv://userok:12345@cluster0.u4k4b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "jwtAccessSecret": "accessSecret",
+    "jwtRefreshSecret": "refreshSecret",
+    "smtpHost": "smtp.gmail.com",
+    "smtpPort": 587,
+    "smtpUser": "lesnoypudgezxc@gmail.com",
+    "smtpPassword": "qwezxcqwe",
+    "clientUrl": "http://localhost:3000",
+    "apiUrl": "http://localhost:5000"
+}

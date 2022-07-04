@@ -1,0 +1,49 @@
+{
+    "name": "template",
+    "version": "1.0.0",
+    "description": "Template by LesnoyPudge",
+    "keywords": [],
+    "author": "LesnoyPudge",
+    "license": "ISC",
+    "scripts": {
+        "client:install": "npm run this:install --prefix client",
+        "client:uninstall": "rimraf client/node_modules",
+        "client:start": "npm run this:start --prefix client",
+        "client:build": "npm run this:build --prefix client",
+        "client:lint": "npm run this:lint --prefix client",
+        "client:lintFix": "npm run this:lintFix --prefix client",
+        "//1": "",
+        "server:install": "npm run this:install --prefix server",
+        "server:uninstall": "rimraf server/node_modules",
+        "server:start": "npm run this:start --prefix server",
+        "server:build": "npm run this:build --prefix server",
+        "server:lint": "npm run this:lint --prefix server",
+        "server:lintFix": "npm run this:lintFix --prefix server",
+        "//2": "",
+        "project:install": "npm run client:install && npm run server:install",
+        "project:uninstall": "npm run client:uninstall && npm run server:uninstall",
+        "project:reinstall": "npm run project:uninstall && npm run project:install",
+        "project:start": "concurrently --kill-others \"npm run client:start\" \"npm run server:start\"",
+        "project:build": "concurrently --kill-others \"npm run client:build\" \"npm run server:build\"",
+        "project:lint": "eslint .",
+        "project:lintFix": "eslint . --fix",
+        "//3": "",
+        "prepare": "husky install",
+        "deploy": "git add . && git commit -m 'update' && git push",
+        "dev": "cross-env NODE_ENV=development npm run project:start",
+        "prod": "cross-env NODE_ENV=production npm run project:build",
+        "//": ""
+    },
+    "dependencies": {
+        "concurrently": "^7.2.2",
+        "cross-env": "^7.0.3"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.30.0",
+        "@typescript-eslint/parser": "^5.30.0",
+        "eslint": "^8.18.0",
+        "eslint-plugin-import": "^2.26.0",
+        "husky": "^8.0.1",
+        "rimraf": "^3.0.2"
+    }
+}
