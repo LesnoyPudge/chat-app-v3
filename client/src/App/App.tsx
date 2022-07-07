@@ -4,6 +4,8 @@ import { io } from 'socket.io-client';
 
 
 const socket = io('ws://localhost:5000');
+const configValue = process.env; 
+console.log(configValue);
 
 export const App = () => {
     const [message, setMessage] = useState('');

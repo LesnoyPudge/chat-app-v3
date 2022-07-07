@@ -13,7 +13,7 @@ dotenv.config({debug: true, path: path.join(__dirname, '../../.env')});
 const app = express();
 const server = http.createServer(app);
 export const socket = new Socket(server);
-const port = process.env.PORT || 5000;
+const PORT = process.env.SERVER_PORT || 5000;
 
 app.use(express.json());
 app.use(
@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
         socket.listen();
         routesInit(app);
         dbInit();
-        server.listen(port, () => console.log(`Server started at: ${port}`));
+        server.listen(PORT, () => console.log(`Server started at: ${PORT}`));
     } catch (error) {
         console.log('Error: ' + error);
         throw new Error();
