@@ -20,7 +20,7 @@
         "server:lint": "npm run this:lint --prefix server",
         "server:lintFix": "npm run this:lintFix --prefix server",
         "//2": "",
-        "project:install": "npm run client:install && npm run server:install",
+        "project:install": "npm run prepare && npm run client:install && npm run server:install",
         "project:uninstall": "npm run client:uninstall && npm run server:uninstall",
         "project:reinstall": "npm run project:uninstall && npm run project:install",
         "project:start": "concurrently --kill-others \"npm run client:start\" \"npm run server:start\"",
