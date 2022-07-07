@@ -1,24 +1,25 @@
+import * as dotenv from 'dotenv';
 import cors from 'cors';
 import express from 'express';
 import path from 'path';
 import http from 'http';
-import config from 'config';
-import mongoose from 'mongoose';
-import routesInit from './routes/routesInit';
-import { Socket } from './socket/socket';
+import { routesInit } from './routes';
+import { Socket } from './socket';
+import { dbInit } from './models';
 
 
 
+dotenv.config({debug: true, path: path.join(__dirname, '../../.env')});
 const app = express();
 const server = http.createServer(app);
 export const socket = new Socket(server);
-const PORT = config.get('port') || 5000;
+const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(
     cors({
         credentials: true,
-        origin: config.get('clientUrl'),
+        origin: process.env.CLIENT_URL,
     }),
 );
 
@@ -33,10 +34,9 @@ if (process.env.NODE_ENV === 'production') {
 (async function() {
     try {
         socket.listen();
-        await mongoose.connect(config.get('dbconnection'));
-        mongoose.pluralize(null);
         routesInit(app);
-        server.listen(PORT, () => console.log(`Server started at: ${PORT}`));
+        dbInit();
+        server.listen(port, () => console.log(`Server started at: ${port}`));
     } catch (error) {
         console.log('Error: ' + error);
         throw new Error();

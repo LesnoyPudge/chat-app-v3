@@ -1,5 +1,4 @@
 import {Server, Socket as SocketType} from 'socket.io';
-import config from 'config';
 import http from 'http';
 
 
@@ -13,7 +12,7 @@ export class Socket {
     constructor(server: http.Server) {
         this.io = new Server(server, {
             cors: {
-                origin: config.get('clientUrl'),
+                origin: process.env.CLIENT_URL,
                 methods: ['GET', 'POST'],
             },
         });

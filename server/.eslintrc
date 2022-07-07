@@ -18,6 +18,8 @@
             "allowModules": [],
             "resolvePaths": ["./src"],
             "tryExtensions": [".js", ".json", ".node", ".ts", ".d.ts"]
-        }]
+        }],
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "node/no-extraneous-import": "off"
     }
 }
