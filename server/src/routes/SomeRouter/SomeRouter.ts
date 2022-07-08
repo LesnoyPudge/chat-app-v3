@@ -12,7 +12,7 @@ SomeRouter.get('/user', (req, res) => {
 
 SomeRouter.post('/message', (req, res) => {
     const {message}: {message: string} = req.body;
-    
-    socket.events.sendMessage(message);
+    const {sendMessage} = socket.events;
+    sendMessage(message);
     res.json({message});
 });

@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
+import { getEnvVars } from '../utils';
 
 
 
-export const dbInit = () => {
-    if (!process.env.DB_CONNECTION) return console.log('database toket is undefined');
-    
+export const dbConnect = () => {
     mongoose.pluralize(null);
-    mongoose.connect(process.env.DB_CONNECTION)
+    mongoose.connect(getEnvVars().DB_CONNECTION)
         .then(() => console.log('database connected'))
         .catch((error) => console.log('database connection failed ' + error));
 };

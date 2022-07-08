@@ -1,51 +1,38 @@
-import {Server, Socket as SocketType} from 'socket.io';
+import { Server } from 'socket.io';
 import http from 'http';
+import { initListeners } from './listeners';
+import { IInitEmitters, initEmitters } from './emitters';
+import { getEnvVars } from '../utils';
 
 
-
-let mySocket: SocketType;
 
 export class Socket {
-    io: Server;
-    events: ISocketEvents;
+    private _io: Server;
+    events: IInitEmitters;
 
     constructor(server: http.Server) {
-        this.io = new Server(server, {
+        this._io = new Server(server, {
             cors: {
-                origin: process.env.CLIENT_URL,
+                origin: getEnvVars().CLIENT_URL,
                 methods: ['GET', 'POST'],
             },
         });
-        this.events = SocketEvents(this.io);
+        this.events = initEmitters(this._io);
     }
 
     listen() {
-        this.io.on('connection', (socket) => {
-            console.log('connected ' + socket.id);
-            mySocket = socket;
-        
-            socket.on('disconnect', () => {
-                console.log('user disconnected ' + socket.id);
-            });
-        
-            // socket.on('send message', (message: string) => {
-            //     mySocket = socket;
-            //     this.events.sendMessage(message);
-            // });
-        }); 
+        this._io.on('connection', initListeners);
     }
 }
 
-interface ISocketEvents {
-    sendMessage: (message: string) => void;
+
+const obj = {
+    wow: 'wqe',
+    qwe: 'wow',
+};
+
+function qwe(...args: any) {
+    return args;
 }
 
-const SocketEvents = (io: Server): ISocketEvents => {
-    return {
-        sendMessage(message) {
-            console.log('Event: send message, content: ', message, ' mySocket: ', mySocket.id);
-            io.emit('chat message', message);
-            // mySocket.broadcast.emit('chat message', message);
-        },
-    };
-};
+qwe(...[obj]);

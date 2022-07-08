@@ -1,0 +1,12 @@
+SERVER_PORT = 5000
+DB_CONNECTION = mongodb+srv://<username>:<password>@cluster0.u4k4b.mongodb.net/<database_name>?retryWrites=true&w=majority
+JWT_ACCESS_KEYWORD = <jwt_access_keyword>
+JWT_REFRESH_KEYWORD = <jwt_refresh_keyword>
+SMTP_HOST = <smtp_url> #smtp.gmail.com
+SMTP_PORT = <smtp_port> #123
+SMTP_USER = <smtp_email> #myemail@gmail.com
+SMTP_PASSWORD = <smtp_password>
+CLIENT_URL = http://localhost:3000
+SERVER_URL = http://localhost:5000
+REACT_APP_VAR = wow
+REACT_APP_NEW_VAR = amazing

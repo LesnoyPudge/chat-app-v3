@@ -1,29 +1,28 @@
-import * as dotenv from 'dotenv';
 import cors from 'cors';
 import express from 'express';
 import path from 'path';
 import http from 'http';
 import { routesInit } from './routes';
 import { Socket } from './socket';
-import { dbInit } from './models';
+import { dbConnect } from './models';
+import { getEnvVars } from './utils';
 
 
 
-dotenv.config({debug: true, path: path.join(__dirname, '../../.env')});
 const app = express();
 const server = http.createServer(app);
 export const socket = new Socket(server);
-const PORT = process.env.SERVER_PORT || 5000;
+const { SERVER_PORT, CLIENT_URL, NODE_ENV } = getEnvVars();
 
 app.use(express.json());
 app.use(
     cors({
         credentials: true,
-        origin: process.env.CLIENT_URL,
+        origin: CLIENT_URL,
     }),
 );
 
-if (process.env.NODE_ENV === 'production') {
+if (NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, '../../client', 'build')));
 
     app.get('*', (req, res) => {
@@ -31,12 +30,12 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-(async function() {
+(function() {
     try {
         socket.listen();
         routesInit(app);
-        dbInit();
-        server.listen(PORT, () => console.log(`Server started at: ${PORT}`));
+        dbConnect();
+        server.listen(SERVER_PORT, () => console.log(`Server started at: ${SERVER_PORT}`));
     } catch (error) {
         console.log('Error: ' + error);
         throw new Error();
