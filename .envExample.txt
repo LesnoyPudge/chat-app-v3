@@ -8,5 +8,6 @@ SMTP_USER = <smtp_email> #myemail@gmail.com
 SMTP_PASSWORD = <smtp_password>
 CLIENT_URL = http://localhost:3000
 SERVER_URL = http://localhost:5000
+API_V1_URL = api/v1
 REACT_APP_VAR = wow
 REACT_APP_NEW_VAR = amazing

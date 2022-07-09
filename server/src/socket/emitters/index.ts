@@ -1,16 +1,21 @@
 import { Server } from 'socket.io';
+import { io } from '../../server';
 
 
 
-export interface IInitEmitters {
-    sendMessage: (message: string) => void;
+export interface IEmitters {
+    sendMessage: (message: string) => IEmitters;
+    anotherEvent: () => IEmitters;
 }
 
-export const initEmitters = (io: Server): IInitEmitters => {
-    return {
-        sendMessage(message) {
-            console.log('Event: send message, content: ', message);
-            io.emit('chat message', message);
-        },
-    };
+export const emitters: IEmitters = {
+    sendMessage(message) {
+        console.log('Event: send message, content: ', message);
+        io.emit('chat message', message);
+        return emitters;
+    },
+    anotherEvent() {
+        console.log('another event works');
+        return emitters;
+    },
 };

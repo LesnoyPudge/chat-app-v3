@@ -15,6 +15,7 @@ interface IEnvVars {
     SMTP_PASSWORD: string;
     CLIENT_URL: string;
     SERVER_URL: string;
+    API_V1_URL: string;
 }
 
 let init = false;

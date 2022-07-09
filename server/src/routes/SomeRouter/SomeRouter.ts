@@ -1,18 +1,15 @@
 import { Router } from 'express';
-import { socket } from '../../server';
+import { SomeController } from '../../controllers';
+import { middlewares } from '../../middlewares';
+import { controllerContainer } from '../../utils';
+
 
 
 
 export const SomeRouter = Router();
 
-SomeRouter.get('/user', (req, res) => {
-    console.log('user reached');
-    res.json('user???');
-});
-
-SomeRouter.post('/message', (req, res) => {
-    const {message}: {message: string} = req.body;
-    const {sendMessage} = socket.events;
-    sendMessage(message);
-    res.json({message});
-});
+SomeRouter.post(
+    '/message', 
+    middlewares.raw.anotherHandler, 
+    controllerContainer(SomeController.message),
+);
