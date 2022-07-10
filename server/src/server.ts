@@ -3,10 +3,10 @@ import express from 'express';
 import path from 'path';
 import http from 'http';
 import { routesInit } from './routes';
-import { dbConnect } from './models';
+import { dbConnection } from './models';
 import { getEnvVars } from './utils';
 import { Server } from 'socket.io';
-import { Socket } from './socket';
+import { socket } from './socket';
 
 
 
@@ -36,11 +36,11 @@ if (NODE_ENV === 'production') {
     });
 }
 
-(function() {
+(async function() {
     try {
-        Socket.listen();
+        socket.listen();
         routesInit(app);
-        dbConnect();
+        await dbConnection();
         server.listen(SERVER_PORT, () => console.log(`Server started at: ${SERVER_PORT}`));
     } catch (error) {
         console.log('Error: ' + error);
