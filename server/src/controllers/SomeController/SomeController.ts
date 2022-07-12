@@ -11,7 +11,6 @@ interface ISomeController {
     message: ControllerType<IMessage, any, IMessage>;
     getSome: ControllerType<any, any, any>;
     getSomething: ControllerType<any, any, any>;
-    qwe: ControllerType<any, any, any>;
 }
 
 export const SomeController: ISomeController = {
@@ -32,10 +31,6 @@ export const SomeController: ISomeController = {
     async getSomething(req, res) {
         console.log(req.body);
         
-        res.send('qwe');
-    },
-
-    qwe: async(req, res) => {
         res.send('qwe');
     },
 };

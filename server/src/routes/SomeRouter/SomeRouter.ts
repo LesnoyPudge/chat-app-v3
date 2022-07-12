@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import { SomeController } from '../../controllers';
-import { middlewares } from '../../middlewares';
-import { controllerContainer } from '../../utils';
-
+import { middlewares } from '../../middlewares/middlewares';
+import { controllerContainer, getEnvVars } from '../../utils';
 
 
 
 export const SomeRouter = Router();
 
+const {API_V1_URL} = getEnvVars();
+
 SomeRouter.post(
-    '/message', 
-    middlewares.raw.anotherHandler, 
+    `${API_V1_URL}/message`,
     controllerContainer(SomeController.message),
 );

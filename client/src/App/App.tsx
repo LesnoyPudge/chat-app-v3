@@ -11,6 +11,14 @@ export const App: FC = () => {
         };
     }, []);
 
+    const qwe = async() => {
+        fetch('http://localhost:5000/api/v1/user/create', {
+            method: 'POST',
+            
+        });
+    };
+    qwe();
+
     return (
         <>
         </>

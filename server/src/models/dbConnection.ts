@@ -5,11 +5,9 @@ import { getEnvVars } from '../utils';
 
 export const dbConnection = async() => {
     try {
-        mongoose.pluralize(null);
         // mongoose.set('debug', true);
-        const connection = await mongoose.connect(getEnvVars().DB_CONNECTION);
+        await mongoose.connect(getEnvVars().DB_CONNECTION);
         console.log('database connected');
-        return connection;
     } catch (error) {
         console.log('database connection failed');
     }

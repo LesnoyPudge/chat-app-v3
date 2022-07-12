@@ -1,14 +1,15 @@
-import {Schema, model, Types} from 'mongoose';
+import {Schema, model, Types, pluralize} from 'mongoose';
 
 
 
-export interface IUser {
+export interface IUserModel {
     login: string;
     username: string;
     password: string;
     avatar: string;
     email: string;
     createdAt: Date;
+    updatedAt: Date;
     // friendRequests: Types.ObjectId[];
     // privateChats: Types.ObjectId[];
     // blockList: Types.ObjectId[];
@@ -17,13 +18,19 @@ export interface IUser {
     // roles: Types.ObjectId[];
 }
 
-const UserSchema = new Schema<IUser>({
-    login: {type: String, unique: true, required: true},
-    username: {type: String, required: true},
-    password: {type: String, required: true},
-    avatar: {type: String, default: ''},
-    email: {type: String, required: true},
-    createdAt: {type: Date, immutable: true, default: () => Date.now()},
-});
+pluralize(null);
 
-export const UserModel = model<IUser>('User', UserSchema);
+const UserSchema = new Schema<IUserModel>(
+    {
+        login: {type: String, /*unique: true,*/ required: true},
+        username: {type: String, required: true},
+        password: {type: String, required: true},
+        avatar: {type: String, default: ''},
+        email: {type: String, required: true},
+    },
+    { 
+        timestamps: true, 
+    },
+);
+
+export const UserModel = model<IUserModel>('User', UserSchema);
