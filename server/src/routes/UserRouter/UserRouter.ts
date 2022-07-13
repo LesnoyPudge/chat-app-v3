@@ -1,14 +1,19 @@
 import { Router } from 'express';
 import { UserController } from '../../controllers';
+import { middlewares } from '../../middlewares';
 import { controllerContainer, getEnvVars } from '../../utils';
+import { validator } from '../../validators';
 
 
 
 export const UserRouter = Router();
 
-const {API_V1_URL} = getEnvVars();
+const { API_V1_URL } = getEnvVars();
+const { validationHandler } = middlewares.raw;
+const { createUserValidator } = validator.user;
 
 UserRouter.post(
-    `${API_V1_URL}/user/create`,
+    API_V1_URL + '/user/create',
+    validationHandler(createUserValidator),
     controllerContainer(UserController.create),
 );

@@ -1,13 +1,13 @@
 import Express from 'express';
 import { app } from '../server';
-import { errorHandler } from './ErrorHandler/errorHandler';
-
+import { errorHandler } from './errorHandler';
+import { validationHandler } from './validationHandler';
 
 
 
 export const middlewares = {
     raw: {
-        errorHandler,
+        validationHandler,
     },
 
     init: {

@@ -1,5 +1,7 @@
+import { validationResult } from 'express-validator';
 import { ControllerType } from '../../../types';
 import { UserService } from '../../services';
+import { ApiError } from '../../utils';
 
 
 
@@ -27,7 +29,7 @@ export const UserController: IUserController = {
     async create(req, res) {
         const user = req.body;
         
-        const data = await UserService.create({...user});
+        const data = await UserService.create({ ...user });
 
         res.json(data);
     },

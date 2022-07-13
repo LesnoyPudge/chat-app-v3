@@ -1,4 +1,4 @@
-import {Schema, model, Types, pluralize} from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 
 
 
@@ -18,15 +18,13 @@ export interface IUserModel {
     // roles: Types.ObjectId[];
 }
 
-pluralize(null);
-
 const UserSchema = new Schema<IUserModel>(
     {
-        login: {type: String, /*unique: true,*/ required: true},
-        username: {type: String, required: true},
-        password: {type: String, required: true},
-        avatar: {type: String, default: ''},
-        email: {type: String, required: true},
+        login: { type: String, /*unique: true,*/ required: true },
+        username: { type: String, required: true },
+        password: { type: String, required: true },
+        avatar: { type: String, default: '' },
+        email: { type: String, required: true },
     },
     { 
         timestamps: true, 

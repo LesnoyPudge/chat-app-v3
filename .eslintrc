@@ -64,7 +64,8 @@
             }
         ],
         "no-multi-spaces": ["warn"],
-        "import/newline-after-import": ["warn", { "count": 3 }]
+        "import/newline-after-import": ["warn", { "count": 3 }],
+        "object-curly-spacing": ["warn", "always"]
         // "import/no-extraneous-dependencies": "off"
     }
 }

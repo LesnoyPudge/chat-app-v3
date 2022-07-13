@@ -6,11 +6,11 @@ interface IMessage {
 }
 
 interface ISomeService {
-    message: ({message}: IMessage) => Promise<string>;
+    message: ({ message }: IMessage) => Promise<string>;
 }
 
 export const SomeService: ISomeService = {
-    async message({message}) {
+    async message({ message }) {
         throw new Error('error in message service');
         
         return message;

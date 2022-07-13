@@ -1,3 +1,4 @@
 export * from './env';
-export * from './controllers';
+export * from './controllersContainer';
 export * from './transactionContainer';
+export * from './ApiError';

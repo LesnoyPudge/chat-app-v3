@@ -1,4 +1,5 @@
 import Express from 'express';
+import { ApiError } from '../../utils/ApiError/ApiError';
 
 
 
@@ -9,7 +10,10 @@ export const errorHandler = (error: Error, req: Express.Request, res: Express.Re
     console.log('Name: ' + error.name);
     console.log('Message: ' + error.message);
     console.log('Stack: ' + error.stack);
-    console.log('\n\n');
-    res.json('Erorr: ' + error.message);
-    next();
+
+    if (error instanceof ApiError) {
+        return res.status(error.status).json({ message: error.message });
+    }
+
+    return res.status(500).json({ message: 'Непредвиденная ошибка' });
 };

@@ -15,11 +15,11 @@ interface ISomeController {
 
 export const SomeController: ISomeController = {
     async message(req, res) {
-        const {message} = req.body;
+        const { message } = req.body;
         
-        const data = await SomeService.message({message});
+        const data = await SomeService.message({ message });
 
-        res.json({message: data});
+        res.json({ message: data });
     },
 
     async getSome(req, res) {

@@ -1,4 +1,4 @@
-import {Schema, model, Types, pluralize} from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 
 
 
@@ -7,11 +7,9 @@ export interface ISomeModel {
     info: string;
 }
 
-pluralize(null);
-
 const SomeSchema = new Schema<ISomeModel>({
-    some: {type: String, required: true},
-    info: {type: String, required: true},
+    some: { type: String, required: true },
+    info: { type: String, required: true },
 });
 
 export const SomeModel = model<ISomeModel>('Some', SomeSchema);

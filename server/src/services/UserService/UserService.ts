@@ -1,5 +1,6 @@
+import { UserDto } from '../../dtos';
 import { IUserModel, UserModel } from '../../models';
-import { transactionContainer } from '../../utils';
+import { transactionContainer, ApiError } from '../../utils';
 
 
 
@@ -25,29 +26,19 @@ interface IUserService {
 }
 
 export const UserService: IUserService = {
-    async create({email, login, password, username}) {
+    async create({ email, login, password, username }) {
         return await transactionContainer(
-            async({queryOptions, onCommit}) => {
+            async({ queryOptions, onCommit }) => {
                 console.log('got message in service');
-                const user = await UserModel.create([{email, login, password, username}], queryOptions());
-                // throw new Error('error in message service');
-                onCommit(() => {
-                    console.log(user);
-                });
+                const user = await UserModel.create([{ email, login, password, username }], queryOptions());
+                
+                // onCommit(() => {
+                //     console.log(user);
+                // });
                 
                 const wow = await UserService.update();
 
-                const dto = ({email, login, password, username, createdAt, avatar}: IUserModel | any): IUserRes => {
-                    return {
-                        email, 
-                        login, 
-                        password, 
-                        username, 
-                        createdAt, 
-                        avatar,
-                    };
-                };
-                const newUser = dto(user[0]);
+                const newUser = UserDto.defaultPreset(user[0]);
 
                 return newUser;
             },
@@ -56,17 +47,19 @@ export const UserService: IUserService = {
 
     async update() {
         return await transactionContainer(
-            async({queryOptions, onCommit}) => {
+            async({ queryOptions, onCommit }) => {
                 const wow = await UserModel.findOneAndUpdate(
-                    {username: 'myUsername'}, 
-                    {username: 'newUsername'}, 
-                    queryOptions({new: true}),
+                    { username: 'myUsername' }, 
+                    { username: 'newUsername' }, 
+                    queryOptions({ new: true }),
                 );
 
-                onCommit(() => {
-                    console.log(wow);
-                });
-                // throw new Error('error in message service');
+                // onCommit(() => {
+                //     console.log(wow);
+                // });
+
+                // ApiError.forbidden();
+
                 return wow;
             },
         );

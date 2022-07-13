@@ -3,6 +3,8 @@ import { getEnvVars } from '../utils';
 
 
 
+mongoose.pluralize(null);
+
 export const dbConnection = async() => {
     try {
         // mongoose.set('debug', true);
@@ -12,16 +14,3 @@ export const dbConnection = async() => {
         console.log('database connection failed');
     }
 };
-
-// export const dbConnection = () => {
-//     Promise.resolve(async() => {
-//         mongoose.pluralize(null);
-//         // mongoose.set('debug', true);
-//         const connection = await mongoose.connect(getEnvVars().DB_CONNECTION);
-//         return connection;
-//     }).then(() => {
-//         console.log('database connected');
-//     }).catch((error) => {
-//         console.log('database connection failed: ', error.message);
-//     });
-// };

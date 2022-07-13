@@ -7,9 +7,9 @@ import { controllerContainer, getEnvVars } from '../../utils';
 
 export const SomeRouter = Router();
 
-const {API_V1_URL} = getEnvVars();
+const { API_V1_URL } = getEnvVars();
 
 SomeRouter.post(
-    `${API_V1_URL}/message`,
+    API_V1_URL + '/message',
     controllerContainer(SomeController.message),
 );

@@ -22,10 +22,10 @@ let init = false;
 
 export const getEnvVars = () => {
     if (!init) {
-        dotenv.config({debug: true, path: path.join(__dirname, '../../../../.env')});
+        dotenv.config({ debug: true, path: path.join(__dirname, '../../../../.env') });
         init = true;
     }
     const vars = process.env as unknown as IEnvVars;
 
-    return {...vars};
+    return { ...vars };
 };
