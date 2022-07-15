@@ -1,34 +1,20 @@
 import { Schema, model, Types } from 'mongoose';
+import { ExtraStatus, IUser } from '../../types/API/User/User';
 
 
 
-export interface IUserModel {
-    login: string;
-    username: string;
-    password: string;
-    avatar: string;
-    email: string;
-    createdAt: Date;
-    updatedAt: Date;
-    // friendRequests: Types.ObjectId[];
-    // privateChats: Types.ObjectId[];
-    // blockList: Types.ObjectId[];
-    // appSettings: Types.ObjectId;
-    // channels: Types.ObjectId[];
-    // roles: Types.ObjectId[];
-}
-
-const UserSchema = new Schema<IUserModel>(
+const UserSchema = new Schema<IUser>(
     {
         login: { type: String, /*unique: true,*/ required: true },
         username: { type: String, required: true },
         password: { type: String, required: true },
         avatar: { type: String, default: '' },
         email: { type: String, required: true },
+        extraStatus: { type: String, default: ExtraStatus.NONE },
     },
     { 
         timestamps: true, 
     },
 );
 
-export const UserModel = model<IUserModel>('User', UserSchema);
+export const UserModel = model<IUser>('User', UserSchema);

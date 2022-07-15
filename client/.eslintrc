@@ -23,6 +23,7 @@
             "warn",
             "prefer-single"
         ],
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        "import/export": "warn"
     }
 }

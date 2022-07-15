@@ -1,18 +1,7 @@
 import { HydratedDocument } from 'mongoose';
-import { IUserModel } from '../../models';
+import { IUser } from '../../types/API/User';
 
 
-
-interface IUser {
-    id: string;
-    login: string;
-    username: string;
-    password: string;
-    avatar: string;
-    email: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
 
 interface IUserSomePreset {
     id: string;
@@ -21,15 +10,16 @@ interface IUserSomePreset {
     avatar: string;
 }
 
-type IUserDoc = HydratedDocument<IUserModel>;
+type IUserDoc = HydratedDocument<IUser>;
 
 interface IUserDto {
-    defaultPreset: (user: IUserDoc) => IUser;
-    somePreset: (user: IUserDoc) => IUserSomePreset;
+    objectFromModel: (user: IUserDoc) => IUser;
+    defaultPreset: (user: IUserDoc | any) => IUser;
+    somePreset: (user: IUserDoc | any) => IUserSomePreset;
 }
 
 export const UserDto: IUserDto = {
-    defaultPreset(user) {
+    objectFromModel(user) {
         return {
             id: user._id.toString(),
             login: user.login,
@@ -37,17 +27,31 @@ export const UserDto: IUserDto = {
             password: user.password,
             avatar: user.avatar,
             email: user.email,
+            extraStatus: user.extraStatus,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
+        };
+    },
+    defaultPreset(user) {
+        return {
+            id: user?.id,
+            login: user?.login,
+            username: user?.username,
+            password: user?.password,
+            avatar: user?.avatar,
+            email: user?.email,
+            extraStatus: user?.extraStatus,
+            createdAt: user?.createdAt,
+            updatedAt: user?.updatedAt,
         };
     },
 
     somePreset(user) {
         return {
-            id: user._id.toString(),
-            login: user.login,
-            username: user.username,
-            avatar: user.avatar,
+            id: user?.id,
+            login: user?.login,
+            username: user?.username,
+            avatar: user?.avatar,
         };
     },
 };
