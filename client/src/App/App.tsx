@@ -8,19 +8,23 @@ export const App: FC = () => {
     const joinRef = useRef<HTMLInputElement>(null);
     const subscribeRef = useRef<HTMLInputElement>(null);
     const unsubscribeRef = useRef<HTMLInputElement>(null);
+    const usernameRef = useRef<HTMLInputElement>(null);
+    const idRef = useRef<HTMLInputElement>(null);
 
     console.log(connected);
 
-    eventEmitter.user.joinRooms(['']);
-    eventEmitter.chat.sendMessage('');
-
-    // const qwe = async() => {
-    //     fetch('http://localhost:5000/api/v1/user/create', {
-    //         method: 'POST',
-            
-    //     });
-    // };
-    // qwe();
+    const handleUpdate = async({ userId, username }: {userId: string, username: string}) => {
+        await fetch('http://localhost:5000/api/v1/user/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId,
+                username,
+            }), 
+        });
+    };
 
     return (
         <>
@@ -44,6 +48,15 @@ export const App: FC = () => {
                     userId: 'myId', 
                 });}}>
                     unsubscribe
+                </button>
+
+                <input type='text' ref={idRef} placeholder='id'/>
+                <input type='text' ref={usernameRef} placeholder='username'/>
+                <button onClick={() => handleUpdate({
+                    userId: idRef.current?.value || '123', 
+                    username: usernameRef.current?.value || '123',
+                })}>
+                    update
                 </button>
             </div>
         </>

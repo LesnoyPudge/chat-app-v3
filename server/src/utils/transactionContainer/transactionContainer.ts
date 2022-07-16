@@ -21,7 +21,10 @@ export const transactionContainer: TransactionContainerType = async(fn) => {
     });
 
     const queryOptions: QueryOptionsType = (extraOptionsObject) => {
-        const optionsObject = { session };
+        const optionsObject = { 
+            session, 
+            lean: true, 
+        };
         if (!optionsObject) return optionsObject;
         const mergedOptionsObject = { ...optionsObject, ...extraOptionsObject };
 

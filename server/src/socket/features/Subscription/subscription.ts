@@ -32,6 +32,7 @@ interface ISubscription {
     update: (user: IUser) => void;
     wentOnline: (user: IUser) => void;
     wentOffline: (userId: string) => void;
+    clean: () => void;
 }
 
 export const subscription: ISubscription = {
@@ -46,17 +47,19 @@ export const subscription: ISubscription = {
             subscribe({ userChannelIndex, userId });
             const userChannel = getUserChannelByIndex(userChannelIndex);
             getSubscription({ userId, userChannel });
-        } else {
+            return;
+        } 
+        try {
             const target = await fetchTarget(targetId);
             const userChannel = createUserChannel({ user: target, status: Status.OFFLINE });
             pushUserChannel(userChannel);
-
-
-
             const userChannelIndex = getUserChannelIndexById(targetId);
             console.log(userChannel, subscription.users);
             subscribe({ userChannelIndex, userId });
             getSubscription({ userId, userChannel });
+        } catch (error) {
+            console.log('error during subscription: ', error);
+            return;
         }
     },
 
@@ -64,6 +67,7 @@ export const subscription: ISubscription = {
         console.log(`${userId} unsubscribed from ${targetId}`);
         const userChannelIndex = getUserChannelIndexById(targetId);
         unsubscribe({ userChannelIndex, userId });
+        console.log(`subs after ${userId} unsubscription: [${subscription.users[userChannelIndex].subscribers}]`);
     },
 
     update(user) {
@@ -72,13 +76,13 @@ export const subscription: ISubscription = {
             const userChannelIndex = getUserChannelIndexById(user.id);
             const updatedUserChannel = updateUserChannel({ userChannelIndex, user });
             sendUpdate(updatedUserChannel);
-            console.log(`${user.id} update send to: ${updatedUserChannel.subscribers}`);
+            console.log(`${user.id} update send to: [${updatedUserChannel.subscribers}]`);
         } else {
             const userChannel = createUserChannel({ user, status: Status.ONLINE });
-            console.log('users: ', subscription.users);
             pushUserChannel(userChannel);
             const userChannelIndex = getUserChannelIndexById(user.id);
             updateUserChannel({ userChannelIndex, user });
+            console.log('users after update: ', subscription.users);
         }
     },
 
@@ -102,7 +106,40 @@ export const subscription: ISubscription = {
         const userChannel = wentOffline(userChannelIndex);
         sendUpdate(userChannel);
     },
+
+    clean() {
+        if (!subscription.users.length) return console.log('no users found');
+        
+        subscription.users = subscription.users.filter((item) => {
+            const isOffline = item.status === 'offline';
+            const isNoSubscribers = item.subscribers.length === 0;
+            const isUseless = isOffline && isNoSubscribers;
+            console.log(item.id, ' is ready for deletion: ', isUseless);
+            isUseless && console.log(item.id, ' is deleted');
+            return !isUseless;
+        });
+    },
 };
+
+const cleaner = () => {
+    let timer: NodeJS.Timer;
+    const interval = 1000 * 60 * 5;
+
+    const start = () => {
+        timer = setInterval(() => subscription.clean(), interval);
+    };
+
+    const stop = () => {
+        clearInterval(timer);
+    };
+
+    return {
+        start,
+        stop,
+    };
+};
+
+cleaner().start();
 
 interface IGetSubscription {
     userId: string;
@@ -132,7 +169,7 @@ interface IUnsubscribe {
 type UnsubscribeType = (args: IUnsubscribe) => void;
 
 const unsubscribe: UnsubscribeType = ({ userChannelIndex, userId }) => {
-    subscription.users[userChannelIndex].subscribers.filter((item) => item !== userId);
+    subscription.users[userChannelIndex].subscribers = subscription.users[userChannelIndex].subscribers.filter((item) => item !== userId);
 };
 
 type SendUpdateType = (userChannel: IUserChannel) => void;

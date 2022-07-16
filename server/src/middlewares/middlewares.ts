@@ -8,6 +8,7 @@ import { validationHandler } from './validationHandler';
 export const middlewares = {
     raw: {
         validationHandler,
+        errorHandler,
     },
 
     init: {

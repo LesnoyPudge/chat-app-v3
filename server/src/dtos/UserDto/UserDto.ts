@@ -1,21 +1,13 @@
 import { HydratedDocument } from 'mongoose';
-import { IUser } from '../../types/API/User';
+import { IUser, IUserModel } from '../../types';
 
 
 
-interface IUserSomePreset {
-    id: string;
-    login: string;
-    username: string;
-    avatar: string;
-}
-
-type IUserDoc = HydratedDocument<IUser>;
+type IUserDoc = HydratedDocument<IUserModel>;
 
 interface IUserDto {
     objectFromModel: (user: IUserDoc) => IUser;
     defaultPreset: (user: IUserDoc | any) => IUser;
-    somePreset: (user: IUserDoc | any) => IUserSomePreset;
 }
 
 export const UserDto: IUserDto = {
@@ -28,6 +20,10 @@ export const UserDto: IUserDto = {
             avatar: user.avatar,
             email: user.email,
             extraStatus: user.extraStatus,
+            activationLink: user.activationLink,
+            isActivated: user.isActivated,
+            settings: user.settings,
+            refreshJWT: user.refreshJWT,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         };
@@ -41,17 +37,12 @@ export const UserDto: IUserDto = {
             avatar: user?.avatar,
             email: user?.email,
             extraStatus: user?.extraStatus,
+            activationLink: user?.activationLink,
+            isActivated: user?.isActivated,
+            settings: user?.settings,
+            refreshJWT: user?.refreshJWT,
             createdAt: user?.createdAt,
             updatedAt: user?.updatedAt,
-        };
-    },
-
-    somePreset(user) {
-        return {
-            id: user?.id,
-            login: user?.login,
-            username: user?.username,
-            avatar: user?.avatar,
         };
     },
 };

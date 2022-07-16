@@ -1,4 +1,3 @@
-import { Server } from 'socket.io';
 import { io } from '../../../server';
 import { IUser } from '../../../types';
 

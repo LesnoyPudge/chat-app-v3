@@ -1,20 +1,28 @@
 import { Schema, model, Types } from 'mongoose';
-import { ExtraStatus, IUser } from '../../types/API/User/User';
+import { IUserModel } from '../../types';
 
 
 
-const UserSchema = new Schema<IUser>(
+const UserSchema = new Schema<IUserModel>(
     {
         login: { type: String, /*unique: true,*/ required: true },
         username: { type: String, required: true },
         password: { type: String, required: true },
         avatar: { type: String, default: '' },
         email: { type: String, required: true },
-        extraStatus: { type: String, default: ExtraStatus.NONE },
+        extraStatus: { type: String, default: 'default' },
+        activationLink: { type: String, required: true },
+        isActivated: { type: Boolean, default: false },
+        settings: {
+            theme: { type: String, default: 'auto' },
+            fontSize: { type: Number, default: 16 },
+            messageGroupSpacing: { type: Number, default: 16 },
+            transitionSpeed: { type: Number, default: 1 },
+        },
     },
     { 
         timestamps: true, 
     },
 );
 
-export const UserModel = model<IUser>('User', UserSchema);
+export const UserModel = model<IUserModel>('User', UserSchema);

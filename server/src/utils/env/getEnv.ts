@@ -16,6 +16,7 @@ interface IEnvVars {
     CLIENT_URL: string;
     SERVER_URL: string;
     API_V1_URL: string;
+    BCRYPT_SALT: string;
 }
 
 let init = false;

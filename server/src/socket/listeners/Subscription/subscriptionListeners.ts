@@ -15,7 +15,6 @@ interface IUnsubscribe {
 
 export const subscriptionListeners = (socketIO: SocketIOType) => {
     socketIO.on('subscribe', ({ userId, targetId }: ISubscribe) => {
-        console.log('wow');
         subscription.subscribe({ userId, targetId });
     });
 
