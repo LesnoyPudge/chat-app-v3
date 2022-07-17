@@ -7,7 +7,8 @@ interface ISettings {
     transitionSpeed: number;
 }
 
-export interface IUserModel {
+// ПЕРЕНЕСТИ В local
+export interface IUserModel { 
     login: string;
     username: string;
     password: string;
@@ -50,4 +51,9 @@ export interface IUserLoginReq {
 
 export interface IGetUserReq {
     targetId: string;
+}
+
+export interface IAuthResponse {
+    user: IUser;
+    accessToken: string;
 }

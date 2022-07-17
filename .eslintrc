@@ -65,7 +65,9 @@
         ],
         "no-multi-spaces": ["warn"],
         "import/newline-after-import": ["warn", { "count": 3 }],
-        "object-curly-spacing": ["warn", "always"]
+        "object-curly-spacing": ["warn", "always"],
+        "no-empty-pattern": "warn",
+        "import/no-unresolved": "warn"
         // "import/no-extraneous-dependencies": "off"
     }
 }

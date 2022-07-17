@@ -1,9 +1,9 @@
-import Express from 'express';
+import { ErrorMiddlewareType } from '../../types';
 import { ApiError } from '../../utils/ApiError/ApiError';
 
 
 
-export const errorHandler = (error: Error, req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+export const errorHandler: ErrorMiddlewareType<any, any, any> = (error, req, res, next) => {
     console.log('\n\n');
     console.log('Caught an error');
     console.log('Path: ' + req?.path);

@@ -5,7 +5,7 @@
         "lib": [
             "dom",
             "dom.iterable",
-            "esnext"
+            "esnext",
         ],
         "allowJs": true,
         "skipLibCheck": true,
@@ -20,8 +20,9 @@
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
+        "baseUrl": "./",
         "paths": { 
-            "@backendTypes/*": ["../server/src/types/common/*"], 
+            "@backendTypes/*": ["../server/src/types/common/index"],
         },
     },
     "include": [

@@ -3,7 +3,7 @@ import path from 'path';
 
 
 
-interface IEnvVars {
+interface IEnv {
     NODE_ENV: 'development' | 'production';
     SERVER_PORT: string;
     DB_CONNECTION: string;
@@ -16,17 +16,17 @@ interface IEnvVars {
     CLIENT_URL: string;
     SERVER_URL: string;
     API_V1_URL: string;
-    BCRYPT_SALT: string;
+    BCRYPT_SALT_ROUNDS: string;
 }
 
 let init = false;
 
-export const getEnvVars = () => {
+export const getEnv = () => {
     if (!init) {
         dotenv.config({ debug: true, path: path.join(__dirname, '../../../../.env') });
         init = true;
     }
-    const vars = process.env as unknown as IEnvVars;
+    const vars = process.env as unknown as IEnv;
 
     return { ...vars };
 };

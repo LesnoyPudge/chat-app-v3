@@ -1,12 +1,13 @@
-import { ControllerType, IUser, IUserLoginReq, IUserRegistrationReq } from '../../types';
+import { AuthorizedControllerType, ControllerType, IAuthResponse, IUserLoginReq, IUserRegistrationReq } from '../../types';
 import { UserService } from '../../services';
 
 
 
 interface IUserController {
-    registration: ControllerType<IUserRegistrationReq, any, { user: IUser; accessToken: string; }>;
-    login: ControllerType<IUserLoginReq, any, {user: IUser, accessToken: string;}>;
-    logout: ControllerType<any, any, void>;
+    registration: ControllerType<IUserRegistrationReq, any, IAuthResponse>;
+    login: ControllerType<IUserLoginReq, any, IAuthResponse>;
+    logout: AuthorizedControllerType<any, any, void>;
+    refresh: ControllerType<any, any, IAuthResponse>;
     // update: ControllerType<any, any, IUser>;
 }
 
@@ -24,25 +25,33 @@ export const UserController: IUserController = {
     async login(req, res) {
         const { login, password } = req.body;
         
-        const { user, accessToken, refreshToken } = await UserService.login({ login, password });
+        const data = await UserService.login({ login, password });
 
-        res.cookie('refreshToken', refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true });
+        res.cookie('refreshToken', data.refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true });
 
-        res.json({ user, accessToken });
+        res.json({ user: data.user, accessToken: data.accessToken });
     },
 
     async logout(req, res) {
-        const { refreshToken }: {refreshToken: string} = req.cookies;
-        const authData = {
-            userId: 'qwe',
-            refreshToken,
-        };
-        await UserService.logout({ authData });
+        const { id: userId } = req.auth.user;
+        
+        await UserService.logout({ userId });
 
         res.clearCookie('refreshToken');
 
         return res.sendStatus(200);
     },
+
+    async refresh(req, res) {
+        const { refreshToken } = req.cookies;
+        
+        const data = await UserService.refresh({ refreshToken });
+
+        res.cookie('refreshToken', data.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+
+        return res.json({ user: data.user, accessToken: data.accessToken });
+    },
+
     // async update(req, res) {
     //     const { userId, username } = req.body;
     //     console.log(req.body);

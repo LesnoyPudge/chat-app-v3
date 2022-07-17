@@ -4,13 +4,13 @@ import path from 'path';
 import http from 'http';
 import { routesInit } from './routes';
 import { dbConnection } from './models';
-import { getEnvVars } from './utils';
+import { getEnv } from './utils';
 import { Server } from 'socket.io';
 import { socket } from './socket';
 
 
 
-const { SERVER_PORT, CLIENT_URL, NODE_ENV } = getEnvVars();
+const { SERVER_PORT, CLIENT_URL, NODE_ENV } = getEnv();
 export const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, {
