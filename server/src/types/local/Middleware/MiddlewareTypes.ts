@@ -13,7 +13,7 @@ export interface IAuthorizedRequest<RequestBody, RequestQuery extends Query> ext
     cookies: {
         refreshToken: string;
     };
-    auth: {
+    auth?: {
         user: IUser;
     };
 }

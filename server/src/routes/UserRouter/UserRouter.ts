@@ -35,6 +35,12 @@ UserRouter.get(
     controllerContainer(UserController.refresh),
 );
 
+UserRouter.get(
+    API_V1_URL + '/user/some',
+    middlewares.raw.authHandler,
+    controllerContainer(UserController.some),
+);
+
 // UserRouter.post(
 //     API_V1_URL + '/user/update',
 //     controllerContainer(UserController.update),

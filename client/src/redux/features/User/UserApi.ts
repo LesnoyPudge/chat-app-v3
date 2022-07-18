@@ -1,3 +1,4 @@
+import { IAuthResponse, IUserLoginReq, IUserRegistrationReq } from '@backendTypes/*';
 import { getEnv } from '../../../utils';
 import rootApi from '../../store/rootApi';
 
@@ -7,28 +8,33 @@ const { REACT_APP_API_V1_URL } = getEnv();
 
 const UserApi = rootApi.injectEndpoints({
     endpoints: (build) => ({
-        userRefresh: build.mutation({
+        userRefresh: build.query<IAuthResponse, void>({
             query: () => ({
                 url: REACT_APP_API_V1_URL + '/user/refresh',
             }),
         }),
-        userLogin: build.mutation({
+        userLogin: build.mutation<IAuthResponse, IUserLoginReq>({
             query: (body) => ({
                 url: REACT_APP_API_V1_URL + '/user/login',
                 method: 'POST',
                 body,
             }),
         }),
-        userLogout: build.mutation({
+        userLogout: build.mutation<void, void>({
             query: () => ({
                 url: REACT_APP_API_V1_URL + '/user/logout',
             }),
         }),
-        userRegistration: build.mutation({
+        userRegistration: build.mutation<IAuthResponse, IUserRegistrationReq>({
             query: (body) => ({
                 url: REACT_APP_API_V1_URL + '/user/registration',
                 method: 'POST',
                 body,
+            }),
+        }),
+        userSome: build.mutation<void, void>({
+            query: () => ({
+                url: REACT_APP_API_V1_URL + '/user/some',
             }),
         }),
     }),
@@ -38,9 +44,10 @@ const UserApi = rootApi.injectEndpoints({
 export default UserApi;
 
 export const { 
-    useUserRefreshMutation,
+    useUserRefreshQuery,
     useUserLogoutMutation,
     useUserLoginMutation,
     useUserRegistrationMutation,
+    useUserSomeMutation,
     
 } = UserApi;

@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import path from 'path';
 import http from 'http';
+import cookieParser from 'cookie-parser';
 import { routesInit } from './routes';
 import { dbConnection } from './models';
 import { getEnv } from './utils';
@@ -21,6 +22,7 @@ export const io = new Server(server, {
 });
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
     cors({
         credentials: true,

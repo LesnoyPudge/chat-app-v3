@@ -17,14 +17,6 @@ const get = (key: string) => {
     return JSON.parse(value);
 };
 
-const isExist = (localStorage: Storage, storageValues: ILocalStorageValues, key: string) => {
-    const isValidLocalStorageItem = Object.prototype.hasOwnProperty.call(localStorage, key);
-    const isValidStorageItem = Object.prototype.hasOwnProperty.call(storageValues, key);
-    const isExist = isValidLocalStorageItem && isValidStorageItem;
-
-    return isExist;
-};
-
 export const getLocalStorage = () => {
     const values: ILocalStorageValues = {
         token: get('token'),
@@ -32,8 +24,6 @@ export const getLocalStorage = () => {
     };
 
     const set = (key: UpdatableKeysType, newValue: any) => {
-        if (!isExist(localStorage, values, key)) return;
-
         localStorage.setItem(key, JSON.stringify(newValue));
     };
 

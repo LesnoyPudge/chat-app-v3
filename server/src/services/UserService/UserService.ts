@@ -20,7 +20,7 @@ interface IUserService {
         accessToken: string;
     }>;
     logout: ServiceType<{
-        userId: string;
+        refreshToken: string;
     }, void>;
     refresh: ServiceType<{
         refreshToken: string
@@ -87,17 +87,20 @@ export const UserService: IUserService = {
         );  
     },
 
-    async logout({ userId }) {
+    async logout({ refreshToken }) {
         return await transactionContainer(
             async({ onCommit, queryOptions }) => {
-                await UserModel.updateOne(
-                    { _id: userId },
+                const user = await UserModel.findOneAndUpdate(
+                    { refreshJWT: refreshToken },
                     { refreshJWT: '' },
                     queryOptions(),
                 );
+                if (!user) {
+                    throw ApiError.badRequest();
+                }
 
                 onCommit(() => {
-                    subscription.wentOffline(userId);
+                    subscription.wentOffline(UserDto.objectFromModel(user).id);
                 });
             },
         );

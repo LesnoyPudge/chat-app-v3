@@ -9,10 +9,15 @@ const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
     //     console.log('unauth');
     //     // state = {} as RootState;
         
-    // } else if (action?.meta?.arg?.endpointName === 'userLogout') {
-    //     console.log('logout');
-    //     state = {} as RootState;
-    // }
+    if (action?.meta?.arg?.endpointName === 'userLogout') {
+        console.log('userLogout');
+        state = {} as RootState;
+    }
+
+    if (action.type === 'user/logout') {
+        console.log('user/logout');
+        state = {} as RootState;
+    }
 
     return combinedReducer(state, action);
 };

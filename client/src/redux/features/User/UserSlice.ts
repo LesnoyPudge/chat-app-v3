@@ -1,34 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import UserApi from './UserApi';
-import { IAuthResponse } from '@backendTypes/*';
+import { IAuthResponse, IUser } from '@backendTypes/*';
 import { getLocalStorage } from 'src/utils';
+import { RootState } from 'src/redux/store';
 
 
 
 interface IUserState {
-    // userInfo: IUser;
-    userInfo: any;
+    info: IUser;
     isAuth: boolean;
     isInit: boolean;
     isLoading: boolean;
 }
 
 const initialState: IUserState = {
-    userInfo: {
-        id: '',
-        avatar: '',
-        identifier: '',
-        login: '',
-        username: '',
-        password: '',
-        email: '',
-        isActivated: false,
-        membership: [],
-        friends: [],
-        privateChats: [],
-        hiddenPrivateChats: [],
-        blockList: [],
-    },
+    info: {} as IUser,
     isAuth: false,
     isInit: false,
     isLoading: false,
@@ -38,16 +24,23 @@ export const UserSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
+        notAuthorized(state) {
+            state.isInit = true;
+            state.isLoading = false;
+            state.isAuth = false;
+        },
+        logout() {
+            getLocalStorage().clear();
+        },
+        setAccessToken(state, { payload }: PayloadAction<string>) {
+            getLocalStorage().set('token', payload);
+        },
+        initiate(state) {
+            state.isInit = true;
+            state.isLoading = true;
+        }, 
     },
     extraReducers: (builder) => {
-        builder.addMatcher(
-            UserApi.endpoints.userRegistration.matchFulfilled,
-            (state, { payload }: PayloadAction<IAuthResponse>) => {
-                state.userInfo = payload.user;
-                state.isAuth = true;
-                getLocalStorage().set('token', payload.accessToken);
-            },
-        );
         builder.addMatcher(
             UserApi.endpoints.userRefresh.matchPending,
             (state) => {
@@ -58,9 +51,10 @@ export const UserSlice = createSlice({
         builder.addMatcher(
             UserApi.endpoints.userRefresh.matchFulfilled,
             (state, { payload }: PayloadAction<IAuthResponse>) => {
-                state.userInfo = payload.user;
+                state.info = payload.user;
                 state.isAuth = true;
                 state.isLoading = false;
+
                 getLocalStorage().set('token', payload.accessToken);
             },
         );
@@ -69,29 +63,47 @@ export const UserSlice = createSlice({
             (state) => {
                 state.isAuth = false;
                 state.isLoading = false;
+                state.isInit = true;
                 getLocalStorage().clear();
-                return initialState;
+                // return initialState;
+            },
+        );
+        builder.addMatcher(
+            UserApi.endpoints.userRegistration.matchFulfilled,
+            (state, { payload }: PayloadAction<IAuthResponse>) => {
+                state.info = payload.user;
+                state.isAuth = true;
+                state.isInit = true;
+                state.isLoading = false;
+                getLocalStorage().set('token', payload.accessToken);
+            },
+        );
+        builder.addMatcher(
+            UserApi.endpoints.userLogin.matchFulfilled,
+            (state, { payload }: PayloadAction<IAuthResponse>) => {
+                state.info = payload.user;
+                state.isInit = true;
+                state.isAuth = true;
+                state.isLoading = false;
+                getLocalStorage().set('token', payload.accessToken);
             },
         );
         builder.addMatcher(
             UserApi.endpoints.userLogout.matchFulfilled,
             () => {
                 getLocalStorage().clear();
-                return initialState;
-            },
-        );
-        builder.addMatcher(
-            UserApi.endpoints.userLogin.matchFulfilled,
-            (state, { payload }: PayloadAction<IAuthResponse>) => {
-                state.userInfo = payload.user;
-                state.isInit = true;
-                state.isAuth = true;
-                getLocalStorage().set('token', payload.accessToken);
             },
         );
     },
 });
 
 export const {
+    notAuthorized,
+    logout,
+    setAccessToken,
+    initiate,
 
 } = UserSlice.actions;
+
+export const getUser = (state: RootState) => state.user;
+export const getUserInfo = (state: RootState) => state.user.info;
