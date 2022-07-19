@@ -9,63 +9,26 @@ import { RootState } from 'src/redux/store';
 interface IUserState {
     info: IUser;
     isAuth: boolean;
-    isInit: boolean;
-    isLoading: boolean;
 }
 
-const initialState: IUserState = {
+const UserInitialState: IUserState = {
     info: {} as IUser,
     isAuth: false,
-    isInit: false,
-    isLoading: false,
 };
 
 export const UserSlice = createSlice({
     name: 'user',
-    initialState,
+    initialState: UserInitialState,
     reducers: {
-        notAuthorized(state) {
-            state.isInit = true;
-            state.isLoading = false;
-            state.isAuth = false;
-        },
-        logout() {
-            getLocalStorage().clear();
-        },
-        setAccessToken(state, { payload }: PayloadAction<string>) {
-            getLocalStorage().set('token', payload);
-        },
-        initiate(state) {
-            state.isInit = true;
-            state.isLoading = true;
-        }, 
+        logout() {/* handling in store */},
     },
     extraReducers: (builder) => {
-        builder.addMatcher(
-            UserApi.endpoints.userRefresh.matchPending,
-            (state) => {
-                state.isInit = true;
-                state.isLoading = true;
-            },
-        );
         builder.addMatcher(
             UserApi.endpoints.userRefresh.matchFulfilled,
             (state, { payload }: PayloadAction<IAuthResponse>) => {
                 state.info = payload.user;
                 state.isAuth = true;
-                state.isLoading = false;
-
                 getLocalStorage().set('token', payload.accessToken);
-            },
-        );
-        builder.addMatcher(
-            UserApi.endpoints.userRefresh.matchRejected,
-            (state) => {
-                state.isAuth = false;
-                state.isLoading = false;
-                state.isInit = true;
-                getLocalStorage().clear();
-                // return initialState;
             },
         );
         builder.addMatcher(
@@ -73,8 +36,6 @@ export const UserSlice = createSlice({
             (state, { payload }: PayloadAction<IAuthResponse>) => {
                 state.info = payload.user;
                 state.isAuth = true;
-                state.isInit = true;
-                state.isLoading = false;
                 getLocalStorage().set('token', payload.accessToken);
             },
         );
@@ -82,28 +43,17 @@ export const UserSlice = createSlice({
             UserApi.endpoints.userLogin.matchFulfilled,
             (state, { payload }: PayloadAction<IAuthResponse>) => {
                 state.info = payload.user;
-                state.isInit = true;
                 state.isAuth = true;
-                state.isLoading = false;
                 getLocalStorage().set('token', payload.accessToken);
-            },
-        );
-        builder.addMatcher(
-            UserApi.endpoints.userLogout.matchFulfilled,
-            () => {
-                getLocalStorage().clear();
             },
         );
     },
 });
 
 export const {
-    notAuthorized,
     logout,
-    setAccessToken,
-    initiate,
 
 } = UserSlice.actions;
 
-export const getUser = (state: RootState) => state.user;
-export const getUserInfo = (state: RootState) => state.user.info;
+export const selectUser = (state: RootState) => state.user;
+export const selectUserInfo = (state: RootState) => state.user.info;

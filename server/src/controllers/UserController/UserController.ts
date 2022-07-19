@@ -41,6 +41,7 @@ export const UserController: IUserController = {
         res.clearCookie('refreshToken');
 
         return res.sendStatus(200);
+        // return res.sendStatus(500);
     },
 
     async refresh(req, res) {
@@ -51,11 +52,12 @@ export const UserController: IUserController = {
         res.cookie('refreshToken', data.refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 30 });
 
         return res.json({ user: data.user, accessToken: data.accessToken });
+        // return res.sendStatus(500);
     },
 
     async some(req, res) {
         const user = req.auth.user;
-        console.log(user);
+        console.log('got some');
         return res.sendStatus(200);
     },
 

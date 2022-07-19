@@ -1,15 +1,18 @@
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
-import { useUserLogoutMutation, useUserSomeMutation } from 'src/redux/features';
+import { useAppDispatch } from 'src/hooks';
+import { logout, useUserLogoutMutation, useUserSomeMutation } from 'src/redux/features';
 
 
 
 export const AppScreen: FC = () => {
-    const [logout] = useUserLogoutMutation();
+    const [logoutRequest] = useUserLogoutMutation();
     const [some] = useUserSomeMutation();
+    const dispatch = useAppDispatch();
 
     const handleLogout = async() => {
-        await logout();
+        logoutRequest();
+        dispatch(logout());
     }; 
 
     const handleSome = async() => {

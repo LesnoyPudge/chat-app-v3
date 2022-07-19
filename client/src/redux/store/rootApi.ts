@@ -1,8 +1,8 @@
-import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, retry } from '@reduxjs/toolkit/query/react';
+import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
+import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta, retry } from '@reduxjs/toolkit/query/react';
 import { IAuthResponse } from '../../../../server/src/types/common/API';
 import { getEnv, getLocalStorage } from '../../utils';
 import { logout } from '../features';
-
 
 
 
@@ -15,39 +15,65 @@ const baseQuery = fetchBaseQuery({
     credentials: 'include',
 });
 
-const retryHandlingBaseQuery = retry(baseQuery, {
-    maxRetries: 3,
-});
+const retryHandlingBaseQuery = async(
+    args: string | FetchArgs, 
+    api: BaseQueryApi, 
+    extraOptions: Record<string, unknown>,
+) => {
+    const basicRetry = retry(
+        async() => {
+            const result = await baseQuery(
+                args,
+                api,
+                extraOptions,
+            );
+        
+            if (result.meta?.response && result.meta.response.status !== 500) {
+                retry.fail(result);
+            }
+        
+            return result;
+        },
+        {
+            maxRetries: 3,
+        },
+    );
+
+    const response = await basicRetry(args, api, extraOptions as never);
+    if (response?.meta) return response;
+
+    const normalizedResponse = response.error as QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>;
+    return normalizedResponse;
+};
 
 const retryHandlingBaseQueryWithReauth: BaseQueryFn<
     string | FetchArgs,
     unknown,
     FetchBaseQueryError
 > = async(args, api, extraOptions) => {
-    let result = await baseQuery(args, api, extraOptions);
-    console.log('selali zapros');
-    if (result.error && result.error.status === 401) {
-    // try to get a new token
-        console.log('got unauth');
-    
-        const refreshResult = await baseQuery(
-            getEnv().REACT_APP_API_V1_URL + '/user/refresh', 
+    let result = await retryHandlingBaseQuery(args, api, extraOptions);
+
+    if (result.meta?.response && result.meta.response.status !== 401) return result;
+
+    const refreshResponse = await retryHandlingBaseQuery(
+        getEnv().REACT_APP_API_V1_URL + '/user/refresh', 
+        api, 
+        extraOptions,
+    );
+
+    if (refreshResponse.data) {
+        const data = refreshResponse.data as IAuthResponse;
+        getLocalStorage().set('token', data.accessToken);
+        result = await retryHandlingBaseQuery(args, api, extraOptions);
+    } else {
+        retryHandlingBaseQuery(
+            getEnv().REACT_APP_API_V1_URL + '/user/logout', 
             api, 
             extraOptions,
         );
-        console.log('sdelali refresh: ', refreshResult);
-        if (refreshResult.data) {
-            console.log('got refresh token');
-            const data = refreshResult.data as IAuthResponse;
-            // store the new token
-            getLocalStorage().set('token', data.accessToken);
-            // retry the initial query
-            result = await baseQuery(args, api, extraOptions);
-        } else {
-            console.log('dispatchim logout');
-            api.dispatch(logout());
-        }
+        api.dispatch(logout());
     }
+
     return result;
 };
 

@@ -23,8 +23,8 @@ export const getLocalStorage = () => {
         some: get('some'),
     };
 
-    const set = (key: UpdatableKeysType, newValue: any) => {
-        localStorage.setItem(key, JSON.stringify(newValue));
+    const set = (key: UpdatableKeysType, value: any) => {
+        localStorage.setItem(key, JSON.stringify(value));
     };
 
     const clear = () => {
