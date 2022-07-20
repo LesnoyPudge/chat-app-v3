@@ -19,6 +19,7 @@ export const subscriptionEmitters = {
     },
 
     getSubscription({ to, user }: IGetSubscription) {
+        console.log('subscription data send to: ' + to);
         io.to(to).emit('getSubscription', user);
     },
 };

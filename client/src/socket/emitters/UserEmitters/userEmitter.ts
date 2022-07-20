@@ -29,7 +29,6 @@ export const userEmitter: UserEmitterType = (socket) => {
             };
         },
         subscribe: ({ userId, targetId }) => {
-            console.log('works?');
             socket.emit('subscribe', { userId, targetId });
             return {
                 ...events,

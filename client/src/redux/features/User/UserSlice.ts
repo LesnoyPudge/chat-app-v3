@@ -47,6 +47,12 @@ export const UserSlice = createSlice({
                 getLocalStorage().set('token', payload.accessToken);
             },
         );
+        builder.addMatcher(
+            UserApi.endpoints.userSome.matchFulfilled,
+            () => {
+                console.log('works!!!');
+            },
+        );
     },
 });
 

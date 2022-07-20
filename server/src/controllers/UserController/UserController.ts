@@ -8,7 +8,7 @@ interface IUserController {
     login: ControllerType<IUserLoginReq, any, IAuthResponse>;
     logout: ControllerType<any, any, void>;
     refresh: ControllerType<any, any, IAuthResponse>;
-    some: AuthorizedControllerType<any, any, void>;
+    some: AuthorizedControllerType<any, any, any>;
     // update: ControllerType<any, any, IUser>;
 }
 
@@ -40,8 +40,8 @@ export const UserController: IUserController = {
 
         res.clearCookie('refreshToken');
 
-        return res.sendStatus(200);
-        // return res.sendStatus(500);
+        res.status(200).json();
+        // res.status(500).json();
     },
 
     async refresh(req, res) {
@@ -51,14 +51,14 @@ export const UserController: IUserController = {
 
         res.cookie('refreshToken', data.refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 30 });
 
-        return res.json({ user: data.user, accessToken: data.accessToken });
-        // return res.sendStatus(500);
+        res.json({ user: data.user, accessToken: data.accessToken });
+        // res.status(500).json();
     },
 
     async some(req, res) {
         const user = req.auth.user;
         console.log('got some');
-        return res.sendStatus(200);
+        res.status(200).json();
     },
 
     // async update(req, res) {

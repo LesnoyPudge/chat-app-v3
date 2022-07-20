@@ -15,10 +15,10 @@ interface IUnsubscribe {
 
 export const subscriptionListeners = (socketIO: SocketIOType) => {
     socketIO.on('subscribe', ({ userId, targetId }: ISubscribe) => {
-        subscription.subscribe({ userId, targetId });
+        subscription.subscribe(userId, targetId);
     });
 
     socketIO.on('unsubscribe', ({ userId, targetId }: IUnsubscribe) => {
-        subscription.unsubscribe({ userId, targetId });
+        subscription.unsubscribe(userId, targetId);
     });
 };

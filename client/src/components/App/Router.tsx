@@ -16,29 +16,25 @@ interface IAuthLoader {
 
 const AuthLoader: FC<IAuthLoader> = ({ children }) => {
     console.log('auth loader');
-    const { isLoading, isUninitialized, isSuccess } = useUserRefreshQuery();
+    const { isLoading } = useUserRefreshQuery();
     const user = useAppSelector(selectUser);
-    console.log(isLoading, isUninitialized, isSuccess);
+    console.log(isLoading);
     const location = useLocation();
     const onlyUnauthPaths = ['/auth'];
 
-    if (isUninitialized || isLoading) return <>loading</>;
+    if (isLoading) return <>loading</>;
 
-    if (!isUninitialized && !isLoading && user.isAuth && onlyUnauthPaths.includes(location.pathname)) {
+    if (user.isAuth && onlyUnauthPaths.includes(location.pathname)) {
         const state = location.state as {
             from?: {
                 pathname: string;
             };
         } | null;
 
-        const path = state?.from?.pathname ? state?.from?.pathname : '/app';
+        const path = state?.from?.pathname ? state.from.pathname : '/app';
         console.log('got on anti auth route, redirecting to: ', path);
 
-        if (state?.from?.pathname) {
-            return <Navigate to={state?.from.pathname}/>;
-        } else {
-            return <Navigate to={'/app'}/>;
-        }
+        return <Navigate to={path}/>; 
     }
     
     return children ? children : <Outlet />;
