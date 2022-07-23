@@ -37,6 +37,13 @@ const UserApi = rootApi.injectEndpoints({
                 url: REACT_APP_API_V1_URL + '/user/some',
             }),
         }),
+        userUpdate: build.mutation<void, {username: string}>({
+            query: (body) => ({
+                url: REACT_APP_API_V1_URL + '/user/update',
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
     overrideExisting: false,
 });
@@ -49,5 +56,6 @@ export const {
     useUserLoginMutation,
     useUserRegistrationMutation,
     useUserSomeMutation,
+    useUserUpdateMutation,
     
 } = UserApi;

@@ -1,7 +1,8 @@
-import { FC, useEffect } from 'react';
+import { FC, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
-import { useAppDispatch, useAppSelector, useSocket } from 'src/hooks';
-import { logout, selectUserInfo, selectUsersById, useUserLogoutMutation, useUserSomeMutation } from 'src/redux/features';
+import { UserInfo } from 'src/components/UserInfo/UserInfo';
+import { useAppDispatch } from 'src/hooks';
+import { logout, useUserLogoutMutation, useUserSomeMutation, useUserUpdateMutation } from 'src/redux/features';
 
 
 
@@ -9,10 +10,7 @@ export const AppScreen: FC = () => {
     const [logoutRequest] = useUserLogoutMutation();
     const [some] = useUserSomeMutation();
     const dispatch = useAppDispatch();
-    const user = useAppSelector(selectUserInfo);
-    const userFromUsers = useAppSelector(state => selectUsersById(state, '62d3ad0e6736eef593b901e5'));
-    const { eventEmitter, connected } = useSocket();
-    console.log(connected);
+    
     const handleLogout = async() => {
         logoutRequest();
         dispatch(logout());
@@ -22,15 +20,8 @@ export const AppScreen: FC = () => {
         await some();
     };
 
-    useEffect(() => {
-        if (!userFromUsers) eventEmitter.user.subscribe({ userId: user.id, targetId: '62d3ad0e6736eef593b901e5' });
-
-        return () => {
-            eventEmitter.user.unsubscribe({ userId: user.id, targetId: '62d3ad0e6736eef593b901e5' });
-        };
-    }, [eventEmitter.user, user.id, userFromUsers]);
-    
-
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [update] = useUserUpdateMutation();
     return (
         <>
             <span>app screen</span>
@@ -42,13 +33,22 @@ export const AppScreen: FC = () => {
                 some
             </button>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <span>myId: {user.id}</span>
-                <span>id: {userFromUsers?.id}</span>
-                <span>username: {userFromUsers?.username}</span>
-                <span>email: {userFromUsers?.email}</span>
-                <span>login: {userFromUsers?.login}</span>
-            </div>
+            <br />
+
+            <input type='text' ref={inputRef}/>
+            <button onClick={async() => {
+                const text = inputRef.current?.value;
+
+                await update({ username: text || '123' });
+            }}>
+                update
+            </button>
+
+            <UserInfo targetId='62d3ad0e6736eef593b901e5'/>
+
+            <br />
+
+            <UserInfo targetId='62d79d7b3cb7e0d9835e02e0'/>
 
             <Outlet/>
         </>

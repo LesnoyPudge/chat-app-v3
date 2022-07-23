@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import UserApi from './UserApi';
-import { IAuthResponse, IUser } from '@backendTypes/*';
 import { getLocalStorage } from 'src/utils';
+import { IUser, IAuthResponse } from '@backendTypes/*';
+import UserApi from './UserApi';
 import { RootState } from 'src/redux/store';
 
 
@@ -45,12 +45,6 @@ export const UserSlice = createSlice({
                 state.info = payload.user;
                 state.isAuth = true;
                 getLocalStorage().set('token', payload.accessToken);
-            },
-        );
-        builder.addMatcher(
-            UserApi.endpoints.userSome.matchFulfilled,
-            () => {
-                console.log('works!!!');
             },
         );
     },

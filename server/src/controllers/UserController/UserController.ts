@@ -1,4 +1,4 @@
-import { AuthorizedControllerType, ControllerType, IAuthResponse, IUserLoginReq, IUserRegistrationReq } from '../../types';
+import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, IUserLoginReq, IUserRegistrationReq } from '../../types';
 import { UserService } from '../../services';
 
 
@@ -9,7 +9,7 @@ interface IUserController {
     logout: ControllerType<any, any, void>;
     refresh: ControllerType<any, any, IAuthResponse>;
     some: AuthorizedControllerType<any, any, any>;
-    // update: ControllerType<any, any, IUser>;
+    update: AuthorizedControllerType<any, any, IUser>;
 }
 
 export const UserController: IUserController = {
@@ -61,12 +61,12 @@ export const UserController: IUserController = {
         res.status(200).json();
     },
 
-    // async update(req, res) {
-    //     const { userId, username } = req.body;
-    //     console.log(req.body);
+    async update(req, res) {
+        const user = req.auth.user;
+        const { username } = req.body;
         
-    //     const data = await UserService.update({ userId, username });
+        const data = await UserService.update({ userId: user.id, username });
 
-    //     res.json(data);
-    // },
+        res.json(data);
+    },
 };

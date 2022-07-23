@@ -30,7 +30,7 @@ interface IUserService {
         accessToken: string;
     }>;
     get: ServiceType<IGetUserReq, IUser>;
-    // update: ServiceType<IUserRegistrationReq, IUser>;
+    update: ServiceType<{userId: string, username: string}, IUser>;
 }
 
 export const UserService: IUserService = {
@@ -143,25 +143,26 @@ export const UserService: IUserService = {
         );
     },
 
-    // async update({ userId, username }) {
-    //     return await transactionContainer(
-    //         async({ queryOptions, onCommit }) => {
-    //             console.log(userId, username);
-    //             const updatedUser = await UserModel.findOneAndUpdate(
-    //                 { _id: userId }, 
-    //                 { username }, 
-    //                 queryOptions({ new: true }),
-    //             );
-    //             if (!updatedUser) {
-    //                 throw ApiError.badRequest();
-    //             }
+    async update({ userId, username }) {
+        return await transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                console.log(userId, username);
+                const updatedUser = await UserModel.findOneAndUpdate(
+                    { _id: userId }, 
+                    { username }, 
+                    queryOptions({ new: true }),
+                );
+                if (!updatedUser) {
+                    throw ApiError.badRequest();
+                }
+                const userDto = UserDto.objectFromModel(updatedUser);
 
-    //             onCommit(() => {
-    //                 subscription.update(UserDto.objectFromModel(updatedUser));
-    //             });
+                onCommit(() => {
+                    subscription.update(userDto);
+                });
 
-    //             return updatedUser;
-    //         },
-    //     );
-    // },
+                return userDto;
+            },
+        );
+    },
 };
