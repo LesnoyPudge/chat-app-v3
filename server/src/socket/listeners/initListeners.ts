@@ -1,4 +1,5 @@
 import { Socket as SocketIOType } from 'socket.io';
+import { socket } from '..';
 import { statusListeners } from './Status/statusListeners';
 import { subscriptionListeners } from './Subscription/subscriptionListeners';
 
@@ -14,6 +15,11 @@ export const initListeners = (socketIO: SocketIOType) => {
     socketIO.on('join_rooms', (rooms: string[] | string) => {
         socketIO.join(rooms);
         console.log('joined to rooms: ', rooms);
+    });
+
+    socketIO.on('connectToVoiceRoom', (userId: string) => {
+        console.log('user: ', userId, ' connected');
+        socket.events.reciveConnectionToVoiceRoom(userId);
     });
 
     statusListeners(socketIO);

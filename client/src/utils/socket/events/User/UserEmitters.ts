@@ -6,6 +6,7 @@ interface IUserEmitters {
     joinRooms: (rooms: string[] | string) => void;
     subscribe: (args: {userId: string, targetId: string}) => void;
     unsubscribe: (args: {userId: string, targetId: string}) => void;
+    connectToVoiceRoom: (args: {userId: string}) => void;
 }
 
 export const UserEmitters: IUserEmitters = {
@@ -17,5 +18,8 @@ export const UserEmitters: IUserEmitters = {
     },
     unsubscribe({ userId, targetId }) {
         socketIO.emit('unsubscribe', { userId, targetId });
+    },
+    connectToVoiceRoom({ userId }) {
+        socketIO.emit('connectToVoiceRoom', userId);
     },
 };

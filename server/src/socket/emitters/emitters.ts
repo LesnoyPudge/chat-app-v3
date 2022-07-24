@@ -1,5 +1,6 @@
 import { io } from '../../server';
 import { subscriptionEmitters } from './Subscription/subscriptionEmitters';
+import { userEmitters } from './User/UserEmitters';
 
 
 
@@ -13,6 +14,7 @@ import { subscriptionEmitters } from './Subscription/subscriptionEmitters';
 
 export const emitters = {
     ...subscriptionEmitters,
+    ...userEmitters,
     // sendMessage(message) {
     //     console.log('Event: send message, content: ', message);
     //     io.emit('chat message', message);

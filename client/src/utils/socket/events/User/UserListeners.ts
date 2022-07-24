@@ -16,6 +16,11 @@ export const UserListeners = {
             cb(user);
         });
     },
+    connectToVoiceRoom(cb: CallbackType<{userId: string}>) {
+        socketIO.on('reciveConnectionToVoiceRoom', (userId: string) => {
+            cb({ userId });
+        });
+    },
 };
 
 // export const UserListeners = () => {

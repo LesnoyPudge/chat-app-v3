@@ -2,7 +2,6 @@ import { FC, useLayoutEffect } from 'react';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from 'src/hooks';
 import { useUserRefreshQuery, selectUser } from 'src/redux/features';
-import rootApi from 'src/redux/store/rootApi';
 import { socket } from 'src/utils';
 import { socketListenersInit } from './socketListenersInit';
 
@@ -19,9 +18,7 @@ export const AuthLoader: FC<IAuthLoader> = ({ children }) => {
     const { isLoading } = useUserRefreshQuery();
     const user = useAppSelector(selectUser);
     const location = useLocation();
-    const endpoints = rootApi.endpoints as any;
-    
-    console.log(endpoints.userRefresh);
+
     useLayoutEffect(() => {
         if (!user.info.id) return;
         socket().emitters.user.joinRooms(user.info.id);
