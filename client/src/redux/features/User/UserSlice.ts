@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getLocalStorage } from 'src/utils';
-import { IUser, IAuthResponse } from '@backendTypes/*';
+import { IUser, IAuthResponse } from '@backendTypes';
 import UserApi from './UserApi';
 import { RootState } from 'src/redux/store';
 

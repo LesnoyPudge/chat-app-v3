@@ -1,3 +1,4 @@
+import { log } from '@utils';
 import { FC } from 'react';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from 'src/hooks';
@@ -15,7 +16,7 @@ export const ProtectedRoutes: FC<IProtectedRoutes> = ({ children }) => {
     const location = useLocation();
 
     if (!user.isAuth) {
-        console.log('forbidden');
+        log('forbidden');
         return <Navigate to={'/auth'} state={{ from: location }} replace />;
     }
     

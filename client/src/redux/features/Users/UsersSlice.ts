@@ -1,4 +1,4 @@
-import { IUser } from '@backendTypes/*';
+import { IUser } from '@backendTypes';
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'src/redux/store';
 

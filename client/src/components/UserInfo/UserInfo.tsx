@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useAppSelector } from 'src/hooks';
 import { selectUserInfo, selectUsersById } from 'src/redux/features';
-import { socket } from 'src/utils/socket';
+import { socket } from '@socket';
 
 
 
@@ -14,10 +14,10 @@ export const UserInfo: FC<IUserInfo> = ({ targetId }) => {
     const user = useAppSelector(selectUserInfo);
 
     useEffect(() => {
-        socket().emitters.user.subscribe({ userId: user.id, targetId });
+        socket.user.subscribe({ userId: user.id, targetId });
         
         return () => {
-            socket().emitters.user.unsubscribe({ userId: user.id, targetId });
+            socket.user.unsubscribe({ userId: user.id, targetId });
         };
     }, [targetId, user.id]);
 

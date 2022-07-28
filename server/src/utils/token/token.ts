@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { IUser } from '../../types';
-import { getEnv } from '../env';
+import { getEnv } from '../getEnv';
 
 
 

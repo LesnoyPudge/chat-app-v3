@@ -1,6 +1,6 @@
 import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta, retry } from '@reduxjs/toolkit/query/react';
-import { IAuthResponse } from '../../../../server/src/types/common/API';
+import { IAuthResponse } from '@backendTypes';
 import { getEnv, getLocalStorage } from '../../utils';
 import { logout } from '../features';
 

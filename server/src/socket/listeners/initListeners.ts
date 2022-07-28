@@ -18,7 +18,7 @@ export const initListeners = (socketIO: SocketIOType) => {
     });
 
     socketIO.on('connectToVoiceRoom', (userId: string) => {
-        console.log('user: ', userId, ' connected');
+        console.log('user: ', userId, ' connected to voice room');
         socket.events.reciveConnectionToVoiceRoom(userId);
     });
 

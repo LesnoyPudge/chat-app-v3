@@ -1,9 +1,10 @@
 import { FC, useLayoutEffect } from 'react';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
-import { useAppSelector } from 'src/hooks';
-import { useUserRefreshQuery, selectUser } from 'src/redux/features';
-import { socket } from 'src/utils';
+import { useAppSelector } from '@hooks';
+import { useUserRefreshQuery, selectUser } from '@redux';
+import { socket } from '@socket';
 import { socketListenersInit } from './socketListenersInit';
+import { log } from '@utils';
 
 
 
@@ -14,14 +15,14 @@ interface IAuthLoader {
 const onlyUnauthPaths = ['/auth'];
 
 export const AuthLoader: FC<IAuthLoader> = ({ children }) => {
-    console.log('auth loader');
+    log('auth loader');
     const { isLoading } = useUserRefreshQuery();
     const user = useAppSelector(selectUser);
     const location = useLocation();
 
     useLayoutEffect(() => {
         if (!user.info.id) return;
-        socket().emitters.user.joinRooms(user.info.id);
+        socket.user.joinRooms({ rooms: user.info.id });
         socketListenersInit();
     }, [user.info.id]);
 
@@ -35,7 +36,7 @@ export const AuthLoader: FC<IAuthLoader> = ({ children }) => {
         } | null;
 
         const path = state?.from?.pathname ? state.from.pathname : '/app';
-        console.log('got on anti auth route, redirecting to: ', path);
+        log('got on anti auth route, redirecting to: ', path);
 
         return <Navigate to={path}/>; 
     }

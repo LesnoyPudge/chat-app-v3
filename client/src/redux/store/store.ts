@@ -1,13 +1,13 @@
 import { configureStore, ThunkAction, Action, AnyAction, Reducer } from '@reduxjs/toolkit';
 import rootApi from './rootApi';
 import { combinedReducer } from './combinedReducer';
-import { getCookie, getLocalStorage } from 'src/utils';
+import { getCookie, getLocalStorage, log } from '@utils';
 
 
 
 const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
     if (action.type === 'user/logout') {
-        console.log('user/logout');
+        log('user/logout');
         getLocalStorage().clear();
         getCookie().removeAll();
         const apiState = state.api;

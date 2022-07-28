@@ -1,4 +1,4 @@
-import { IAuthResponse, IUserLoginReq, IUserRegistrationReq } from '@backendTypes/*';
+import { IAuthResponse, IUserLoginReq, IUserRegistrationReq } from '@backendTypes';
 import { getEnv } from '../../../utils';
 import rootApi from '../../store/rootApi';
 

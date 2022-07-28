@@ -1,14 +1,15 @@
-import { Peer } from 'peerjs';
+import { MediaConnection, Peer } from 'peerjs';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { selectUserInfo } from 'src/redux/features';
-import { socket } from 'src/utils';
+import { socket } from '@socket';
 import { useAppSelector } from '../useAppSelector';
+import { log } from '@utils';
 
 
 
 interface IUserStream {
     id: string,
-    stream: MediaStream,
+    streamSrc: MediaStream,
 }
 
 export const useWebRTC = () => {
@@ -16,37 +17,92 @@ export const useWebRTC = () => {
     const peerRef = useRef<Peer | null>(null);
     const [streams, setStreams] = useState<IUserStream[]>([]);
 
-    console.log(streams);
+    log(streams);
 
-    useEffect(() => {
+    const connect = (roomId?: string) => {
         if (!peerRef.current) {
             peerRef.current = new Peer(user.id);
         }
         const peer = peerRef.current;
 
+        socket.user.connectToVoiceRoom({ userId: user.id });
+
         peer.on('open', (id) => {
-            console.log('connected: ', id);
+            log('connected: ', id);
 
             getMediaDevicesPermission()
                 .then((stream) => {
-                    setStreams(prev => [...prev, { id, stream }]);
+                    if (!streams.some((item) => item.id === id)) {
+                        log('tyt');
+                        setStreams(prev => [...prev, { id, streamSrc: stream }]);
+                    }
 
                     peer.on('call', (call) => {
+                        log('trying to answer call: ', call, stream);
                         call.answer(stream);
 
                         call.on('stream', (newStream) => {
-                            setStreams(prev => [...prev, { id, stream: newStream }]);
+                            if (streams.some((item) => item.id === id)) return;
+                            log('tyt');
+                            setStreams(prev => [...prev, { id, streamSrc: newStream }]);
                         });
                     });
 
-                    socket().listeners.user.connectToVoiceRoom(({ userId }) => {
-                        console.log('got in rtc: ', userId);
-                        connectToNewUser(userId, stream);
-                    });
+                    // socket().listeners.user.connectToVoiceRoom(({ userId }) => {
+                    //     log('got in rtc: ', userId);
+                    //     connectToNewUser(userId, stream);
+                    // });
                 })
-                .catch((e) => console.log(e));
+                .catch((e) => log(e));
         });
-    }, [user.id]);
+    };
+
+    const disconnect = () => {
+        // socket leave room
+        const peer = peerRef.current;
+        if (!peer) return;
+
+        peer.disconnect();
+        peer.removeAllListeners();
+        peer.destroy();
+        setStreams([]);
+    };
+
+    // useEffect(() => {
+    //     if (!peerRef.current) {
+    //         peerRef.current = new Peer(user.id);
+    //     }
+    //     const peer = peerRef.current;
+
+    //     peer.on('open', (id) => {
+    //         log('connected: ', id);
+
+    //         getMediaDevicesPermission()
+    //             .then((stream) => {
+    //                 if (!streams.some((item) => item.id === id)) {
+    //                     log('tyt');
+    //                     setStreams(prev => [...prev, { id, streamSrc: stream }]);
+    //                 }
+
+    //                 peer.on('call', (call) => {
+    //                     log('trying to answer call: ', call, stream);
+    //                     call.answer(stream);
+
+    //                     call.on('stream', (newStream) => {
+    //                         if (streams.some((item) => item.id === id)) return;
+    //                         log('tyt');
+    //                         setStreams(prev => [...prev, { id, streamSrc: newStream }]);
+    //                     });
+    //                 });
+
+    //                 socket().listeners.user.connectToVoiceRoom(({ userId }) => {
+    //                     log('got in rtc: ', userId);
+    //                     connectToNewUser(userId, stream);
+    //                 });
+    //             })
+    //             .catch((e) => log(e));
+    //     });
+    // }, [user.id]);
 
     const getMediaDevicesPermission = async() => {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -56,7 +112,9 @@ export const useWebRTC = () => {
                 autoGainControl: false,
                 channelCount: 2,
             },
-            // video: true,
+            // video: {
+            //     frameRate: 60,
+            // }
         });
 
         return stream;
@@ -66,30 +124,29 @@ export const useWebRTC = () => {
         if (!peerRef.current) return;
         const peer = peerRef.current;
         const call = peer.call(userId, stream);
-        setStreams(prev => [...prev, { id: userId, stream }]);
+        if (!streams.some((item) => item.id === userId)) {
+            log('tyt: ' + 'userId: ' + userId, 'stream: ' + streams);
+            setStreams(prev => [...prev, { id: userId, streamSrc: stream }]);
+        }
+        
         call.on('stream', userVideoStream => {
-            setStreams(prev => [...prev, { id: userId, stream: userVideoStream }]);
+            // if (streams.some((item) => item.id === userId)) return;
+            log('tyt');
+            setStreams(prev => [...prev, { id: userId, streamSrc: userVideoStream }]);
         });
 
         call.on('close', () => {
-            setStreams(prev => prev.filter((item) => item.id !== userId));
+            const updatedValue = streams.filter((item) => item.id !== userId);
+            setStreams(updatedValue);
         });
       
         // peers[userId] = call;
     }
 
-    // const qwe = () => {
-    //     peer.on('call', call => {
-    //         call.answer(stream);
-
-    //         call.on('stream', stream => {
-    //             setStreams(prev => [...prev, { id: stream.id, stream }]);
-    //         });
-    //     });
-    // }
-
     return {
         getMediaDevicesPermission,
         streams,
+        connect,
+        disconnect,
     };
 };

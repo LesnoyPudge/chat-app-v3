@@ -22,7 +22,14 @@
         "jsx": "react-jsx",
         "baseUrl": "./",
         "paths": { 
-            "@backendTypes/*": ["../server/src/types/common/index"],
+            "@backendTypes": ["../server/src/types/common/index"],
+            "@assets": ["src/assets/index"],
+            "@components": ["src/components/index"],
+            "@hooks": ["src/hooks/index"],
+            "@redux": ["src/redux/index"],
+            "@socket": ["src/socket/index"],
+            "@types": ["src/types/index"],
+            "@utils": ["src/utils/index"],
         },
     },
     "include": [

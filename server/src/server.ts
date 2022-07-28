@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import http from 'http';
 import cookieParser from 'cookie-parser';
+import { ExpressPeerServer } from 'peer';
 import { routesInit } from './routes';
 import { dbConnection } from './models';
 import { getEnv } from './utils';
@@ -20,15 +21,21 @@ export const io = new Server(server, {
         methods: ['GET', 'POST'],
     },
 });
+// const peerServer = ExpressPeerServer(server, {
+//     proxied: true,
+//     // debug: true,
+//     path: '/myapp',
+//     port: 6000,
+//     // ssl: {},
+// });
 
+// app.use('/peerjs', peerServer);
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-    cors({
-        credentials: true,
-        origin: CLIENT_URL,
-    }),
-);
+app.use(cors({
+    credentials: true,
+    origin: CLIENT_URL,
+}));
 
 if (NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, '../../client', 'build')));

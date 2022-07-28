@@ -24,6 +24,18 @@
             "prefer-single"
         ],
         "react/react-in-jsx-scope": "off",
-        "import/export": "warn"
+        "import/export": "warn",
+        "import/no-unresolved": [
+            1, 
+            { 
+                "ignore": ["@[a-zA-Z]+"] 
+            }
+        ],
+        "@typescript-eslint/no-empty-interface": [
+            "warn",
+            {
+              "allowSingleExtends": false
+            }
+          ]
     }
 }
