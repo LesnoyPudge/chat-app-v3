@@ -1,7 +1,7 @@
 
 
 
-interface IEnv extends ImportMetaEnv {
+interface IEnv {
     CUSTOM_NODE_ENV: 'development' | 'production';
     CUSTOM_WS_SERVER: string;
     CUSTOM_SERVER_URL: string;

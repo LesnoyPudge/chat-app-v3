@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@controllers": ["controllers/index"],
+            "@dtos": ["dtos/index"],
+            "@middlewares": ["middlewares/index"],
+            "@models": ["models/index"],
+            "@routes": ["routes/index"],
+            "@services": ["services/index"],
+            "@socket": ["socket/index"],
+            "@types": ["types/index"],
+            "@utils": ["utils/index"],
+            "@validators": ["validators/index"],
+            "@server": ["server"],
+        },
+    },
+}

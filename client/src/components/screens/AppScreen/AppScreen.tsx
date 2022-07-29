@@ -1,10 +1,6 @@
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
-import { AudioSource } from 'src/components/AudioSource';
-import { ChannelManager } from 'src/components/ChannelManager';
-import { Container } from 'src/components/Container';
-import { UserInfo } from 'src/components/UserInfo';
-import { UserRequests } from 'src/components/UserRequests';
+import { AudioSource, ChannelManager, Container, UserInfo, UserRequests } from '@components';
 
 
 

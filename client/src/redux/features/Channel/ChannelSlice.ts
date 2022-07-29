@@ -1,7 +1,8 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IChannel } from '@backendTypes';
-import { RootState } from '../../store/store';
+import { RootState } from '@redux';
 import ChannelApi from './ChannelApi';
+import { socket } from '@socket';
 
 
 
@@ -13,8 +14,14 @@ export const ChannelSlice = createSlice({
     name: 'channel',
     initialState,           
     reducers: {
-        subcribeOnChannel(state, { payload }: PayloadAction<{channelId: string}>) {
-            
+        subcribeOnChannel(state, { payload }: PayloadAction<{userId: string, targetId: string}>) {
+            socket.channel.subscribe(payload);
+        },
+        reciveChannelInfo(state, { payload }: PayloadAction<IChannel>) {
+            channelAdapter.upsertOne(state, payload);
+        },
+        unsubscribeFromChannel(state, { payload }: PayloadAction<{targetId: string}>) {
+            channelAdapter.removeOne(state, payload.targetId);
         },
     },
     extraReducers: (builder) => {
@@ -33,6 +40,13 @@ export const ChannelSlice = createSlice({
         );
     },
 });
+
+export const {
+    subcribeOnChannel,
+    reciveChannelInfo,
+    unsubscribeFromChannel,
+
+} = ChannelSlice.actions;
 
 export const {
     selectById: selectChannelById,

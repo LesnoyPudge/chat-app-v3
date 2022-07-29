@@ -1,5 +1,6 @@
 import { HydratedDocument } from 'mongoose';
-import { IUser, IUserModel } from '../../types';
+import { IUser } from '@types';
+import { IUserModel } from '@models';
 
 
 

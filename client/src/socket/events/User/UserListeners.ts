@@ -5,26 +5,6 @@ import { log } from '@utils';
 
 
 
-// type CallbackType<F> = (args: F) => void;
-
-// export const UserListeners = {
-//     sendSubscriptionUpdate(cb: CallbackType<IUser>) {
-//         io.on('sendSubscriptionUpdate', (user: IUser) => {
-//             cb(user);
-//         });
-//     },
-//     getSubscription(cb: CallbackType<IUser>) {
-//         io.on('getSubscription', (user: IUser) => {
-//             cb(user);
-//         });
-//     },
-//     connectToVoiceRoom(cb: CallbackType<{userId: string}>) {
-//         io.on('reciveConnectionToVoiceRoom', (userId: string) => {
-//             cb({ userId });
-//         });
-//     },
-// };
-
 export const UserListeners = () => {
     io.on('sendSubscriptionUpdate', (user: IUser) => {
         store.dispatch(reciveSubscription(user));
