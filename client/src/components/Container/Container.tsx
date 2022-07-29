@@ -15,6 +15,7 @@ export const Container: FC<IContainer> = ({
         margin: '20px 0',
         border: '3px solid black',
         backgroundColor: '#d1d1d1',
+        color: 'black',
     };
 
     const titleStyle: CSSProperties = {

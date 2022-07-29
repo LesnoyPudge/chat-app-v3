@@ -3,7 +3,7 @@ import express from 'express';
 import path from 'path';
 import http from 'http';
 import cookieParser from 'cookie-parser';
-import { ExpressPeerServer } from 'peer';
+// import { ExpressPeerServer } from 'peer';
 import { routesInit } from './routes';
 import { dbConnection } from './models';
 import { getEnv } from './utils';
@@ -12,12 +12,12 @@ import { socket } from './socket';
 
 
 
-const { SERVER_PORT, CLIENT_URL, NODE_ENV } = getEnv();
+const { CUSTOM_SERVER_PORT, CUSTOM_CLIENT_URL, CUSTOM_NODE_ENV } = getEnv();
 export const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, {
     cors: {
-        origin: CLIENT_URL,
+        origin: CUSTOM_CLIENT_URL,
         methods: ['GET', 'POST'],
     },
 });
@@ -34,10 +34,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
     credentials: true,
-    origin: CLIENT_URL,
+    origin: CUSTOM_CLIENT_URL,
 }));
 
-if (NODE_ENV === 'production') {
+if (CUSTOM_NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, '../../client', 'build')));
 
     app.get('*', (req, res) => {
@@ -50,7 +50,7 @@ if (NODE_ENV === 'production') {
         socket.listen();
         routesInit(app);
         await dbConnection();
-        server.listen(SERVER_PORT, () => console.log(`Server started at: ${SERVER_PORT}`));
+        server.listen(CUSTOM_SERVER_PORT, () => console.log(`Server started at: ${CUSTOM_SERVER_PORT}`));
     } catch (error) {
         console.log('Error: ' + error);
         throw new Error();

@@ -7,7 +7,7 @@ import { logout } from '../features';
 
 
 const baseQuery = fetchBaseQuery({ 
-    baseUrl: getEnv().REACT_APP_SERVER_URL,
+    baseUrl: getEnv().CUSTOM_SERVER_URL,
     prepareHeaders(headers) {
         headers.set('authorization', `Bearer ${getLocalStorage().values.token}`);
         return headers;
@@ -56,7 +56,7 @@ const retryHandlingBaseQueryWithReauth: BaseQueryFn<
     if (result.meta?.response && result.meta.response.status !== 401) return result;
 
     const refreshResponse = await retryHandlingBaseQuery(
-        getEnv().REACT_APP_API_V1_URL + '/user/refresh', 
+        getEnv().CUSTOM_API_V1_URL + '/user/refresh', 
         api, 
         extraOptions,
     );
@@ -67,7 +67,7 @@ const retryHandlingBaseQueryWithReauth: BaseQueryFn<
         result = await retryHandlingBaseQuery(args, api, extraOptions);
     } else {
         retryHandlingBaseQuery(
-            getEnv().REACT_APP_API_V1_URL + '/user/logout', 
+            getEnv().CUSTOM_API_V1_URL + '/user/logout', 
             api, 
             extraOptions,
         );

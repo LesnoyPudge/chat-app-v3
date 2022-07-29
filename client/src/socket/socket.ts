@@ -4,7 +4,7 @@ import { UserListeners, UserEmitters, ChannelEmitters } from './events';
 
 
 
-// export const socketIO = io(getEnv().REACT_APP_WS_SERVER);
+// export const socketIO = io(getEnv().CUSTOM_WS_SERVER);
 
 // export const socket = () => {
 //     const connect = () => {
@@ -31,7 +31,7 @@ import { UserListeners, UserEmitters, ChannelEmitters } from './events';
 //     };
 // };
 
-export const io = socketIO(getEnv().REACT_APP_WS_SERVER);
+export const io = socketIO(getEnv().CUSTOM_WS_SERVER);
 
 export const socket = {
     user: UserEmitters,

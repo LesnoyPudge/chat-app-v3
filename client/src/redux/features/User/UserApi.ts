@@ -4,42 +4,42 @@ import rootApi from '../../store/rootApi';
 
 
 
-const { REACT_APP_API_V1_URL } = getEnv();
+const { CUSTOM_API_V1_URL } = getEnv();
 
 const UserApi = rootApi.injectEndpoints({
     endpoints: (build) => ({
         userRefresh: build.query<IAuthResponse, void>({
             query: () => ({
-                url: REACT_APP_API_V1_URL + '/user/refresh',
+                url: CUSTOM_API_V1_URL + '/user/refresh',
             }),
         }),
         userLogin: build.mutation<IAuthResponse, IUserLoginReq>({
             query: (body) => ({
-                url: REACT_APP_API_V1_URL + '/user/login',
+                url: CUSTOM_API_V1_URL + '/user/login',
                 method: 'POST',
                 body,
             }),
         }),
         userLogout: build.mutation<void, void>({
             query: () => ({
-                url: REACT_APP_API_V1_URL + '/user/logout',
+                url: CUSTOM_API_V1_URL + '/user/logout',
             }),
         }),
         userRegistration: build.mutation<IAuthResponse, IUserRegistrationReq>({
             query: (body) => ({
-                url: REACT_APP_API_V1_URL + '/user/registration',
+                url: CUSTOM_API_V1_URL + '/user/registration',
                 method: 'POST',
                 body,
             }),
         }),
         userSome: build.mutation<void, void>({
             query: () => ({
-                url: REACT_APP_API_V1_URL + '/user/some',
+                url: CUSTOM_API_V1_URL + '/user/some',
             }),
         }),
         userUpdate: build.mutation<void, {username: string}>({
             query: (body) => ({
-                url: REACT_APP_API_V1_URL + '/user/update',
+                url: CUSTOM_API_V1_URL + '/user/update',
                 method: 'POST',
                 body,
             }),

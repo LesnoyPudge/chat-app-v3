@@ -24,14 +24,14 @@
         "project:uninstall": "npm run client:uninstall && npm run server:uninstall",
         "project:reinstall": "npm run project:uninstall && npm run project:install",
         "project:start": "concurrently --kill-others \"npm run client:start\" \"npm run server:start\"",
-        "project:build": "concurrently --kill-others \"npm run client:build\" \"npm run server:build\"",
+        "project:build": "npm run client:build && npm run server:build",
         "project:lint": "eslint .",
         "project:lintFix": "eslint . --fix",
         "//3": "",
         "prepare": "husky install",
         "deploy": "git add . && git commit -m 'update' && git push",
-        "dev": "cross-env NODE_ENV=development npm run project:start",
-        "prod": "cross-env NODE_ENV=production npm run project:build",
+        "dev": "cross-env NODE_ENV=development CUSTOM_NODE_ENV=development npm run project:start",
+        "prod": "cross-env NODE_ENV=production CUSTOM_NODE_ENV=production npm run project:build",
         "//": ""
     },
     "dependencies": {

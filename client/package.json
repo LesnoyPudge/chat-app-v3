@@ -2,8 +2,8 @@
     "name": "client",
     "scripts": {
         "this:install": "npm ci",
-        "this:start": "env-cmd -f ../.env react-scripts start",
-        "this:build": "env-cmd -f ../.env react-scripts build",
+        "this:start": "env-cmd -f ../.env vite",
+        "this:build": "env-cmd -f ../.env tsc && vite build",
         "this:lint": "eslint .",
         "this:lintFix": "eslint --fix .",
         "//": ""
@@ -25,14 +25,12 @@
         "classnames": "^2.3.1",
         "env-cmd": "^10.1.0",
         "formik": "^2.2.9",
-        "freeice": "^2.2.2",
         "js-cookie": "^3.0.1",
         "peerjs": "^1.4.6",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-redux": "^8.0.2",
         "react-router-dom": "^6.3.0",
-        "react-scripts": "5.0.1",
         "react-timeago": "^7.1.0",
         "reset-css": "^5.0.1",
         "sass": "^1.53.0",
@@ -41,6 +39,7 @@
         "yup": "^0.32.11"
     },
     "devDependencies": {
+        "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
         "@testing-library/jest-dom": "^5.16.4",
         "@testing-library/react": "^13.3.0",
         "@testing-library/user-event": "^13.5.0",
@@ -50,8 +49,13 @@
         "@types/react": "^18.0.14",
         "@types/react-dom": "^18.0.5",
         "@types/react-redux": "^7.1.24",
+        "@vitejs/plugin-react": "^2.0.0",
         "eslint-plugin-react": "^7.30.1",
         "eslint-plugin-react-hooks": "^4.6.0",
-        "typescript": "^4.7.4"
+        "typescript": "^4.7.4",
+        "vite": "^3.0.0",
+        "vite-plugin-env-compatible": "^1.1.1",
+        "vite-plugin-svgr": "^2.2.1",
+        "vite-tsconfig-paths": "^3.5.0"
     }
 }

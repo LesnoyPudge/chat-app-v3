@@ -4,8 +4,8 @@ import path from 'path';
 
 
 interface IEnv {
-    NODE_ENV: 'development' | 'production';
-    SERVER_PORT: string;
+    CUSTOM_NODE_ENV: 'development' | 'production';
+    CUSTOM_SERVER_PORT: string;
     DB_CONNECTION: string;
     JWT_ACCESS_KEYWORD: string;
     JWT_REFRESH_KEYWORD: string;
@@ -13,9 +13,9 @@ interface IEnv {
     SMTP_PORT: string;
     SMTP_USER: string;
     SMTP_PASSWORD: string;
-    CLIENT_URL: string;
-    SERVER_URL: string;
-    API_V1_URL: string;
+    CUSTOM_CLIENT_URL: string;
+    CUSTOM_SERVER_URL: string;
+    CUSTOM_API_V1_URL: string;
     BCRYPT_SALT_ROUNDS: string;
 }
 

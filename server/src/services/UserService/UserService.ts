@@ -39,7 +39,7 @@ export const UserService: IUserService = {
             async({ queryOptions }) => {
                 const salt = await bcrypt.genSalt(+getEnv().BCRYPT_SALT_ROUNDS);
                 const hashedPassword = await bcrypt.hash(password, salt);
-                const activationLink = uuid.v4(); 
+                const activationLink = uuid.v4();
                 const user = new UserModel({
                     email, 
                     login, 

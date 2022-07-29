@@ -1,16 +1,15 @@
 
 
 
-interface IEnv {
-    NODE_ENV: 'development' | 'production';
-    PUBLIC_URL: string;
-    REACT_APP_WS_SERVER: string;
-    REACT_APP_SERVER_URL: string;
-    REACT_APP_API_V1_URL: string;
+interface IEnv extends ImportMetaEnv {
+    CUSTOM_NODE_ENV: 'development' | 'production';
+    CUSTOM_WS_SERVER: string;
+    CUSTOM_SERVER_URL: string;
+    CUSTOM_API_V1_URL: string;
 }
 
 export const getEnv = () => {
-    const vars = process.env as unknown as IEnv;
+    const vars: IEnv = import.meta.env as unknown as IEnv;
 
     return {
         ...vars,

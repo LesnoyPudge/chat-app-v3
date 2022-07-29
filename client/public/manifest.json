@@ -1,6 +1,6 @@
 {
-    "short_name": "App",
-    "name": "App by LesnoyPudge",
+    "short_name": "ChatApp",
+    "name": "ChatApp by LesnoyPudge",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
