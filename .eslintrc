@@ -24,6 +24,11 @@
     "plugins": [
         "@typescript-eslint"
     ],
+    "overrides": [
+        {
+            "files": [ "client/src/**/*.ts", "client/src/**/*.tsx", "server/src/**/*.ts" ]
+        }
+    ],
     "rules": {
         "indent": [
             "warn",
