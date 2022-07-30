@@ -1,5 +1,6 @@
 import { IUser } from '@backendTypes';
-import { reciveSubscription, store } from '@redux';
+import { reciveSubscription } from '@redux/features';
+import { store } from '@redux/store';
 import { io } from '@socket';
 import { log } from '@utils';
 

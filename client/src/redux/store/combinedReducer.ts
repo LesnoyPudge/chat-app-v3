@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { ChannelSlice, UserSlice, UsersSlice } from '../features';
-import rootApi from './rootApi';
+import { ChannelSlice, UserSlice, UsersSlice } from '@redux/features';
+import { rootApi } from '@redux/rootApi';
 
 
 

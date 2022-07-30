@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, Action, AnyAction, Reducer } from '@reduxjs/toolkit';
-import rootApi from './rootApi';
+import { rootApi } from '@redux/rootApi';
 import { combinedReducer } from './combinedReducer';
 import { getCookie, getLocalStorage, log } from '@utils';
 

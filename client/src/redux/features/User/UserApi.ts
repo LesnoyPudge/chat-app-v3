@@ -1,12 +1,12 @@
 import { IAuthResponse, IUserLoginReq, IUserRegistrationReq } from '@backendTypes';
-import { getEnv } from '../../../utils';
-import rootApi from '../../store/rootApi';
+import { getEnv } from '@utils';
+import { rootApi } from '@redux/rootApi';
 
 
 
 const { CUSTOM_API_V1_URL } = getEnv();
 
-const UserApi = rootApi.injectEndpoints({
+export const UserApi = rootApi.injectEndpoints({
     endpoints: (build) => ({
         userRefresh: build.query<IAuthResponse, void>({
             query: () => ({
@@ -47,8 +47,6 @@ const UserApi = rootApi.injectEndpoints({
     }),
     overrideExisting: false,
 });
-
-export default UserApi;
 
 export const { 
     useUserRefreshQuery,

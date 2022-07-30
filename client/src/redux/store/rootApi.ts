@@ -1,8 +1,8 @@
 import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta, retry } from '@reduxjs/toolkit/query/react';
 import { IAuthResponse } from '@backendTypes';
-import { getEnv, getLocalStorage } from '../../utils';
-import { logout } from '../features';
+import { getEnv, getLocalStorage } from '@utils';
+import { logout } from '@redux/features';
 
 
 
@@ -77,9 +77,7 @@ const retryHandlingBaseQueryWithReauth: BaseQueryFn<
     return result;
 };
 
-const rootApi = createApi({
+export const rootApi = createApi({
     baseQuery: retryHandlingBaseQueryWithReauth,
     endpoints: () => ({}),
 });
-
-export default rootApi;

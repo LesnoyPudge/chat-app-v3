@@ -1,22 +1,15 @@
-import rootApi from 'src/redux/store/rootApi';
-import { IChannel } from '@backendTypes';
+import { getEnv } from '@utils';
+import { rootApi } from '@redux/rootApi';
 
 
 
+const { CUSTOM_API_V1_URL } = getEnv();
 
-const ChannelApi = rootApi.injectEndpoints({
+export const ChannelApi = rootApi.injectEndpoints({
     endpoints: (build) => ({
-        createChannel: build.mutation<IChannel, {name: string, identifier: string}>({
+        createChannel: build.query<any, void>({
             query: (body) => ({
-                url: '/channel/create',
-                method: 'POST',
-                body,
-            }),
-        }),
-
-        updateChannel: build.mutation<IChannel, {name: string}>({
-            query: (body) => ({
-                url: '/channel/update',
+                url: CUSTOM_API_V1_URL + '/channel/create',
                 method: 'POST',
                 body,
             }),
@@ -25,10 +18,6 @@ const ChannelApi = rootApi.injectEndpoints({
     overrideExisting: false,
 });
 
-export default ChannelApi;
-
-export const { 
-    useCreateChannelMutation,
-    useUpdateChannelMutation,
-    
+export const {
+    useCreateChannelQuery,
 } = ChannelApi;

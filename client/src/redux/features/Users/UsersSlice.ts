@@ -1,10 +1,10 @@
 import { IUser } from '@backendTypes';
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from 'src/redux/store';
+import { RootState } from '@redux/store';
 
 
 
-export const usersAdapter = createEntityAdapter<IUser>();
+const usersAdapter = createEntityAdapter<IUser>();
 
 const initialState = usersAdapter.getInitialState();
 

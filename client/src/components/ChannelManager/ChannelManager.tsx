@@ -1,15 +1,15 @@
 import { log } from '@utils';
 import { FC } from 'react';
-import { useAppSelector } from 'src/hooks';
-import { selectAllChannels } from 'src/redux/features';
-import { Container } from '../Container';
-import { Form } from '../Form';
+import { useAppDispatch, useAppSelector } from '@hooks';
+import { selectAllChannels, subscribeOnChannel } from '@redux/features';
+import { Container, Form } from '@components';
 
 
 
 export const ChannelManager: FC = () => {
     const channels = useAppSelector(selectAllChannels);
-
+    const dispatch = useAppDispatch();
+    
     return (
         <>
             <Form
@@ -69,8 +69,9 @@ export const ChannelManager: FC = () => {
                     ]}
                     submit={{
                         text: 'subscribe',
-                        handler: () => {
+                        handler: (values) => {
                             // socket channel subscribe
+                            dispatch(subscribeOnChannel(values));
                         },
                     }}
                 />

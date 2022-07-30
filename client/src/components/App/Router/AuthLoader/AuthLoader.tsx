@@ -1,7 +1,7 @@
 import { FC, useLayoutEffect } from 'react';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from '@hooks';
-import { useUserRefreshQuery, selectUser } from '@redux';
+import { useUserRefreshQuery, selectUser } from '@redux/features';
 import { socket } from '@socket';
 import { socketListenersInit } from './socketListenersInit';
 import { log } from '@utils';

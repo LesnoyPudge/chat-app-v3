@@ -1,8 +1,7 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IChannel } from '@backendTypes';
-import { RootState } from '@redux';
-import ChannelApi from './ChannelApi';
-import { socket } from '@socket';
+import { ChannelApi } from './ChannelApi';
+import { RootState } from '@redux/store';
 
 
 
@@ -14,44 +13,29 @@ export const ChannelSlice = createSlice({
     name: 'channel',
     initialState,           
     reducers: {
-        subcribeOnChannel(state, { payload }: PayloadAction<{userId: string, targetId: string}>) {
-            socket.channel.subscribe(payload);
-        },
-        reciveChannelInfo(state, { payload }: PayloadAction<IChannel>) {
-            channelAdapter.upsertOne(state, payload);
-        },
-        unsubscribeFromChannel(state, { payload }: PayloadAction<{targetId: string}>) {
-            channelAdapter.removeOne(state, payload.targetId);
+        subscribeOnChannel(state, { payload }: PayloadAction<string>) {
+            console.log(payload);
         },
     },
-    extraReducers: (builder) => {
+    extraReducers(builder) {
         builder.addMatcher(
             ChannelApi.endpoints.createChannel.matchFulfilled,
-            (state, { payload }: PayloadAction<IChannel>) => {
-                channelAdapter.upsertOne(state, payload);
-            },
-        );
-
-        builder.addMatcher(
-            ChannelApi.endpoints.updateChannel.matchFulfilled,
-            (state, { payload }: PayloadAction<IChannel>) => {
-                channelAdapter.upsertOne(state, payload);
+            (state, { payload }: PayloadAction<any>) => {
+                console.log(payload);
             },
         );
     },
 });
 
 export const {
-    subcribeOnChannel,
-    reciveChannelInfo,
-    unsubscribeFromChannel,
+    subscribeOnChannel,
 
 } = ChannelSlice.actions;
 
 export const {
     selectById: selectChannelById,
-    selectIds: selectChannelIds,
-    selectEntities: selectChannelEntities,
+    selectIds: selectChannelsIds,
+    selectEntities: selectChannelsEntities,
     selectAll: selectAllChannels,
     selectTotal: selectTotalChannels,
 } = channelAdapter.getSelectors((state: RootState) => state.channel);
