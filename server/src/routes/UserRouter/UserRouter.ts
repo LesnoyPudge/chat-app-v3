@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { UserController } from '../../controllers';
-import { middlewares } from '../../middlewares';
-import { controllerContainer, getEnv } from '../../utils';
-import { validator } from '../../validators';
+import { UserController } from '@controllers';
+import { middlewares } from '@middlewares';
+import { controllerContainer, getEnv } from '@utils';
+import { validator } from '@validators';
 
 
 

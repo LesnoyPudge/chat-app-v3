@@ -10,18 +10,18 @@ export class ApiError extends Error {
     }
 
     static badRequest(message?: string) {
-        throw new ApiError(400, message ? message : 'Неверный запрос');
+        return new ApiError(400, message ? message : 'Неверный запрос');
     }
 
     static unauthorized(message?: string) {
-        throw new ApiError(401, message ? message : 'Не авторизован');
+        return new ApiError(401, message ? message : 'Не авторизован');
     }
     
     static forbidden(message?: string) {
-        throw new ApiError(403, message ? message : 'Доступ запрещён');
+        return new ApiError(403, message ? message : 'Доступ запрещён');
     }
 
     static notFound(message?: string) {
-        throw new ApiError(404, message ? message : 'Не найдено');
+        return new ApiError(404, message ? message : 'Не найдено');
     }
 }

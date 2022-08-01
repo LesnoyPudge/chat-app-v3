@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
-import { IUser } from '../../types';
-import { getEnv } from '../getEnv';
+import { IUser } from '@types';
+import { getEnv } from '@utils';
 
 
 
@@ -10,7 +10,8 @@ export const token = {
     generateTokens(payload: IUser) {
         return {
             refreshToken: jwt.sign(payload, JWT_REFRESH_KEYWORD, { expiresIn: '30d' }),
-            accessToken: jwt.sign(payload, JWT_ACCESS_KEYWORD, { expiresIn: '15s' }),
+            // accessToken: jwt.sign(payload, JWT_ACCESS_KEYWORD, { expiresIn: '15s' }),
+            accessToken: jwt.sign(payload, JWT_ACCESS_KEYWORD, { expiresIn: '30d' }),
         };
     },
     validateRefreshToken(refreshToken: string) {

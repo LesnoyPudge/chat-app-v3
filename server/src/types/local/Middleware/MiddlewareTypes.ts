@@ -28,13 +28,6 @@ export type MiddlewareType<RequestBody, RequestQuery extends Query, ResponseBody
     next: NextFunction,
 ) => any;
 
-export type ErrorMiddlewareType<RequestBody, RequestQuery extends Query, ResponseBody> = (
-    error: Error, 
-    req: IRequest<RequestBody, RequestQuery>, 
-    res: IResponse<ResponseBody>, 
-    next: NextFunction,
-) => any;
-
 export type AuthorizedMiddlewareType<RequestBody, RequestQuery extends Query, ResponseBody> = (
     req: IAuthorizedRequest<RequestBody, RequestQuery>, 
     res: IResponse<ResponseBody>, 

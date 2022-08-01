@@ -1,18 +1,24 @@
-import { Schema, model, Types, ObjectId } from 'mongoose';
+import { Schema, model, Types, Document } from 'mongoose';
 
 
 
-export interface IChannelModel {
+export interface IChannelModel extends Document<Types.ObjectId> {
     identifier: string; 
     avatar: string;
     name: string;
-    owner: ObjectId;
+    owner: Types.ObjectId;
     isPrivate: boolean;
-    invitations: ObjectId[];
-    members: ObjectId[];
-    rooms: ObjectId[];
-    roles: ObjectId[];
-    banList: ObjectId[];
+    invitations: Types.ObjectId[];
+    members: Types.ObjectId[];
+    rooms: Types.ObjectId[];
+    roles: {
+        users: Types.ObjectId[];
+        role: Types.ObjectId;
+    }[];
+    banList: {
+        user: Types.ObjectId;
+        reason: string;
+    }[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -20,15 +26,21 @@ export interface IChannelModel {
 const ChannelSchema = new Schema<IChannelModel>(
     {
         identifier: { type: String, unique: true, required: true },
-        avatar: { type: String, required: true },
+        avatar: { type: String, default: '' },
         name: { type: String, required: true },
-        owner: { type: Types.ObjectId, ref: 'User' },
+        owner: { type: Schema.Types.ObjectId, ref: 'User' },
         isPrivate: { type: Boolean, default: true },
-        invitations: [{ type: Types.ObjectId, ref: 'Invitation' }],
-        members: [{ type: Types.ObjectId, ref: 'User' }],
-        rooms: [{ type: Types.ObjectId, ref: 'Room' }],
-        roles: [{ type: Types.ObjectId, ref: 'Role' }],
-        banList: [{ type: Types.ObjectId, ref: 'User' }],
+        invitations: [{ type: Schema.Types.ObjectId, ref: 'Invitation' }],
+        members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        rooms: [{ type: Schema.Types.ObjectId, ref: 'Room' }],
+        roles: [{
+            users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+            role: { type: Schema.Types.ObjectId, ref: 'Role' },
+        }],
+        banList: [{
+            user: { type: Schema.Types.ObjectId, ref: 'User' },
+            reason: { type: String, default: '' },
+        }],
     },
     { 
         timestamps: true, 

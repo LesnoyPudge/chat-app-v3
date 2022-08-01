@@ -1,14 +1,11 @@
-import { HydratedDocument } from 'mongoose';
 import { IUser } from '@types';
 import { IUserModel } from '@models';
 
 
 
-type IUserDoc = HydratedDocument<IUserModel>;
-
 interface IUserDto {
-    objectFromModel: (user: IUserDoc) => IUser;
-    defaultPreset: (user: IUserDoc | any) => IUser;
+    objectFromModel: (user: IUserModel) => IUser;
+    defaultPreset: (user: IUserModel | any) => IUser;
 }
 
 export const UserDto: IUserDto = {
@@ -24,7 +21,6 @@ export const UserDto: IUserDto = {
             activationLink: user.activationLink,
             isActivated: user.isActivated,
             settings: user.settings,
-            refreshJWT: user.refreshJWT,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
         };
@@ -41,7 +37,6 @@ export const UserDto: IUserDto = {
             activationLink: user?.activationLink,
             isActivated: user?.isActivated,
             settings: user?.settings,
-            refreshJWT: user?.refreshJWT,
             createdAt: user?.createdAt,
             updatedAt: user?.updatedAt,
         };

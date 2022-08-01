@@ -8,9 +8,15 @@ export interface IChannel {
     name: string;
     owner: string;
     isPrivate: boolean;
-    invitations: [string];
-    members: [string];
-    rooms: [string];
-    roles: [string];
-    banList: [string];
+    invitations: string[];
+    members: string[];
+    rooms: string[];
+    roles: {
+        users: string[];
+        role: string;
+    }[];
+    banList: {
+        user: string;
+        reason: string;
+    }[];
 }

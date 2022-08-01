@@ -1,7 +1,7 @@
-import { UserDto } from '../../../dtos';
-import { UserService } from '../../../services';
-import { IUser } from '../../../types';
-import { socket } from '../../socket';
+import { UserDto } from '@dtos';
+import { UserService } from '@services';
+import { IUser } from '@types';
+import { socket } from '@socket';
 
 
 

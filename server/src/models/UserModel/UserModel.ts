@@ -1,8 +1,8 @@
-import { Schema, model, Types, ObjectId } from 'mongoose';
+import { Schema, model, Types, Document } from 'mongoose';
 
 
 
-export interface IUserModel { 
+export interface IUserModel extends Document<Types.ObjectId> { 
     login: string;
     username: string;
     password: string;
@@ -17,15 +17,15 @@ export interface IUserModel {
         messageGroupSpacing: number;
         transitionSpeed: number;
     }
-    refreshJWT: string; 
-    createdAt: Date;
-    updatedAt: Date;
+    refreshJWT: string;
     // friendRequests: ObjectId[];
     // privateChats: ObjectId[];
     // blockList: ObjectId[];
     // appSettings: ObjectId;
-    // channels: ObjectId[];
+    channels: Types.ObjectId[];
     // roles: ObjectId[];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const UserSchema = new Schema<IUserModel>(
@@ -44,6 +44,8 @@ const UserSchema = new Schema<IUserModel>(
             messageGroupSpacing: { type: Number, default: 16 },
             transitionSpeed: { type: Number, default: 1 },
         },
+        refreshJWT: { type: String, default: '' },
+        channels: [{ type: Schema.Types.ObjectId, ref: 'Channel' }],
     },
     { 
         timestamps: true, 
