@@ -6,6 +6,7 @@ import { socket } from '@socket';
 
 
 interface IUserChannel extends IUser {
+    socketId: string;
     status: 'online' | 'offline';
     subscribers: Set<string>;
 }
@@ -16,8 +17,8 @@ interface IUserChannelEntities {
 
 interface ISubscription {
     users: IUserChannelEntities,
-    subscribe: (userId: string, targetId: string) => void;
-    unsubscribe: (userId: string, targetId: string) => void;
+    subscribe: ({ userId, targetId }: {userId: string, targetId: string}) => void;
+    unsubscribe: ({ userId, targetId }: {userId: string, targetId: string}) => void;
     update: (user: IUser) => void;
     wentOnline: (user: IUser) => void;
     wentOffline: (userId: string) => void;
@@ -26,7 +27,7 @@ interface ISubscription {
 export const subscription: ISubscription = {
     users: {},
 
-    async subscribe(userId, targetId) {
+    async subscribe({ userId, targetId }) {
         console.log(userId + ' subscribed on ' + targetId);
         try {
             const isExist = isUserChannelExist(targetId);
@@ -42,7 +43,7 @@ export const subscription: ISubscription = {
         }
     },
 
-    unsubscribe(userId, targetId) {
+    unsubscribe({ userId, targetId }) {
         console.log(userId + ' unsubscribed from ' + targetId);
         const isExist = isUserChannelExist(targetId);
         if (!isExist) return;
@@ -66,6 +67,7 @@ export const subscription: ISubscription = {
         if (!isExist) return createUserChannel(user, 'online');
 
         changeStatus(user.id, 'online');
+        // setNewSocketId({ userId: user.id, socketId });
         sendUpdateThroughSocket(user.id);
     },
 
@@ -89,6 +91,7 @@ const createUserChannel = (user: IUser, status: 'online' | 'offline') => {
 
     subscription.users[user.id] = {
         ...user,
+        socketId: '',
         status,
         subscribers: new Set(),
     };
@@ -136,9 +139,7 @@ const sendUpdateThroughSocket = (userId: string) => {
 
 const fetchTarget = async(targetId: string) => {
     const target = await UserService.get({ targetId });
-    return {
-        ...target,
-    };
+    return target;
 };
 
 const updateUserChannel = (user: IUser) => {

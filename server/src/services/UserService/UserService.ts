@@ -133,14 +133,10 @@ export const UserService: IUserService = {
     },
 
     async get({ targetId }) {
-        return await transactionContainer(
-            async({ queryOptions }) => {
-                const user = await UserModel.findById(targetId, {}, queryOptions());
-                if (!user) throw ApiError.badRequest(); // do delete?
+        const user = await UserModel.findById(targetId, {}, { lean: true });
+        if (!user) throw ApiError.badRequest();
 
-                return UserDto.objectFromModel(user);
-            },
-        );
+        return UserDto.objectFromModel(user);
     },
 
     async update({ userId, username }) {

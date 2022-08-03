@@ -1,49 +1,38 @@
-import { io as socketIO } from 'socket.io-client';
-import { getEnv, log } from '@utils';
-import { UserListeners, UserEmitters, ChannelEmitters } from './events';
+import { io } from 'socket.io-client';
+import { getEnv, getLocalStorage, log } from '@utils';
+import { UserEmitters, ChannelEmitters } from './events';
 
 
 
-// export const socketIO = io(getEnv().CUSTOM_WS_SERVER);
+export const socket = io(getEnv().CUSTOM_WS_SERVER, {
+    auth: {
+        token: getLocalStorage().values.token,
+    },
+});
 
-// export const socket = () => {
-//     const connect = () => {
-//         socketIO.connect();
-//     };
-
-//     const disconnect = () => {
-//         socketIO.disconnect();
-//     };
-
-//     const emitters = {
-//         user: UserEmitters,
-//     };
-
-//     const listeners = {
-//         user: UserListeners,
-//     };
-
-//     return {
-//         connect,
-//         disconnect,
-//         emitters,
-//         // listeners,
-//     };
-// };
-
-export const io = socketIO(getEnv().CUSTOM_WS_SERVER);
-
-export const socket = {
+export const socketEvents = {
     user: UserEmitters,
     channel: ChannelEmitters,
 };
 
+
+
 const initListeners = () => {
-    UserListeners();
+    // UserListeners();
+    // ChannelListeners();
 };
 
-io.on('connect', () => {
-    log('socket connected');
-    initListeners();
+socket.on('connect', () => {
+    socket.on('getSubscription', (user: any) => {
+        log('works?:', user.id);
+    });
 });
-io.on('disconnect', () => log('socket disconnected'));
+// io.on('disconnect', () => log('socket disconnected'));
+
+// io.on('connect_error', (error: {message?: string, data?: string, name?: string}) => {
+//     log('socket error:', {
+//         message: error.message,
+//         status: error.data,
+//         name: error.name,
+//     });
+// });

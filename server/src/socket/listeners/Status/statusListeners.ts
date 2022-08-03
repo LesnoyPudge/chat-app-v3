@@ -1,10 +1,10 @@
-import { Socket as SocketIOType } from 'socket.io';
+import { AuthorizedSocketType } from 'src/socket/socket';
 import { IUser } from '../../../types';
 import { subscription } from '../../features';
 
 
 
-export const statusListeners = (socketIO: SocketIOType) => {
+export const statusListeners = (socketIO: AuthorizedSocketType) => {
     socketIO.on('wentOnline', (user: IUser) => {
         subscription.wentOnline(user);
     });

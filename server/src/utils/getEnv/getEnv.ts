@@ -17,6 +17,8 @@ interface IEnv {
     CUSTOM_SERVER_URL: string;
     CUSTOM_API_V1_URL: string;
     BCRYPT_SALT_ROUNDS: string;
+    REFRESH_TOKEN_DURATION: string;
+    ACCESS_TOKEN_DURATION: string;
 }
 
 let init = false;

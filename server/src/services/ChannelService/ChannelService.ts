@@ -66,7 +66,7 @@ export const ChannelService: IChannelService = {
         return channelDtos;
     },
 
-    async update({ userId, channelId, newValues }) {
+    async update({ channelId, newValues }) {
         const updatedChannel = await ChannelModel.findByIdAndUpdate(channelId, newValues, { new: true, lean: true });
         if (!updatedChannel) {
             throw ApiError.badRequest('Не удалось обновить канал');
@@ -76,7 +76,7 @@ export const ChannelService: IChannelService = {
         return updatedChannelDto;
     },
 
-    async delete({ userId, channelId }) {
+    async delete({ channelId }) {
         return transactionContainer(
             async({ queryOptions }) => {
                 const deletedChannel = await ChannelModel.findByIdAndDelete(channelId, queryOptions());

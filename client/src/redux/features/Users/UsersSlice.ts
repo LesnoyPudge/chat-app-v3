@@ -1,6 +1,7 @@
 import { IUser } from '@backendTypes';
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@redux/store';
+import { socketEvents } from '@socket';
 
 
 
@@ -12,6 +13,13 @@ export const UsersSlice = createSlice({
     name: 'users',
     initialState,           
     reducers: {
+        subscribeOnUser(state, { payload }: PayloadAction<string>) {
+            socketEvents.user.subscribe(payload);
+        },
+        unsubscribeFromUser(state, { payload }: PayloadAction<string>) {
+            socketEvents.user.unsubscribe(payload);
+            usersAdapter.removeOne(state, payload);
+        },
         reciveSubscription(state, { payload }: PayloadAction<IUser>) {
             usersAdapter.upsertOne(state, payload);
         },
@@ -24,6 +32,8 @@ export const UsersSlice = createSlice({
 export const {
     reciveSubscription,
     deleteUnsubscribedUser,
+    subscribeOnUser,
+    unsubscribeFromUser,
 
 } = UsersSlice.actions;
 

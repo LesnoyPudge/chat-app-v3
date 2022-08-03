@@ -1,7 +1,9 @@
-import { FC, useEffect } from 'react';
-import { useAppSelector } from 'src/hooks';
-import { selectUserInfo, selectUsersById } from 'src/redux/features';
-import { socket } from '@socket';
+import { FC, useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from 'src/hooks';
+import { selectUserInfo, selectUsersById, subscribeOnUser, unsubscribeFromUser } from 'src/redux/features';
+import { socketEvents } from '@socket';
+import { Form } from '../Form';
+import { Container } from '../Container';
 
 
 
@@ -10,29 +12,55 @@ interface IUserInfo {
 }
 
 export const UserInfo: FC<IUserInfo> = ({ targetId }) => {
-    const userFromUsers = useAppSelector(state => selectUsersById(state, targetId));
-    const user = useAppSelector(selectUserInfo);
-
-    useEffect(() => {
-        socket.user.subscribe({ userId: user.id, targetId });
-        
-        return () => {
-            socket.user.unsubscribe({ userId: user.id, targetId });
-        };
-    }, [targetId, user.id]);
+    const [subscribedOn, setSubscribedOn] = useState('');
+    const userFromUsers = useAppSelector(state => selectUsersById(state, subscribedOn));
+    const dispatch = useAppDispatch();
 
     return (
-        <div 
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '10px',
-            }}
-        >
-            <span>id: {userFromUsers?.id}</span>
-            <span>username: {userFromUsers?.username}</span>
-            <span>email: {userFromUsers?.email}</span>
-            <span>login: {userFromUsers?.login}</span>
-        </div>
+        <>
+            <Container title='User subscription'>
+                <Form
+                    inputs={[
+                        {
+                            name: 'userId',
+                        },
+                    ]}
+                    submit={{
+                        text: 'subscribe',
+                        handler(args) {
+                            dispatch(subscribeOnUser(args.userId));
+                            setSubscribedOn(args.userId);
+                        },
+                    }}
+                />
+
+                <Form
+                    inputs={[
+                        {
+                            name: 'userId',
+                        },
+                    ]}
+                    submit={{
+                        text: 'subscribe',
+                        handler(args) {
+                            dispatch(unsubscribeFromUser(args.userId));
+                        },
+                    }}
+                />
+            </Container>
+
+            <div 
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                }}
+            >
+                <span>id: {userFromUsers?.id}</span>
+                <span>username: {userFromUsers?.username}</span>
+                <span>email: {userFromUsers?.email}</span>
+                <span>login: {userFromUsers?.login}</span>
+            </div>
+        </>
     );
 };

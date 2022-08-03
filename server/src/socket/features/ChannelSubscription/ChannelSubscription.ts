@@ -32,7 +32,7 @@ export const ChannelSubscription: IChannelSubscription = {
             } 
 
             subscribeOn({ channelId, userId });
-            sendUpdatedChannelEntity({ channelId, to: userId });
+            sendChannelEntity({ channelId, to: userId });
         } catch (error) {
             console.log('error during subscribe: ', error);
         }
@@ -54,7 +54,7 @@ export const ChannelSubscription: IChannelSubscription = {
 
         updateChannelEntity(channel);
         const subscribers = getSubscribersArray(channel.id);
-        sendUpdatedChannelEntity({ channelId: channel.id, to: subscribers });
+        sendChannelEntity({ channelId: channel.id, to: subscribers });
     },
 };
 
@@ -97,11 +97,15 @@ const deleteUserChannel = (channelId: string) => {
     if (isZeroSubscribers) delete ChannelSubscription.channels[channelId];
 };
 
-const sendUpdatedChannelEntity = ({ channelId, to }: {channelId: string, to: string | string[]}) => {
+const sendChannelEntity = ({ channelId, to }: {channelId: string, to: string | string[]}) => {
     // socket.events.getSubscription({ 
     //     to: userId,
     //     user: UserDto.defaultPreset(subscription.users[targetId]),
     // });
+    socket.events.sendSubscriptionUpdateFromChannel({ 
+        to, 
+        channel: ChannelSubscription.channels[channelId], 
+    });
 };
 
 const updateChannelEntity = (channel: IChannel) => {

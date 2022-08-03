@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useAppDispatch, useWebRTC, useAppSelector } from 'src/hooks';
 import { useUserLogoutMutation, useUserSomeMutation, logout, useUserUpdateMutation, selectUserInfo } from 'src/redux/features';
-import { socket } from '@socket';
+import { socketEvents } from '@socket';
 import { Form } from '../Form';
 
 
@@ -23,7 +23,7 @@ export const UserRequests: FC = () => {
     const [update] = useUserUpdateMutation();
 
     useEffect(() => {
-        socket.user.joinRooms({ rooms: '123' });
+        socketEvents.user.joinRooms('123');
     }, []);
     
     return (

@@ -2,7 +2,7 @@ import { FC, useLayoutEffect } from 'react';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from '@hooks';
 import { useUserRefreshQuery, selectUser } from '@redux/features';
-import { socket } from '@socket';
+import { socketEvents } from '@socket';
 import { socketListenersInit } from './socketListenersInit';
 import { log } from '@utils';
 
@@ -22,7 +22,7 @@ export const AuthLoader: FC<IAuthLoader> = ({ children }) => {
 
     useLayoutEffect(() => {
         if (!user.info.id) return;
-        socket.user.joinRooms({ rooms: user.info.id });
+        socketEvents.user.joinRooms(user.info.id);
         socketListenersInit();
     }, [user.info.id]);
 

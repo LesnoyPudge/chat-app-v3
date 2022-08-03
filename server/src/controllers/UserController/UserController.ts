@@ -1,5 +1,7 @@
-import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, IUserLoginReq, IUserRegistrationReq } from '../../types';
-import { UserService } from '../../services';
+import ms from 'ms';
+import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, IUserLoginReq, IUserRegistrationReq } from '@types';
+import { UserService } from '@services';
+import { getEnv } from '@utils';
 
 
 
@@ -12,13 +14,15 @@ interface IUserController {
     update: AuthorizedControllerType<any, any, IUser>;
 }
 
+const { REFRESH_TOKEN_DURATION } = getEnv();
+
 export const UserController: IUserController = {
     async registration(req, res) {
         const { email, login, password, username } = req.body;
         
         const { user, accessToken, refreshToken } = await UserService.registration({ email, login, password, username });
 
-        res.cookie('refreshToken', refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 30 });
+        res.cookie('refreshToken', refreshToken, { maxAge: ms(REFRESH_TOKEN_DURATION) });
 
         res.json({ user, accessToken });
     },
@@ -28,7 +32,7 @@ export const UserController: IUserController = {
         
         const data = await UserService.login({ login, password });
 
-        res.cookie('refreshToken', data.refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 30 });
+        res.cookie('refreshToken', data.refreshToken, { maxAge: ms(REFRESH_TOKEN_DURATION) });
 
         res.json({ user: data.user, accessToken: data.accessToken });
     },
@@ -49,7 +53,7 @@ export const UserController: IUserController = {
         
         const data = await UserService.refresh({ refreshToken });
 
-        res.cookie('refreshToken', data.refreshToken, { maxAge: 1000 * 60 * 60 * 24 * 30 });
+        res.cookie('refreshToken', data.refreshToken, { maxAge: ms(REFRESH_TOKEN_DURATION) });
 
         res.json({ user: data.user, accessToken: data.accessToken });
         // res.status(500).json();
@@ -57,7 +61,7 @@ export const UserController: IUserController = {
 
     async some(req, res) {
         const user = req.auth.user;
-        console.log('got some');
+        console.log('got some:', user.username);
         res.status(200).json();
     },
 

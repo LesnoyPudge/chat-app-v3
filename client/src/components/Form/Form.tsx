@@ -25,7 +25,6 @@ export const Form: FC<IFormProps> = ({ title, inputs, submit }) => {
  
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        log(values);
         submit.handler(values);
     };    
     

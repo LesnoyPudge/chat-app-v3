@@ -1,7 +1,7 @@
 import { log } from '@utils';
 import { FC } from 'react';
-import { useAppDispatch, useAppSelector } from '@hooks';
-import { selectAllChannels, subscribeOnChannel } from '@redux/features';
+import { useAppDispatch, useAppSelector, useSocket } from '@hooks';
+import { selectAllChannels, subscribeOnChannel, unsubscribeFromChannel } from '@redux/features';
 import { Container, Form } from '@components';
 
 
@@ -9,6 +9,7 @@ import { Container, Form } from '@components';
 export const ChannelManager: FC = () => {
     const channels = useAppSelector(selectAllChannels);
     const dispatch = useAppDispatch();
+    const { connected } = useSocket();
     
     return (
         <>
@@ -70,8 +71,7 @@ export const ChannelManager: FC = () => {
                     submit={{
                         text: 'subscribe',
                         handler: (values) => {
-                            // socket channel subscribe
-                            dispatch(subscribeOnChannel(values));
+                            dispatch(subscribeOnChannel(values.channelId));
                         },
                     }}
                 />
@@ -84,8 +84,8 @@ export const ChannelManager: FC = () => {
                     ]}
                     submit={{
                         text: 'unsubscribe',
-                        handler: () => {
-                            // socket channel unsubscribe
+                        handler: (values) => {
+                            dispatch(unsubscribeFromChannel(values.channelId));
                         },
                     }}
                 />
@@ -94,18 +94,25 @@ export const ChannelManager: FC = () => {
             <Container title='Channel list'>
                 {
                     channels.length ?
-                        <ul>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '50px' }}>
                             {
                                 channels.map((channel) => {
                                     return (
-                                        <li key={channel.id}>
+                                        <li 
+                                            key={channel.id} 
+                                            style={{
+                                                display: 'flex', 
+                                                flexDirection: 'column', 
+                                                gap: '20px',
+                                            }}
+                                        >
                                             <span>identifier: {channel.identifier}</span>
                                             
                                             <span>name: {channel.name}</span>
                                             
                                             <span>members: {channel.members}</span>
 
-                                            <span>roles: {channel.roles}</span>
+                                            <span>roles: {channel.roles.length}</span>
                                         </li>
                                     );
                                 })

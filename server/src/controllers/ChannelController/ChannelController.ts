@@ -1,14 +1,14 @@
 import { ChannelService } from '@services';
-import { AuthorizedControllerType, ControllerType, IChannel } from '@types';
+import { AuthorizedControllerType, ControllerType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetMenyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest } from '@types';
 
 
 
 interface IChannelController {
-    create: AuthorizedControllerType<{name: string, identifier: string}, never, IChannel>;
-    getOne: ControllerType<{channelId: string}, never, IChannel>;
-    getMeny: ControllerType<{channelIds: string[]}, never, IChannel[]>;
-    update: AuthorizedControllerType<{channelId: string, newValues: IChannel}, never, IChannel>;
-    delete: AuthorizedControllerType<{channelId: string}, never, IChannel>;
+    create: AuthorizedControllerType<ICreateChannelRequest, never, IChannel>;
+    getOne: ControllerType<IGetOneChannelRequest, never, IChannel>;
+    getMeny: ControllerType<IGetMenyChannelsRequest, never, IChannel[]>;
+    update: AuthorizedControllerType<IUpdateChannelRequest, never, IChannel>;
+    delete: AuthorizedControllerType<IDeleteChannelRequest, never, IChannel>;
 }
 
 export const ChannelController: IChannelController = {

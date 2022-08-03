@@ -4,14 +4,13 @@ import { getEnv } from '@utils';
 
 
 
-const { JWT_ACCESS_KEYWORD, JWT_REFRESH_KEYWORD } = getEnv();
+const { JWT_ACCESS_KEYWORD, JWT_REFRESH_KEYWORD, REFRESH_TOKEN_DURATION, ACCESS_TOKEN_DURATION } = getEnv();
 
 export const token = {
     generateTokens(payload: IUser) {
         return {
-            refreshToken: jwt.sign(payload, JWT_REFRESH_KEYWORD, { expiresIn: '30d' }),
-            // accessToken: jwt.sign(payload, JWT_ACCESS_KEYWORD, { expiresIn: '15s' }),
-            accessToken: jwt.sign(payload, JWT_ACCESS_KEYWORD, { expiresIn: '30d' }),
+            refreshToken: jwt.sign(payload, JWT_REFRESH_KEYWORD, { expiresIn: REFRESH_TOKEN_DURATION }),
+            accessToken: jwt.sign(payload, JWT_ACCESS_KEYWORD, { expiresIn: ACCESS_TOKEN_DURATION }),
         };
     },
     validateRefreshToken(refreshToken: string) {

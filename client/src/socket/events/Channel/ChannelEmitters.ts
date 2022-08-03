@@ -1,17 +1,17 @@
-import { io } from '@socket';
+import { socket } from '@socket';
 
 
 
 interface IChannelEmitters {
-    subscribe: (args: {userId: string, targetId: string}) => void;
-    unsubscribe: (args: {userId: string, targetId: string}) => void;
+    subscribe: (targetId: string) => void;
+    unsubscribe: (targetId: string) => void;
 }
 
 export const ChannelEmitters: IChannelEmitters = {
-    subscribe({ userId, targetId }) {
-        // io.emit('subscribe', { userId, targetId });
+    subscribe(targetId) {
+        socket.emit('subscribeOnChannel', targetId);
     },
-    unsubscribe({ userId, targetId }) {
-        // io.emit('unsubscribe', { userId, targetId });
+    unsubscribe(targetId) {
+        socket.emit('unsubscribeFromChannel', targetId);
     },
 };

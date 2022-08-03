@@ -1,24 +1,16 @@
-import { Socket as SocketIOType } from 'socket.io';
+import { AuthorizedSocketType } from 'src/socket/socket';
 import { subscription } from '../../features';
 
 
 
-interface ISubscribe {
-    userId: string;
-    targetId: string;
-}
-
-interface IUnsubscribe {
-    userId: string;
-    targetId: string;
-}
-
-export const subscriptionListeners = (socketIO: SocketIOType) => {
-    socketIO.on('subscribe', ({ userId, targetId }: ISubscribe) => {
-        subscription.subscribe(userId, targetId);
+export const subscriptionListeners = (socketIO: AuthorizedSocketType) => {
+    socketIO.on('subscribe', (targetId) => {
+        const { id } = socketIO.handshake.auth.user;
+        subscription.subscribe({ userId: id, targetId });
     });
 
-    socketIO.on('unsubscribe', ({ userId, targetId }: IUnsubscribe) => {
-        subscription.unsubscribe(userId, targetId);
+    socketIO.on('unsubscribe', (targetId) => {
+        const { id } = socketIO.handshake.auth.user;
+        subscription.unsubscribe({ userId: id, targetId });
     });
 };

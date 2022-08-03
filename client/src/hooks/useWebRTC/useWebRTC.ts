@@ -1,7 +1,7 @@
 import { MediaConnection, Peer } from 'peerjs';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { selectUserInfo } from 'src/redux/features';
-import { socket } from '@socket';
+import { socketEvents } from '@socket';
 import { useAppSelector } from '../useAppSelector';
 import { log } from '@utils';
 
@@ -25,7 +25,7 @@ export const useWebRTC = () => {
         }
         const peer = peerRef.current;
 
-        socket.user.connectToVoiceRoom({ userId: user.id });
+        socketEvents.user.connectToVoiceRoom();
 
         peer.on('open', (id) => {
             log('connected: ', id);
