@@ -1,7 +1,7 @@
 import { log } from '@utils';
 import { FC } from 'react';
 import { useAppDispatch, useAppSelector, useSocket } from '@hooks';
-import { selectAllChannels, subscribeOnChannel, unsubscribeFromChannel } from '@redux/features';
+import { selectAllChannels, subscribeOnChannel, unsubscribeFromChannel, useCreateChannelMutation, useDeleteChannelMutation, useUpdateChannelMutation } from '@redux/features';
 import { Container, Form } from '@components';
 
 
@@ -10,6 +10,9 @@ export const ChannelManager: FC = () => {
     const channels = useAppSelector(selectAllChannels);
     const dispatch = useAppDispatch();
     const { connected } = useSocket();
+    const [updateChannel] = useUpdateChannelMutation();
+    const [createChannel] = useCreateChannelMutation();
+    const [deleteChannel] = useDeleteChannelMutation();
     
     return (
         <>
@@ -25,8 +28,8 @@ export const ChannelManager: FC = () => {
                 ]}
                 submit={{
                     text: 'create channel',
-                    handler: (values) => {
-                        log(values);
+                    handler: async({ identifier, name }) => {
+                        await createChannel({ identifier, name });
                     },
                 }}
             />
@@ -35,13 +38,16 @@ export const ChannelManager: FC = () => {
                 title='update channel form'
                 inputs={[
                     {
+                        name: 'channelId',
+                    },
+                    {
                         name: 'name',
                     },
                 ]}
                 submit={{
                     text: 'update channel',
-                    handler: (values) => {
-                        log(values);
+                    handler: ({ channelId, name }) => {
+                        updateChannel({ channelId, newValues: { name } });
                     },
                 }}
             />
@@ -55,8 +61,8 @@ export const ChannelManager: FC = () => {
                 ]}
                 submit={{
                     text: 'delete channel',
-                    handler: (values) => {
-                        log(values);
+                    handler: ({ channelId }) => {
+                        deleteChannel({ channelId });
                     },
                 }}
             />

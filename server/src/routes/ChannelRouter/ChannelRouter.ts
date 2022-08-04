@@ -20,11 +20,13 @@ ChannelRouter.post(
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/getOne',
+    authHandler,
     controllerContainer(ChannelController.getOne),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/getMeny',
+    authHandler,
     controllerContainer(ChannelController.getMeny),
 );
 

@@ -10,7 +10,7 @@ export interface IChannelModel extends Document<Types.ObjectId> {
     isPrivate: boolean;
     invitations: Types.ObjectId[];
     members: Types.ObjectId[];
-    rooms: Types.ObjectId[];
+    textRooms: Types.ObjectId[];
     roles: {
         users: Types.ObjectId[];
         role: Types.ObjectId;
@@ -32,7 +32,7 @@ const ChannelSchema = new Schema<IChannelModel>(
         isPrivate: { type: Boolean, default: true },
         invitations: [{ type: Schema.Types.ObjectId, ref: 'Invitation' }],
         members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-        rooms: [{ type: Schema.Types.ObjectId, ref: 'Room' }],
+        textRooms: [{ type: Schema.Types.ObjectId, ref: 'TextRooms' }],
         roles: [{
             users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
             role: { type: Schema.Types.ObjectId, ref: 'Role' },

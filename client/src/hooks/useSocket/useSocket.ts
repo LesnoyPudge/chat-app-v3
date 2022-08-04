@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { IChannel, IUser } from '@backendTypes';
 import { useAppDispatch } from '../useAppDispatch';
-import { addChannel, reciveSubscription } from '@redux/features';
+import { addChannel, addUser } from '@redux/features';
 
 
 
@@ -48,29 +48,16 @@ export const useSocket = () => {
             });
         });
       
-        socket.on('sendSubscriptionUpdate', (user: IUser) => {
-            log('got in listener');
-            dispatch(reciveSubscription(user));
+        socket.on('sendUserSubscription', (user: IUser) => {
+            dispatch(addUser(user));
             log('got subscription update: ', user);
         });
-            
-        socket.on('getSubscription', (user: IUser) => {
-            log('got in listener');
-            dispatch(reciveSubscription(user));
-            log('subscribed and get data: ', user);
-        });
 
-        socket.on('sendSubscriptionUpdateFromChannel', (channel: IChannel) => {
-            log('got in listener');
+        socket.on('sendChannelSubscription', (channel: IChannel) => {
             dispatch(addChannel(channel));
             log('got subscription update: ', channel);
         });
-        
-        socket.on('getSubscriptionFromChannel', (channel: IChannel) => {
-            log('got in listener');
-            dispatch(addChannel(channel));
-            log('subscribed and get data: ', channel);
-        });
+
     }, [dispatch]);
 
     return {

@@ -1,4 +1,3 @@
-import { UserDto } from '@dtos';
 import { UserService } from '@services';
 import { IUser } from '@types';
 import { socket } from '@socket';
@@ -37,7 +36,7 @@ export const subscription: ISubscription = {
             } 
 
             subscribeOn(targetId, userId);
-            getUserChannelThroughSocket(userId, targetId);
+            sendUserEntity({ userId: targetId, to: userId });
         } catch (error) {
             console.log('error during subscribe: ', error);
         }
@@ -58,7 +57,8 @@ export const subscription: ISubscription = {
         if (!isExist) return createUserChannel(user, 'online');
 
         updateUserChannel(user);
-        sendUpdateThroughSocket(user.id);
+        const subscribers = getSubscribersArray(user.id);
+        sendUserEntity({ userId: user.id, to: subscribers });
     },
 
     wentOnline(user) {
@@ -67,8 +67,9 @@ export const subscription: ISubscription = {
         if (!isExist) return createUserChannel(user, 'online');
 
         changeStatus(user.id, 'online');
-        // setNewSocketId({ userId: user.id, socketId });
-        sendUpdateThroughSocket(user.id);
+
+        const subscribers = getSubscribersArray(user.id);
+        sendUserEntity({ userId: user.id, to: subscribers });
     },
 
     wentOffline(userId) {
@@ -77,7 +78,8 @@ export const subscription: ISubscription = {
         if (!isExist) return;
 
         changeStatus(userId, 'offline');
-        sendUpdateThroughSocket(userId);
+        const subscribers = getSubscribersArray(userId);
+        sendUserEntity({ userId, to: subscribers });
         deleteUserChannel(userId);
     },
 }; 
@@ -119,21 +121,12 @@ const deleteUserChannel = (targetId: string) => {
     if (isUseless) delete subscription.users[targetId];
 };
 
-const getUserChannelThroughSocket = (userId: string, targetId: string) => {
-    socket.events.getSubscription({ 
-        to: userId,
-        user: UserDto.defaultPreset(subscription.users[targetId]),
-    });
-};
-
-const sendUpdateThroughSocket = (userId: string) => {
-    const user = subscription.users[userId];
-
-    if (user.subscribers.size === 0) return;
-
-    socket.events.sendSubscriptionUpdate({
-        to: Array.from(user.subscribers), 
-        user: UserDto.defaultPreset(user),
+const sendUserEntity = ({ userId, to }: {userId: string, to: string | string[]}) => {
+    console.log('user entity send to:', to);
+    
+    socket.events.sendUserSubscription({ 
+        to, 
+        user: subscription.users[userId], 
     });
 };
 
@@ -148,4 +141,8 @@ const updateUserChannel = (user: IUser) => {
 
 const changeStatus = (userId: string, newStatus: 'online' | 'offline') => {
     subscription.users[userId].status = newStatus;
+};
+
+const getSubscribersArray = (userId: string) => {
+    return Array.from(subscription.users[userId].subscribers);
 };

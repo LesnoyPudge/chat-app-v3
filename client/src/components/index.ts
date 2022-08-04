@@ -6,4 +6,5 @@ export * from './Container';
 export * from './Form';
 export * from './UserInfo';
 export * from './UserRequests';
+export * from './RoomManager';
 export * from './screens';

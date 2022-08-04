@@ -1,6 +1,6 @@
 import { ChannelService } from '@services';
-import { IChannel } from '@types';
 import { socket } from '@socket';
+import { IChannel } from '@types';
 
 
 
@@ -16,7 +16,7 @@ interface IChannelSubscription {
     channels: IChannelEntities,
     subscribe: ({ userId, channelId }: {userId: string, channelId: string}) => void;
     unsubscribe: ({ userId, channelId }: {userId: string, channelId: string}) => void;
-    update: (channel: IChannel) => void;
+    update: ({ userId, channel }: {userId: string, channel: IChannel}) => void;
 }
 
 export const ChannelSubscription: IChannelSubscription = {
@@ -27,7 +27,7 @@ export const ChannelSubscription: IChannelSubscription = {
         try {
             const isExist = isChannelEntityExist(channelId);
             if (!isExist) {
-                const target = await fetchChannel(channelId);
+                const target = await ChannelService.getOne({ userId, channelId });
                 createChannelEntity(target);
             } 
 
@@ -47,10 +47,14 @@ export const ChannelSubscription: IChannelSubscription = {
         deleteUserChannel(channelId);
     },
 
-    update(channel) {
-        console.log('channel updated: ' + channel.id);
+    update({ userId, channel }) {
+        console.log('channel:', channel.id, 'updated by:', userId);
         const isExist = isChannelEntityExist(channel.id);
-        if (!isExist) return createChannelEntity(channel);
+        if (!isExist) {
+            createChannelEntity(channel);
+            // subscribeOn({ channelId: channel.id, userId });
+            return;
+        }
 
         updateChannelEntity(channel);
         const subscribers = getSubscribersArray(channel.id);
@@ -60,11 +64,6 @@ export const ChannelSubscription: IChannelSubscription = {
 
 const isChannelEntityExist = (channelId: string) => {
     return !!ChannelSubscription.channels[channelId];
-};
-
-const fetchChannel = async(channelId: string) => {
-    const target = await ChannelService.getOne({ channelId });
-    return target;
 };
 
 const createChannelEntity = (channel: IChannel) => {
@@ -78,8 +77,9 @@ const createChannelEntity = (channel: IChannel) => {
 
 const subscribeOn = ({ channelId, userId }: {channelId: string, userId: string}) => {
     if (!isChannelEntityExist(channelId)) return;
-
+    
     ChannelSubscription.channels[channelId].subscribers.add(userId);
+    console.log('subscribers count:', ChannelSubscription.channels[channelId].subscribers.size);
 };
 
 const unsubscribeFrom = ({ channelId, userId }: {channelId: string, userId: string}) => {
@@ -93,22 +93,21 @@ const deleteUserChannel = (channelId: string) => {
 
     const target = ChannelSubscription.channels[channelId];
     const isZeroSubscribers = target.subscribers.size === 0;
-    
+    console.log('subscribers left:', target.subscribers.size);
     if (isZeroSubscribers) delete ChannelSubscription.channels[channelId];
 };
 
 const sendChannelEntity = ({ channelId, to }: {channelId: string, to: string | string[]}) => {
-    // socket.events.getSubscription({ 
-    //     to: userId,
-    //     user: UserDto.defaultPreset(subscription.users[targetId]),
-    // });
-    socket.events.sendSubscriptionUpdateFromChannel({ 
+    console.log('channel entity send to:', to);
+    
+    socket.events.sendChannelSubscription({ 
         to, 
         channel: ChannelSubscription.channels[channelId], 
     });
 };
 
 const updateChannelEntity = (channel: IChannel) => {
+    if (!isChannelEntityExist(channel.id)) return;
     ChannelSubscription.channels[channel.id] = Object.assign(ChannelSubscription.channels[channel.id], channel);
 };
 

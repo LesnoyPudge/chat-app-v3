@@ -4,7 +4,7 @@ import { IChannelModel } from '@models';
 
 
 interface IChannelDto {
-    objectFromModel: (user: IChannelModel) => IChannel;
+    objectFromModel: (channel: IChannelModel) => IChannel;
 }
 
 export const ChannelDto: IChannelDto = {
@@ -22,8 +22,8 @@ export const ChannelDto: IChannelDto = {
             members: channel.members.map((memberId) => {
                 return memberId.toString();
             }),
-            rooms: channel.rooms.map((roomId) => {
-                return roomId.toString();
+            textRooms: channel.textRooms.map((textRoomId) => {
+                return textRoomId.toString();
             }),
             roles: channel.roles.map(({ role, users }) => {
                 return {

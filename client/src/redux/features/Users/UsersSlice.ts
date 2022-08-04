@@ -20,18 +20,18 @@ export const UsersSlice = createSlice({
             socketEvents.user.unsubscribe(payload);
             usersAdapter.removeOne(state, payload);
         },
-        reciveSubscription(state, { payload }: PayloadAction<IUser>) {
+        addUser(state, { payload }: PayloadAction<IUser>) {
             usersAdapter.upsertOne(state, payload);
         },
-        deleteUnsubscribedUser(state, { payload }: PayloadAction<string>) {
+        removeUser(state, { payload }: PayloadAction<string>) {
             usersAdapter.removeOne(state, payload);
         },
     },
 });
 
 export const {
-    reciveSubscription,
-    deleteUnsubscribedUser,
+    addUser,
+    removeUser,
     subscribeOnUser,
     unsubscribeFromUser,
 

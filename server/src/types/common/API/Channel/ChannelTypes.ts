@@ -10,7 +10,7 @@ export interface IChannel {
     isPrivate: boolean;
     invitations: string[];
     members: string[];
-    rooms: string[];
+    textRooms: string[];
     roles: {
         users: string[];
         role: string;
@@ -36,7 +36,7 @@ export interface IGetMenyChannelsRequest {
 
 export interface IUpdateChannelRequest {
     channelId: string,
-    newValues: IChannel,
+    newValues: IChannel | any,
 }
 
 export interface IDeleteChannelRequest {

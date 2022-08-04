@@ -5,8 +5,8 @@ import { AuthorizedControllerType, ControllerType, IChannel, ICreateChannelReque
 
 interface IChannelController {
     create: AuthorizedControllerType<ICreateChannelRequest, never, IChannel>;
-    getOne: ControllerType<IGetOneChannelRequest, never, IChannel>;
-    getMeny: ControllerType<IGetMenyChannelsRequest, never, IChannel[]>;
+    getOne: AuthorizedControllerType<IGetOneChannelRequest, never, IChannel>;
+    getMeny: AuthorizedControllerType<IGetMenyChannelsRequest, never, IChannel[]>;
     update: AuthorizedControllerType<IUpdateChannelRequest, never, IChannel>;
     delete: AuthorizedControllerType<IDeleteChannelRequest, never, IChannel>;
 }
@@ -14,44 +14,46 @@ interface IChannelController {
 export const ChannelController: IChannelController = {
     async create(req, res) {
         const { name, identifier } = req.body;
-        const { user } = req.auth;
+        const { id } = req.auth.user;
         
-        const channel = await ChannelService.create({ name, identifier, userId: user.id });
+        const channel = await ChannelService.create({ name, identifier, userId: id });
 
         res.json(channel);
     },
     
     async getOne(req, res) {
         const { channelId } = req.body;
+        const { id } = req.auth.user;
 
-        const channel = await ChannelService.getOne({ channelId });
+        const channel = await ChannelService.getOne({ userId: id, channelId });
 
         res.json(channel);
     },
 
     async getMeny(req, res) {
         const { channelIds } = req.body;
-        
-        const channels = await ChannelService.getMeny({ channelIds });
+        const { id } = req.auth.user;
+
+        const channels = await ChannelService.getMeny({ userId: id, channelIds });
 
         res.json(channels);
     },
 
     async update(req, res) {
         const { channelId, newValues } = req.body;
-        const { user } = req.auth;
+        const { id } = req.auth.user;
         
-        const updatedChannel = await ChannelService.update({ userId: user.id, channelId, newValues });
+        const updatedChannel = await ChannelService.update({ userId: id, channelId, newValues });
 
         res.json(updatedChannel);
     },
 
     async delete(req, res) {
         const { channelId } = req.body;
-        const { user } = req.auth;
+        const { id } = req.auth.user;
         
-        const updatedChannel = await ChannelService.delete({ userId: user.id, channelId });
+        const deletedChannel = await ChannelService.delete({ userId: id, channelId });
 
-        res.json(updatedChannel);
+        res.json(deletedChannel);
     },
 };

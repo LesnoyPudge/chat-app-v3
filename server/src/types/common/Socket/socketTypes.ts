@@ -2,5 +2,9 @@
 
 
 export interface SocketEvents {
-    some: any;
+    CHANNEL: {
+        SUBSCRIBE: string;
+        UNSUBSCRIBE: string;
+        SUBSCRIPTION_UPDATE: string;
+    };
 }

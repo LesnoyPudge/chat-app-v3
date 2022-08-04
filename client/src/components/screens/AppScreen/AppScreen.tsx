@@ -27,6 +27,10 @@ export const AppScreen: FC = () => {
                 <ChannelManager/>
             </Container>
 
+            <Container title='RoomManager'>
+                
+            </Container>
+
             <Container title='Outlet'>
                 <Outlet/>
             </Container>

@@ -1,16 +1,17 @@
 import { ChannelDto } from '@dtos';
 import { ChannelModel, UserModel } from '@models';
-import { AuthorizedServiceType, IChannel, ServiceType } from '@types';
+import { AuthorizedServiceType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetMenyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest, ServiceType } from '@types';
 import { ApiError, transactionContainer } from '@utils';
+import { ChannelSubscription } from 'src/socket/features';
 
 
 
 interface IChannelService {
-    create: AuthorizedServiceType<{name: string, identifier: string}, IChannel>;
-    getOne: ServiceType<{channelId: string}, IChannel>;
-    getMeny: ServiceType<{channelIds: string[]}, IChannel[]>;
-    update: AuthorizedServiceType<{channelId: string, newValues: IChannel}, IChannel>;
-    delete: AuthorizedServiceType<{channelId: string}, IChannel>;
+    create: AuthorizedServiceType<ICreateChannelRequest, IChannel>;
+    getOne: AuthorizedServiceType<IGetOneChannelRequest, IChannel>;
+    getMeny: AuthorizedServiceType<IGetMenyChannelsRequest, IChannel[]>;
+    update: AuthorizedServiceType<IUpdateChannelRequest, IChannel>;
+    delete: AuthorizedServiceType<IDeleteChannelRequest, IChannel>;
 }
 
 export const ChannelService: IChannelService = {
@@ -66,14 +67,27 @@ export const ChannelService: IChannelService = {
         return channelDtos;
     },
 
-    async update({ channelId, newValues }) {
-        const updatedChannel = await ChannelModel.findByIdAndUpdate(channelId, newValues, { new: true, lean: true });
-        if (!updatedChannel) {
-            throw ApiError.badRequest('Не удалось обновить канал');
-        }
+    async update({ userId, channelId, newValues }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedChannel = await ChannelModel.findByIdAndUpdate(
+                    channelId, 
+                    newValues, 
+                    queryOptions({ new: true }),
+                );
+                if (!updatedChannel) {
+                    throw ApiError.badRequest('Не удалось обновить канал');
+                }
 
-        const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
-        return updatedChannelDto;
+                const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
+
+                onCommit(() => {
+                    ChannelSubscription.update({ userId, channel: updatedChannelDto });
+                });
+
+                return updatedChannelDto;
+            },
+        );
     },
 
     async delete({ channelId }) {
