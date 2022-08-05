@@ -30,7 +30,6 @@
             "@redux/store": ["src/redux/store/store"],
             "@redux/features": ["src/redux/features/index"],
             "@redux/rootApi": ["src/redux/store/rootApi"],
-            "@socket": ["src/socket/index"],
             "@types": ["src/types/index"],
             "@utils": ["src/utils/index"],
         },

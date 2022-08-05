@@ -1,6 +1,6 @@
 import { ChannelDto } from '@dtos';
 import { ChannelModel, UserModel } from '@models';
-import { AuthorizedServiceType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetMenyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest, ServiceType } from '@types';
+import { AuthorizedServiceType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest, ServiceType } from '@types';
 import { ApiError, transactionContainer } from '@utils';
 import { ChannelSubscription } from 'src/socket/features';
 
@@ -9,7 +9,7 @@ import { ChannelSubscription } from 'src/socket/features';
 interface IChannelService {
     create: AuthorizedServiceType<ICreateChannelRequest, IChannel>;
     getOne: AuthorizedServiceType<IGetOneChannelRequest, IChannel>;
-    getMeny: AuthorizedServiceType<IGetMenyChannelsRequest, IChannel[]>;
+    getMany: AuthorizedServiceType<IGetManyChannelsRequest, IChannel[]>;
     update: AuthorizedServiceType<IUpdateChannelRequest, IChannel>;
     delete: AuthorizedServiceType<IDeleteChannelRequest, IChannel>;
 }
@@ -54,7 +54,7 @@ export const ChannelService: IChannelService = {
         return channelDto;
     },
 
-    async getMeny({ channelIds }) {
+    async getMany({ channelIds }) {
         const channels = await ChannelModel.find({ _id: { $in: channelIds } }, {}, { lean: true });
         if (!channels.length) {
             throw ApiError.badRequest('Каналы не найдены');

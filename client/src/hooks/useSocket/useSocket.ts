@@ -1,21 +1,19 @@
-import { socket } from '@socket';
-import { getEnv, getLocalStorage, log } from '@utils';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { IChannel, IUser } from '@backendTypes';
-import { useAppDispatch } from '../useAppDispatch';
-import { addChannel, addUser } from '@redux/features';
+import { log, socket, SocketType } from '@utils';
+import { useEffect, useRef, useState } from 'react';
+import { IChannel, ITextRoom, IUser } from '@backendTypes';
+import { useAppDispatch } from '@hooks';
+import { addChannel, addTextRoom, addUser } from '@redux/features';
 
 
 
 export const useSocket = () => {
-    const socketRef = useRef<Socket | null>(null);
+    const socketRef = useRef<SocketType | null>(null);
     const dispatch = useAppDispatch();
-    const [connected, setConnected] = useState(socket.connected);
+    const [connected, setConnected] = useState(socket.socketEntity.connected);
 
     useEffect(() => {
         if (!socketRef.current) {
-            socketRef.current = socket;
+            socketRef.current = socket.socketEntity;
         }
     }, []);
 
@@ -56,6 +54,11 @@ export const useSocket = () => {
         socket.on('sendChannelSubscription', (channel: IChannel) => {
             dispatch(addChannel(channel));
             log('got subscription update: ', channel);
+        });
+
+        socket.on('sendTextRoomSubscription', (textRoom: ITextRoom) => {
+            dispatch(addTextRoom(textRoom));
+            log('got subscription update: ', textRoom);
         });
 
     }, [dispatch]);

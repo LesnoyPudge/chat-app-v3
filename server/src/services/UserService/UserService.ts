@@ -95,12 +95,13 @@ export const UserService: IUserService = {
                     { refreshJWT: '' },
                     queryOptions(),
                 );
+                
                 if (!user) {
                     throw ApiError.badRequest();
                 }
-
+                const userDto = UserDto.objectFromModel(user);
                 onCommit(() => {
-                    subscription.wentOffline(UserDto.objectFromModel(user).id);
+                    subscription.wentOffline(userDto.id);
                 });
             },
         );

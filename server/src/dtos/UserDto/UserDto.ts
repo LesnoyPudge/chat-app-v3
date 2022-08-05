@@ -1,3 +1,4 @@
+
 import { IUser } from '@types';
 import { IUserModel } from '@models';
 
@@ -21,8 +22,8 @@ export const UserDto: IUserDto = {
             activationLink: user.activationLink,
             isActivated: user.isActivated,
             settings: user.settings,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
+            createdAt: user.createdAt.toString(),
+            updatedAt: user.updatedAt.toString(),
         };
     },
     defaultPreset(user) {

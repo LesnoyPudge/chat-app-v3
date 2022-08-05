@@ -1,8 +1,8 @@
 import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta, retry } from '@reduxjs/toolkit/query/react';
 import { IAuthResponse } from '@backendTypes';
-import { getEnv, getLocalStorage } from '@utils';
-import { logout } from '@redux/features';
+import { getEnv, getLocalStorage, log } from '@utils';
+import { logout, UserApi } from '@redux/features';
 
 
 
@@ -65,14 +65,15 @@ const retryHandlingBaseQueryWithReauth: BaseQueryFn<
         const data = refreshResponse.data as IAuthResponse;
         getLocalStorage().set('token', data.accessToken);
         result = await retryHandlingBaseQuery(args, api, extraOptions);
-    } else {
-        retryHandlingBaseQuery(
-            getEnv().CUSTOM_API_V1_URL + '/user/logout', 
-            api, 
-            extraOptions,
-        );
-        api.dispatch(logout());
+        return result;
     }
+    
+    await retryHandlingBaseQuery(
+        getEnv().CUSTOM_API_V1_URL + '/user/logout', 
+        api, 
+        extraOptions,
+    );
+    api.dispatch(logout());
 
     return result;
 };

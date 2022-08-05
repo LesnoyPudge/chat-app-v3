@@ -11,8 +11,8 @@ export interface ITextRoom {
         users: string[];
         roles: string[];
     };
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }
 
 
@@ -26,7 +26,7 @@ export interface IGetOneTextRoomRequest {
     textRoomId: string;
 }
 
-export interface IGetMenyTextRoomsRequest {
+export interface IGetManyTextRoomsRequest {
     textRoomIds: string[]
 }
 

@@ -1,4 +1,4 @@
-import { AuthorizedSocketType } from 'src/socket/socket';
+import { AuthorizedSocketType } from '@socket';
 import { ChannelSubscription } from '../../features';
 
 

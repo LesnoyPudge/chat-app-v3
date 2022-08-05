@@ -1,12 +1,12 @@
 import { ChannelService } from '@services';
-import { AuthorizedControllerType, ControllerType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetMenyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest } from '@types';
+import { AuthorizedControllerType, ControllerType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest } from '@types';
 
 
 
 interface IChannelController {
     create: AuthorizedControllerType<ICreateChannelRequest, never, IChannel>;
     getOne: AuthorizedControllerType<IGetOneChannelRequest, never, IChannel>;
-    getMeny: AuthorizedControllerType<IGetMenyChannelsRequest, never, IChannel[]>;
+    getMany: AuthorizedControllerType<IGetManyChannelsRequest, never, IChannel[]>;
     update: AuthorizedControllerType<IUpdateChannelRequest, never, IChannel>;
     delete: AuthorizedControllerType<IDeleteChannelRequest, never, IChannel>;
 }
@@ -30,11 +30,11 @@ export const ChannelController: IChannelController = {
         res.json(channel);
     },
 
-    async getMeny(req, res) {
+    async getMany(req, res) {
         const { channelIds } = req.body;
         const { id } = req.auth.user;
 
-        const channels = await ChannelService.getMeny({ userId: id, channelIds });
+        const channels = await ChannelService.getMany({ userId: id, channelIds });
 
         res.json(channels);
     },

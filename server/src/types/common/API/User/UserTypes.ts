@@ -17,8 +17,8 @@ export interface IUser {
         messageGroupSpacing: number;
         transitionSpeed: number;
     }
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface IUserWithStatus extends IUser {

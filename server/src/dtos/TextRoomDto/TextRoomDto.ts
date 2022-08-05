@@ -23,8 +23,8 @@ export const TextRoomDto: ITextRoomDto = {
                     return roleId.toString();
                 }),
             },
-            createdAt: room.createdAt,
-            updatedAt: room.updatedAt,
+            createdAt: room.createdAt.toString(),
+            updatedAt: room.updatedAt.toString(),
         };
     },
 };

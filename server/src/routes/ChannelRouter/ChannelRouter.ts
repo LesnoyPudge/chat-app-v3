@@ -25,9 +25,9 @@ ChannelRouter.post(
 );
 
 ChannelRouter.post(
-    CUSTOM_API_V1_URL + '/channel/getMeny',
+    CUSTOM_API_V1_URL + '/channel/getMany',
     authHandler,
-    controllerContainer(ChannelController.getMeny),
+    controllerContainer(ChannelController.getMany),
 );
 
 ChannelRouter.post(

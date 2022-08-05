@@ -19,6 +19,8 @@ export interface IChannel {
         user: string;
         reason: string;
     }[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface ICreateChannelRequest {
@@ -30,7 +32,7 @@ export interface IGetOneChannelRequest {
     channelId: string;
 }
 
-export interface IGetMenyChannelsRequest {
+export interface IGetManyChannelsRequest {
     channelIds: string[]
 }
 

@@ -6,10 +6,24 @@ import { getCookie, getLocalStorage, log } from '@utils';
 
 
 const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
-    if (action.type === 'user/logout') {
-        log('user/logout');
+    const isLogoutReducer = action.type === 'user/logout';
+    const isLogoutMutation = action?.meta?.arg?.endpointName === 'userLogout';
+    const isLogoutMutationPending = isLogoutMutation && action.type === 'api/executeMutation/pending';
+    const isLogoutMutationRejected = isLogoutMutation && action.type === 'api/executeMutation/rejected';
+    const isLogoutMutationFulfilled = isLogoutMutation && action.type === 'api/executeMutation/fulfilled';
+    
+    if (isLogoutReducer || isLogoutMutationFulfilled || isLogoutMutationRejected) {
+        log('user logout');
         getLocalStorage().clear();
         getCookie().removeAll();
+        const apiState = state.api;
+        state = {
+            api: apiState,
+        } as RootState;
+    }
+
+    if (isLogoutMutationPending) {
+        log('prepare to logout');
         const apiState = state.api;
         state = {
             api: apiState,

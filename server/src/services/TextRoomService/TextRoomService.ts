@@ -1,14 +1,15 @@
 import { TextRoomDto } from '@dtos';
 import { ChannelModel, TextRoomModel } from '@models';
-import { AuthorizedServiceType, ICreateTextRoomRequest, IDeleteTextRoomRequest, IGetMenyTextRoomsRequest, IGetOneTextRoomRequest, ITextRoom, IUpdateTextRoomRequest } from '@types';
+import { AuthorizedServiceType, ICreateTextRoomRequest, IDeleteTextRoomRequest, IGetManyTextRoomsRequest, IGetOneTextRoomRequest, ITextRoom, IUpdateTextRoomRequest } from '@types';
 import { ApiError, transactionContainer } from '@utils';
+import { TextRoomSubscription } from 'src/socket/features';
 
 
 
 interface ITextRoomService {
     create: AuthorizedServiceType<ICreateTextRoomRequest, ITextRoom>;
     getOne: AuthorizedServiceType<IGetOneTextRoomRequest, ITextRoom>;
-    getMeny: AuthorizedServiceType<IGetMenyTextRoomsRequest, ITextRoom[]>;
+    getMany: AuthorizedServiceType<IGetManyTextRoomsRequest, ITextRoom[]>;
     update: AuthorizedServiceType<IUpdateTextRoomRequest, ITextRoom>;
     delete: AuthorizedServiceType<IDeleteTextRoomRequest, ITextRoom>;
 }
@@ -49,7 +50,7 @@ export const TextRoomService: ITextRoomService = {
         return textRoomDto;
     },
 
-    async getMeny({ userId, textRoomIds }) {
+    async getMany({ userId, textRoomIds }) {
         const textRooms = await TextRoomModel.find({ _id: { $in: textRoomIds } }, {}, { lean: true });
         if (!textRooms.length) {
             throw ApiError.badRequest('Комнаты не найдены');
@@ -75,7 +76,7 @@ export const TextRoomService: ITextRoomService = {
                 const updatedTextRoomDto = TextRoomDto.objectFromModel(updatedTextRoom);
 
                 onCommit(() => {
-                    // socket textRoomSubscription update
+                    TextRoomSubscription.update({ userId, textRoom: updatedTextRoomDto });
                 });
 
                 return updatedTextRoomDto;

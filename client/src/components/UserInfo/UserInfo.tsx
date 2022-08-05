@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/hooks';
-import { selectUserInfo, selectUsersById, subscribeOnUser, unsubscribeFromUser } from 'src/redux/features';
-import { socketEvents } from '@socket';
+import { useAppDispatch, useAppSelector } from '@hooks';
+import { selectUserInfo, selectUsersById, subscribeOnUser, unsubscribeFromUser } from '@redux/features';
+import { socket } from '@utils';
 import { Form } from '../Form';
 import { Container } from '../Container';
 

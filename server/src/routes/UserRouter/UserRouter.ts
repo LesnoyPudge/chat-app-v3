@@ -7,7 +7,7 @@ import { validator } from '@validators';
 
 
 const { CUSTOM_API_V1_URL } = getEnv();
-const { validationHandler } = middlewares.raw;
+const { validationHandler, authHandler } = middlewares.raw;
 const { createUserValidator } = validator.user;
 export const UserRouter = Router();
 
@@ -37,12 +37,12 @@ UserRouter.get(
 
 UserRouter.get(
     CUSTOM_API_V1_URL + '/user/some',
-    middlewares.raw.authHandler,
+    authHandler,
     controllerContainer(UserController.some),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/update',
-    middlewares.raw.authHandler,
+    authHandler,
     controllerContainer(UserController.update),
 );

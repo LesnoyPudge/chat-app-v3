@@ -39,8 +39,8 @@ export const ChannelDto: IChannelDto = {
                     reason,
                 };
             }),
-            createdAt: channel.createdAt,
-            updatedAt: channel.updatedAt,
+            createdAt: channel.createdAt.toString(),
+            updatedAt: channel.updatedAt.toString(),
         };
     },
 };

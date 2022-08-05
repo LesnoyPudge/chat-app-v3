@@ -2,9 +2,7 @@ import { FC, useLayoutEffect } from 'react';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from '@hooks';
 import { useUserRefreshQuery, selectUser } from '@redux/features';
-import { socketEvents } from '@socket';
-import { socketListenersInit } from './socketListenersInit';
-import { log } from '@utils';
+import { log, socket } from '@utils';
 
 
 
@@ -20,11 +18,11 @@ export const AuthLoader: FC<IAuthLoader> = ({ children }) => {
     const user = useAppSelector(selectUser);
     const location = useLocation();
 
-    useLayoutEffect(() => {
-        if (!user.info.id) return;
-        socketEvents.user.joinRooms(user.info.id);
-        socketListenersInit();
-    }, [user.info.id]);
+    // move into user refresh match fulfield
+    // useLayoutEffect(() => {
+    //     if (!user.info.id) return;
+    //     socket.events.user.joinRooms(user.info.id);
+    // }, [user.info.id]);
 
     if (isLoading) return <>loading</>;
     

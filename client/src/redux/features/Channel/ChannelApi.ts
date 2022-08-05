@@ -1,6 +1,6 @@
 import { getEnv } from '@utils';
 import { rootApi } from '@redux/rootApi';
-import { IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetMenyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest } from '@backendTypes';
+import { IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest } from '@backendTypes';
 
 
 
@@ -22,9 +22,9 @@ export const ChannelApi = rootApi.injectEndpoints({
                 body,
             }),
         }),
-        getMenyChannel: build.query<IChannel[], IGetMenyChannelsRequest>({
+        getManyChannel: build.query<IChannel[], IGetManyChannelsRequest>({
             query: (body) => ({
-                url: CUSTOM_API_V1_URL + '/channel/getMeny',
+                url: CUSTOM_API_V1_URL + '/channel/getMany',
                 method: 'POST',
                 body,
             }),
@@ -50,7 +50,7 @@ export const ChannelApi = rootApi.injectEndpoints({
 export const {
     useCreateChannelMutation,
     useGetOneChannelQuery,
-    useGetMenyChannelQuery,
+    useGetManyChannelQuery,
     useUpdateChannelMutation,
     useDeleteChannelMutation,
 } = ChannelApi;

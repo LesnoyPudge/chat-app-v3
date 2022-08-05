@@ -1,7 +1,6 @@
-import { FC, useEffect } from 'react';
-import { useAppDispatch, useWebRTC, useAppSelector } from 'src/hooks';
-import { useUserLogoutMutation, useUserSomeMutation, logout, useUserUpdateMutation, selectUserInfo } from 'src/redux/features';
-import { socketEvents } from '@socket';
+import { FC } from 'react';
+import { useAppDispatch } from '@hooks';
+import { useUserLogoutMutation, useUserSomeMutation, useUserUpdateMutation } from '@redux/features';
 import { Form } from '../Form';
 
 
@@ -13,7 +12,7 @@ export const UserRequests: FC = () => {
     
     const handleLogout = async() => {
         logoutRequest();
-        dispatch(logout());
+        // dispatch(logout());
     }; 
 
     const handleSome = async() => {
@@ -21,19 +20,15 @@ export const UserRequests: FC = () => {
     };
 
     const [update] = useUserUpdateMutation();
-
-    useEffect(() => {
-        socketEvents.user.joinRooms('123');
-    }, []);
     
     return (
         <>
             <button onClick={handleLogout}>
-                    logout
+                logout
             </button>
 
             <button onClick={handleSome}>
-                    some
+                some
             </button>
 
             <Form

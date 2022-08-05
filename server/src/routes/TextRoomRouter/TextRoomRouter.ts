@@ -25,9 +25,9 @@ TextRoomRouter.post(
 );
 
 TextRoomRouter.post(
-    CUSTOM_API_V1_URL + '/text-room/getMeny',
+    CUSTOM_API_V1_URL + '/text-room/getMany',
     authHandler,
-    controllerContainer(TextRoomController.getMeny),
+    controllerContainer(TextRoomController.getMany),
 );
 
 TextRoomRouter.post(

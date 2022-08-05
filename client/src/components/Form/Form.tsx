@@ -34,6 +34,7 @@ export const Form: FC<IFormProps> = ({ title, inputs, submit }) => {
         border: '2px solid black',
         padding: '10px',
         gap: '10px',
+        backgroundColor: 'darkseagreen',
     };
 
     const titleStyle: CSSProperties = {
