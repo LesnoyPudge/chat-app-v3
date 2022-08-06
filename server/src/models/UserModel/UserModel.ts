@@ -23,6 +23,7 @@ export interface IUserModel extends Document<Types.ObjectId> {
     // blockList: ObjectId[];
     // appSettings: ObjectId;
     channels: Types.ObjectId[];
+    privateChannels: Types.ObjectId[];
     // roles: ObjectId[];
     createdAt: Date;
     updatedAt: Date;
@@ -46,6 +47,7 @@ const UserSchema = new Schema<IUserModel>(
         },
         refreshJWT: { type: String, default: '' },
         channels: [{ type: Schema.Types.ObjectId, ref: 'Channel' }],
+        privateChannels: [{ type: Schema.Types.ObjectId, ref: 'PrivateChannel' }],
     },
     { 
         timestamps: true, 

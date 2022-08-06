@@ -6,7 +6,7 @@ import { IUserModel } from '@models';
 
 interface IUserDto {
     objectFromModel: (user: IUserModel) => IUser;
-    defaultPreset: (user: IUserModel | any) => IUser;
+    defaultPreset: (user: IUserModel | any) => IUser; // TO CHANGE: THIS SHOULD RETURN PARTIAL PUBLIC INFO ABOUT USER
 }
 
 export const UserDto: IUserDto = {
@@ -22,6 +22,12 @@ export const UserDto: IUserDto = {
             activationLink: user.activationLink,
             isActivated: user.isActivated,
             settings: user.settings,
+            channels: user.channels.map((channelId) => {
+                return channelId.toString();
+            }),
+            privateChannels: user.privateChannels.map((privateChannelId) => {
+                return privateChannelId.toString();
+            }),
             createdAt: user.createdAt.toString(),
             updatedAt: user.updatedAt.toString(),
         };
@@ -38,6 +44,12 @@ export const UserDto: IUserDto = {
             activationLink: user?.activationLink,
             isActivated: user?.isActivated,
             settings: user?.settings,
+            channels: user.channels.map((channelId) => {
+                return channelId.toString();
+            }),
+            privateChannels: user.privateChannels.map((privateChannelId) => {
+                return privateChannelId.toString();
+            }),
             createdAt: user?.createdAt,
             updatedAt: user?.updatedAt,
         };

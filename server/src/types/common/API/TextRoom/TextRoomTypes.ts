@@ -32,7 +32,7 @@ export interface IGetManyTextRoomsRequest {
 
 export interface IUpdateTextRoomRequest {
     textRoomId: string,
-    newValues: ITextRoom | any,
+    newValues: Partial<ITextRoom>,
 }
 
 export interface IDeleteTextRoomRequest {

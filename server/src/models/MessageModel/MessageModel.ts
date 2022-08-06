@@ -3,7 +3,7 @@ import { Schema, model, Types, Document } from 'mongoose';
 
 
 export interface IMessageModel extends Document<Types.ObjectId> {
-    textRoom: Types.ObjectId;
+    chat: Types.ObjectId;
     user: Types.ObjectId;
     content: string;
     attachedImages: string[];
@@ -15,7 +15,7 @@ export interface IMessageModel extends Document<Types.ObjectId> {
 
 const MessageSchema = new Schema<IMessageModel>(
     {
-        textRoom: { type: Schema.Types.ObjectId, ref: 'TextRoom', required: true },
+        chat: { type: Schema.Types.ObjectId, required: true },
         user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         content: { type: String, default: '' },
         attachedImages: [{ type: String }],

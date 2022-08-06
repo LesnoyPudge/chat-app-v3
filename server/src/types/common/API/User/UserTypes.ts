@@ -17,6 +17,8 @@ export interface IUser {
         messageGroupSpacing: number;
         transitionSpeed: number;
     }
+    channels: string[];
+    privateChannels: string[];
     createdAt: string;
     updatedAt: string;
 }

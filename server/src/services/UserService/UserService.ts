@@ -40,21 +40,32 @@ export const UserService: IUserService = {
                 const salt = await bcrypt.genSalt(+getEnv().BCRYPT_SALT_ROUNDS);
                 const hashedPassword = await bcrypt.hash(password, salt);
                 const activationLink = uuid.v4();
-                const user = new UserModel({
-                    email, 
-                    login, 
-                    password: hashedPassword, 
-                    username,
-                    activationLink,
-                });
+                // const user = new UserModel({
+                //     email, 
+                //     login, 
+                //     password: hashedPassword, 
+                //     username,
+                //     activationLink,
+                // });
+                const user = await UserModel.create(
+                    [{
+                        email,
+                        login,
+                        password: hashedPassword,
+                        username,
+                        activationLink,
+                    }],
+                    queryOptions(),
+                ).then((users) => users[0]);
                 const tokens = token.generateTokens(UserDto.objectFromModel(user));
-
+                
                 user.refreshJWT = tokens.refreshToken;
 
                 await user.save(queryOptions());
+                const userDto = UserDto.objectFromModel(user);
 
                 return {
-                    user: UserDto.objectFromModel(user),
+                    user: userDto,
                     ...tokens,
                 };
             },

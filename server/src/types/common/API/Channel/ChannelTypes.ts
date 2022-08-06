@@ -38,7 +38,7 @@ export interface IGetManyChannelsRequest {
 
 export interface IUpdateChannelRequest {
     channelId: string,
-    newValues: IChannel | any,
+    newValues: Partial<IChannel>,
 }
 
 export interface IDeleteChannelRequest {
