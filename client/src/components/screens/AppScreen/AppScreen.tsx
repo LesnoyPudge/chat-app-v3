@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
-import { AudioSource, ChannelManager, Container, UserInfo, UserRequests, RoomManager } from '@components';
+import { AudioSource, ChannelManager, Container, UserInfo, UserRequests, RoomManager, MessageManager } from '@components';
 
 
 
@@ -19,9 +19,9 @@ export const AppScreen: FC = () => {
                 <AudioSource/>
             </Container>
             
-            <Container title='UserInfo'>
+            {/* <Container title='UserInfo'>
                 <UserInfo targetId='62d3ad0e6736eef593b901e5'/>
-            </Container>
+            </Container> */}
 
             <Container title='ChannelManager'>
                 <ChannelManager/>
@@ -29,6 +29,10 @@ export const AppScreen: FC = () => {
 
             <Container title='RoomManager'>
                 <RoomManager/>
+            </Container>
+
+            <Container title='MessageManager'>
+                <MessageManager/>
             </Container>
 
             <Container title='Outlet'>

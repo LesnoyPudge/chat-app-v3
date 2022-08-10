@@ -14,7 +14,7 @@ interface IMessageService {
 }
 
 export const MessageService: IMessageService = {
-    async create({ userId, chatId, content = '', attachedImages = [] }) {
+    async create({ userId, chatId, content = '', attachedImages = [], respondOn = [] }) {
         return await transactionContainer(
             async({ queryOptions }) => {
                 const message = await MessageModel.create(
@@ -23,6 +23,7 @@ export const MessageService: IMessageService = {
                         chat: chatId,
                         content,
                         attachedImages,
+                        respondOn,
                     }],
                     queryOptions(),
                 ).then((messages) => messages[0]);
@@ -35,7 +36,7 @@ export const MessageService: IMessageService = {
 
     async getOne({ userId, messageId }) {
         const message = await MessageModel.findById(messageId, {}, { lean: true });
-        if (!message) throw ApiError.badRequest('Сообщение не найдено не найден');
+        if (!message) throw ApiError.badRequest('Сообщение не найдено');
 
         const messageDto = MessageDto.objectFromModel(message);
         return messageDto;
@@ -62,7 +63,7 @@ export const MessageService: IMessageService = {
                     newValues,
                     queryOptions({ new: true }),
                 );
-                if (!updatedMessage) throw ApiError.badRequest('Не удалось обновить канал');
+                if (!updatedMessage) throw ApiError.badRequest('Не удалось обновить сообщение');
 
                 const updatedMessageDto = MessageDto.objectFromModel(updatedMessage);
 
@@ -80,7 +81,7 @@ export const MessageService: IMessageService = {
             async({ queryOptions }) => {
                 const deletedMessage = await MessageModel.findByIdAndDelete(messageId, queryOptions());
                 if (!deletedMessage) {
-                    throw ApiError.badRequest('Не удалось удалить канал');
+                    throw ApiError.badRequest('Не удалось удалить сообщение');
                 }
 
                 await UserModel.updateMany(

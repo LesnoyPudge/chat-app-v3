@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { ChannelSlice, TextRoomSlice, UserSlice, UsersSlice } from '@redux/features';
+import { ChannelSlice, TextRoomSlice, UserSlice, UsersSlice, MessageSlice } from '@redux/features';
 import { rootApi } from '@redux/rootApi';
 
 
@@ -10,6 +10,7 @@ export const combinedReducer = combineReducers({
     users: UsersSlice.reducer,
     channel: ChannelSlice.reducer,
     textRoom: TextRoomSlice.reducer,
+    message: MessageSlice.reducer,
     // room: roomSlice.reducer,
     // message: messageSlice.reducer,
     // member: memberSlice.reducer,

@@ -11,7 +11,7 @@ const textRoomAdapter = createEntityAdapter<ITextRoom>();
 const initialState = textRoomAdapter.getInitialState();
 
 export const TextRoomSlice = createSlice({
-    name: 'textroom',
+    name: 'textRoom',
     initialState,           
     reducers: {
         addTextRoom(state, { payload }: PayloadAction<ITextRoom>) {

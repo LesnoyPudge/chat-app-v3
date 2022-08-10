@@ -21,7 +21,6 @@ export const TextRoomService: ITextRoomService = {
                 const textRoom = new TextRoomModel({
                     name,
                     identifier,
-                    chat: '',
                     channel: channelId,
                 });
                 

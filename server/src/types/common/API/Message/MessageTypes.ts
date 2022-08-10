@@ -9,6 +9,7 @@ export interface IMessage {
     attachedImages: string[];
     isChanged: boolean;
     isDeleted: boolean;
+    respondOn: string[];
     createdAt: string;
     updatedAt: string;
 }
@@ -17,6 +18,7 @@ export interface ICreateMessageRequest {
     chatId: string;
     content?: string;
     attachedImages?: string[];
+    respondOn?: string[];
 }
 
 export interface IDeleteMessageRequest {

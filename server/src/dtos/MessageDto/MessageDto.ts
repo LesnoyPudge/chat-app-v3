@@ -17,6 +17,9 @@ export const MessageDto: IMessageDto = {
             attachedImages: message.attachedImages,
             isChanged: message.isChanged,
             isDeleted: message.isDeleted,
+            respondOn: message.respondOn.map((messageId) => {
+                return messageId.toString();
+            }),
             createdAt: message.createdAt.toString(),
             updatedAt: message.updatedAt.toString(),
         };

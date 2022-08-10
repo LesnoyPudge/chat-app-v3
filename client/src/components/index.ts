@@ -8,3 +8,4 @@ export * from './UserInfo';
 export * from './UserRequests';
 export * from './RoomManager';
 export * from './screens';
+export * from './MessageManager';

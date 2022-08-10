@@ -20,7 +20,7 @@ export const ChannelManager: FC = () => {
                 title='create channel form'
                 inputs={[
                     {
-                        name: 'indentifier',
+                        name: 'identifier',
                     },
                     {
                         name: 'name',

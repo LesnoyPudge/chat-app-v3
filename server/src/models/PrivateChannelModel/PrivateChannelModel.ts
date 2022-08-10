@@ -16,7 +16,7 @@ export interface IPrivateChannelModel extends Document<Types.ObjectId> {
 
 const ChatSchema = new Schema(
     {
-        messages: [{ type: Schema.Types.ObjectId, ref: 'Message', default: [] }],
+        messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
     },
 );
 

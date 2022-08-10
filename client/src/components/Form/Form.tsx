@@ -65,6 +65,7 @@ export const Form: FC<IFormProps> = ({ title, inputs, submit }) => {
                                 type={type} 
                                 placeholder={placeholder || name} 
                                 onChange={changeHandler}
+                                required
                                 key={name}
                             />
                         );

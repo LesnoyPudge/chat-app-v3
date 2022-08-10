@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { getEnv, getLocalStorage } from '@utils';
-import { UserEmitters, ChannelEmitters, TextRoomEmitters } from './EventsEmitters';
+import { UserEmitters, ChannelEmitters, TextRoomEmitters, MessageEmitters } from './EventsEmitters';
 
 
 
@@ -18,5 +18,6 @@ export const socket = {
         user: UserEmitters,
         channel: ChannelEmitters,
         textRoom: TextRoomEmitters,
+        message: MessageEmitters,
     },
 };
