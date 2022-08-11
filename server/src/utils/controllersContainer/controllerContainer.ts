@@ -1,4 +1,4 @@
-import Express from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 
 
@@ -11,7 +11,7 @@ import Express from 'express';
 
 
 export const controllerContainer = <F extends (...args: any) => any>(fn: F) => {
-    return async(req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    return async(req: Request, res: Response, next: NextFunction) => {
         try {
             await fn(req, res, next);
         } catch(error) {

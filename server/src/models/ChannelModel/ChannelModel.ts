@@ -11,10 +11,7 @@ export interface IChannelModel extends Document<Types.ObjectId> {
     invitations: Types.ObjectId[];
     members: Types.ObjectId[];
     textRooms: Types.ObjectId[];
-    roles: {
-        users: Types.ObjectId[];
-        role: Types.ObjectId;
-    }[];
+    roles: Types.ObjectId[];
     banList: {
         user: Types.ObjectId;
         reason: string;
@@ -33,10 +30,7 @@ const ChannelSchema = new Schema<IChannelModel>(
         invitations: [{ type: Schema.Types.ObjectId, ref: 'Invitation' }],
         members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
         textRooms: [{ type: Schema.Types.ObjectId, ref: 'TextRooms' }],
-        roles: [{
-            users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-            role: { type: Schema.Types.ObjectId, ref: 'Role' },
-        }],
+        roles: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
         banList: [{
             user: { type: Schema.Types.ObjectId, ref: 'User' },
             reason: { type: String, default: '' },

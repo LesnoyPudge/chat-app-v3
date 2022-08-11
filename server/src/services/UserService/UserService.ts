@@ -1,9 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import * as uuid from 'uuid';
-import { UserDto } from '../../dtos';
-import { UserModel } from '../../models';
-import { IGetUserReq, IUser, IUserLoginReq, IUserRegistrationReq, ServiceType } from '../../types';
-import { transactionContainer, ApiError, getEnv, token } from '../../utils';
+import { UserDto } from '@dtos';
+import { UserModel } from '@models';
+import { IGetUserReq, IUser, IUserLoginReq, IUserRegistrationReq, ServiceType } from '@types';
+import { transactionContainer, ApiError, getEnv, token, accessCode } from '@utils';
 import { subscription } from '../../socket/features';
 
 
@@ -35,18 +35,13 @@ interface IUserService {
 
 export const UserService: IUserService = {
     async registration({ email, login, password, username }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions }) => {
-                const salt = await bcrypt.genSalt(+getEnv().BCRYPT_SALT_ROUNDS);
+                const salt = await bcrypt.genSalt(getEnv().BCRYPT_SALT_ROUNDS);
                 const hashedPassword = await bcrypt.hash(password, salt);
                 const activationLink = uuid.v4();
-                // const user = new UserModel({
-                //     email, 
-                //     login, 
-                //     password: hashedPassword, 
-                //     username,
-                //     activationLink,
-                // });
+                const { code, expiryDate } = await accessCode.create();
+
                 const user = await UserModel.create(
                     [{
                         email,
@@ -54,6 +49,10 @@ export const UserService: IUserService = {
                         password: hashedPassword,
                         username,
                         activationLink,
+                        accessCode: {
+                            code,
+                            expiryDate,
+                        },
                     }],
                     queryOptions(),
                 ).then((users) => users[0]);
@@ -73,7 +72,7 @@ export const UserService: IUserService = {
     },
 
     async login({ login, password }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions }) => {
                 const user = await UserModel.findOne({ login });
                 if (!user) {
@@ -99,7 +98,7 @@ export const UserService: IUserService = {
     },
 
     async logout({ refreshToken }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ onCommit, queryOptions }) => {
                 const user = await UserModel.findOneAndUpdate(
                     { refreshJWT: refreshToken },
@@ -152,7 +151,7 @@ export const UserService: IUserService = {
     },
 
     async update({ userId, username }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 console.log(userId, username);
                 const updatedUser = await UserModel.findOneAndUpdate(

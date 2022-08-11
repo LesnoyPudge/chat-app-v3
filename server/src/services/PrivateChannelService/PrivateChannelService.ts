@@ -15,7 +15,7 @@ interface IPrivateChannelService {
 
 export const PrivateChannelService: IPrivateChannelService = {
     async create({ userId, targetId }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions }) => {
                 const existingPrivateChannel = await PrivateChannelModel.findOne({ $in: { members: [userId, targetId] } });
                 console.log('userId:', userId, 'targetId:', targetId);
@@ -99,7 +99,7 @@ export const PrivateChannelService: IPrivateChannelService = {
     },
 
     async update({ userId, privateChannelId, newValues }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const updatedPrivateChannel = await PrivateChannelModel.findByIdAndUpdate(
                     privateChannelId,
@@ -120,7 +120,7 @@ export const PrivateChannelService: IPrivateChannelService = {
     },
 
     async leave({ userId, privateChannelId }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions }) => {
                 const updatedPrivateChannel = await PrivateChannelModel.findByIdAndUpdate(
                     privateChannelId,

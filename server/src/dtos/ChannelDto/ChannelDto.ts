@@ -25,13 +25,8 @@ export const ChannelDto: IChannelDto = {
             textRooms: channel.textRooms.map((textRoomId) => {
                 return textRoomId.toString();
             }),
-            roles: channel.roles.map(({ role, users }) => {
-                return {
-                    role: role.toString(),
-                    users: users.map((userId) => {
-                        return userId.toString();
-                    }),
-                };
+            roles: channel.roles.map((roleId) => {
+                return roleId.toString();
             }),
             banList: channel.banList.map(({ user, reason }) => {
                 return {

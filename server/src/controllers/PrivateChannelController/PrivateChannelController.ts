@@ -25,18 +25,18 @@ export const PrivateChannelController: IPrivateChannelController = {
         const { privateChannelId } = req.body;
         const { id } = req.auth.user;
 
-        const PrivateChannel = await PrivateChannelService.getOne({ userId: id, privateChannelId });
+        const privateChannel = await PrivateChannelService.getOne({ userId: id, privateChannelId });
 
-        res.json(PrivateChannel);
+        res.json(privateChannel);
     },
 
     async getMany(req, res) {
         const { privateChannelIds } = req.body;
         const { id } = req.auth.user;
 
-        const PrivateChannels = await PrivateChannelService.getMany({ userId: id, privateChannelIds });
+        const privateChannels = await PrivateChannelService.getMany({ userId: id, privateChannelIds });
 
-        res.json(PrivateChannels);
+        res.json(privateChannels);
     },
 
     async update(req, res) {

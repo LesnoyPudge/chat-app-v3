@@ -34,9 +34,9 @@ export const TextRoomController: ITextRoomController = {
         const { textRoomIds } = req.body;
         const { id } = req.auth.user;
 
-        const TextRooms = await TextRoomService.getMany({ userId: id, textRoomIds });
+        const textRooms = await TextRoomService.getMany({ userId: id, textRoomIds });
 
-        res.json(TextRooms);
+        res.json(textRooms);
     },
 
     async update(req, res) {

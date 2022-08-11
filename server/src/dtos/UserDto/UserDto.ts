@@ -28,6 +28,10 @@ export const UserDto: IUserDto = {
             privateChannels: user.privateChannels.map((privateChannelId) => {
                 return privateChannelId.toString();
             }),
+            accessCode: {
+                code: user.accessCode.code,
+                expiryDate: user.accessCode.expiryDate.toString(),
+            },
             createdAt: user.createdAt.toString(),
             updatedAt: user.updatedAt.toString(),
         };
@@ -50,6 +54,10 @@ export const UserDto: IUserDto = {
             privateChannels: user.privateChannels.map((privateChannelId) => {
                 return privateChannelId.toString();
             }),
+            accessCode: {
+                code: user.accessCode.code,
+                expiryDate: user.accessCode.expiryDate.toString(),
+            },
             createdAt: user?.createdAt,
             updatedAt: user?.updatedAt,
         };

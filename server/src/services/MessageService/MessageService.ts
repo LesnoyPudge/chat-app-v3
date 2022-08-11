@@ -15,7 +15,7 @@ interface IMessageService {
 
 export const MessageService: IMessageService = {
     async create({ userId, chatId, content = '', attachedImages = [], respondOn = [] }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions }) => {
                 const message = await MessageModel.create(
                     [{
@@ -56,7 +56,7 @@ export const MessageService: IMessageService = {
     },
 
     async update({ userId, messageId, newValues }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const updatedMessage = await MessageModel.findByIdAndUpdate(
                     messageId,
@@ -77,7 +77,7 @@ export const MessageService: IMessageService = {
     },
 
     async delete({ userId, messageId }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions }) => {
                 const deletedMessage = await MessageModel.findByIdAndDelete(messageId, queryOptions());
                 if (!deletedMessage) {

@@ -11,10 +11,7 @@ export interface IChannel {
     invitations: string[];
     members: string[];
     textRooms: string[];
-    roles: {
-        users: string[];
-        role: string;
-    }[];
+    roles: string[];
     banList: {
         user: string;
         reason: string;

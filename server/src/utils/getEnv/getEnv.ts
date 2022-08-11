@@ -10,15 +10,18 @@ interface IEnv {
     JWT_ACCESS_KEYWORD: string;
     JWT_REFRESH_KEYWORD: string;
     SMTP_HOST: string;
-    SMTP_PORT: string;
+    SMTP_PORT: number;
     SMTP_USER: string;
     SMTP_PASSWORD: string;
     CUSTOM_CLIENT_URL: string;
     CUSTOM_SERVER_URL: string;
     CUSTOM_API_V1_URL: string;
-    BCRYPT_SALT_ROUNDS: string;
+    BCRYPT_SALT_ROUNDS: number;
     REFRESH_TOKEN_DURATION: string;
     ACCESS_TOKEN_DURATION: string;
+    ACCESS_CODE_DURATION: string;
+    ACCESS_CODE_SIZE: number;
+    ACCESS_CODE_ALPHABET: string;
 }
 
 let init = false;

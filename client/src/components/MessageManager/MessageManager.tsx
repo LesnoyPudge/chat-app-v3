@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@hooks';
-import { selectAllMessages, useCreateMessageMutation, useDeleteMessageMutation, useUpdateMessageMutation } from '@redux/features';
+import { selectAllMessages, subscribeOnMessage, unsubscribeFromMessage, useCreateMessageMutation, useDeleteMessageMutation, useUpdateMessageMutation } from '@redux/features';
 import { FC } from 'react';
 import { Container } from '../Container';
 import { Form } from '@components';
@@ -81,7 +81,7 @@ export const MessageManager: FC = () => {
                     submit={{
                         text: 'subscribe',
                         handler({ messageId }) {
-                            log('subscribe:', { messageId });
+                            dispatch(subscribeOnMessage(messageId));
                         },
                     }}
                 />
@@ -96,7 +96,7 @@ export const MessageManager: FC = () => {
                     submit={{
                         text: 'unsubscribe',
                         handler({ messageId }) {
-                            log('unsubscribe:', { messageId });
+                            dispatch(unsubscribeFromMessage(messageId));
                         },
                     }}
                 />
@@ -105,11 +105,19 @@ export const MessageManager: FC = () => {
             <Container title='Message Info'>
                 {
                     hasMessages && (
-                        <>
-                            <span>id: {}</span>
-                            <span>content: {}</span>
-                            <span>user: {}</span>
-                        </>
+                        <ul style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            {
+                                messages.map((message) => {
+                                    return (
+                                        <li key={message.id} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                            <span>id: {message.id}</span>
+                                            <span>content: {message.content}</span>
+                                            <span>user: {message.user}</span>
+                                        </li>
+                                    );
+                                })
+                            }
+                        </ul>
                     )
                 }
                 {

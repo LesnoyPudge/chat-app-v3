@@ -1,4 +1,6 @@
+import { getEnv } from '@utils';
 import { Schema, model, Types, Document } from 'mongoose';
+import ms from 'ms';
 
 
 
@@ -11,20 +13,23 @@ export interface IUserModel extends Document<Types.ObjectId> {
     extraStatus: 'default' | 'afk' | 'dnd' | 'invisible';
     activationLink: string;
     isActivated: boolean;
-    settings: {
-        theme: 'auto' | 'dark' | 'light';
-        fontSize: number;
-        messageGroupSpacing: number;
-        transitionSpeed: number;
-    }
     refreshJWT: string;
     // friendRequests: ObjectId[];
-    // privateChats: ObjectId[];
     // blockList: ObjectId[];
-    // appSettings: ObjectId;
+
     channels: Types.ObjectId[];
     privateChannels: Types.ObjectId[];
-    // roles: ObjectId[];
+    // roles: Types.ObjectId[];
+    accessCode: {
+        code: string,
+        expiryDate: Date,
+    };
+    settings: {
+        theme: 'auto' | 'dark' | 'light';
+        fontSize: 12 | 14 | 16 | 18 | 20;
+        messageGroupSpacing: 16 | 20;
+        transitionSpeed: 0 | 0.5 | 1 | 1.5 | 2;
+    };
     createdAt: Date;
     updatedAt: Date;
 }
@@ -39,6 +44,10 @@ const UserSchema = new Schema<IUserModel>(
         extraStatus: { type: String, default: 'default' },
         activationLink: { type: String, required: true },
         isActivated: { type: Boolean, default: false },
+        accessCode: {
+            code: { type: String, required: true },
+            expiryDate: { type: Date, required: true },
+        },
         settings: {
             theme: { type: String, default: 'auto' },
             fontSize: { type: Number, default: 16 },

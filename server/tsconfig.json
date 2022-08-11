@@ -10,6 +10,7 @@
             "@routes": ["src/routes/index"],
             "@services": ["src/services/index"],
             "@socket": ["src/socket/index"],
+            "@socket/features": ["src/socket/features/index"],
             "@types": ["src/types/index"],
             "@utils": ["src/utils/index"],
             "@validators": ["src/validators/index"],

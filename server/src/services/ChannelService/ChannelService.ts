@@ -16,7 +16,7 @@ interface IChannelService {
 
 export const ChannelService: IChannelService = {
     async create({ name, identifier, userId }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions }) => {
                 const isChannelExist = await ChannelModel.exists({ identifier });
                 if (isChannelExist) {

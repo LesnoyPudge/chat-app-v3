@@ -13,10 +13,14 @@ export interface IUser {
     isActivated: boolean;
     settings: {
         theme: 'auto' | 'dark' | 'light';
-        fontSize: number;
-        messageGroupSpacing: number;
-        transitionSpeed: number;
-    }
+        fontSize: 12 | 14 | 16 | 18 | 20;
+        messageGroupSpacing: 16 | 20;
+        transitionSpeed: 0 | 0.5 | 1 | 1.5 | 2;
+    };
+    accessCode: {
+        code: string;
+        expiryDate: string;
+    };
     channels: string[];
     privateChannels: string[];
     createdAt: string;

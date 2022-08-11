@@ -34,9 +34,9 @@ export const MessageController: IMessageController = {
         const { messageIds } = req.body;
         const { id } = req.auth.user;
 
-        const Messages = await MessageService.getMany({ userId: id, messageIds });
+        const messages = await MessageService.getMany({ userId: id, messageIds });
 
-        res.json(Messages);
+        res.json(messages);
     },
 
     async update(req, res) {

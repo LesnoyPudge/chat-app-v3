@@ -16,7 +16,7 @@ interface ITextRoomService {
 
 export const TextRoomService: ITextRoomService = {
     async create({ userId, channelId, name, identifier }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions }) => {
                 const textRoom = new TextRoomModel({
                     name,
@@ -63,7 +63,7 @@ export const TextRoomService: ITextRoomService = {
     },
 
     async update({ userId, textRoomId, newValues }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const updatedTextRoom = await TextRoomModel.findByIdAndUpdate(
                     textRoomId,
@@ -84,7 +84,7 @@ export const TextRoomService: ITextRoomService = {
     },
 
     async delete({ userId, textRoomId }) {
-        return await transactionContainer(
+        return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const deletedTextRoom = await TextRoomModel.findByIdAndDelete(
                     textRoomId,
