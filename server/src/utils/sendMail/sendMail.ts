@@ -7,7 +7,7 @@ const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD } = getEnv();
 
 const transporter = createTransport({
     host: SMTP_HOST,
-    port: SMTP_PORT,
+    port: parseInt(SMTP_PORT),
     secure: false,
     auth: {
         user: SMTP_USER,

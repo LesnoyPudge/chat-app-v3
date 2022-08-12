@@ -37,7 +37,8 @@ export const UserService: IUserService = {
     async registration({ email, login, password, username }) {
         return transactionContainer(
             async({ queryOptions }) => {
-                const salt = await bcrypt.genSalt(getEnv().BCRYPT_SALT_ROUNDS);
+                const { BCRYPT_SALT_ROUNDS } = getEnv();
+                const salt = await bcrypt.genSalt(parseInt(BCRYPT_SALT_ROUNDS));
                 const hashedPassword = await bcrypt.hash(password, salt);
                 const activationLink = uuid.v4();
                 const { code, expiryDate } = await accessCode.create();

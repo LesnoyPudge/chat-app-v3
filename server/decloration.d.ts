@@ -1,3 +1,5 @@
-declare module 'nanoid/async' {
-    const customAlphabet: (alphabet: string, size: number) => () => Promise<string>;
+declare module 'nanoid' {
+    const nanoid: (size: number) => string;
+    export default nanoid;
+    // const customAlphabet: (alphabet: string, size: number) => () => string;
 }
