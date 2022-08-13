@@ -1,16 +1,16 @@
 import { AuthorizedSocketType } from '@socket';
-import { MessageSubscription } from 'src/socket/features';
+import { subscription } from '@subscription';
 
 
 
 export const messageListeners = (socketIO: AuthorizedSocketType) => {
     socketIO.on('subscribeOnMessage', (messageId: string) => {
         const { id } = socketIO.handshake.auth.user;
-        MessageSubscription.subscribe({ messageId, userId: id });
+        subscription.messages.subscribe({ entityId: messageId, userId: id });
     });
 
     socketIO.on('unsubscribeFromMessage', (messageId: string) => {
         const { id } = socketIO.handshake.auth.user;
-        MessageSubscription.unsubscribe({ messageId, userId: id });
+        subscription.messages.unsubscribe({ entityId: messageId, userId: id });
     });
 };

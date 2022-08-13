@@ -1,8 +1,8 @@
 import { TextRoomDto } from '@dtos';
 import { ChannelModel, TextRoomModel } from '@models';
+import { subscription } from '@subscription';
 import { AuthorizedServiceType, ICreateTextRoomRequest, IDeleteTextRoomRequest, IGetManyTextRoomsRequest, IGetOneTextRoomRequest, ITextRoom, IUpdateTextRoomRequest } from '@types';
 import { ApiError, transactionContainer } from '@utils';
-import { TextRoomSubscription } from 'src/socket/features';
 
 
 
@@ -75,7 +75,7 @@ export const TextRoomService: ITextRoomService = {
                 const updatedTextRoomDto = TextRoomDto.objectFromModel(updatedTextRoom);
 
                 onCommit(() => {
-                    TextRoomSubscription.update({ userId, textRoom: updatedTextRoomDto });
+                    subscription.textRooms.update({ userId, entity: updatedTextRoomDto });
                 });
 
                 return updatedTextRoomDto;

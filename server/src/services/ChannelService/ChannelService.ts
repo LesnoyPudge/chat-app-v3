@@ -1,8 +1,8 @@
 import { ChannelDto } from '@dtos';
 import { ChannelModel, UserModel } from '@models';
+import { subscription } from '@subscription';
 import { AuthorizedServiceType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest, ServiceType } from '@types';
 import { ApiError, transactionContainer } from '@utils';
-import { ChannelSubscription } from 'src/socket/features';
 
 
 
@@ -82,7 +82,7 @@ export const ChannelService: IChannelService = {
                 const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
 
                 onCommit(() => {
-                    ChannelSubscription.update({ userId, channel: updatedChannelDto });
+                    subscription.channels.update({ userId, entity: updatedChannelDto });
                 });
 
                 return updatedChannelDto;

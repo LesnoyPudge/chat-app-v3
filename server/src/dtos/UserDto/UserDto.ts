@@ -32,6 +32,20 @@ export const UserDto: IUserDto = {
                 code: user.accessCode.code,
                 expiryDate: user.accessCode.expiryDate.toString(),
             },
+            friendRequests: {
+                incoming: user.friendRequests.incoming.map((incomingRequest) => {
+                    return {
+                        from: incomingRequest.from.toString(),
+                        createdAt: incomingRequest.createdAt.toString(),
+                    };
+                }),
+                outgoing: user.friendRequests.outgoing.map((outgoingRequest) => {
+                    return {
+                        to: outgoingRequest.to.toString(),
+                        createdAt: outgoingRequest.createdAt.toString(),
+                    };
+                }),
+            },
             createdAt: user.createdAt.toString(),
             updatedAt: user.updatedAt.toString(),
         };
@@ -48,15 +62,29 @@ export const UserDto: IUserDto = {
             activationLink: user?.activationLink,
             isActivated: user?.isActivated,
             settings: user?.settings,
-            channels: user.channels.map((channelId) => {
+            channels: user?.channels.map((channelId) => {
                 return channelId.toString();
             }),
-            privateChannels: user.privateChannels.map((privateChannelId) => {
+            privateChannels: user?.privateChannels.map((privateChannelId) => {
                 return privateChannelId.toString();
             }),
             accessCode: {
-                code: user.accessCode.code,
-                expiryDate: user.accessCode.expiryDate.toString(),
+                code: user?.accessCode.code,
+                expiryDate: user?.accessCode.expiryDate.toString(),
+            },
+            friendRequests: {
+                incoming: user?.friendRequests.incoming.map((incomingRequest) => {
+                    return {
+                        from: incomingRequest.from.toString(),
+                        createdAt: incomingRequest.createdAt.toString(),
+                    };
+                }),
+                outgoing: user?.friendRequests.outgoing.map((outgoingRequest) => {
+                    return {
+                        to: outgoingRequest.to.toString(),
+                        createdAt: outgoingRequest.createdAt.toString(),
+                    };
+                }),
             },
             createdAt: user?.createdAt,
             updatedAt: user?.updatedAt,

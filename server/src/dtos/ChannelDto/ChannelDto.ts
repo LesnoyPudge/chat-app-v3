@@ -16,9 +16,6 @@ export const ChannelDto: IChannelDto = {
             name: channel.name,
             owner: channel.owner.toString(),
             isPrivate: channel.isPrivate,
-            invitations: channel.invitations.map((invitationId) => {
-                return invitationId.toString();
-            }),
             members: channel.members.map((memberId) => {
                 return memberId.toString();
             }),
@@ -32,6 +29,14 @@ export const ChannelDto: IChannelDto = {
                 return {
                     user: user.toString(),
                     reason,
+                };
+            }),
+            invitations: channel.invitations.map((invitation) => {
+                return {
+                    creator: invitation.creator.toString(),
+                    code: invitation.code,
+                    expiryDate: invitation.expiryDate.toString(),
+                    createdAt: invitation.createdAt.toString(),
                 };
             }),
             createdAt: channel.createdAt.toString(),

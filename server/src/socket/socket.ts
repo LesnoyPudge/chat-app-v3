@@ -3,7 +3,7 @@ import { ApiError, token } from '@utils';
 import { Socket } from 'socket.io';
 import { IUser } from '@types';
 import { channelEmitters, subscriptionEmitters, textRoomEmitters, userEmitters, messageEmitters } from './emitters';
-import { channelListeners, messageListeners, statusListeners, subscriptionListeners, textRoomListeners } from './listeners';
+import { channelListeners, messageListeners, userListeners, textRoomListeners } from './listeners';
 
 
 
@@ -67,8 +67,7 @@ const initListeners = (socketIO: AuthorizedSocketType) => {
         socket.events.reciveConnectionToVoiceRoom(userId);
     });
 
-    statusListeners(socketIO);
-    subscriptionListeners(socketIO);
+    userListeners(socketIO);
     channelListeners(socketIO);
     textRoomListeners(socketIO);
     messageListeners(socketIO);

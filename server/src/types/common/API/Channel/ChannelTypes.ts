@@ -8,13 +8,18 @@ export interface IChannel {
     name: string;
     owner: string;
     isPrivate: boolean;
-    invitations: string[];
     members: string[];
     textRooms: string[];
     roles: string[];
     banList: {
         user: string;
         reason: string;
+    }[];
+    invitations: {
+        creator: string;
+        code: string;
+        expiryDate: string;
+        createdAt: string;
     }[];
     createdAt: string;
     updatedAt: string;

@@ -23,6 +23,16 @@ export interface IUser {
     };
     channels: string[];
     privateChannels: string[];
+    friendRequests: {
+        incoming: {
+            from: string;
+            createdAt: string;
+        }[];
+        outgoing: {
+            to: string;
+            createdAt: string;
+        }[];
+    };
     createdAt: string;
     updatedAt: string;
 }

@@ -4,7 +4,7 @@ import { UserDto } from '@dtos';
 import { UserModel } from '@models';
 import { IGetUserReq, IUser, IUserLoginReq, IUserRegistrationReq, ServiceType } from '@types';
 import { transactionContainer, ApiError, getEnv, token, accessCode } from '@utils';
-import { subscription } from '../../socket/features';
+import { subscription } from '@subscription';
 
 
 
@@ -112,7 +112,7 @@ export const UserService: IUserService = {
                 }
                 const userDto = UserDto.objectFromModel(user);
                 onCommit(() => {
-                    subscription.wentOffline(userDto.id);
+                    subscription.users.wentOffline({ entityId: userDto.id });
                 });
             },
         );
@@ -166,7 +166,7 @@ export const UserService: IUserService = {
                 const userDto = UserDto.objectFromModel(updatedUser);
 
                 onCommit(() => {
-                    subscription.update(userDto);
+                    subscription.users.update({ entity: userDto, userId });
                 });
 
                 return userDto;

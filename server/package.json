@@ -1,7 +1,7 @@
 {
     "name": "server",
     "engines": {
-        "node": ">=8.3.0"
+        "node": ">=9.0.0"
     },
     "scripts": {
         "this:install": "npm ci",

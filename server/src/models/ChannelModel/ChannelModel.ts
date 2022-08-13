@@ -8,13 +8,18 @@ export interface IChannelModel extends Document<Types.ObjectId> {
     name: string;
     owner: Types.ObjectId;
     isPrivate: boolean;
-    invitations: Types.ObjectId[];
     members: Types.ObjectId[];
     textRooms: Types.ObjectId[];
     roles: Types.ObjectId[];
     banList: {
         user: Types.ObjectId;
         reason: string;
+    }[];
+    invitations: {
+        creator: Types.ObjectId;
+        code: string;
+        expiryDate: Date;
+        createdAt: Date;
     }[];
     createdAt: Date;
     updatedAt: Date;

@@ -30,6 +30,16 @@ export interface IUserModel extends Document<Types.ObjectId> {
         messageGroupSpacing: 16 | 20;
         transitionSpeed: 0 | 0.5 | 1 | 1.5 | 2;
     };
+    friendRequests: {
+        incoming: {
+            from: Types.ObjectId;
+            createdAt: Date;
+        }[];
+        outgoing: {
+            to: Types.ObjectId;
+            createdAt: Date;
+        }[];
+    };
     createdAt: Date;
     updatedAt: Date;
 }
@@ -57,6 +67,16 @@ const UserSchema = new Schema<IUserModel>(
         refreshJWT: { type: String, default: '' },
         channels: [{ type: Schema.Types.ObjectId, ref: 'Channel' }],
         privateChannels: [{ type: Schema.Types.ObjectId, ref: 'PrivateChannel' }],
+        friendRequests: {
+            incoming: [{
+                from: { type: Schema.Types.ObjectId, ref: 'User' },
+                createdAt: { type: Date, default: Date.now },
+            }],
+            outgoing: [{
+                to: { type: Schema.Types.ObjectId, ref: 'User' },
+                createdAt: { type: Date, default: Date.now },
+            }],
+        },
     },
     { 
         timestamps: true, 
