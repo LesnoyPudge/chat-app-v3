@@ -4,12 +4,12 @@ import nanoid from 'nanoid';
 
 
 
-const { ACCESS_CODE_SIZE, ACCESS_CODE_ALPHABET } = getEnv();
+const { ACCESS_CODE_SIZE } = getEnv();
 
 export const accessCode = {
     async create() {
         const randomString = nanoid(100).replace(new RegExp(/[^a-zA-Z]+/g), '');
-        const code = randomString.toUpperCase().slice(0, 6);
+        const code = randomString.toUpperCase().slice(0, parseInt(ACCESS_CODE_SIZE));
         const expiryDate = Date.now() + ms(getEnv().ACCESS_CODE_DURATION);
 
         return {
@@ -18,11 +18,11 @@ export const accessCode = {
         };
     },
 
-    isValid(expiryDate: Date) {
+    isExpired(expiryDate: Date) {
         const currentDate = Date.now();
         const expiryDateInMs = expiryDate.getMilliseconds();
-        const isValid = expiryDateInMs > currentDate;
+        const isExpired = expiryDateInMs > currentDate;
 
-        return isValid;
+        return isExpired;
     },
 };

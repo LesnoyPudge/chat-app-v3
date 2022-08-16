@@ -2,8 +2,8 @@ import { io } from '@server';
 import { ApiError, token } from '@utils';
 import { Socket } from 'socket.io';
 import { IUser } from '@types';
-import { channelEmitters, subscriptionEmitters, textRoomEmitters, userEmitters, messageEmitters } from './emitters';
-import { channelListeners, messageListeners, userListeners, textRoomListeners } from './listeners';
+import { channelEmitters, textRoomEmitters, userEmitters, messageEmitters, privateChannelEmitters } from './emitters';
+import { channelListeners, messageListeners, userListeners, textRoomListeners, privateChannelListeners } from './listeners';
 
 
 
@@ -42,10 +42,10 @@ export const socket = {
 
     events: {
         ...userEmitters,
-        ...subscriptionEmitters,
         ...channelEmitters,
         ...textRoomEmitters,
         ...messageEmitters,
+        ...privateChannelEmitters,
     },
 };
 
@@ -64,11 +64,12 @@ const initListeners = (socketIO: AuthorizedSocketType) => {
 
     socketIO.on('connectToVoiceRoom', (userId: string) => {
         console.log('user: ', userId, ' connected to voice room');
-        socket.events.reciveConnectionToVoiceRoom(userId);
+        // socket.events.reciveConnectionToVoiceRoom(userId);
     });
 
     userListeners(socketIO);
     channelListeners(socketIO);
     textRoomListeners(socketIO);
     messageListeners(socketIO);
+    privateChannelListeners(socketIO);
 };

@@ -1,8 +1,9 @@
 import { ChannelDto } from '@dtos';
-import { ChannelModel, UserModel } from '@models';
+import { ChannelModel } from '@models';
 import { subscription } from '@subscription';
-import { AuthorizedServiceType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest, ServiceType } from '@types';
+import { AuthorizedServiceType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest } from '@types';
 import { ApiError, transactionContainer } from '@utils';
+import { UserServiceHelpers, RoleServiceHelpers, TextRoomServiceHelpers } from '@services';
 
 
 
@@ -30,11 +31,14 @@ export const ChannelService: IChannelService = {
                     members: [userId],
                 });
 
-                await UserModel.updateOne(
-                    { _id: userId }, 
-                    { $push: { channels: channel._id } },
-                    queryOptions(),
-                );
+                await UserServiceHelpers.addChannel({ userId, channelId: channel._id });
+                
+                const defaulRole = await RoleServiceHelpers.createDefaultRole({ userId, channelId: channel._id });
+                const adminRole = await RoleServiceHelpers.createAdminRole({ userId, channelId: channel._id });
+                channel.roles = [adminRole._id, defaulRole._id];
+
+                const textRoom = await TextRoomServiceHelpers.createDefaultTextRoom({ channelId: channel._id });
+                channel.textRooms = [textRoom._id];
 
                 await channel.save(queryOptions());
 
@@ -82,7 +86,7 @@ export const ChannelService: IChannelService = {
                 const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
 
                 onCommit(() => {
-                    subscription.channels.update({ userId, entity: updatedChannelDto });
+                    subscription.channels.update({ entity: updatedChannelDto });
                 });
 
                 return updatedChannelDto;
@@ -98,12 +102,11 @@ export const ChannelService: IChannelService = {
                     throw ApiError.badRequest('Не удалось удалить канал');
                 }
 
-                await UserModel.updateMany(
-                    { channels: channelId }, 
-                    { $pull: { channels: channelId } }, 
-                    queryOptions(),
-                );
- 
+                await UserServiceHelpers.removeChannelFromMany({ channelId });
+                await RoleServiceHelpers.deleteManyByChannelId({ channelId });
+                await TextRoomServiceHelpers.deleteManyByChannelId({ channelId });
+                
+
                 const deletedChannelDto = ChannelDto.objectFromModel(deletedChannel);
                 return deletedChannelDto;
             },

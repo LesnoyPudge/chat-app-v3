@@ -6,6 +6,10 @@ import { subscriptionHelpers } from '@subscription/helpers';
 
 
 
+interface ITextRoomSubscriptionModel extends ISubscriptionModel<ITextRoom> {
+    delete: ({ entityId }: {entityId: string}) => void;
+}
+
 const { 
     isEntityExist, 
     subscribeOn, 
@@ -15,7 +19,7 @@ const {
     updateEntity,
 } = subscriptionHelpers;
 
-export const textRoomsSubscriptionModel: ISubscriptionModel<ITextRoom> = {
+export const textRoomsSubscriptionModel: ITextRoomSubscriptionModel = {
     entityList: {},
     
     async subscribe({ entityId, userId }) {
@@ -43,8 +47,7 @@ export const textRoomsSubscriptionModel: ISubscriptionModel<ITextRoom> = {
         deleteEntity({ entityId, entityKey: 'textRooms' });
     },
 
-    update({ entity, userId }) {
-        console.log(userId + ' make an update');
+    update({ entity }) {
         const isExist = isEntityExist({ entityId: entity.id, entityKey: 'textRooms' });
         if (!isExist) return;
 
@@ -53,6 +56,12 @@ export const textRoomsSubscriptionModel: ISubscriptionModel<ITextRoom> = {
 
         const subscribers = getSubscribersArray({ entityId: entity.id, entityKey: 'textRooms' });
         sendTextRoomEntity({ entityId: entity.id, to: subscribers });
+    },
+
+    delete({ entityId }) {
+        const subscribers = getSubscribersArray({ entityId, entityKey: 'channels' });
+        removeTextRoomSubscription({ entityId, to: subscribers });
+        deleteEntity({ entityId, entityKey: 'channels' });
     },
 };
 
@@ -69,5 +78,12 @@ const sendTextRoomEntity = ({ entityId, to }: {entityId: string, to: string | st
     socket.events.sendTextRoomSubscription({
         to,
         textRoom: textRoomsSubscriptionModel.entityList[entityId].info,
+    });
+};
+
+const removeTextRoomSubscription = ({ entityId, to }: {entityId: string, to: string | string[]}) => {
+    socket.events.removeTextRoomSubscription({
+        to,
+        textRoomId: entityId,
     });
 };

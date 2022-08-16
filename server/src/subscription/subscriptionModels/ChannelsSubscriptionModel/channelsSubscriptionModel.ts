@@ -6,6 +6,10 @@ import { subscriptionHelpers } from '@subscription/helpers';
 
 
 
+interface IChannelSubscriptionModel extends ISubscriptionModel<IChannel> {
+    delete: ({ entityId }: {entityId: string}) => void;
+}
+
 const { 
     isEntityExist, 
     subscribeOn, 
@@ -15,7 +19,7 @@ const {
     updateEntity,
 } = subscriptionHelpers;
 
-export const channelsSubscriptionModel: ISubscriptionModel<IChannel> = {
+export const channelsSubscriptionModel: IChannelSubscriptionModel = {
     entityList: {},
     
     async subscribe({ entityId, userId }) {
@@ -43,8 +47,7 @@ export const channelsSubscriptionModel: ISubscriptionModel<IChannel> = {
         deleteEntity({ entityId, entityKey: 'channels' });
     },
 
-    update({ entity, userId }) {
-        console.log(userId + ' make an update');
+    update({ entity }) {
         const isExist = isEntityExist({ entityId: entity.id, entityKey: 'channels' });
         if (!isExist) return;
 
@@ -53,6 +56,12 @@ export const channelsSubscriptionModel: ISubscriptionModel<IChannel> = {
 
         const subscribers = getSubscribersArray({ entityId: entity.id, entityKey: 'channels' });
         sendChannelEntity({ entityId: entity.id, to: subscribers });
+    },
+
+    delete({ entityId }) {
+        const subscribers = getSubscribersArray({ entityId, entityKey: 'channels' });
+        removeChannelSubscription({ entityId, to: subscribers });
+        deleteEntity({ entityId, entityKey: 'channels' });
     },
 };
 
@@ -69,5 +78,12 @@ const sendChannelEntity = ({ entityId, to }: {entityId: string, to: string | str
     socket.events.sendChannelSubscription({
         to,
         channel: channelsSubscriptionModel.entityList[entityId].info,
+    });
+};
+
+const removeChannelSubscription = ({ entityId, to }: {entityId: string, to: string | string[]}) => {
+    socket.events.removeChannelSubscription({
+        to,
+        channelId: entityId,
     });
 };

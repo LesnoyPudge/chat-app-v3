@@ -166,7 +166,7 @@ export const UserService: IUserService = {
                 const userDto = UserDto.objectFromModel(updatedUser);
 
                 onCommit(() => {
-                    subscription.users.update({ entity: userDto, userId });
+                    subscription.users.update({ entity: userDto });
                 });
 
                 return userDto;

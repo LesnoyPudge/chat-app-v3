@@ -43,8 +43,7 @@ export const messagesSubscriptionModel: ISubscriptionModel<IMessage> = {
         deleteEntity({ entityId, entityKey: 'messages' });
     },
 
-    update({ entity, userId }) {
-        console.log(userId + ' make an update');
+    update({ entity }) {
         const isExist = isEntityExist({ entityId: entity.id, entityKey: 'messages' });
         if (!isExist) return;
 

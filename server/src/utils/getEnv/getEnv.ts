@@ -21,7 +21,6 @@ interface IEnv {
     ACCESS_TOKEN_DURATION: string;
     ACCESS_CODE_DURATION: string;
     ACCESS_CODE_SIZE: string;
-    ACCESS_CODE_ALPHABET: string;
 }
 
 let init = false;

@@ -1,7 +1,8 @@
 import { MessageDto } from '@dtos';
-import { MessageModel, UserModel } from '@models';
+import { MessageModel } from '@models';
 import { AuthorizedServiceType, ICreateMessageRequest, IDeleteMessageRequest, IGetManyMessagesRequest, IGetOneMessageRequest, IMessage, IUpdateMessageRequest } from '@types';
 import { ApiError, transactionContainer } from '@utils';
+import { TextRoomServiceHelpers, PrivateChannelServiceHelpers } from '@services';
 
 
 
@@ -28,6 +29,11 @@ export const MessageService: IMessageService = {
                     queryOptions(),
                 ).then((messages) => messages[0]);
                 
+                const isPrivate = PrivateChannelServiceHelpers.isExist({ filter: { 'chat._id': chatId } });
+                
+                if (isPrivate) await PrivateChannelServiceHelpers.addMessage({ chatId, messageId: message._id });
+                if (!isPrivate) await TextRoomServiceHelpers.addMessage({ chatId, messageId: message._id });
+
                 const messageDto = MessageDto.objectFromModel(message);
                 return messageDto;
             },
@@ -79,16 +85,13 @@ export const MessageService: IMessageService = {
     async delete({ userId, messageId }) {
         return transactionContainer(
             async({ queryOptions }) => {
-                const deletedMessage = await MessageModel.findByIdAndDelete(messageId, queryOptions());
-                if (!deletedMessage) {
+                const deletedMessage = await MessageModel.findByIdAndUpdate(
+                    messageId, 
+                    { isDeleted: true },
+                    queryOptions({ new: true }),
+                ).catch(() => {
                     throw ApiError.badRequest('Не удалось удалить сообщение');
-                }
-
-                await UserModel.updateMany(
-                    { messages: messageId }, 
-                    { $pull: { messages: messageId } }, 
-                    queryOptions(),
-                );
+                });
  
                 const deletedMessageDto = MessageDto.objectFromModel(deletedMessage);
                 return deletedMessageDto;

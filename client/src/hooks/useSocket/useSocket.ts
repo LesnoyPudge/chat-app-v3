@@ -1,8 +1,8 @@
 import { log, socket, SocketType } from '@utils';
 import { useEffect, useRef, useState } from 'react';
-import { IChannel, IMessage, ITextRoom, IUser } from '@backendTypes';
+import { IChannel, IMessage, IPrivateChannel, ITextRoom, IUser } from '@backendTypes';
 import { useAppDispatch } from '@hooks';
-import { addChannel, addMessage, addTextRoom, addUser } from '@redux/features';
+import { addChannel, addMessage, addPrivateChannel, addTextRoom, addUser, removeChannel, removeTextRoom } from '@redux/features';
 
 
 
@@ -64,6 +64,21 @@ export const useSocket = () => {
         socket.on('sendMessageSubscription', (message: IMessage) => {
             dispatch(addMessage(message));
             log('got message sub update:', message);
+        });
+        
+        socket.on('sendPrivateChannelSubscription', (privateChannel: IPrivateChannel) => {
+            dispatch(addPrivateChannel(privateChannel));
+            log('got private channel sub update:', privateChannel);
+        });
+
+        socket.on('removeChannelSubscription', (channelId: string) => {
+            dispatch(removeChannel(channelId));
+            log('channel removed:', channelId);
+        });
+
+        socket.on('removeTextRoomSubscription', (textRoomId: string) => {
+            dispatch(removeTextRoom(textRoomId));
+            log('textRoom removed:', textRoomId);
         });
     }, [dispatch]);
 

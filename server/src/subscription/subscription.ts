@@ -1,4 +1,4 @@
-import { channelsSubscriptionModel, messagesSubscriptionModel, textRoomsSubscriptionModel, usersSubscriptionModel } from './subscriptionModels';
+import { channelsSubscriptionModel, messagesSubscriptionModel, privateChannelsSubscriptionModel, textRoomsSubscriptionModel, usersSubscriptionModel } from './subscriptionModels';
 
 
 
@@ -19,7 +19,7 @@ export interface ISubscriptionModel<T> {
     entityList: IEntityList<T>;
     subscribe: ({ userId, entityId }: {userId: string, entityId: string}) => void;
     unsubscribe: ({ userId, entityId }: {userId: string, entityId: string}) => void;
-    update: ({ userId, entity }: {userId: string, entity: Partial<T>}) => void;
+    update: ({ entity }: {entity: Partial<T>}) => void;
 }
 
 export const subscription = {
@@ -28,4 +28,5 @@ export const subscription = {
     textRooms: textRoomsSubscriptionModel,
     // voiceRooms: {} 
     messages: messagesSubscriptionModel,
+    privateChannels: privateChannelsSubscriptionModel,
 };

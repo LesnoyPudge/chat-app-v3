@@ -3,12 +3,12 @@ import express from 'express';
 import path from 'path';
 import http from 'http';
 import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
 // import { ExpressPeerServer } from 'peer';
 import { routesInit } from './routes';
-import { dbConnection } from './models';
-import { getEnv } from './utils';
+import { getEnv } from '@utils';
 import { Server } from 'socket.io';
-import { socket } from './socket';
+import { socket } from '@socket';
 
 
 
@@ -44,6 +44,18 @@ if (CUSTOM_NODE_ENV === 'production') {
         res.sendFile(path.resolve(__dirname, '../../client', 'build', 'index.html'));
     });
 }
+
+mongoose.pluralize(null);
+
+const dbConnection = async() => {
+    try {
+        // mongoose.set('debug', true);
+        await mongoose.connect(getEnv().DB_CONNECTION);
+        console.log('database connected');
+    } catch (error) {
+        console.log('database connection failed');
+    }
+};
 
 (async function() {
     try {

@@ -28,7 +28,7 @@ const ChatSchema = new Schema<IChatSchema>(
 
 const TextRoomSchema = new Schema<ITextRoomModel>(
     {
-        identifier: { type: String, unique: true, required: true },
+        identifier: { type: String, required: true },
         name: { type: String, required: true },
         channel: { type: Schema.Types.ObjectId, ref: 'Channel', required: true },
         chat: {

@@ -1,4 +1,3 @@
-export * from './dbConnection';
 export * from './UserModel';
 export * from './ChannelModel';
 export * from './TextRoomModel';

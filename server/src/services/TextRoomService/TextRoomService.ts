@@ -1,8 +1,9 @@
 import { TextRoomDto } from '@dtos';
-import { ChannelModel, TextRoomModel } from '@models';
+import { TextRoomModel } from '@models';
 import { subscription } from '@subscription';
 import { AuthorizedServiceType, ICreateTextRoomRequest, IDeleteTextRoomRequest, IGetManyTextRoomsRequest, IGetOneTextRoomRequest, ITextRoom, IUpdateTextRoomRequest } from '@types';
 import { ApiError, transactionContainer } from '@utils';
+import { ChannelServiceHelpers } from '@services';
 
 
 
@@ -24,16 +25,9 @@ export const TextRoomService: ITextRoomService = {
                     channel: channelId,
                 });
                 
-                // create chat
-                // add chat to textRoom
-
                 await textRoom.save(queryOptions());
 
-                await ChannelModel.updateOne(
-                    { _id: channelId }, 
-                    { $push: { textRooms: textRoom._id } },
-                    queryOptions(),
-                );
+                await ChannelServiceHelpers.addTextRoom({ channelId, textRoomId: textRoom._id });
                 
                 const textRoomDto = TextRoomDto.objectFromModel(textRoom);
                 return textRoomDto;
@@ -75,7 +69,7 @@ export const TextRoomService: ITextRoomService = {
                 const updatedTextRoomDto = TextRoomDto.objectFromModel(updatedTextRoom);
 
                 onCommit(() => {
-                    subscription.textRooms.update({ userId, entity: updatedTextRoomDto });
+                    subscription.textRooms.update({ entity: updatedTextRoomDto });
                 });
 
                 return updatedTextRoomDto;
@@ -92,18 +86,11 @@ export const TextRoomService: ITextRoomService = {
                 );
                 if (!deletedTextRoom) throw ApiError.badRequest('Не удалось удалить комнату');
             
-                await ChannelModel.updateOne(
-                    { _id: deletedTextRoom._id }, 
-                    { $pull: { textRooms: textRoomId } }, 
-                    queryOptions(),
-                );
+                await ChannelServiceHelpers.removeTextRoom({ textRoomId });
 
                 const deletedTextRoomDto = TextRoomDto.objectFromModel(deletedTextRoom);
                 
                 onCommit(() => {
-                    // вынести update channel в channel service helpers 
-                    // и там вызвать onCommit socket channelSubscription update
-                    
                     // socket textRoomSubscribtion delete
                 });
                 

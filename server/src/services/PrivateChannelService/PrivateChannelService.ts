@@ -1,7 +1,9 @@
 import { PrivateChannelDto } from '@dtos';
-import { MessageModel, PrivateChannelModel, UserModel } from '@models';
+import { PrivateChannelModel } from '@models';
 import { AuthorizedServiceType, ICreatePrivateChannelRequest, ILeavePrivateChannelRequest, IGetManyPrivateChannelsRequest, IGetOnePrivateChannelRequest, IPrivateChannel, IUpdatePrivateChannelRequest } from '@types';
-import { ApiError, toObjectId, transactionContainer } from '@utils';
+import { ApiError, objectId, transactionContainer } from '@utils';
+import { PrivateChannelServiceHelpers, UserServiceHelpers, MessageServiceHelpers } from '@services';
+import { subscription } from '@subscription';
 
 
 
@@ -13,66 +15,53 @@ interface IPrivateChannelService {
     leave: AuthorizedServiceType<ILeavePrivateChannelRequest, IPrivateChannel>;
 }
 
+const { toObjectId } = objectId;
+
 export const PrivateChannelService: IPrivateChannelService = {
     async create({ userId, targetId }) {
         return transactionContainer(
             async({ queryOptions }) => {
-                const existingPrivateChannel = await PrivateChannelModel.findOne({ $in: { members: [userId, targetId] } });
-                console.log('userId:', userId, 'targetId:', targetId);
-                if (existingPrivateChannel) {
-                    const myId = toObjectId(userId);
-                    const isActiveMember = existingPrivateChannel.activeMembers.includes(myId);
-                    console.log('канал сущестует');
-                    
+                const filter = { $in: { members: [userId, targetId] } };
+                const isExist = await PrivateChannelServiceHelpers.isExist({ filter });
+                const existingPrivateChannel = isExist && await PrivateChannelModel.findOne(filter, {}, { lean: true });
+                const isActiveMember = existingPrivateChannel.activeMembers.includes(toObjectId(userId));
 
-                    if (isActiveMember) {
-                        const existingPrivateChannelDto = PrivateChannelDto.objectFromModel(existingPrivateChannel);
-                        console.log('уже activeMember, возвращаю');
-                        return existingPrivateChannelDto;
-                    }
-                    
+                if (isExist && !isActiveMember) {
                     const updatedPrivateChannel = await PrivateChannelModel.findByIdAndUpdate(
                         existingPrivateChannel._id,
-                        { $push: { activeMembers: myId } },
+                        { $push: { activeMembers: toObjectId(userId) } },
                         queryOptions({ new: true }),
                     );
-    
-                    await UserModel.updateOne(
-                        { _id: userId }, 
-                        { $push: { privateChannels: updatedPrivateChannel._id } },
-                        queryOptions(),
-                    );
-                    console.log('не activeMember, добавляюсь');
-                    const updatedPrivateChannelDto = PrivateChannelDto.objectFromModel(updatedPrivateChannel);
-                    return updatedPrivateChannelDto;
-                    
-                }
-                console.log('канала нет, создаю');
-                const privateChannel = await PrivateChannelModel.create(
-                    [{
-                        members: [
-                            userId,
-                            targetId,
-                        ],
-                        activeMembers: [
-                            userId,
-                        ],
-                    }],
-                    queryOptions(),
-                ).then((privateChannels) => privateChannels[0]);
-                
-                if (!privateChannel) {
-                    throw ApiError.badRequest('Не удалось создать канал');
+
+                    await UserServiceHelpers.addPrivateChannel({ userId, privateChannelId: updatedPrivateChannel._id });
+
+                    return PrivateChannelDto.objectFromModel(updatedPrivateChannel);
                 }
 
-                await UserModel.updateOne(
-                    { _id: userId }, 
-                    { $push: { privateChannels: privateChannel._id } },
-                    queryOptions(),
-                );
-                
-                const privateChannelDto = PrivateChannelDto.objectFromModel(privateChannel);
-                return privateChannelDto;
+                if (isExist && isActiveMember) {
+                    return PrivateChannelDto.objectFromModel(existingPrivateChannel);
+                }
+
+                if (!isExist) {
+                    const privateChannel = await PrivateChannelModel.create(
+                        [{
+                            members: [
+                                userId,
+                                targetId,
+                            ],
+                            activeMembers: [
+                                userId,
+                            ],
+                        }],
+                        queryOptions(),
+                    ).then((privateChannels) => privateChannels[0]).catch(() => {
+                        throw ApiError.badRequest('Не удалось создать канал');
+                    });
+    
+                    await UserServiceHelpers.addPrivateChannel({ userId, privateChannelId: privateChannel._id });
+                    
+                    return PrivateChannelDto.objectFromModel(privateChannel);
+                }
             },
         );
     },
@@ -111,7 +100,7 @@ export const PrivateChannelService: IPrivateChannelService = {
                 const updatedPrivateChannelDto = PrivateChannelDto.objectFromModel(updatedPrivateChannel);
 
                 onCommit(() => {
-                    // PrivateChannelSubscription.update({ userId, privateChannel: updatedPrivateChannelDto });
+                    subscription.privateChannels.update({ entity: updatedPrivateChannelDto });
                 });
 
                 return updatedPrivateChannelDto;
@@ -121,32 +110,41 @@ export const PrivateChannelService: IPrivateChannelService = {
 
     async leave({ userId, privateChannelId }) {
         return transactionContainer(
-            async({ queryOptions }) => {
+            async({ queryOptions, onCommit }) => {
                 const updatedPrivateChannel = await PrivateChannelModel.findByIdAndUpdate(
                     privateChannelId,
                     {
                         $pull: { activeMembers: userId },
                     },
                     queryOptions({ new: true }),
-                );
-                if (!updatedPrivateChannel) {
+                ).catch(() => {
                     throw ApiError.badRequest('Канал не найден');
+                });
+
+                await UserServiceHelpers.removePrivateChannel({ userId, privateChannelId });
+
+                const isZeroActiveMembers = updatedPrivateChannel.activeMembers.length === 0;
+                if (isZeroActiveMembers) {
+                    const deletedPrivateChannel = await PrivateChannelModel.findOneAndDelete(
+                        { _id: privateChannelId }, 
+                        queryOptions(),
+                    );
+                    
+                    await MessageServiceHelpers.deleteManyByChatId({ chatId: deletedPrivateChannel.chat._id });
+                    
+                    onCommit(() => {
+                        // subscription.privateChannels.delete({ entityId: deletedPrivateChannel._id });
+                    });
+
+                    return PrivateChannelDto.objectFromModel(deletedPrivateChannel);
                 }
 
-                if (updatedPrivateChannel.activeMembers.length === 0) {
-                    const deleted = await PrivateChannelModel.findOneAndDelete({ _id: privateChannelId }, queryOptions());
-                    console.log('channel deleted:', deleted);
-                    await MessageModel.deleteMany({ chat: updatedPrivateChannel.chat.id }, queryOptions());
-                }
+                const updatedPrivateChannelDto = PrivateChannelDto.objectFromModel(updatedPrivateChannel); 
 
-                await UserModel.updateOne(
-                    { _id: userId }, 
-                    { $pull: { privateChannels: privateChannelId } }, 
-                    queryOptions(),
-                );
+                onCommit(() => {
+                    subscription.privateChannels.update({ entity: updatedPrivateChannelDto });
+                });
 
-                const updatedPrivateChannelDto = PrivateChannelDto.objectFromModel(updatedPrivateChannel);
-                
                 return updatedPrivateChannelDto;
             },
         );

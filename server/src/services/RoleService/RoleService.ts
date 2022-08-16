@@ -2,6 +2,7 @@ import { RoleDto } from '@dtos';
 import { ChannelModel, RoleModel, UserModel } from '@models';
 import { AuthorizedServiceType, ICreateRoleRequest, IDeleteRoleRequest, IGetManyRolesRequest, IGetOneRoleRequest, IRole, IUpdateRoleRequest } from '@types';
 import { ApiError, transactionContainer } from '@utils';
+import { ChannelServiceHelpers } from '../ChannelService';
 
 
 
@@ -22,11 +23,7 @@ export const RoleService: IRoleService = {
                     channel: channelId,
                 });
 
-                await ChannelModel.updateOne(
-                    { _id: channelId },
-                    { $push: { roles: role._id } },
-                    queryOptions(),
-                );
+                await ChannelServiceHelpers.addRole({ channelId, roleId: role._id });
 
                 await role.save(queryOptions());
                 
@@ -86,11 +83,7 @@ export const RoleService: IRoleService = {
                     throw ApiError.badRequest('Не удалось удалить роль');
                 }
 
-                await UserModel.updateMany(
-                    { roles: roleId }, 
-                    { $pull: { roles: roleId } }, 
-                    queryOptions(),
-                );
+                await ChannelServiceHelpers.removeRole({ roleId: deletedRole._id });
  
                 const deletedRoleDto = RoleDto.objectFromModel(deletedRole);
                 return deletedRoleDto;

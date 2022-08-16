@@ -32,7 +32,11 @@ const ChannelSchema = new Schema<IChannelModel>(
         name: { type: String, required: true },
         owner: { type: Schema.Types.ObjectId, ref: 'User' },
         isPrivate: { type: Boolean, default: true },
-        invitations: [{ type: Schema.Types.ObjectId, ref: 'Invitation' }],
+        invitations: [{
+            creator: { type: Schema.Types.ObjectId, ref: 'User' },
+            code: { type: String, required: true },
+            expiryDate: { type: Date, required: true },
+        }],
         members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
         textRooms: [{ type: Schema.Types.ObjectId, ref: 'TextRooms' }],
         roles: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
