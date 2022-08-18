@@ -1,4 +1,3 @@
-
 import { IUser } from '@types';
 import { IUserModel } from '@models';
 
@@ -6,7 +5,7 @@ import { IUserModel } from '@models';
 
 interface IUserDto {
     objectFromModel: (user: IUserModel) => IUser;
-    defaultPreset: (user: IUserModel | any) => IUser; // TO CHANGE: THIS SHOULD RETURN PARTIAL PUBLIC INFO ABOUT USER
+    defaultPreset: (user: Partial<IUser>) => IUser; // TO CHANGE: THIS SHOULD RETURN PARTIAL PUBLIC INFO ABOUT USER
 }
 
 export const UserDto: IUserDto = {
@@ -22,6 +21,9 @@ export const UserDto: IUserDto = {
             activationLink: user.activationLink,
             isActivated: user.isActivated,
             settings: user.settings,
+            blockList: user.blockList.map((blockedUserId) => {
+                return blockedUserId.toString();
+            }),
             channels: user.channels.map((channelId) => {
                 return channelId.toString();
             }),
@@ -62,6 +64,9 @@ export const UserDto: IUserDto = {
             activationLink: user?.activationLink,
             isActivated: user?.isActivated,
             settings: user?.settings,
+            blockList: user?.blockList.map((blockedUserId) => {
+                return blockedUserId.toString();
+            }),
             channels: user?.channels.map((channelId) => {
                 return channelId.toString();
             }),

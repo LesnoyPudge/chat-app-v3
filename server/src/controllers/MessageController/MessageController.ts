@@ -1,5 +1,5 @@
 import { MessageService } from '@services';
-import { AuthorizedControllerType, ICreateMessageRequest, IDeleteMessageRequest, IGetManyMessagesRequest, IGetOneMessageRequest, IMessage, IUpdateMessageRequest } from '@types';
+import { AuthorizedControllerType, ICreateMessageRequest, IDeleteMessageRequest, IGetManyMessagesRequest, IGetOneMessageRequest, IMessage, IRestoreMessageRequest, IUpdateMessageRequest } from '@types';
 
 
 
@@ -9,6 +9,7 @@ interface IMessageController {
     getMany: AuthorizedControllerType<IGetManyMessagesRequest, never, IMessage[]>;
     update: AuthorizedControllerType<IUpdateMessageRequest, never, IMessage>;
     delete: AuthorizedControllerType<IDeleteMessageRequest, never, IMessage>;
+    restore: AuthorizedControllerType<IRestoreMessageRequest, never, IMessage>;
 }
 
 export const MessageController: IMessageController = {
@@ -55,5 +56,14 @@ export const MessageController: IMessageController = {
         const deletedMessage = await MessageService.delete({ userId: id, messageId });
 
         res.json(deletedMessage);
+    },
+
+    async restore(req, res) {
+        const { messageId } = req.body;
+        const { id } = req.auth.user;
+
+        const restoredMessage = await MessageService.restore({ userId: id, messageId });
+
+        res.json(restoredMessage);
     },
 };

@@ -41,3 +41,15 @@ RoleRouter.post(
     authHandler,
     controllerContainer(RoleController.delete),
 );
+
+RoleRouter.post(
+    CUSTOM_API_V1_URL + '/role/addUser',
+    authHandler,
+    controllerContainer(RoleController.addUser),
+);
+
+RoleRouter.post(
+    CUSTOM_API_V1_URL + '/role/deleteUser',
+    authHandler,
+    controllerContainer(RoleController.deleteUser),
+);

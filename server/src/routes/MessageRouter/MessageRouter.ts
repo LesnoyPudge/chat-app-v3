@@ -41,3 +41,9 @@ MessageRouter.post(
     authHandler,
     controllerContainer(MessageController.delete),
 );
+
+MessageRouter.post(
+    CUSTOM_API_V1_URL + '/message/restore',
+    authHandler,
+    controllerContainer(MessageController.restore),
+);

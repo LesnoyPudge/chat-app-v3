@@ -91,7 +91,7 @@ export const TextRoomService: ITextRoomService = {
                 const deletedTextRoomDto = TextRoomDto.objectFromModel(deletedTextRoom);
                 
                 onCommit(() => {
-                    // socket textRoomSubscribtion delete
+                    subscription.textRooms.delete({ entityId: textRoomId });
                 });
                 
                 return deletedTextRoomDto;

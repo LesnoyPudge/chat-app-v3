@@ -21,6 +21,7 @@ export interface IUser {
         code: string;
         expiryDate: string;
     };
+    blockList: string[];
     channels: string[];
     privateChannels: string[];
     friendRequests: {
@@ -41,23 +42,60 @@ export interface IUserWithStatus extends IUser {
     status: 'online' | 'offline';
 }
 
-export interface IUserRegistrationReq {
+export interface IRegistrationUserRequest {
     login: string;
     username: string;
     password: string;
     email: string;
 }
 
-export interface IUserLoginReq {
+export interface ILoginUserRequest {
     login: string;
     password: string;
 }
 
-export interface IGetUserReq {
+export interface IGetOneUserRequest {
     targetId: string;
+}
+
+export interface IGetManyUserRequest {
+    targetIds: string[];
 }
 
 export interface IAuthResponse {
     user: IUser;
     accessToken: string;
+    refreshToken: string;
+}
+
+export interface IUpdateUserRequest {
+    newValues: Partial<IUser>;
+}
+
+export interface IBlockUserRequest {
+    targetId: string;
+}
+
+export interface IUnblockUserRequest {
+    targetId: string;
+}
+
+export interface ISendFriendRequestUserRequest {
+    to: string;
+}
+
+export interface IAcceptFriendRequestUserRequest {
+    from: string;
+}
+
+export interface IDeclineFriendRequestUserRequest {
+    from: string;
+}
+
+export interface IRevokeFriendRequestUserRequest {
+    to: string;
+}
+
+export interface IDeleteFriendUserRequest {
+    targetId: string;
 }

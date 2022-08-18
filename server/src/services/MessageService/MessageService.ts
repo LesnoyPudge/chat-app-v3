@@ -1,6 +1,6 @@
 import { MessageDto } from '@dtos';
 import { MessageModel } from '@models';
-import { AuthorizedServiceType, ICreateMessageRequest, IDeleteMessageRequest, IGetManyMessagesRequest, IGetOneMessageRequest, IMessage, IUpdateMessageRequest } from '@types';
+import { AuthorizedServiceType, ICreateMessageRequest, IDeleteMessageRequest, IGetManyMessagesRequest, IGetOneMessageRequest, IMessage, IRestoreMessageRequest, IUpdateMessageRequest } from '@types';
 import { ApiError, transactionContainer } from '@utils';
 import { TextRoomServiceHelpers, PrivateChannelServiceHelpers } from '@services';
 
@@ -12,6 +12,7 @@ interface IMessageService {
     getMany: AuthorizedServiceType<IGetManyMessagesRequest, IMessage[]>;
     update: AuthorizedServiceType<IUpdateMessageRequest, IMessage>;
     delete: AuthorizedServiceType<IDeleteMessageRequest, IMessage>;
+    restore: AuthorizedServiceType<IRestoreMessageRequest, IMessage>;
 }
 
 export const MessageService: IMessageService = {
@@ -95,6 +96,23 @@ export const MessageService: IMessageService = {
  
                 const deletedMessageDto = MessageDto.objectFromModel(deletedMessage);
                 return deletedMessageDto;
+            },
+        );
+    },
+
+    async restore({ userId, messageId }) {
+        return transactionContainer(
+            async({ queryOptions }) => {
+                const restoredMessage = await MessageModel.findByIdAndUpdate(
+                    messageId, 
+                    { isDeleted: false },
+                    queryOptions({ new: true }),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось восстановить сообщение');
+                });
+ 
+                const restoredMessageDto = MessageDto.objectFromModel(restoredMessage);
+                return restoredMessageDto;
             },
         );
     },

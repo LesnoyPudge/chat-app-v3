@@ -47,6 +47,38 @@ export interface IDeleteChannelRequest {
     channelId: string;
 }
 
+export interface ILeaveChannelRequest {
+    channelId: string;
+}
 
+export interface IKickUserChannelRequest {
+    channelId: string;
+    targetId: string;
+}
 
+export interface IBanUserChannelRequest {
+    channelId: string;
+    targetId: string;
+    reason?: string;
+}
 
+export interface IUnbanUserChannelRequest {
+    channelId: string;
+    targetId: string;
+}
+
+export interface ICreateInvitationChannelRequest {
+    channelId: string;
+    code?: string;
+    duration: number;
+}
+
+export interface IAcceptInvitationChannelRequest {
+    channelId: string;
+    code: string;
+}
+
+export interface IDeleteInvitationChannelRequest {
+    channelId: string;
+    code: string;
+}

@@ -1,9 +1,10 @@
 import { ChannelDto } from '@dtos';
 import { ChannelModel } from '@models';
 import { subscription } from '@subscription';
-import { AuthorizedServiceType, IChannel, ICreateChannelRequest, IDeleteChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IUpdateChannelRequest } from '@types';
-import { ApiError, transactionContainer } from '@utils';
+import { AuthorizedServiceType, IAcceptInvitationChannelRequest, IBanUserChannelRequest, IChannel, ICreateChannelRequest, ICreateInvitationChannelRequest, IDeleteChannelRequest, IDeleteInvitationChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IKickUserChannelRequest, ILeaveChannelRequest, IUnbanUserChannelRequest, IUpdateChannelRequest } from '@types';
+import { ApiError, generateString, objectId, transactionContainer } from '@utils';
 import { UserServiceHelpers, RoleServiceHelpers, TextRoomServiceHelpers } from '@services';
+import c from 'config';
 
 
 
@@ -13,7 +14,16 @@ interface IChannelService {
     getMany: AuthorizedServiceType<IGetManyChannelsRequest, IChannel[]>;
     update: AuthorizedServiceType<IUpdateChannelRequest, IChannel>;
     delete: AuthorizedServiceType<IDeleteChannelRequest, IChannel>;
+    leave: AuthorizedServiceType<ILeaveChannelRequest, IChannel>;
+    kickUser: AuthorizedServiceType<IKickUserChannelRequest, IChannel>;
+    banUser: AuthorizedServiceType<IBanUserChannelRequest, IChannel>;
+    unbanUser: AuthorizedServiceType<IUnbanUserChannelRequest, IChannel>;
+    createInvitation: AuthorizedServiceType<ICreateInvitationChannelRequest, IChannel>;
+    acceptInvitation: AuthorizedServiceType<IAcceptInvitationChannelRequest, IChannel>;
+    deleteInvitation: AuthorizedServiceType<IDeleteInvitationChannelRequest, IChannel>;
 }
+
+const { toObjectId } = objectId;
 
 export const ChannelService: IChannelService = {
     async create({ name, identifier, userId }) {
@@ -96,7 +106,7 @@ export const ChannelService: IChannelService = {
 
     async delete({ channelId }) {
         return transactionContainer(
-            async({ queryOptions }) => {
+            async({ queryOptions, onCommit }) => {
                 const deletedChannel = await ChannelModel.findByIdAndDelete(channelId, queryOptions());
                 if (!deletedChannel) {
                     throw ApiError.badRequest('Не удалось удалить канал');
@@ -106,9 +116,190 @@ export const ChannelService: IChannelService = {
                 await RoleServiceHelpers.deleteManyByChannelId({ channelId });
                 await TextRoomServiceHelpers.deleteManyByChannelId({ channelId });
                 
+                onCommit(() => {
+                    subscription.channels.delete({ entityId: channelId });
+                });
 
                 const deletedChannelDto = ChannelDto.objectFromModel(deletedChannel);
                 return deletedChannelDto;
+            },
+        );
+    },
+
+    async leave({ userId, channelId }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedChannel = await ChannelModel.findByIdAndUpdate(
+                    channelId, 
+                    { $pull: { members: userId } },
+                    queryOptions({ new: true }),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось покинуть канал');
+                });
+
+                await UserServiceHelpers.removeChannel({ userId, channelId });
+
+                const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
+
+                onCommit(() => {
+                    subscription.channels.update({ entity: updatedChannelDto });
+                });
+
+                return updatedChannelDto;
+            },
+        );
+    },
+
+    async kickUser({ userId, channelId, targetId }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedChannel = await ChannelModel.findByIdAndUpdate(
+                    channelId, 
+                    { $pull: { members: targetId } },
+                    queryOptions({ new: true }),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось выгнать пользователя');
+                });
+
+                await UserServiceHelpers.removeChannel({ userId: targetId, channelId });
+
+                const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
+
+                onCommit(() => {
+                    subscription.channels.update({ entity: updatedChannelDto });
+                });
+
+                return updatedChannelDto;
+            },
+        );
+    },
+
+    async banUser({ userId, channelId, targetId, reason = 'Причина не указана' }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedChannel = await ChannelModel.findByIdAndUpdate(
+                    channelId, 
+                    { 
+                        $pull: { members: targetId },
+                        $push: { banList: {
+                            user: toObjectId(targetId),
+                            reason,
+                        } },
+                    },
+                    queryOptions({ new: true }),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось забанить пользователя');
+                });
+
+                await UserServiceHelpers.removeChannel({ userId: targetId, channelId });
+
+                const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
+
+                onCommit(() => {
+                    subscription.channels.update({ entity: updatedChannelDto });
+                });
+
+                return updatedChannelDto;
+            },
+        );
+    },
+
+    async unbanUser({ userId, channelId, targetId }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const channel = await ChannelModel.findById(channelId, {}, { lean: true });
+
+                channel.banList = channel.banList.filter((banEntity) => {
+                    banEntity.user !== toObjectId(targetId);
+                });
+
+                await channel.save(queryOptions()).catch(() => {
+                    throw ApiError.badRequest('Не удалось разбанить пользователя');
+                });
+
+                const updatedChannelDto = ChannelDto.objectFromModel(channel);
+
+                onCommit(() => {
+                    subscription.channels.update({ entity: updatedChannelDto });
+                });
+
+                return updatedChannelDto;
+            },
+        );
+    },
+    
+    async createInvitation({ userId, channelId, duration, code = generateString(10) }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const createdAt = Date.now();
+                const expiryDate = createdAt + duration;
+
+                const updatedChannel = await ChannelModel.findByIdAndUpdate(
+                    channelId,
+                    { $push: { invitations: {
+                        creator: toObjectId(userId),
+                        code,
+                        expiryDate: new Date(expiryDate),
+                        createdAt: new Date(createdAt),
+                    } } },
+                    queryOptions({ new: true }),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось создать приглашение');
+                });
+
+                const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
+
+                onCommit(() => {
+                    subscription.channels.update({ entity: updatedChannelDto });
+                });
+
+                return updatedChannelDto;
+            },
+        );
+    },
+
+    async acceptInvitation({ userId, channelId, code }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedChannel = await ChannelModel.findByIdAndUpdate(
+                    channelId,
+                    { $push: { members: toObjectId(userId) } },
+                    queryOptions({ new: true }),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось принять приглашение');
+                });
+
+                const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
+
+                onCommit(() => {
+                    subscription.channels.update({ entity: updatedChannelDto });
+                });
+
+                return updatedChannelDto;
+            },
+        );
+    },
+
+    async deleteInvitation({ userId, channelId, code }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const channel = await ChannelModel.findById(channelId, {}, { lean: true });
+                
+                channel.invitations = channel.invitations.filter((invitation) => {
+                    invitation.code !== code;
+                });
+
+                await channel.save(queryOptions()).catch(() => {
+                    throw ApiError.badRequest('Не удалось разбанить пользователя');
+                });
+
+                const updatedChannelDto = ChannelDto.objectFromModel(channel);
+
+                onCommit(() => {
+                    subscription.channels.update({ entity: updatedChannelDto });
+                });
+
+                return updatedChannelDto;
             },
         );
     },

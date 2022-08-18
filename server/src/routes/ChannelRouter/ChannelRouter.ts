@@ -41,3 +41,45 @@ ChannelRouter.post(
     authHandler,
     controllerContainer(ChannelController.delete),
 );
+
+ChannelRouter.post(
+    CUSTOM_API_V1_URL + '/channel/leave',
+    authHandler,
+    controllerContainer(ChannelController.leave),
+);
+
+ChannelRouter.post(
+    CUSTOM_API_V1_URL + '/channel/kick-user',
+    authHandler,
+    controllerContainer(ChannelController.kickUser),
+);
+
+ChannelRouter.post(
+    CUSTOM_API_V1_URL + '/channel/ban-user',
+    authHandler,
+    controllerContainer(ChannelController.banUser),
+);
+
+ChannelRouter.post(
+    CUSTOM_API_V1_URL + '/channel/unban-user',
+    authHandler,
+    controllerContainer(ChannelController.unbanUser),
+);
+
+ChannelRouter.post(
+    CUSTOM_API_V1_URL + '/channel/create-invitation',
+    authHandler,
+    controllerContainer(ChannelController.createInvitation),
+);
+
+ChannelRouter.post(
+    CUSTOM_API_V1_URL + '/channel/accept-invitation',
+    authHandler,
+    controllerContainer(ChannelController.acceptInvitation),
+);
+
+ChannelRouter.post(
+    CUSTOM_API_V1_URL + '/channel/delete-invitation',
+    authHandler,
+    controllerContainer(ChannelController.deleteInvitation),
+);

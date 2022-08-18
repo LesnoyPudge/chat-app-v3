@@ -45,3 +45,13 @@ export interface IUpdateRoleRequest {
     roleId: string;
     newValues: Partial<IRole>;
 }
+
+export interface IAddUserRoleRequest {
+    roleId: string;
+    targetId: string;
+}
+
+export interface IDeleteUserRoleRequest {
+    roleId: string;
+    targetId: string;
+}

@@ -20,6 +20,7 @@ export interface ISubscriptionModel<T> {
     subscribe: ({ userId, entityId }: {userId: string, entityId: string}) => void;
     unsubscribe: ({ userId, entityId }: {userId: string, entityId: string}) => void;
     update: ({ entity }: {entity: Partial<T>}) => void;
+    delete: ({ entityId }: {entityId: string}) => void;
 }
 
 export const subscription = {

@@ -1,4 +1,4 @@
-import { IAuthResponse, IUserLoginReq, IUserRegistrationReq } from '@backendTypes';
+import { IAuthResponse, ILoginUserRequest, IRegistrationUserRequest } from '@backendTypes';
 import { getEnv } from '@utils';
 import { rootApi } from '@redux/rootApi';
 
@@ -13,7 +13,7 @@ export const UserApi = rootApi.injectEndpoints({
                 url: CUSTOM_API_V1_URL + '/user/refresh',
             }),
         }),
-        userLogin: build.mutation<IAuthResponse, IUserLoginReq>({
+        userLogin: build.mutation<IAuthResponse, ILoginUserRequest>({
             query: (body) => ({
                 url: CUSTOM_API_V1_URL + '/user/login',
                 method: 'POST',
@@ -25,7 +25,7 @@ export const UserApi = rootApi.injectEndpoints({
                 url: CUSTOM_API_V1_URL + '/user/logout',
             }),
         }),
-        userRegistration: build.mutation<IAuthResponse, IUserRegistrationReq>({
+        userRegistration: build.mutation<IAuthResponse, IRegistrationUserRequest>({
             query: (body) => ({
                 url: CUSTOM_API_V1_URL + '/user/registration',
                 method: 'POST',

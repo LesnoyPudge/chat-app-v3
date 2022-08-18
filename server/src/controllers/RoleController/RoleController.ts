@@ -1,5 +1,5 @@
 import { RoleService } from '@services';
-import { AuthorizedControllerType, ICreateRoleRequest, IDeleteRoleRequest, IGetManyRolesRequest, IGetOneRoleRequest, IRole, IUpdateRoleRequest } from '@types';
+import { AuthorizedControllerType, IAddUserRoleRequest, ICreateRoleRequest, IDeleteRoleRequest, IDeleteUserRoleRequest, IGetManyRolesRequest, IGetOneRoleRequest, IRole, IUpdateRoleRequest } from '@types';
 
 
 
@@ -9,6 +9,8 @@ interface IRoleController {
     getMany: AuthorizedControllerType<IGetManyRolesRequest, never, IRole[]>;
     update: AuthorizedControllerType<IUpdateRoleRequest, never, IRole>;
     delete: AuthorizedControllerType<IDeleteRoleRequest, never, IRole>;
+    addUser: AuthorizedControllerType<IAddUserRoleRequest, never, IRole>;
+    deleteUser: AuthorizedControllerType<IDeleteUserRoleRequest, never, IRole>;
 }
 
 export const RoleController: IRoleController = {
@@ -55,5 +57,23 @@ export const RoleController: IRoleController = {
         const deletedRole = await RoleService.delete({ userId: id, roleId });
 
         res.json(deletedRole);
+    },
+
+    async addUser(req, res) {
+        const { roleId, targetId } = req.body;
+        const { id } = req.auth.user;
+        
+        const updatedRole = await RoleService.addUser({ userId: id, roleId, targetId });
+
+        res.json(updatedRole);
+    },
+
+    async deleteUser(req, res) {
+        const { roleId, targetId } = req.body;
+        const { id } = req.auth.user;
+        
+        const updatedRole = await RoleService.deleteUser({ userId: id, roleId, targetId });
+
+        res.json(updatedRole);
     },
 };

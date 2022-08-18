@@ -15,19 +15,21 @@ const {
     updateEntity,
 } = subscriptionHelpers;
 
+const entityKey = 'privateChannels';
+
 export const privateChannelsSubscriptionModel: ISubscriptionModel<IPrivateChannel> = {
     entityList: {},
     
     async subscribe({ entityId, userId }) {
         console.log(userId, 'subscribed on', entityId);
         try {
-            const isExist = isEntityExist({ entityId, entityKey: 'privateChannels' });
+            const isExist = isEntityExist({ entityId, entityKey });
             if (!isExist) {
                 const privateChannel = await PrivateChannelService.getOne({ userId, privateChannelId: entityId });
                 addPrivateChannelsEntity({ privateChannel });
             } 
 
-            subscribeOn({ entityId, entityKey: 'privateChannels', userId });
+            subscribeOn({ entityId, entityKey, userId });
             sendPrivateChannelsEntity({ entityId, to: userId });
         } catch (error) {
             console.log('error during subscribe:', error);
@@ -36,22 +38,28 @@ export const privateChannelsSubscriptionModel: ISubscriptionModel<IPrivateChanne
 
     unsubscribe({ entityId, userId }) {
         console.log(userId, 'unsubscribed from', entityId);
-        const isExist = isEntityExist({ entityId, entityKey: 'privateChannels' });
+        const isExist = isEntityExist({ entityId, entityKey });
         if (!isExist) return;
 
-        unsubscribeFrom({ entityId, entityKey: 'privateChannels', userId });
-        deleteEntity({ entityId, entityKey: 'privateChannels' });
+        unsubscribeFrom({ entityId, entityKey, userId });
+        deleteEntity({ entityId, entityKey });
     },
 
     update({ entity }) {
-        const isExist = isEntityExist({ entityId: entity.id, entityKey: 'privateChannels' });
+        const isExist = isEntityExist({ entityId: entity.id, entityKey });
         if (!isExist) return;
 
         
-        updateEntity({ entityId: entity.id, entityKey: 'privateChannels', newValues: { ...entity } });
+        updateEntity({ entityId: entity.id, entityKey, newValues: { ...entity } });
 
-        const subscribers = getSubscribersArray({ entityId: entity.id, entityKey: 'privateChannels' });
+        const subscribers = getSubscribersArray({ entityId: entity.id, entityKey });
         sendPrivateChannelsEntity({ entityId: entity.id, to: subscribers });
+    },
+
+    delete({ entityId }) {
+        const subscribers = getSubscribersArray({ entityId, entityKey });
+        removePrivateChannelSubscription({ entityId, to: subscribers });
+        deleteEntity({ entityId, entityKey });
     },
 };
 
@@ -68,5 +76,12 @@ const sendPrivateChannelsEntity = ({ entityId, to }: {entityId: string, to: stri
     socket.events.sendPrivateChannelSubscription({
         to,
         privateChannel: privateChannelsSubscriptionModel.entityList[entityId].info,
+    });
+};
+
+const removePrivateChannelSubscription = ({ entityId, to }: {entityId: string, to: string | string[]}) => {
+    socket.events.removePrivateChannelSubscription({
+        to,
+        privateChannelId: entityId,
     });
 };

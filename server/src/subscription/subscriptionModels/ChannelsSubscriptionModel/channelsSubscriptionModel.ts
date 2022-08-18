@@ -6,10 +6,6 @@ import { subscriptionHelpers } from '@subscription/helpers';
 
 
 
-interface IChannelSubscriptionModel extends ISubscriptionModel<IChannel> {
-    delete: ({ entityId }: {entityId: string}) => void;
-}
-
 const { 
     isEntityExist, 
     subscribeOn, 
@@ -19,19 +15,21 @@ const {
     updateEntity,
 } = subscriptionHelpers;
 
-export const channelsSubscriptionModel: IChannelSubscriptionModel = {
+const entityKey = 'channels';
+
+export const channelsSubscriptionModel: ISubscriptionModel<IChannel> = {
     entityList: {},
     
     async subscribe({ entityId, userId }) {
         console.log(userId, 'subscribed on', entityId);
         try {
-            const isExist = isEntityExist({ entityId, entityKey: 'channels' });
+            const isExist = isEntityExist({ entityId, entityKey });
             if (!isExist) {
                 const channel = await ChannelService.getOne({ channelId: entityId, userId });
                 addChannelEntity({ channel });
             } 
 
-            subscribeOn({ entityId, entityKey: 'channels', userId });
+            subscribeOn({ entityId, entityKey, userId });
             sendChannelEntity({ entityId, to: userId });
         } catch (error) {
             console.log('error during subscribe:', error);
@@ -40,28 +38,28 @@ export const channelsSubscriptionModel: IChannelSubscriptionModel = {
 
     unsubscribe({ entityId, userId }) {
         console.log(userId, 'unsubscribed from', entityId);
-        const isExist = isEntityExist({ entityId, entityKey: 'channels' });
+        const isExist = isEntityExist({ entityId, entityKey });
         if (!isExist) return;
 
-        unsubscribeFrom({ entityId, entityKey: 'channels', userId });
-        deleteEntity({ entityId, entityKey: 'channels' });
+        unsubscribeFrom({ entityId, entityKey, userId });
+        deleteEntity({ entityId, entityKey });
     },
 
     update({ entity }) {
-        const isExist = isEntityExist({ entityId: entity.id, entityKey: 'channels' });
+        const isExist = isEntityExist({ entityId: entity.id, entityKey });
         if (!isExist) return;
 
         
-        updateEntity({ entityId: entity.id, entityKey: 'channels', newValues: { ...entity } });
+        updateEntity({ entityId: entity.id, entityKey, newValues: { ...entity } });
 
-        const subscribers = getSubscribersArray({ entityId: entity.id, entityKey: 'channels' });
+        const subscribers = getSubscribersArray({ entityId: entity.id, entityKey });
         sendChannelEntity({ entityId: entity.id, to: subscribers });
     },
 
     delete({ entityId }) {
-        const subscribers = getSubscribersArray({ entityId, entityKey: 'channels' });
+        const subscribers = getSubscribersArray({ entityId, entityKey });
         removeChannelSubscription({ entityId, to: subscribers });
-        deleteEntity({ entityId, entityKey: 'channels' });
+        deleteEntity({ entityId, entityKey });
     },
 };
 

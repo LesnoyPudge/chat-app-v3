@@ -14,12 +14,10 @@ export interface IUserModel extends Document<Types.ObjectId> {
     activationLink: string;
     isActivated: boolean;
     refreshJWT: string;
-    // friendRequests: ObjectId[];
-    // blockList: ObjectId[];
-
+    blockList: Types.ObjectId[];
     channels: Types.ObjectId[];
     privateChannels: Types.ObjectId[];
-    // roles: Types.ObjectId[];
+    friends: Types.ObjectId[];
     accessCode: {
         code: string,
         expiryDate: Date,
@@ -54,6 +52,8 @@ const UserSchema = new Schema<IUserModel>(
         extraStatus: { type: String, default: 'default' },
         activationLink: { type: String, required: true },
         isActivated: { type: Boolean, default: false },
+        blockList: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
         accessCode: {
             code: { type: String, required: true },
             expiryDate: { type: Date, required: true },

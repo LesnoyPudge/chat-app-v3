@@ -37,3 +37,7 @@ export interface IUpdateMessageRequest {
     messageId: string;
     newValues: Partial<IMessage>;
 }
+
+export interface IRestoreMessageRequest {
+    messageId: string;
+}

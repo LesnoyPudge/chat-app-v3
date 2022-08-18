@@ -6,10 +6,6 @@ import { subscriptionHelpers } from '@subscription/helpers';
 
 
 
-interface ITextRoomSubscriptionModel extends ISubscriptionModel<ITextRoom> {
-    delete: ({ entityId }: {entityId: string}) => void;
-}
-
 const { 
     isEntityExist, 
     subscribeOn, 
@@ -19,19 +15,21 @@ const {
     updateEntity,
 } = subscriptionHelpers;
 
-export const textRoomsSubscriptionModel: ITextRoomSubscriptionModel = {
+const entityKey = 'textRooms';
+
+export const textRoomsSubscriptionModel: ISubscriptionModel<ITextRoom> = {
     entityList: {},
     
     async subscribe({ entityId, userId }) {
         console.log(userId, 'subscribed on', entityId);
         try {
-            const isExist = isEntityExist({ entityId, entityKey: 'textRooms' });
+            const isExist = isEntityExist({ entityId, entityKey });
             if (!isExist) {
                 const textRoom = await TextRoomService.getOne({ textRoomId: entityId, userId });
                 addTextRoomEntity({ textRoom });
             } 
 
-            subscribeOn({ entityId, entityKey: 'textRooms', userId });
+            subscribeOn({ entityId, entityKey, userId });
             sendTextRoomEntity({ entityId, to: userId });
         } catch (error) {
             console.log('error during subscribe:', error);
@@ -40,28 +38,28 @@ export const textRoomsSubscriptionModel: ITextRoomSubscriptionModel = {
 
     unsubscribe({ entityId, userId }) {
         console.log(userId, 'unsubscribed from', entityId);
-        const isExist = isEntityExist({ entityId, entityKey: 'textRooms' });
+        const isExist = isEntityExist({ entityId, entityKey });
         if (!isExist) return;
 
-        unsubscribeFrom({ entityId, entityKey: 'textRooms', userId });
-        deleteEntity({ entityId, entityKey: 'textRooms' });
+        unsubscribeFrom({ entityId, entityKey, userId });
+        deleteEntity({ entityId, entityKey });
     },
 
     update({ entity }) {
-        const isExist = isEntityExist({ entityId: entity.id, entityKey: 'textRooms' });
+        const isExist = isEntityExist({ entityId: entity.id, entityKey });
         if (!isExist) return;
 
         
-        updateEntity({ entityId: entity.id, entityKey: 'textRooms', newValues: { ...entity } });
+        updateEntity({ entityId: entity.id, entityKey, newValues: { ...entity } });
 
-        const subscribers = getSubscribersArray({ entityId: entity.id, entityKey: 'textRooms' });
+        const subscribers = getSubscribersArray({ entityId: entity.id, entityKey });
         sendTextRoomEntity({ entityId: entity.id, to: subscribers });
     },
 
     delete({ entityId }) {
-        const subscribers = getSubscribersArray({ entityId, entityKey: 'channels' });
+        const subscribers = getSubscribersArray({ entityId, entityKey });
         removeTextRoomSubscription({ entityId, to: subscribers });
-        deleteEntity({ entityId, entityKey: 'channels' });
+        deleteEntity({ entityId, entityKey });
     },
 };
 

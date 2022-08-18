@@ -16,7 +16,7 @@ const transporter = createTransport({
 });
 
 export const sendMail = {
-    async sendActivationLink(to: string, link: string) {
+    async sendActivationLink({ to, link }: {to: string, link: string}) {
         await transporter.sendMail({
             from: SMTP_PASSWORD,
             to,
@@ -32,7 +32,7 @@ export const sendMail = {
         });
     },
 
-    async sendAccessCode(to: string, code: string) {
+    async sendAccessCode({ to, code }: {to: string, code: string}) {
         await transporter.sendMail({
             from: SMTP_USER,
             to,

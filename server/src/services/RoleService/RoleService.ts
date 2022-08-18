@@ -1,7 +1,7 @@
 import { RoleDto } from '@dtos';
 import { ChannelModel, RoleModel, UserModel } from '@models';
-import { AuthorizedServiceType, ICreateRoleRequest, IDeleteRoleRequest, IGetManyRolesRequest, IGetOneRoleRequest, IRole, IUpdateRoleRequest } from '@types';
-import { ApiError, transactionContainer } from '@utils';
+import { AuthorizedServiceType, IAddUserRoleRequest, ICreateRoleRequest, IDeleteRoleRequest, IDeleteUserRoleRequest, IGetManyRolesRequest, IGetOneRoleRequest, IRole, IUpdateRoleRequest } from '@types';
+import { ApiError, objectId, transactionContainer } from '@utils';
 import { ChannelServiceHelpers } from '../ChannelService';
 
 
@@ -12,7 +12,11 @@ interface IRoleService {
     getMany: AuthorizedServiceType<IGetManyRolesRequest, IRole[]>;
     update: AuthorizedServiceType<IUpdateRoleRequest, IRole>;
     delete: AuthorizedServiceType<IDeleteRoleRequest, IRole>;
+    addUser: AuthorizedServiceType<IAddUserRoleRequest, IRole>;
+    deleteUser: AuthorizedServiceType<IDeleteUserRoleRequest, IRole>;
 }
+
+const { toObjectId } = objectId;
 
 export const RoleService: IRoleService = {
     async create({ userId, channelId, name }) {
@@ -87,6 +91,40 @@ export const RoleService: IRoleService = {
  
                 const deletedRoleDto = RoleDto.objectFromModel(deletedRole);
                 return deletedRoleDto;
+            },
+        );
+    },
+
+    async addUser({ userId, roleId, targetId }) {
+        return transactionContainer(
+            async({ queryOptions }) => {
+                const updatedRole = await RoleModel.findByIdAndUpdate(
+                    roleId, 
+                    { $push: { users: toObjectId(targetId) } },
+                    queryOptions(),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось добавить пользователя к роли');
+                });
+
+                const updatedRoleDto = RoleDto.objectFromModel(updatedRole);
+                return updatedRoleDto;
+            },
+        );
+    },
+
+    async deleteUser({ userId, roleId, targetId }) {
+        return transactionContainer(
+            async({ queryOptions }) => {
+                const updatedRole = await RoleModel.findByIdAndUpdate(
+                    roleId, 
+                    { $pull: { users: targetId } },
+                    queryOptions(),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось удалить пользователя из роли');
+                });
+
+                const updatedRoleDto = RoleDto.objectFromModel(updatedRole);
+                return updatedRoleDto;
             },
         );
     },

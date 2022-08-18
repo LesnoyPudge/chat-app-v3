@@ -132,11 +132,13 @@ export const PrivateChannelService: IPrivateChannelService = {
                     
                     await MessageServiceHelpers.deleteManyByChatId({ chatId: deletedPrivateChannel.chat._id });
                     
+                    const deletedPrivateChannelDto = PrivateChannelDto.objectFromModel(deletedPrivateChannel);
+                    
                     onCommit(() => {
-                        // subscription.privateChannels.delete({ entityId: deletedPrivateChannel._id });
+                        subscription.privateChannels.delete({ entityId: deletedPrivateChannelDto.id });
                     });
 
-                    return PrivateChannelDto.objectFromModel(deletedPrivateChannel);
+                    return deletedPrivateChannelDto;
                 }
 
                 const updatedPrivateChannelDto = PrivateChannelDto.objectFromModel(updatedPrivateChannel); 

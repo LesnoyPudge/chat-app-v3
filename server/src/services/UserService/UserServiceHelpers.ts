@@ -1,6 +1,6 @@
 import { UserDto } from '@dtos';
 import { UserModel } from '@models';
-import { objectId, transactionContainer } from '@utils';
+import { ApiError, objectId, transactionContainer } from '@utils';
 import { Types } from 'mongoose';
 import { subscription } from '@subscription';
 
@@ -98,6 +98,110 @@ export const UserServiceHelpers = {
                 });
 
                 return updatedUser;
+            },
+        );
+    },
+
+    async addFriend({ userId, targetId }: {userId: string, targetId: string}) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedUser = await UserModel.findByIdAndUpdate(
+                    userId,
+                    { $push: { friends: toObjectId(targetId) } },
+                    queryOptions({ new: true }),
+                );
+
+                onCommit(() => {
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                });
+            },
+        );
+    },
+
+    async removeFriend({ userId, targetId }: {userId: string, targetId: string}) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedUser = await UserModel.findByIdAndUpdate(
+                    userId,
+                    { $pull: { friends: toObjectId(targetId) } },
+                    queryOptions({ new: true }),
+                );
+
+                onCommit(() => {
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                });
+            },
+        );
+    },
+
+    async addIncomingFriendRequest({ userId, from }: {userId: string, from: string}) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const userToUpdate = await UserModel.findById(userId, {}, { lean: true });
+                
+                userToUpdate.friendRequests.incoming.push({
+                    from: toObjectId(from),
+                    createdAt: new Date(),
+                });
+
+                await userToUpdate.save(queryOptions());
+
+                onCommit(() => {
+                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate) });
+                });
+            },
+        );
+    },
+
+    async removeIncomingFriendRequest({ userId, from }: {userId: string, from: string}) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const userToUpdate = await UserModel.findById(userId, {}, { lean: true });
+                userToUpdate.friendRequests.incoming = userToUpdate.friendRequests.incoming.filter((incomingRequest) => {
+                    return incomingRequest.from !== toObjectId(from);
+                });
+
+                await userToUpdate.save(queryOptions());
+
+                onCommit(() => {
+                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate) });
+                });
+            },
+        );
+    },
+
+    async addOutgoingFriendRequest({ userId, to }: {userId: string, to: string}) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const userToUpdate = await UserModel.findById(userId, {}, { lean: true });
+                
+                userToUpdate.friendRequests.outgoing.push({
+                    to: toObjectId(to),
+                    createdAt: new Date(),
+                });
+
+                await userToUpdate.save(queryOptions());
+
+                onCommit(() => {
+                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate) });
+                });
+            },
+        );
+    },
+
+    async removeOutgoingFriendRequest({ userId, to }: {userId: string, to: string}) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const userToUpdate = await UserModel.findById(userId, {}, { lean: true });
+                userToUpdate.friendRequests.outgoing = userToUpdate.friendRequests.outgoing.filter((outgoingRequest) => {
+                    return outgoingRequest.to !== toObjectId(to);
+                });
+
+                await userToUpdate.save(queryOptions());
+
+                onCommit(() => {
+                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate) });
+                });
             },
         );
     },

@@ -46,3 +46,58 @@ UserRouter.post(
     authHandler,
     controllerContainer(UserController.update),
 );
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/getOne',
+    authHandler,
+    controllerContainer(UserController.getOne),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/getMany',
+    authHandler,
+    controllerContainer(UserController.getMany),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/blockUser',
+    authHandler,
+    controllerContainer(UserController.blockUser),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/unblockUser',
+    authHandler,
+    controllerContainer(UserController.unblockUser),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/requestAccessCode',
+    authHandler,
+    controllerContainer(UserController.requestAccessCode),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/sendFriendRequest',
+    authHandler,
+    controllerContainer(UserController.sendFriendRequest),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/acceptFriendRequest',
+    authHandler,
+    controllerContainer(UserController.acceptFriendRequest),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/declineFriendRequest',
+    authHandler,
+    controllerContainer(UserController.declineFriendRequest),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/deleteFriend',
+    authHandler,
+    controllerContainer(UserController.deleteFriend),
+);
+
