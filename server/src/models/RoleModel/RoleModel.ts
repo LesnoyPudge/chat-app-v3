@@ -49,4 +49,4 @@ const RoleSchema = new Schema<IRoleModel>(
     },
 );
 
-export const RoleModel = model<IRoleModel>('Role', RoleSchema);
+export const RoleModel = model<IRoleModel>('Role', RoleSchema, 'Role');

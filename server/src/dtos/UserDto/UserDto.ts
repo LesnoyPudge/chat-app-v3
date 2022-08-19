@@ -18,7 +18,7 @@ export const UserDto: IUserDto = {
             avatar: user.avatar,
             email: user.email,
             extraStatus: user.extraStatus,
-            activationLink: user.activationLink,
+            activationCode: user.activationCode,
             isActivated: user.isActivated,
             settings: user.settings,
             blockList: user.blockList.map((blockedUserId) => {
@@ -61,7 +61,7 @@ export const UserDto: IUserDto = {
             avatar: user?.avatar,
             email: user?.email,
             extraStatus: user?.extraStatus,
-            activationLink: user?.activationLink,
+            activationCode: user?.activationCode,
             isActivated: user?.isActivated,
             settings: user?.settings,
             blockList: user?.blockList.map((blockedUserId) => {

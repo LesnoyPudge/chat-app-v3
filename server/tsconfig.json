@@ -7,6 +7,7 @@
             "@dtos": ["src/dtos/index"],
             "@middlewares": ["src/middlewares/index"],
             "@models": ["src/models/index"],
+            "@models/schemas": ["src/models/schemas/index"],
             "@routes": ["src/routes/index"],
             "@services": ["src/services/index"],
             "@socket": ["src/socket/index"],

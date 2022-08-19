@@ -50,4 +50,4 @@ const ChannelSchema = new Schema<IChannelModel>(
     },
 );
 
-export const ChannelModel = model<IChannelModel>('Channel', ChannelSchema);
+export const ChannelModel = model<IChannelModel>('Channel', ChannelSchema, 'Channel');

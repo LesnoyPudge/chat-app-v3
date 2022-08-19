@@ -1,10 +1,7 @@
 import { Schema, model, Types, Document } from 'mongoose';
+import { ChatSchema, IChatSchema } from '@models/schemas';
 
 
-
-interface IChatSchema extends Document<Types.ObjectId> {
-    messages: Types.ObjectId[];
-}
 
 export interface IPrivateChannelModel extends Document<Types.ObjectId> {
     members: Types.ObjectId[];
@@ -13,12 +10,6 @@ export interface IPrivateChannelModel extends Document<Types.ObjectId> {
     createdAt: Date;
     updatedAt: Date;
 }
-
-const ChatSchema = new Schema(
-    {
-        messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
-    },
-);
 
 const PrivateChannelSchema = new Schema<IPrivateChannelModel>(
     {
@@ -34,4 +25,4 @@ const PrivateChannelSchema = new Schema<IPrivateChannelModel>(
     },
 );
 
-export const PrivateChannelModel = model<IPrivateChannelModel>('PrivateChannel', PrivateChannelSchema);
+export const PrivateChannelModel = model<IPrivateChannelModel>('PrivateChannel', PrivateChannelSchema, 'PrivateChannel');

@@ -8,4 +8,4 @@ export * from './createAccessCode';
 export * from './objectId';
 export * from './generateString';
 export * from './date';
-export * from './createActivationLink';
+export * from './password';

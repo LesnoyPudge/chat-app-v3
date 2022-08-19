@@ -6,11 +6,10 @@ import path from 'path';
 interface IEnv {
     CUSTOM_NODE_ENV: 'development' | 'production';
     CUSTOM_SERVER_PORT: string;
-    DB_CONNECTION: string;
+    DB_CONNECTION_URL: string;
     JWT_ACCESS_KEYWORD: string;
     JWT_REFRESH_KEYWORD: string;
-    SMTP_HOST: string;
-    SMTP_PORT: string;
+    SMTP_SERVICE: string;
     SMTP_USER: string;
     SMTP_PASSWORD: string;
     CUSTOM_CLIENT_URL: string;

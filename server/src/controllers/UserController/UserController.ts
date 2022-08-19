@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, ILoginUserRequest, IRegistrationUserRequest, IGetOneUserRequest, IGetManyUserRequest, IUpdateUserRequest, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest } from '@types';
+import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, ILoginUserRequest, IRegistrationUserRequest, IGetOneUserRequest, IGetManyUserRequest, IUpdateUserRequest, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateUserRequest } from '@types';
 import { UserService } from '@services';
 import { getEnv } from '@utils';
 
@@ -21,6 +21,8 @@ interface IUserController {
     declineFriendRequest: AuthorizedControllerType<IDeclineFriendRequestUserRequest, never, IUser>;
     revokeFriendRequest: AuthorizedControllerType<IRevokeFriendRequestUserRequest, never, IUser>;
     deleteFriend: AuthorizedControllerType<IDeleteFriendUserRequest, never, IUser>;
+    requestActivationLink: AuthorizedControllerType<void, never, void>;
+    activateAccount: ControllerType<void, IActivateUserRequest, void>;
     
     some: AuthorizedControllerType<void, never, void>;
 }
@@ -160,6 +162,22 @@ export const UserController: IUserController = {
         const updatedUser = await UserService.deleteFriend({ userId: id, targetId });
 
         res.json(updatedUser);
+    },
+
+    async requestActivationLink(req, res) {
+        const { id } = req.auth.user;
+
+        await UserService.requestActivationLink({ userId: id });
+
+        res.status(200).json();
+    },
+
+    async activateAccount(req, res) {
+        const { activationCode } = req.params;
+
+        await UserService.activateAccount({ activationCode });
+
+        res.status(200).json();
     },
     
     async some(req, res) {

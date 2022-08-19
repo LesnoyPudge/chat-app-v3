@@ -1,10 +1,7 @@
 import { Schema, model, Types, Document } from 'mongoose';
+import { ChatSchema, IChatSchema } from '@models/schemas';
 
 
-
-interface IChatSchema extends Document<Types.ObjectId> {
-    messages: Types.ObjectId[];
-}
 
 export interface ITextRoomModel extends Document<Types.ObjectId> {
     name: string;
@@ -19,12 +16,6 @@ export interface ITextRoomModel extends Document<Types.ObjectId> {
     createdAt: Date;
     updatedAt: Date;
 }
-
-const ChatSchema = new Schema<IChatSchema>(
-    {
-        messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
-    },
-);
 
 const TextRoomSchema = new Schema<ITextRoomModel>(
     {
@@ -45,4 +36,4 @@ const TextRoomSchema = new Schema<ITextRoomModel>(
     },
 );
 
-export const TextRoomModel = model<ITextRoomModel>('TextRoom', TextRoomSchema);
+export const TextRoomModel = model<ITextRoomModel>('TextRoom', TextRoomSchema, 'TextRoom');

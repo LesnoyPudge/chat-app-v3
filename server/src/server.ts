@@ -12,7 +12,12 @@ import { socket } from '@socket';
 
 
 
-const { CUSTOM_SERVER_PORT, CUSTOM_CLIENT_URL, CUSTOM_NODE_ENV } = getEnv();
+const { 
+    CUSTOM_SERVER_PORT, 
+    CUSTOM_CLIENT_URL, 
+    CUSTOM_NODE_ENV,
+    DB_CONNECTION_URL,
+} = getEnv();
 export const app = express();
 const server = http.createServer(app);
 export const io = new Server(server, {
@@ -45,16 +50,13 @@ if (CUSTOM_NODE_ENV === 'production') {
     });
 }
 
-mongoose.pluralize(null);
-
 const dbConnection = async() => {
-    try {
-        // mongoose.set('debug', true);
-        await mongoose.connect(getEnv().DB_CONNECTION);
+    // mongoose.set('debug', true);
+    await mongoose.connect(DB_CONNECTION_URL).then(() => {
         console.log('database connected');
-    } catch (error) {
-        console.log('database connection failed');
-    }
+    }).catch((error) => {
+        throw new Error(`database connection failed: ${error.message}`);
+    });
 };
 
 (async function() {
@@ -64,7 +66,6 @@ const dbConnection = async() => {
         await dbConnection();
         server.listen(CUSTOM_SERVER_PORT, () => console.log(`Server started at: ${CUSTOM_SERVER_PORT}`));
     } catch (error) {
-        console.log('Error: ' + error);
-        throw new Error();
+        throw new Error(error.message);
     }
 })();

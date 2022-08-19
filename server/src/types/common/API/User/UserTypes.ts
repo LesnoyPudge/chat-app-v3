@@ -9,7 +9,7 @@ export interface IUser {
     avatar: string;
     email: string;
     extraStatus: 'default' | 'afk' | 'dnd' | 'invisible';
-    activationLink: string;
+    activationCode: string;
     isActivated: boolean;
     settings: {
         theme: 'auto' | 'dark' | 'light';
@@ -98,4 +98,8 @@ export interface IRevokeFriendRequestUserRequest {
 
 export interface IDeleteFriendUserRequest {
     targetId: string;
+}
+
+export interface IActivateUserRequest {
+    activationCode: string;
 }

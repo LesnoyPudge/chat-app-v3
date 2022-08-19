@@ -11,7 +11,7 @@ export interface IUserModel extends Document<Types.ObjectId> {
     avatar: string;
     email: string;
     extraStatus: 'default' | 'afk' | 'dnd' | 'invisible';
-    activationLink: string;
+    activationCode: string;
     isActivated: boolean;
     refreshJWT: string;
     blockList: Types.ObjectId[];
@@ -50,7 +50,7 @@ const UserSchema = new Schema<IUserModel>(
         avatar: { type: String, default: '' },
         email: { type: String, required: true },
         extraStatus: { type: String, default: 'default' },
-        activationLink: { type: String, required: true },
+        activationCode: { type: String, required: true },
         isActivated: { type: Boolean, default: false },
         blockList: [{ type: Schema.Types.ObjectId, ref: 'User' }],
         friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
@@ -83,4 +83,4 @@ const UserSchema = new Schema<IUserModel>(
     },
 );
 
-export const UserModel = model<IUserModel>('User', UserSchema);
+export const UserModel = model<IUserModel>('User', UserSchema, 'User');

@@ -1,20 +1,20 @@
 import { NextFunction, Request, Response } from 'express';
-import { Send, Query } from 'express-serve-static-core';
+import { Send } from 'express-serve-static-core';
 import { IUser } from '../../common';
 
 
 
-export interface IRequest<RequestBody, RequestQuery extends Query> extends Request {
+export interface IRequest<RequestBody, RequestParams> extends Request<RequestParams> {
     body: RequestBody;
-    query: RequestQuery;
+    params: RequestParams;
 }
 
-export interface IAuthorizedRequest<RequestBody, RequestQuery extends Query> extends IRequest<RequestBody, RequestQuery> {
+export interface IAuthorizedRequest<RequestBody, RequestParams> extends IRequest<RequestBody, RequestParams> {
     cookies: {
         refreshToken: string;
     };
-    auth?: {
-        user: IUser;
+    auth: {
+        user: Partial<IUser>;
     };
 }
 
@@ -22,14 +22,14 @@ export interface IResponse<ResponseBody> extends Response {
     json: Send<ResponseBody, this>;
 }
 
-export type MiddlewareType<RequestBody, RequestQuery extends Query, ResponseBody> = (
-    req: IRequest<RequestBody, RequestQuery>, 
+export type MiddlewareType<RequestBody, RequestParams, ResponseBody> = (
+    req: IRequest<RequestBody, RequestParams>, 
     res: IResponse<ResponseBody>, 
     next: NextFunction,
-) => any;
+) => void;
 
-export type AuthorizedMiddlewareType<RequestBody, RequestQuery extends Query, ResponseBody> = (
-    req: IAuthorizedRequest<RequestBody, RequestQuery>, 
+export type AuthorizedMiddlewareType<RequestBody, RequestParams, ResponseBody> = (
+    req: IAuthorizedRequest<RequestBody, RequestParams>, 
     res: IResponse<ResponseBody>, 
     next: NextFunction,
-) => any;
+) => void;

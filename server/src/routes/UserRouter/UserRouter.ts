@@ -101,3 +101,14 @@ UserRouter.post(
     controllerContainer(UserController.deleteFriend),
 );
 
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/activate-account/:activationCode',
+    authHandler,
+    controllerContainer(UserController.activateAccount),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/requestActivationLink',
+    authHandler,
+    controllerContainer(UserController.requestActivationLink),
+);

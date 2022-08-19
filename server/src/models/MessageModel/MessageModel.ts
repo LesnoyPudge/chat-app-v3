@@ -29,4 +29,4 @@ const MessageSchema = new Schema<IMessageModel>(
     },
 );
 
-export const MessageModel = model<IMessageModel>('Message', MessageSchema);
+export const MessageModel = model<IMessageModel>('Message', MessageSchema, 'Message');

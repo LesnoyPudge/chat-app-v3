@@ -1,24 +1,23 @@
 import { NextFunction } from 'express';
-import { Query } from 'express-serve-static-core';
 import { IUser } from '../../common';
 import { IAuthorizedRequest, IRequest, IResponse } from '../Middleware';
 
 
 
-interface IAuthorizedControllerRequest<RequestBody, RequestQuery extends Query> extends IAuthorizedRequest<RequestBody, RequestQuery> {
+interface IAuthorizedControllerRequest<RequestBody, RequestParams> extends IAuthorizedRequest<RequestBody, RequestParams> {
     auth: {
         user: IUser;
     }
 }
 
-export type ControllerType<RequestBody, RequestQuery extends Query, ResponseBody> = (
-    req: IRequest<RequestBody, RequestQuery>, 
+export type ControllerType<RequestBody, RequestParams, ResponseBody> = (
+    req: IRequest<RequestBody, RequestParams>, 
     res: IResponse<ResponseBody>,
     next: NextFunction,
 ) => void;
 
-export type AuthorizedControllerType<RequestBody, RequestQuery extends Query, ResponseBody> = (
-    req: IAuthorizedControllerRequest<RequestBody, RequestQuery>, 
+export type AuthorizedControllerType<RequestBody, RequestParams, ResponseBody> = (
+    req: IAuthorizedControllerRequest<RequestBody, RequestParams>, 
     res: IResponse<ResponseBody>, 
     next: NextFunction,
 ) => void;

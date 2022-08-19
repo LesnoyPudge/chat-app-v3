@@ -1,8 +1,8 @@
-import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from '@dtos';
 import { UserModel } from '@models';
-import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IGetManyUserRequest, IUpdateUserRequest, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest } from '@types';
-import { transactionContainer, ApiError, getEnv, token, createAccessCode, objectId, date, sendMail, createActivationLink } from '@utils';
+import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IGetManyUserRequest, IUpdateUserRequest, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateUserRequest } from '@types';
+import { transactionContainer, ApiError, token, createAccessCode, objectId, date, sendMail, password } from '@utils';
 import { subscription } from '@subscription';
 import { UserServiceHelpers } from './UserServiceHelpers';
 
@@ -24,20 +24,21 @@ interface IUserService {
     declineFriendRequest: AuthorizedServiceType<IDeclineFriendRequestUserRequest, IUser>;
     revokeFriendRequest: AuthorizedServiceType<IRevokeFriendRequestUserRequest, IUser>;
     deleteFriend: AuthorizedServiceType<IDeleteFriendUserRequest, IUser>;
+    requestActivationLink: AuthorizedServiceType<unknown, void>;
+    activateAccount: ServiceType<IActivateUserRequest, void>;
 }
 
-const { BCRYPT_SALT_ROUNDS } = getEnv();
 const { toObjectId } = objectId;
 const { isExpired } = date;
 const { sendAccessCode, sendActivationLink } = sendMail;
+const { hashPassword, isPasswordsEquals } = password;
 
 export const UserService: IUserService = {
     async registration({ email, login, password, username }) {
         return transactionContainer(
-            async({ queryOptions }) => {
-                const salt = await bcrypt.genSalt(parseInt(BCRYPT_SALT_ROUNDS));
-                const hashedPassword = await bcrypt.hash(password, salt);
-                const activationLink = createActivationLink();
+            async({ queryOptions, onCommit }) => {
+                const hashedPassword = await hashPassword(password);
+                const activationCode = uuidv4();
                 const { code, expiryDate } = createAccessCode();
 
                 const user = await UserModel.create(
@@ -46,7 +47,7 @@ export const UserService: IUserService = {
                         login,
                         password: hashedPassword,
                         username,
-                        activationLink,
+                        activationCode,
                         accessCode: {
                             code,
                             expiryDate,
@@ -65,8 +66,11 @@ export const UserService: IUserService = {
                     throw ApiError.badRequest('Не удалось зарегистрироваться');
                 });
 
-                !!email && await sendActivationLink({ to: email, link: '' }).catch(() => {
-                    throw ApiError.badRequest('Не удалось отправить письмо с ссылкой для активации');
+
+                onCommit(() => {
+                    if (email) sendActivationLink({ to: email, activationCode }).catch((error) => {
+                        console.log('Не удалось отправить письмо', error.message);
+                    });
                 });
 
                 return {
@@ -83,9 +87,9 @@ export const UserService: IUserService = {
                 const user = await UserModel.findOne({ login }, {}, { lean: true }).catch(() => {
                     throw ApiError.badRequest('Неверный логин или пароль');
                 });
-        
-                const isPassEquals = await bcrypt.compare(password, user.password);
-                if (!isPassEquals) {
+
+                const isCorrectPassword = await isPasswordsEquals({ password, hashedPassword: user.password });
+                if (!isCorrectPassword) {
                     throw ApiError.badRequest('Неверный логин или пароль');
                 }
 
@@ -93,7 +97,9 @@ export const UserService: IUserService = {
 
                 user.refreshJWT = tokens.refreshToken;
 
-                await user.save(queryOptions());
+                await user.save(queryOptions()).catch(() => {
+                    throw ApiError.badRequest('Не удалось войти');
+                });
 
                 return {
                     user: UserDto.objectFromModel(user),
@@ -135,12 +141,11 @@ export const UserService: IUserService = {
                     { 
                         _id: jwtData.id, 
                         refreshJWT: refreshToken, 
-                    }, 
-                    {}, 
-                    { lean: true },
-                ).catch(() => {
+                    },
+                );
+                if (!user) {
                     throw ApiError.forbidden();
-                });
+                }
 
                 const tokens = token.generateTokens(UserDto.objectFromModel(user));
 
@@ -268,7 +273,7 @@ export const UserService: IUserService = {
                 const hasEmail = !!user.email;
                 const isActivated = user.isActivated;
 
-                if (!hasEmail) throw ApiError.badRequest('Не указана электронная почта');
+                if (!hasEmail) throw ApiError.badRequest('Не указан адрес электронной почты');
                 if (!isActivated) throw ApiError.badRequest('Аккаунт не активирован');
                 if (!isAccessCodeExpired) {
                     return sendAccessCode({ to: user.email, code: user.accessCode.code }).catch(() => {
@@ -423,6 +428,37 @@ export const UserService: IUserService = {
                 });
 
                 return updatedUserDto;
+            },
+        );
+    },
+
+    async requestActivationLink({ userId }) {
+        const user = await UserModel.findById(userId, {}, { lean: true });
+        const hasEmail = !!user.email;
+        const isActivated = user.isActivated;
+
+        if (!hasEmail) throw ApiError.badRequest('Не указан адрес электронной почты');
+        if (isActivated) throw ApiError.badRequest('Аккаунт уже активирован');
+
+        await sendActivationLink({ to: user.email, activationCode: user.activationCode }).catch(() => {
+            throw ApiError.badRequest('Не удалось отправить письмо с ссылкой для активации');
+        }); 
+    },
+
+    async activateAccount({ activationCode }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedUser = await UserModel.findOneAndUpdate(
+                    { activationCode },
+                    { $set: { isActivated: true } }, 
+                    queryOptions({ new: true }),
+                ).catch(() => {
+                    throw ApiError.badRequest('Не удалось активировать пользователя');
+                });
+
+                onCommit(() => {
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                });
             },
         );
     },
