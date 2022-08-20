@@ -66,15 +66,16 @@ export const UserService: IUserService = {
                     throw ApiError.badRequest('Не удалось зарегистрироваться');
                 });
 
+                const userDto = UserDto.objectFromModel(user);
 
                 onCommit(() => {
-                    if (email) sendActivationLink({ to: email, activationCode }).catch((error) => {
+                    if (email) sendActivationLink(userDto).catch((error) => {
                         console.log('Не удалось отправить письмо', error.message);
                     });
                 });
 
                 return {
-                    user: UserDto.objectFromModel(user),
+                    user: userDto,
                     ...tokens,
                 };
             },
@@ -84,9 +85,10 @@ export const UserService: IUserService = {
     async login({ login, password }) {
         return transactionContainer(
             async({ queryOptions }) => {
-                const user = await UserModel.findOne({ login }, {}, { lean: true }).catch(() => {
+                const user = await UserModel.findOne({ login });
+                if (!user) {
                     throw ApiError.badRequest('Неверный логин или пароль');
-                });
+                }
 
                 const isCorrectPassword = await isPasswordsEquals({ password, hashedPassword: user.password });
                 if (!isCorrectPassword) {
@@ -434,13 +436,16 @@ export const UserService: IUserService = {
 
     async requestActivationLink({ userId }) {
         const user = await UserModel.findById(userId, {}, { lean: true });
+        if (!user) {
+            throw ApiError.badRequest('Пользователь не найден');
+        }
         const hasEmail = !!user.email;
         const isActivated = user.isActivated;
 
         if (!hasEmail) throw ApiError.badRequest('Не указан адрес электронной почты');
         if (isActivated) throw ApiError.badRequest('Аккаунт уже активирован');
 
-        await sendActivationLink({ to: user.email, activationCode: user.activationCode }).catch(() => {
+        await sendActivationLink(UserDto.objectFromModel(user)).catch(() => {
             throw ApiError.badRequest('Не удалось отправить письмо с ссылкой для активации');
         }); 
     },

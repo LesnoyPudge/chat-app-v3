@@ -1,6 +1,5 @@
 import cors from 'cors';
 import express from 'express';
-import path from 'path';
 import http from 'http';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
@@ -14,8 +13,7 @@ import { socket } from '@socket';
 
 const { 
     CUSTOM_SERVER_PORT, 
-    CUSTOM_CLIENT_URL, 
-    CUSTOM_NODE_ENV,
+    CUSTOM_CLIENT_URL,
     DB_CONNECTION_URL,
 } = getEnv();
 export const app = express();
@@ -42,13 +40,13 @@ app.use(cors({
     origin: CUSTOM_CLIENT_URL,
 }));
 
-if (CUSTOM_NODE_ENV === 'production') {
-    app.use('/', express.static(path.join(__dirname, '../../client', 'build')));
+// if (CUSTOM_NODE_ENV === 'production') {
+//     app.use('/', express.static(path.join(__dirname, '../../client', 'build')));
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, '../../client', 'build', 'index.html'));
-    });
-}
+//     app.get('*', (req, res) => {
+//         res.sendFile(path.resolve(__dirname, '../../client', 'build', 'index.html'));
+//     });
+// }
 
 const dbConnection = async() => {
     // mongoose.set('debug', true);

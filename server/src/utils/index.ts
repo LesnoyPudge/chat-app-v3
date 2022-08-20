@@ -9,3 +9,4 @@ export * from './objectId';
 export * from './generateString';
 export * from './date';
 export * from './password';
+export * from './fileToText';

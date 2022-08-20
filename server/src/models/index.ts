@@ -4,3 +4,4 @@ export * from './TextRoomModel';
 export * from './MessageModel';
 export * from './PrivateChannelModel';
 export * from './RoleModel';
+export * from './AttachmentModel';

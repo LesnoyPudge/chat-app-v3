@@ -4,3 +4,4 @@ export * from './TextRoomService';
 export * from './PrivateChannelService';
 export * from './MessageService';
 export * from './RoleService';
+export * from './AttachmentService';

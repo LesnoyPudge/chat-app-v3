@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "esModuleInterop": true,
+        "downlevelIteration": true,
         "baseUrl": "./",
         "paths": {
             "@controllers": ["src/controllers/index"],
@@ -16,7 +17,9 @@
             "@validators": ["src/validators/index"],
             "@server": ["src/server"],
             "@subscription": ["src/subscription/index"],
-            "@subscription/helpers": ["src/subscription/subscriptionHelpers"]
+            "@subscription/helpers": ["src/subscription/subscriptionHelpers"],
+            "@emails": ["src/emails/index"],
+            "@emails/components": ["src/emails/components/index"],
         },
     },
 }
