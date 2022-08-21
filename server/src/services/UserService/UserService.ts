@@ -1,10 +1,9 @@
-import { v4 as uuidv4 } from 'uuid';
 import { UserDto } from '@dtos';
 import { UserModel } from '@models';
-import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IGetManyUserRequest, IUpdateUserRequest, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateUserRequest } from '@types';
-import { transactionContainer, ApiError, token, createAccessCode, objectId, date, sendMail, password } from '@utils';
+import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IGetManyUserRequest, IUpdateUserRequest, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateUserRequest, IChangeAvatarUserRequest, IChangePasswordUserRequest, IChangeExtraStatusUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
+import { transactionContainer, ApiError, token, createAccessCode, objectId, date, sendMail, password, getRandomString } from '@utils';
 import { subscription } from '@subscription';
-import { UserServiceHelpers } from './UserServiceHelpers';
+import { UserServiceHelpers, AttachmentServiceHelpers } from '@services';
 
 
 
@@ -26,23 +25,30 @@ interface IUserService {
     deleteFriend: AuthorizedServiceType<IDeleteFriendUserRequest, IUser>;
     requestActivationLink: AuthorizedServiceType<unknown, void>;
     activateAccount: ServiceType<IActivateUserRequest, void>;
+    changeAvatar: AuthorizedServiceType<IChangeAvatarUserRequest, IUser>;
+    changePassword: AuthorizedServiceType<IChangePasswordUserRequest, void>;
+    changeExtraStatus: AuthorizedServiceType<IChangeExtraStatusUserRequest, IUser>;
+    verifyAccessCode: AuthorizedServiceType<IVerifyAccessCodeUserReuqest, void>;
 }
 
 const { toObjectId } = objectId;
 const { isExpired } = date;
 const { sendAccessCode, sendActivationLink } = sendMail;
 const { hashPassword, isPasswordsEquals } = password;
+const { getUUID } = getRandomString;
 
 export const UserService: IUserService = {
     async registration({ email, login, password, username }) {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const hashedPassword = await hashPassword(password);
-                const activationCode = uuidv4();
+                const activationCode = getUUID();
                 const { code, expiryDate } = createAccessCode();
+                const attachment = await AttachmentServiceHelpers.getDefaultUserAvatar();
 
                 const user = await UserModel.create(
                     [{
+                        avatar: attachment.id,
                         email,
                         login,
                         password: hashedPassword,
@@ -466,5 +472,97 @@ export const UserService: IUserService = {
                 });
             },
         );
+    },
+
+    async changeAvatar({ userId, filename, base64url }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const userToUpdate = await UserModel.findById(userId);
+
+                const oldAvatarId = userToUpdate.avatar;
+
+                await AttachmentServiceHelpers.delete({ attachmentId: oldAvatarId });
+                
+                const isNoNewAvatar = !filename || !base64url;
+                if (isNoNewAvatar) {
+                    const defaultAvatar = await AttachmentServiceHelpers.getDefaultUserAvatar();
+                    
+                    userToUpdate.avatar = defaultAvatar.id;
+                    
+                    const updatedUserDto = UserDto.objectFromModel(userToUpdate);
+                    
+                    onCommit(() => {
+                        subscription.users.update({ entity: updatedUserDto });
+                    });
+
+                    return updatedUserDto;
+                }
+
+                const newAvatar = await AttachmentServiceHelpers.create({ base64url, filename });
+                
+                userToUpdate.avatar = newAvatar.id;
+
+                const updatedUserDto = UserDto.objectFromModel(userToUpdate);
+                    
+                onCommit(() => {
+                    subscription.users.update({ entity: updatedUserDto });
+                });
+
+                return updatedUserDto;
+            },
+        );
+    },
+
+    async changePassword({ userId, newPassword, oldPassord }) {
+        return transactionContainer(
+            async({ queryOptions }) => {
+                const userToUpdate = await UserModel.findById(userId);
+                
+                const isValidPassword = isPasswordsEquals({ password: oldPassord, hashedPassword: userToUpdate.password });
+                if (!isValidPassword) {
+                    throw ApiError.badRequest('Неверный пароль');
+                }
+
+                const hashedPassword = await hashPassword(newPassword);
+
+                userToUpdate.password = hashedPassword;
+                await userToUpdate.save(queryOptions());
+            },
+        );
+    },
+
+    async changeExtraStatus({ userId, extraStatus }) {
+        return transactionContainer(
+            async({ queryOptions, onCommit }) => {
+                const updatedUser = await UserModel.findByIdAndUpdate(
+                    userId, 
+                    { $set: { extraStatus: extraStatus } },
+                    queryOptions(),
+                );
+
+                const updatedUserDto = UserDto.objectFromModel(updatedUser);
+
+                onCommit(() => {
+                    subscription.users.update({ entity: updatedUserDto });
+                });
+
+                return updatedUserDto;
+            },
+        );
+    },
+
+    async verifyAccessCode({ userId, accessCode }) {
+        const user = await UserModel.findById(userId, {}, { lean: true });
+
+        const isCodesEqual = user.accessCode.code === accessCode;
+        const isCodeExpired = isExpired(user.accessCode.expiryDate);
+
+        if (!isCodesEqual) {
+            throw ApiError.badRequest('Неверный код доступа');
+        }
+        
+        if (isCodeExpired) {
+            throw ApiError.badRequest('Срок действия кода доступа истёк');
+        }
     },
 };

@@ -1,6 +1,5 @@
-import { UserService } from '../../services';
-import { AuthorizedMiddlewareType } from '../../types';
-import { ApiError, token } from '../../utils';
+import { AuthorizedMiddlewareType } from '@types';
+import { ApiError, token } from '@utils';
 
 
 

@@ -1,3 +1,4 @@
+import ms from 'ms';
 
 
 
@@ -7,5 +8,15 @@ export const date = {
         const expiryDateInMs = isNumber ? expiryDate : expiryDate.getMilliseconds();
         const currentDate = Date.now();
         return expiryDateInMs > currentDate;
+    },
+
+    setExpiyDate(expiresIn: number | string) {
+        if (typeof expiresIn === 'string') {
+            expiresIn = ms(expiresIn);
+        }
+
+        const expiryDate = Date.now() + expiresIn;
+
+        return expiryDate;
     },
 };

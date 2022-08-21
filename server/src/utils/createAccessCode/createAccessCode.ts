@@ -1,13 +1,11 @@
-import { getEnv, generateString } from '@utils';
-import ms from 'ms';
+import { getEnv, getRandomString, date } from '@utils';
 
 
-
-const { ACCESS_CODE_SIZE } = getEnv();
 
 export const createAccessCode = () => {
-    const code = generateString(parseInt(ACCESS_CODE_SIZE)).toUpperCase();
-    const expiryDate = Date.now() + ms(getEnv().ACCESS_CODE_DURATION);
+    const { ACCESS_CODE_SIZE, ACCESS_CODE_DURATION } = getEnv();
+    const code = getRandomString.getOnlyLettersString(parseInt(ACCESS_CODE_SIZE)).toUpperCase();
+    const expiryDate = date.setExpiyDate(ACCESS_CODE_DURATION);
 
     return {
         code,

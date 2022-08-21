@@ -16,7 +16,7 @@ interface IMessageService {
 }
 
 export const MessageService: IMessageService = {
-    async create({ userId, chatId, content = '', attachedImages = [], respondOn = [] }) {
+    async create({ userId, chatId, content = '', atttachments = [], respondOn = [] }) {
         return transactionContainer(
             async({ queryOptions }) => {
                 const message = await MessageModel.create(
@@ -24,7 +24,7 @@ export const MessageService: IMessageService = {
                         user: userId,
                         chat: chatId,
                         content,
-                        attachedImages,
+                        atttachments,
                         respondOn,
                     }],
                     queryOptions(),

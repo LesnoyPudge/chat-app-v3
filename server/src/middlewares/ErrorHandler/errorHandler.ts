@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { ApiError } from '../../utils/ApiError/ApiError';
 
 
 
@@ -12,7 +11,7 @@ type ErrorMiddlewareType = (
     req: Request, 
     res: Response, 
     next: NextFunction,
-) => unknown;
+) => void;
 
 export const errorHandler: ErrorMiddlewareType = (error, req, res, next) => {
     console.log('\n\n');
@@ -20,10 +19,9 @@ export const errorHandler: ErrorMiddlewareType = (error, req, res, next) => {
     console.log('Path: ' + req?.path);
     console.log('Name: ' + error?.name);
     console.log('Message: ' + error?.message);
-    console.log('Stack: ' + error?.stack);
+    // console.log('Stack: ' + error?.stack);
 
-    // error instanceof ApiError
     if (error.status) return res.status(error.status).json({ message: error.message });
 
-    return res.status(500).json({ message: 'Непредвиденная ошибка' });
+    res.status(500).json({ message: 'Непредвиденная ошибка' });
 };

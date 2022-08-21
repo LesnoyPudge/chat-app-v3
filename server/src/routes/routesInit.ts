@@ -6,6 +6,7 @@ import { TextRoomRouter } from './TextRoomRouter';
 import { PrivateChannelRouter } from './PrivateChannelRouter';
 import { MessageRouter } from './MessageRouter';
 import { RoleRouter } from './RoleRouter';
+import { AttachmentRouter } from './AttachmentRouter';
 
 
 
@@ -17,6 +18,7 @@ export const routesInit = (app: Application) => {
         PrivateChannelRouter,
         MessageRouter,
         RoleRouter,
+        AttachmentRouter,
     ]);
 
     middlewares.init.errorHandler();

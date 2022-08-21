@@ -14,7 +14,7 @@ export const MessageDto: IMessageDto = {
             chat: message.chat.toString(),
             user: message.user.toString(),
             content: message.content,
-            attachedImages: message.attachedImages,
+            atttachments: message.atttachments,
             isChanged: message.isChanged,
             isDeleted: message.isDeleted,
             respondOn: message.respondOn.map((messageId) => {

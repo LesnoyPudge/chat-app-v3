@@ -13,15 +13,12 @@ type ValidatorType = () => ValidationChain[] & {
 
 export const validationHandler = (validator: ValidatorType): MiddlewareType<any, any, any> => {
     return (req, res, next) => {
-        validator().run(req)
-            .then(() => {
-                const result = validationResult(req).array();
+        validator().run(req).then(() => {
+            const result = validationResult(req).array();
     
-                if (!result.length) return next();
-        
-                console.log(result);
-                ApiError.badRequest('Validation failed: ' + result[0].msg);
-            })
-            .catch((error) => next(error));
+            if (!result.length) return next();
+            // console.log(result);
+            throw ApiError.badRequest('Validation failed: ' + result[0].msg);
+        }).catch((error) => next(error));
     };
 };

@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, ILoginUserRequest, IRegistrationUserRequest, IGetOneUserRequest, IGetManyUserRequest, IUpdateUserRequest, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateUserRequest } from '@types';
+import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, ILoginUserRequest, IRegistrationUserRequest, IGetOneUserRequest, IGetManyUserRequest, IUpdateUserRequest, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateUserRequest, IChangeAvatarUserRequest, IChangePasswordUserRequest, IChangeExtraStatusUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
 import { UserService } from '@services';
 import { getEnv } from '@utils';
 
@@ -23,6 +23,10 @@ interface IUserController {
     deleteFriend: AuthorizedControllerType<IDeleteFriendUserRequest, never, IUser>;
     requestActivationLink: AuthorizedControllerType<void, never, void>;
     activateAccount: ControllerType<void, IActivateUserRequest, void>;
+    changeAvatar: AuthorizedControllerType<IChangeAvatarUserRequest, never, IUser>;
+    changePassword: AuthorizedControllerType<IChangePasswordUserRequest, never, void>;
+    changeExtraStatus: AuthorizedControllerType<IChangeExtraStatusUserRequest, never, IUser>;
+    verifyAccessCode: AuthorizedControllerType<IVerifyAccessCodeUserReuqest, never, void>;
     
     some: AuthorizedControllerType<void, never, void>;
 }
@@ -179,7 +183,43 @@ export const UserController: IUserController = {
 
         res.status(200).json();
     },
+
+    async changeAvatar(req, res) {
+        const { filename, base64url } = req.body;
+        const { id } = req.auth.user;
+
+        const updatedUser = await UserService.changeAvatar({ userId: id, base64url, filename });
+
+        res.json(updatedUser);
+    },
+
+    async changePassword(req, res) {
+        const { newPassword, oldPassord } = req.body;
+        const { id } = req.auth.user;
+
+        await UserService.changePassword({ userId: id, newPassword, oldPassord });
+
+        res.status(200).json();
+    },
+
+    async changeExtraStatus(req, res) {
+        const { extraStatus } = req.body;
+        const { id } = req.auth.user;
     
+        const updatedUser = await UserService.changeExtraStatus({ userId: id, extraStatus });
+
+        res.json(updatedUser);
+    },
+
+    async verifyAccessCode(req, res) {
+        const { accessCode } = req.body;
+        const { id } = req.auth.user;
+
+        await UserService.verifyAccessCode({ userId: id, accessCode });
+
+        res.status(200).json();
+    },
+
     async some(req, res) {
         const user = req.auth.user;
 

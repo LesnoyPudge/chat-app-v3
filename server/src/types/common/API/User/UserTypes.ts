@@ -1,6 +1,8 @@
 
 
 
+type ExtraStatusType = 'default' | 'afk' | 'dnd' | 'invisible';
+
 export interface IUser {
     id: string;
     login: string;
@@ -8,7 +10,7 @@ export interface IUser {
     password: string;
     avatar: string;
     email: string;
-    extraStatus: 'default' | 'afk' | 'dnd' | 'invisible';
+    extraStatus: ExtraStatusType;
     activationCode: string;
     isActivated: boolean;
     settings: {
@@ -102,4 +104,22 @@ export interface IDeleteFriendUserRequest {
 
 export interface IActivateUserRequest {
     activationCode: string;
+}
+
+export interface IChangeAvatarUserRequest {
+    filename?: string;
+    base64url?: string;
+}
+
+export interface IChangePasswordUserRequest {
+    oldPassord: string;
+    newPassword: string;
+}
+
+export interface IChangeExtraStatusUserRequest {
+    extraStatus: ExtraStatusType;
+}
+
+export interface IVerifyAccessCodeUserReuqest {
+    accessCode: string;
 }

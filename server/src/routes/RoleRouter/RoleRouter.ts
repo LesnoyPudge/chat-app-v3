@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { RoleController } from '@controllers';
 import { middlewares } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
-import { validator } from '@validators';
+
 
 
 

@@ -6,7 +6,7 @@ export interface IMessage {
     chat: string;
     user: string;
     content: string;
-    attachedImages: string[];
+    atttachments: string[];
     isChanged: boolean;
     isDeleted: boolean;
     respondOn: string[];
@@ -17,7 +17,7 @@ export interface IMessage {
 export interface ICreateMessageRequest {
     chatId: string;
     content?: string;
-    attachedImages?: string[];
+    atttachments?: string[];
     respondOn?: string[];
 }
 

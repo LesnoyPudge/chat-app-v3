@@ -2,7 +2,7 @@ import { ChannelDto } from '@dtos';
 import { ChannelModel } from '@models';
 import { subscription } from '@subscription';
 import { AuthorizedServiceType, IAcceptInvitationChannelRequest, IBanUserChannelRequest, IChannel, ICreateChannelRequest, ICreateInvitationChannelRequest, IDeleteChannelRequest, IDeleteInvitationChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IKickUserChannelRequest, ILeaveChannelRequest, IUnbanUserChannelRequest, IUpdateChannelRequest } from '@types';
-import { ApiError, generateString, objectId, transactionContainer } from '@utils';
+import { ApiError, getRandomString, objectId, transactionContainer } from '@utils';
 import { UserServiceHelpers, RoleServiceHelpers, TextRoomServiceHelpers } from '@services';
 import c from 'config';
 
@@ -24,6 +24,7 @@ interface IChannelService {
 }
 
 const { toObjectId } = objectId;
+const { getOnlyLettersString } = getRandomString;
 
 export const ChannelService: IChannelService = {
     async create({ name, identifier, userId }) {
@@ -228,7 +229,7 @@ export const ChannelService: IChannelService = {
         );
     },
     
-    async createInvitation({ userId, channelId, duration, code = generateString(10) }) {
+    async createInvitation({ userId, channelId, duration, code = getOnlyLettersString(10) }) {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const createdAt = Date.now();

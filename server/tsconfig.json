@@ -20,6 +20,7 @@
             "@subscription/helpers": ["src/subscription/subscriptionHelpers"],
             "@emails": ["src/emails/index"],
             "@emails/components": ["src/emails/components/index"],
+            "@assets": ["src/assets/index"],
         },
     },
 }

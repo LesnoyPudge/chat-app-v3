@@ -11,11 +11,8 @@ export const AttachmentDto: IAttachmentDto = {
     objectFromModel(attachment) {
         return {
             id: attachment._id.toString(),
-            type: attachment.type,
             filename: attachment.filename,
-            size: attachment.size,
-            extension: attachment.extension,
-            base64string: attachment.base64string,
+            base64url: attachment.base64url,
             createdAt: attachment.createdAt.toString(),
             updatedAt: attachment.updatedAt.toString(),
         };

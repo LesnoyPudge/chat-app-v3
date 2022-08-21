@@ -4,3 +4,4 @@ export * from './TextRoomController';
 export * from './PrivateChannelController';
 export * from './MessageController';
 export * from './RoleController';
+export * from './AttachmentController';

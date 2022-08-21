@@ -2,18 +2,18 @@ import { Router } from 'express';
 import { UserController } from '@controllers';
 import { middlewares } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
-import { validator } from '@validators';
+// import { UserValidator } from '@validators';
 
 
 
 const { CUSTOM_API_V1_URL } = getEnv();
 const { validationHandler, authHandler } = middlewares.raw;
-const { createUserValidator } = validator.user;
+// const { createUserValidator } = UserValidator;
 export const UserRouter = Router();
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/registration',
-    validationHandler(createUserValidator),
+    // validationHandler(createUserValidator),
     controllerContainer(UserController.registration),
 );
 
@@ -111,4 +111,22 @@ UserRouter.post(
     CUSTOM_API_V1_URL + '/user/requestActivationLink',
     authHandler,
     controllerContainer(UserController.requestActivationLink),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/changeAvatar',
+    authHandler,
+    controllerContainer(UserController.changeAvatar),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/changePassword',
+    authHandler,
+    controllerContainer(UserController.changePassword),
+);
+
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/changeExtraStatus',
+    authHandler,
+    controllerContainer(UserController.changeExtraStatus),
 );
