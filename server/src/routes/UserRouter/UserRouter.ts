@@ -1,132 +1,131 @@
 import { Router } from 'express';
 import { UserController } from '@controllers';
-import { middlewares } from '@middlewares';
+import { authMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
-// import { UserValidator } from '@validators';
+import { UserValidator } from '@validators';
 
 
 
 const { CUSTOM_API_V1_URL } = getEnv();
-const { validationHandler, authHandler } = middlewares.raw;
-// const { createUserValidator } = UserValidator;
 export const UserRouter = Router();
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/registration',
-    // validationHandler(createUserValidator),
+    UserValidator.registration,
     controllerContainer(UserController.registration),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/login',
-    // validationHandler(createUserValidator),
+    // (createUserValidator),
     controllerContainer(UserController.login),
 );
 
 UserRouter.get(
     CUSTOM_API_V1_URL + '/user/logout',
-    // validationHandler(createUserValidator),
+    // (createUserValidator),
     controllerContainer(UserController.logout),
 );
 
 UserRouter.get(
     CUSTOM_API_V1_URL + '/user/refresh',
-    // validationHandler(createUserValidator),
+    // (createUserValidator),
     controllerContainer(UserController.refresh),
 );
 
 UserRouter.get(
     CUSTOM_API_V1_URL + '/user/some',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.some),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/update',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.update),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/getOne',
-    authHandler,
+    authMiddleware,
+    UserValidator.getOne,
     controllerContainer(UserController.getOne),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/getMany',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.getMany),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/blockUser',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.blockUser),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/unblockUser',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.unblockUser),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/requestAccessCode',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.requestAccessCode),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/sendFriendRequest',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.sendFriendRequest),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/acceptFriendRequest',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.acceptFriendRequest),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/declineFriendRequest',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.declineFriendRequest),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/deleteFriend',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.deleteFriend),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/activate-account/:activationCode',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.activateAccount),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/requestActivationLink',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.requestActivationLink),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/changeAvatar',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.changeAvatar),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/changePassword',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.changePassword),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/changeExtraStatus',
-    authHandler,
+    authMiddleware,
     controllerContainer(UserController.changeExtraStatus),
 );

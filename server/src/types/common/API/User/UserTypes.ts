@@ -102,7 +102,7 @@ export interface IDeleteFriendUserRequest {
     targetId: string;
 }
 
-export interface IActivateUserRequest {
+export interface IActivateAccountUserRequest {
     activationCode: string;
 }
 

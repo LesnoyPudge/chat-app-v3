@@ -1,49 +1,49 @@
 import { Router } from 'express';
 import { MessageController } from '@controllers';
-import { middlewares } from '@middlewares';
+import { authMiddleware} from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 
 
 
 
 const { CUSTOM_API_V1_URL } = getEnv();
-const { validationHandler, authHandler } = middlewares.raw;
+
 // const { createUserValidator } = validator.user;
 export const MessageRouter = Router();
 
 MessageRouter.post(
     CUSTOM_API_V1_URL + '/message/create',
-    // validationHandler(createUserValidator),
-    authHandler,
+    // (createUserValidator),
+    authMiddleware,
     controllerContainer(MessageController.create),
 );
 
 MessageRouter.post(
     CUSTOM_API_V1_URL + '/message/getOne',
-    authHandler,
+    authMiddleware,
     controllerContainer(MessageController.getOne),
 );
 
 MessageRouter.post(
     CUSTOM_API_V1_URL + '/message/getMany',
-    authHandler,
+    authMiddleware,
     controllerContainer(MessageController.getMany),
 );
 
 MessageRouter.post(
     CUSTOM_API_V1_URL + '/message/update',
-    authHandler,
+    authMiddleware,
     controllerContainer(MessageController.update),
 );
 
 MessageRouter.post(
     CUSTOM_API_V1_URL + '/message/delete',
-    authHandler,
+    authMiddleware,
     controllerContainer(MessageController.delete),
 );
 
 MessageRouter.post(
     CUSTOM_API_V1_URL + '/message/restore',
-    authHandler,
+    authMiddleware,
     controllerContainer(MessageController.restore),
 );

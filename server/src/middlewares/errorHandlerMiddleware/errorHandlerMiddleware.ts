@@ -6,14 +6,14 @@ interface IError extends Error {
     status?: number;
 }
 
-type ErrorMiddlewareType = (
+type ErrorHandlerMiddlewareType = (
     error: IError, 
     req: Request, 
     res: Response, 
     next: NextFunction,
 ) => void;
 
-export const errorHandler: ErrorMiddlewareType = (error, req, res, next) => {
+export const errorHandlerMiddleware: ErrorHandlerMiddlewareType = (error, req, res, next) => {
     console.log('\n\n');
     console.log('Caught an error');
     console.log('Path: ' + req?.path);

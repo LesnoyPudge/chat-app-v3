@@ -3,7 +3,7 @@ import { ApiError, token } from '@utils';
 
 
 
-export const authHandler: AuthorizedMiddlewareType<any, any, any> = async(req, res, next) => {
+export const authMiddleware: AuthorizedMiddlewareType<any, any, any> = async(req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader) throw ApiError.unauthorized();

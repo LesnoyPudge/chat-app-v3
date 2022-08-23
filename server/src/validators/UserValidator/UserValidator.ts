@@ -1,87 +1,73 @@
-import { MiddlewareType } from '@types';
-import { checkSchema, Schema, ValidationChain, validationResult } from 'express-validator';
-import { ResultWithContext } from 'express-validator/src/chain';
-import { singleFields } from '../singleFields';
-import { Request } from 'express';
-import { ApiError } from '@utils';
+import { singleFields as sf } from '../singleFields';
+import { IAcceptFriendRequestUserRequest, IActivateAccountUserRequest, IBlockUserRequest, IChangeAvatarUserRequest, IChangeExtraStatusUserRequest, IChangePasswordUserRequest, IDeclineFriendRequestUserRequest, IDeleteFriendUserRequest, IGetManyUserRequest, IGetOneUserRequest, ILoginUserRequest, IRegistrationUserRequest, IRevokeFriendRequestUserRequest, ISendFriendRequestUserRequest, IUnblockUserRequest, IUpdateUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
+import { createValidator, ObjectToSchema } from '../createValidator';
 
 
 
-type ValidationSchemaType = () => ValidationChain[] & {
-    run: (req: Request) => Promise<ResultWithContext[]>;
+type UserValidatorsType = {
+    registration: ObjectToSchema<IRegistrationUserRequest>;
+    login: ObjectToSchema<ILoginUserRequest>;
+    getOne: ObjectToSchema<IGetOneUserRequest>;
+    // getMany: ObjectToSchema<IGetManyUserRequest>;
+    // update: ObjectToSchema<IUpdateUserRequest>;
+    // blockUser: ObjectToSchema<IBlockUserRequest>;
+    // unblockUser: ObjectToSchema<IUnblockUserRequest>;
+    // sendFriendRequest: ObjectToSchema<ISendFriendRequestUserRequest>;
+    // acceptFriendRequest: ObjectToSchema<IAcceptFriendRequestUserRequest>;
+    // declineFriendRequest: ObjectToSchema<IDeclineFriendRequestUserRequest>;
+    // revokeFriendRequest: ObjectToSchema<IRevokeFriendRequestUserRequest>;
+    // deleteFriend: ObjectToSchema<IDeleteFriendUserRequest>;
+    // activateAccount: ObjectToSchema<IActivateAccountUserRequest>;
+    // changeAvatar: ObjectToSchema<IChangeAvatarUserRequest>;
+    // changePassword: ObjectToSchema<IChangePasswordUserRequest>;
+    // changeExtraStatus: ObjectToSchema<IChangeExtraStatusUserRequest>;
+    // verifyAccessCode: ObjectToSchema<IVerifyAccessCodeUserReuqest>;
 }
 
-interface IValidator {
-    [validatorName: string]: Schema;
-}
-
-type Output<T extends IValidator> = Record<keyof T, MiddlewareType<never, never, never>>
-
-const validationHandler = (validator: ValidationSchemaType): MiddlewareType<never, never, never> => {
-    return (req, res, next) => {
-        validator().run(req).then(() => {
-            const result = validationResult(req).array();
-            if (result.length) throw ApiError.badRequest('Validation failed: ' + result[0].msg);
-            
-            return next();
-        }).catch((error) => next(error));
-    };
-};
-
-// type CreateValidator = <T extends IValidator>(validator: T) => Output<T>;
-type CreateValidator = <T extends IValidator>(validator: T) => Output<T>;
-
-const createValidator: CreateValidator = (validator) => {
-    const result = {} as Output< ReturnType<typeof validator>>;
-    
-    for (const [key, value] of Object.entries(validator)) {
-        const validatior = () => checkSchema(value);
-        result[key] = validationHandler(validatior);
-    }
-
-    return result;
-};
-
-export const UserValidator = createValidator({
+const userValidators: UserValidatorsType = {
     registration: {
-        email: singleFields.email,
-        login: singleFields.login,
-        username: singleFields.username,
-        password: singleFields.password,
+        email: sf.notOccupiedEmail,
+        login: sf.notOccupiedLogin,
+        username: sf.username,
+        password: sf.password,
     },
-});
 
-UserValidator.registration;
+    login: {
+        login: sf.validLogin,
+        password: sf.validPassword,
+    },
 
-// export const UserValidator = {
-//     createUserValidator: () => {
-//         return checkSchema({
-//             email: singleFields.email,
-//             login: singleFields.login,
-//             username: singleFields.username,
-//             password: singleFields.password,
-//         });
-//     },
-// };
+    getOne: {
+        targetId: sf.userId,
+    },
 
-// registration: ServiceType<IRegistrationUserRequest, IAuthResponse>;
-// login: ServiceType<ILoginUserRequest, IAuthResponse>;
-// logout: ServiceType<{refreshToken: string}, void>;
-// refresh: ServiceType<{refreshToken: string}, IAuthResponse>;
-// getOne: AuthorizedServiceType<IGetOneUserRequest, IUser>;
-// getMany: AuthorizedServiceType<IGetManyUserRequest, IUser[]>;
-// update: AuthorizedServiceType<IUpdateUserRequest, IUser>;
-// blockUser: AuthorizedServiceType<IBlockUserRequest, IUser>;
-// unblockUser: AuthorizedServiceType<IUnblockUserRequest, IUser>;
-// requestAccessCode: AuthorizedServiceType<unknown, void>;
-// sendFriendRequest: AuthorizedServiceType<ISendFriendRequestUserRequest, IUser>;
-// acceptFriendRequest: AuthorizedServiceType<IAcceptFriendRequestUserRequest, IUser>;
-// declineFriendRequest: AuthorizedServiceType<IDeclineFriendRequestUserRequest, IUser>;
-// revokeFriendRequest: AuthorizedServiceType<IRevokeFriendRequestUserRequest, IUser>;
-// deleteFriend: AuthorizedServiceType<IDeleteFriendUserRequest, IUser>;
-// requestActivationLink: AuthorizedServiceType<unknown, void>;
-// activateAccount: ServiceType<IActivateUserRequest, void>;
-// changeAvatar: AuthorizedServiceType<IChangeAvatarUserRequest, IUser>;
-// changePassword: AuthorizedServiceType<IChangePasswordUserRequest, void>;
-// changeExtraStatus: AuthorizedServiceType<IChangeExtraStatusUserRequest, IUser>;
-// verifyAccessCode: AuthorizedServiceType<IVerifyAccessCodeUserReuqest, void>;
+    // getMany: {},
+
+    // update: {},
+
+    // blockUser: {},
+
+    // unblockUser: {},
+
+    // sendFriendRequest: {},
+
+    // acceptFriendRequest: {},
+
+    // declineFriendRequest: {},
+
+    // revokeFriendRequest: {},
+
+    // deleteFriend: {},
+
+    // activateAccount: {},
+
+    // changeAvatar: {},
+
+    // changePassword: {},
+
+    // changeExtraStatus: {},
+
+    // verifyAccessCode: {},
+};
+
+export const UserValidator = createValidator(userValidators);

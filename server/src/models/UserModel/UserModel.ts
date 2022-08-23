@@ -1,6 +1,4 @@
-import { getEnv } from '@utils';
 import { Schema, model, Types, Document } from 'mongoose';
-import ms from 'ms';
 
 
 
@@ -48,7 +46,7 @@ const UserSchema = new Schema<IUserModel>(
         username: { type: String, required: true },
         password: { type: String, required: true },
         avatar: { type: String, default: '' },
-        email: { type: String, required: true },
+        email: { type: String, default: '' },
         extraStatus: { type: String, default: 'default' },
         activationCode: { type: String, required: true },
         isActivated: { type: Boolean, default: false },

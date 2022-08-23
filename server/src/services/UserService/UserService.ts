@@ -1,6 +1,6 @@
 import { UserDto } from '@dtos';
 import { UserModel } from '@models';
-import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IGetManyUserRequest, IUpdateUserRequest, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateUserRequest, IChangeAvatarUserRequest, IChangePasswordUserRequest, IChangeExtraStatusUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
+import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IGetManyUserRequest, IUpdateUserRequest, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateAccountUserRequest, IChangeAvatarUserRequest, IChangePasswordUserRequest, IChangeExtraStatusUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
 import { transactionContainer, ApiError, token, createAccessCode, objectId, date, sendMail, password, getRandomString } from '@utils';
 import { subscription } from '@subscription';
 import { UserServiceHelpers, AttachmentServiceHelpers } from '@services';
@@ -24,7 +24,7 @@ interface IUserService {
     revokeFriendRequest: AuthorizedServiceType<IRevokeFriendRequestUserRequest, IUser>;
     deleteFriend: AuthorizedServiceType<IDeleteFriendUserRequest, IUser>;
     requestActivationLink: AuthorizedServiceType<unknown, void>;
-    activateAccount: ServiceType<IActivateUserRequest, void>;
+    activateAccount: ServiceType<IActivateAccountUserRequest, void>;
     changeAvatar: AuthorizedServiceType<IChangeAvatarUserRequest, IUser>;
     changePassword: AuthorizedServiceType<IChangePasswordUserRequest, void>;
     changeExtraStatus: AuthorizedServiceType<IChangeExtraStatusUserRequest, IUser>;
@@ -171,7 +171,7 @@ export const UserService: IUserService = {
 
     async getOne({ userId, targetId }) {
         const user = await UserModel.findById(targetId, {}, { lean: true });
-        if (!user) throw ApiError.badRequest();
+        if (!user) throw ApiError.badRequest('Пользователь не найден to delete');
 
         return UserDto.objectFromModel(user);
     },

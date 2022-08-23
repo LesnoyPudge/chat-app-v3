@@ -1,7 +1,7 @@
 import { UserDto } from '@dtos';
-import { UserModel } from '@models';
+import { IUserModel, UserModel } from '@models';
 import { ApiError, objectId, transactionContainer } from '@utils';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { subscription } from '@subscription';
 
 
@@ -204,5 +204,13 @@ export const UserServiceHelpers = {
                 });
             },
         );
+    },
+
+    async isUserExist(filter: FilterQuery<IUserModel>) {
+        return !!await UserModel.exists(filter);
+    },
+
+    async getOne(filter: FilterQuery<IUserModel>) {
+        return await UserModel.findOne(filter, {}, { lean: true });
     },
 };

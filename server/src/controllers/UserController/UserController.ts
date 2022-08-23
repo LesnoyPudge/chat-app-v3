@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, ILoginUserRequest, IRegistrationUserRequest, IGetOneUserRequest, IGetManyUserRequest, IUpdateUserRequest, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateUserRequest, IChangeAvatarUserRequest, IChangePasswordUserRequest, IChangeExtraStatusUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
+import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, ILoginUserRequest, IRegistrationUserRequest, IGetOneUserRequest, IGetManyUserRequest, IUpdateUserRequest, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateAccountUserRequest, IChangeAvatarUserRequest, IChangePasswordUserRequest, IChangeExtraStatusUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
 import { UserService } from '@services';
 import { getEnv } from '@utils';
 
@@ -22,7 +22,7 @@ interface IUserController {
     revokeFriendRequest: AuthorizedControllerType<IRevokeFriendRequestUserRequest, never, IUser>;
     deleteFriend: AuthorizedControllerType<IDeleteFriendUserRequest, never, IUser>;
     requestActivationLink: AuthorizedControllerType<void, never, void>;
-    activateAccount: ControllerType<void, IActivateUserRequest, void>;
+    activateAccount: ControllerType<void, IActivateAccountUserRequest, void>;
     changeAvatar: AuthorizedControllerType<IChangeAvatarUserRequest, never, IUser>;
     changePassword: AuthorizedControllerType<IChangePasswordUserRequest, never, void>;
     changeExtraStatus: AuthorizedControllerType<IChangeExtraStatusUserRequest, never, IUser>;

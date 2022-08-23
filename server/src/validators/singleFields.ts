@@ -1,42 +1,57 @@
 import { ParamSchema } from 'express-validator';
+import { isEmail, isEmailOccupiedSchemaPart, isLoginOccupiedSchemaPart, isUserExistByIdSchemaPart, isValidLogin, isValidPassword, notEmptySchemaPart, nullableSchemaPart, toStringSchemaPart } from './validationSchemaParts';
 
 
 
 interface ISingleFields {
-    email: ParamSchema;
-    login: ParamSchema;
+    notOccupiedEmail: ParamSchema;
+    notOccupiedLogin: ParamSchema;
     username: ParamSchema;
     password: ParamSchema;
+    userId: ParamSchema;
+    validLogin: ParamSchema;
+    validPassword: ParamSchema;
 }
 
 export const singleFields: ISingleFields = {
-    email: {
-        trim: true,
-        escape: true,
-        normalizeEmail: true,
-        isEmail: true,
-        notEmpty: true,
-        toLowerCase: true,
-        errorMessage: 'wrong email',
+    notOccupiedEmail: {
+        ...nullableSchemaPart(),
+        ...toStringSchemaPart(),
+        ...isEmail(),
+        ...isEmailOccupiedSchemaPart(),
     },
-    login: {
-        trim: true,
-        escape: true,
-        notEmpty: true,
-        toLowerCase: true,
-        errorMessage: 'wrong login',
+
+    notOccupiedLogin: {
+        ...notEmptySchemaPart(),
+        ...toStringSchemaPart(),
+        ...isLoginOccupiedSchemaPart(),
     },
+
     username: {
-        trim: true,
-        escape: true,
-        notEmpty: true,
-        errorMessage: 'wrong username',
+        ...notEmptySchemaPart(),
+        ...toStringSchemaPart(),
     },
+
     password: {
-        trim: true,
-        escape: true,
-        toLowerCase: true,
-        notEmpty: true,
-        errorMessage: 'wrong password',
+        ...notEmptySchemaPart(),
+        ...toStringSchemaPart(),
+    },
+
+    userId: {
+        ...notEmptySchemaPart(),
+        ...toStringSchemaPart(),
+        ...isUserExistByIdSchemaPart(),
+    },
+
+    validLogin: {
+        ...notEmptySchemaPart(),
+        ...toStringSchemaPart(),
+        ...isValidLogin(),
+    },
+
+    validPassword: {
+        ...notEmptySchemaPart(),
+        ...toStringSchemaPart(),
+        ...isValidPassword(),
     },
 };
