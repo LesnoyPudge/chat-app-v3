@@ -1,4 +1,4 @@
-import { MiddlewareType } from '@types';
+import { IRegistrationUserRequest, MiddlewareType } from '@types';
 import { checkSchema, ParamSchema, Schema, ValidationChain, validationResult } from 'express-validator';
 import { ResultWithContext } from 'express-validator/src/chain';
 import { Request } from 'express';
@@ -26,10 +26,10 @@ const validationHandler = (validationSchema: ValidationSchemaType): MiddlewareTy
         validationSchema().run(req).then(() => {
             const result = validationResult(req).array();
             const hasError = !!result.length;
-
+            
             if (hasError) {
                 const firstError = result[0];
-                const errorMessage = `Validation failed: ${result[0].msg} [причина: ${firstError.param}]`;
+                const errorMessage = `Validation failed: ${result[0].msg} [param: ${firstError.param}, value: ${firstError.value}] `;
                 throw ApiError.badRequest(errorMessage);
             }
             
@@ -48,3 +48,18 @@ export const createValidator: CreateValidator = (validator) => {
 
     return result;
 };
+
+type UserValidatorsType = {
+    registration: ObjectToSchema<IRegistrationUserRequest>;
+}
+
+const userValidators: UserValidatorsType = {
+    registration: {
+        email: {},
+        login: {},
+        username: {},
+        password: {},
+    },
+};
+
+const wow = createValidator(userValidators);

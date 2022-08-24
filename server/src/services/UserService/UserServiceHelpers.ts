@@ -213,4 +213,8 @@ export const UserServiceHelpers = {
     async getOne(filter: FilterQuery<IUserModel>) {
         return await UserModel.findOne(filter, {}, { lean: true });
     },
+
+    async isUsersExists(filter: FilterQuery<IUserModel>) {
+        return await UserModel.find(filter, '_id', { lean: true });
+    },
 };

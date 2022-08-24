@@ -8,7 +8,7 @@ type UserValidatorsType = {
     registration: ObjectToSchema<IRegistrationUserRequest>;
     login: ObjectToSchema<ILoginUserRequest>;
     getOne: ObjectToSchema<IGetOneUserRequest>;
-    // getMany: ObjectToSchema<IGetManyUserRequest>;
+    getMany: ObjectToSchema<IGetManyUserRequest>;
     // update: ObjectToSchema<IUpdateUserRequest>;
     // blockUser: ObjectToSchema<IBlockUserRequest>;
     // unblockUser: ObjectToSchema<IUnblockUserRequest>;
@@ -41,7 +41,9 @@ const userValidators: UserValidatorsType = {
         targetId: sf.userId,
     },
 
-    // getMany: {},
+    getMany: {
+        targetIds: sf.userIds,
+    },
 
     // update: {},
 

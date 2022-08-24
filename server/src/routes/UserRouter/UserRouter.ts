@@ -1,8 +1,11 @@
 import { Router } from 'express';
 import { UserController } from '@controllers';
 import { authMiddleware } from '@middlewares';
-import { controllerContainer, getEnv } from '@utils';
+import { controllerContainer, getEnv, objectId } from '@utils';
 import { UserValidator } from '@validators';
+import { body } from 'express-validator';
+import { UserServiceHelpers } from '@services';
+import { newUserValidator } from 'src/validators/createValidatorV2';
 
 
 
@@ -48,13 +51,17 @@ UserRouter.post(
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/getOne',
     authMiddleware,
-    UserValidator.getOne,
+    // UserValidator.getOne,
     controllerContainer(UserController.getOne),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/getMany',
     authMiddleware,
+    
+    // UserValidator.getMany,
+    newUserValidator.getMany,
+    
     controllerContainer(UserController.getMany),
 );
 
