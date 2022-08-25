@@ -11,7 +11,7 @@ export type AuthorizedSocketType = Socket & {
     handshake: {
         auth: {
             token: string;
-            user: IUser;
+            user: Partial<IUser>;
         }
     }
 }

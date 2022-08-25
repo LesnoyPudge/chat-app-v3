@@ -14,10 +14,10 @@ export interface IRole {
         channelControl: boolean;
         roomControl: boolean;
         createInvitation: boolean;
-        kickMembers: boolean;
-        banMembers: boolean;
-        sendMessages: boolean;
-        deleteMessages: boolean;
+        kickMember: boolean;
+        banMember: boolean;
+        sendMessage: boolean;
+        deleteMessage: boolean;
         isAdministrator: boolean;
     };
     createdAt: string;

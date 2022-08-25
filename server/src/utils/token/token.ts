@@ -13,18 +13,18 @@ export const token = {
             accessToken: jwt.sign(payload, JWT_ACCESS_KEYWORD, { expiresIn: ACCESS_TOKEN_DURATION }),
         };
     },
-    validateRefreshToken(refreshToken: string) {
+
+    validateRefreshToken(refreshToken: string): Partial<IUser> {
         try {
-            const userData = jwt.verify(refreshToken, JWT_REFRESH_KEYWORD) as IUser;
-            return userData;
+            return jwt.verify(refreshToken, JWT_REFRESH_KEYWORD) as Partial<IUser>;
         } catch (error) {
             return null;
         } 
     },
-    validateAccessToken(accessToken: string) {
+
+    validateAccessToken(accessToken: string): Partial<IUser> {
         try {
-            const userData = jwt.verify(accessToken, JWT_ACCESS_KEYWORD) as IUser;
-            return userData;
+            return jwt.verify(accessToken, JWT_ACCESS_KEYWORD) as Partial<IUser>;
         } catch (error) {
             return null;
         } 

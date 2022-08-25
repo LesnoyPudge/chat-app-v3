@@ -1,7 +1,7 @@
 import { RoleDto } from '@dtos';
-import { RoleModel } from '@models';
+import { IRoleModel, RoleModel } from '@models';
 import { objectId, transactionContainer } from '@utils';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 
 
 
@@ -33,10 +33,10 @@ export const RoleServiceHelpers = {
                         channelControl: true,
                         roomControl: true,
                         createInvitation: true,
-                        kickMembers: true,
-                        banMembers: true,
-                        sendMessages: true,
-                        deleteMessages: true,
+                        kickMember: true,
+                        banMember: true,
+                        sendMessage: true,
+                        deleteMessage: true,
                         isAdministrator: true,
                     },
                 }, queryOptions()]).then((roles) => roles[0]);
@@ -52,5 +52,9 @@ export const RoleServiceHelpers = {
                 await RoleModel.deleteMany({ channel: channelId }, queryOptions());
             },
         );
+    },
+
+    async isRoleExist(filter: FilterQuery<IRoleModel>) {
+        return !!await RoleModel.exists(filter);
     },
 };

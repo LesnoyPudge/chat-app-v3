@@ -1,8 +1,8 @@
 import { ChannelDto } from '@dtos';
-import { ChannelModel } from '@models';
+import { ChannelModel, IChannelModel } from '@models';
 import { subscription } from '@subscription';
 import { objectId, transactionContainer } from '@utils';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 
 
 
@@ -84,5 +84,17 @@ export const ChannelServiceHelpers = {
                 return updatedChannel;
             },
         );
+    },
+
+    async isChannelExist(filter: FilterQuery<IChannelModel>) {
+        return !!await ChannelModel.exists(filter);
+    },
+
+    async isChannelsExists(filter: FilterQuery<IChannelModel>) {
+        return await ChannelModel.find(filter, '_id', { lean: true });
+    },
+
+    async getOne(filter: FilterQuery<IChannelModel>) {
+        return await ChannelModel.findOne(filter, {}, { lean: true });
     },
 };

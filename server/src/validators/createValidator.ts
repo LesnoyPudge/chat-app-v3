@@ -1,65 +1,56 @@
-import { IRegistrationUserRequest, MiddlewareType } from '@types';
-import { checkSchema, ParamSchema, Schema, ValidationChain, validationResult } from 'express-validator';
-import { ResultWithContext } from 'express-validator/src/chain';
-import { Request } from 'express';
+import { UserServiceHelpers } from '@services';
+import { MiddlewareType } from '@types';
 import { ApiError } from '@utils';
+import { check, ValidationChain, validationResult } from 'express-validator';
 
 
 
-type ValidationSchemaType = () => ValidationChain[] & {
-    run: (req: Request) => Promise<ResultWithContext[]>;
-}
+type ValidationHandlerType = (validations: ValidationChain[]) => MiddlewareType<never, never, never>;
 
-interface IValidator {
-    [validatorName: string]: Schema;
-}
-
-type CreateValidatorOutput<T extends IValidator> = Record<keyof T, MiddlewareType<never, never, never>>
-
-type CreateValidator = <T extends IValidator>(validator: T) => CreateValidatorOutput<T> | CreateValidatorOutput<IValidator>;
+type ValidatorsContainer<T> = Record<keyof T, Record<string, ValidationChain[]>>;
+type CreateValidatorOutput<T> = Record<keyof T, MiddlewareType<never, never, never>>;
+type CreateValidatorType = <T extends ValidatorsContainer<T>>(validatorsContainer: T) => CreateValidatorOutput<T>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type ObjectToSchema<T extends Record<string, any>> = Record<keyof T, ParamSchema>; 
+export type ObjectToValidatorsChain<T extends Record<string, any>> = Partial<Record<keyof T, ValidationChain[]>>; 
 
-const validationHandler = (validationSchema: ValidationSchemaType): MiddlewareType<never, never, never> => {
-    return (req, res, next) => {
-        validationSchema().run(req).then(() => {
-            const result = validationResult(req).array();
-            const hasError = !!result.length;
+const validate: ValidationHandlerType = (validations) => {
+    return async(req, res, next) => {
+        try {
+            for (const validation of validations) {
+                const result = await validation.run(req);
+                if (result.array().length) break; 
+            }
+
+            const errors = validationResult(req).array();
+            const hasErrors = errors.length > 0;
             
-            if (hasError) {
-                const firstError = result[0];
-                const errorMessage = `Validation failed: ${result[0].msg} [param: ${firstError.param}, value: ${firstError.value}] `;
+            if (hasErrors) {
+                const firstError = errors[0];
+                
+                const errorMessage = [
+                    `Validation failed: ${firstError.msg}`,
+                    `[param: ${firstError.param}, value: ${firstError.value}]`,
+                ].join(' ');
+
                 throw ApiError.badRequest(errorMessage);
             }
-            
-            return next();
-        }).catch((error) => next(error));
+
+            next();
+        } catch (error) {
+            next(error);
+        }
     };
 };
 
-export const createValidator: CreateValidator = (validator) => {
-    const result = {} as ReturnType<CreateValidator>;
+export const createValidator: CreateValidatorType = (validatorsContainer) => {
+    const result = {} as CreateValidatorOutput<typeof validatorsContainer>;
     
-    for (const [key, value] of Object.entries(validator)) {
-        const validatior = () => checkSchema(value);
-        result[key] = validationHandler(validatior);
+    for (const [key, value] of Object.entries(validatorsContainer as ValidatorsContainer<never>)) {
+        for (const [_, validationChain] of Object.entries(value)) {
+            result[key] = validate([...validationChain]);
+        } 
     }
 
     return result;
 };
-
-type UserValidatorsType = {
-    registration: ObjectToSchema<IRegistrationUserRequest>;
-}
-
-const userValidators: UserValidatorsType = {
-    registration: {
-        email: {},
-        login: {},
-        username: {},
-        password: {},
-    },
-};
-
-const wow = createValidator(userValidators);

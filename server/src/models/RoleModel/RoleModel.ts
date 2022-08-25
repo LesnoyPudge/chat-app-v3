@@ -14,10 +14,10 @@ export interface IRoleModel extends Document<Types.ObjectId> {
         channelControl: boolean;
         roomControl: boolean;
         createInvitation: boolean;
-        kickMembers: boolean;
-        banMembers: boolean;
-        sendMessages: boolean;
-        deleteMessages: boolean;
+        kickMember: boolean;
+        banMember: boolean;
+        sendMessage: boolean;
+        deleteMessage: boolean;
         isAdministrator: boolean;
     };
     createdAt: Date;
@@ -37,10 +37,10 @@ const RoleSchema = new Schema<IRoleModel>(
             channelControl: { type: Boolean, default: false },
             roomControl: { type: Boolean, default: false },
             createInvitation: { type: Boolean, default: true },
-            kickMembers: { type: Boolean, default: false },
-            banMembers: { type: Boolean, default: false },
-            sendMessages: { type: Boolean, default: true },
-            deleteMessages: { type: Boolean, default: false },
+            kickMember: { type: Boolean, default: false },
+            banMember: { type: Boolean, default: false },
+            sendMessage: { type: Boolean, default: true },
+            deleteMessage: { type: Boolean, default: false },
             isAdministrator: { type: Boolean, default: false },
         },
     },
