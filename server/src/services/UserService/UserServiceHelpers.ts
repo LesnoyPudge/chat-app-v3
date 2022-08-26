@@ -1,12 +1,16 @@
 import { UserDto } from '@dtos';
 import { IUserModel, UserModel } from '@models';
-import { ApiError, objectId, transactionContainer } from '@utils';
+import { ApiError, createAccessCode, getRandomString, objectId, password, token, transactionContainer } from '@utils';
 import { FilterQuery, Types } from 'mongoose';
 import { subscription } from '@subscription';
+import { AttachmentServiceHelpers } from '../AttachmentService';
 
 
 
 const { toObjectId } = objectId;
+// const { hashPassword } = password;
+// const { getUUID } = getRandomString;
+// const { generateTokens } = token;
 
 export const UserServiceHelpers = {
     async addChannel({ userId, channelId }: {userId: string, channelId: string | Types.ObjectId}) {
@@ -217,4 +221,38 @@ export const UserServiceHelpers = {
     async isUsersExists(filter: FilterQuery<IUserModel>) {
         return await UserModel.find(filter, '_id', { lean: true });
     },
+
+    // async createTestUser() {
+    //     return transactionContainer(
+    //         async({ queryOptions }) => {
+    //             const hashedPassword = await hashPassword('testUserPassword');
+    //             const activationCode = getUUID();
+    //             const { code, expiryDate } = createAccessCode();
+    //             const attachment = await AttachmentServiceHelpers.getDefaultUserAvatar();
+    //             const login = getUUID();
+
+    //             const testUser = await UserModel.create(
+    //                 [{
+    //                     avatar: attachment.id,
+    //                     login,
+    //                     password: hashedPassword,
+    //                     username: login,
+    //                     activationCode,
+    //                     accessCode: {
+    //                         code,
+    //                         expiryDate,
+    //                     },
+    //                 }],
+    //                 queryOptions(),
+    //             ).then((users) => users[0]);
+
+    //             const tokens = generateTokens(UserDto.objectFromModel(testUser));
+
+    //             return {
+    //                 user: UserDto.objectFromModel(testUser),
+    //                 ...tokens,
+    //             };
+    //         },
+    //     );
+    // },
 };

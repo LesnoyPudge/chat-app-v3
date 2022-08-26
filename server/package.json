@@ -5,10 +5,12 @@
     },
     "scripts": {
         "this:install": "npm ci",
-        "this:start": "nodemon --exec ts-node -r tsconfig-paths/register ./src/server.ts",
+        "this:start": "nodemon --ignore **/*.test.* --exec ts-node -r tsconfig-paths/register ./src/server.ts",
         "this:build": "ts-node -r tsconfig-paths/register ./src/server.ts",
         "this:lint": "eslint .",
         "this:lintFix": "eslint --fix .",
+        "this:runTest": "vitest run",
+        "this:watchTest": "vitest --ui",
         "//": ""
     },
     "dependencies": {
@@ -39,11 +41,16 @@
         "@types/ms": "^0.7.31",
         "@types/node": "^18.0.0",
         "@types/nodemailer": "^6.4.5",
+        "@types/supertest": "^2.0.12",
         "@types/uuid": "^8.3.4",
+        "@vitest/coverage-c8": "^0.22.1",
+        "@vitest/ui": "^0.22.1",
         "eslint-plugin-node": "^11.1.0",
         "nodemon": "^2.0.18",
+        "supertest": "^6.2.4",
         "ts-node": "^10.8.1",
         "tsconfig-paths": "^4.0.0",
-        "typescript": "^4.7.4"
+        "typescript": "^4.7.4",
+        "vitest": "^0.22.1"
     }
 }

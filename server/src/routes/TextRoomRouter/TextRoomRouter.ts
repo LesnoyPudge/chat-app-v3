@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { TextRoomController } from '@controllers';
-import { authMiddleware} from '@middlewares';
+import { authorizationMiddleware} from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 
 
@@ -14,30 +14,30 @@ export const TextRoomRouter = Router();
 TextRoomRouter.post(
     CUSTOM_API_V1_URL + '/text-room/create',
     // (createUserValidator),
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(TextRoomController.create),
 );
 
 TextRoomRouter.post(
     CUSTOM_API_V1_URL + '/text-room/getOne',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(TextRoomController.getOne),
 );
 
 TextRoomRouter.post(
     CUSTOM_API_V1_URL + '/text-room/getMany',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(TextRoomController.getMany),
 );
 
 TextRoomRouter.post(
     CUSTOM_API_V1_URL + '/text-room/update',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(TextRoomController.update),
 );
 
 TextRoomRouter.post(
     CUSTOM_API_V1_URL + '/text-room/delete',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(TextRoomController.delete),
 );

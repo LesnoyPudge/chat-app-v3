@@ -1,13 +1,13 @@
-import cors from 'cors';
-import express from 'express';
-import http from 'http';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 // import { ExpressPeerServer } from 'peer';
-import { routesInit } from './routes';
-import { getEnv } from '@utils';
-import { Server } from 'socket.io';
 import { socket } from '@socket';
+import { getEnv } from '@utils';
+import cors from 'cors';
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import { routesInit } from './routes';
 
 
 

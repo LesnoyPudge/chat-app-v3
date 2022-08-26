@@ -13,7 +13,7 @@ export interface IAuthorizedRequest<RequestBody, RequestParams> extends IRequest
     cookies: {
         refreshToken: string;
     };
-    auth: {
+    auth?: {
         user: Partial<IUser>;
     };
 }

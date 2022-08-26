@@ -4,7 +4,7 @@ import { nullable, sanitizeInput, notEmpty, isEmail, isEmailUnoccupied, toString
 
 
 
-type UserValidatorsType = {
+interface IUserValidators {
     registration: ObjectToValidatorsChain<IRegistrationUserRequest>;
     login: ObjectToValidatorsChain<ILoginUserRequest>;
     getOne: ObjectToValidatorsChain<IGetOneUserRequest>;
@@ -24,7 +24,7 @@ type UserValidatorsType = {
     verifyAccessCode: ObjectToValidatorsChain<IVerifyAccessCodeUserReuqest>;
 }
 
-const userValidators: UserValidatorsType = {
+const userValidators: IUserValidators = {
     registration: {
         email: [
             nullable({ fieldName:  'email' }),

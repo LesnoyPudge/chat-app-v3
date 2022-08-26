@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ChannelController } from '@controllers';
-import { authMiddleware } from '@middlewares';
+import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 import { ChannelValidator } from '@validators';
 
@@ -11,84 +11,84 @@ export const ChannelRouter = Router();
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/create',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.create,
     controllerContainer(ChannelController.create),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/getOne',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.getOne,
     controllerContainer(ChannelController.getOne),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/getMany',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.getMany,
     controllerContainer(ChannelController.getMany),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/update',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.update,
     controllerContainer(ChannelController.update),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/delete',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.delete,
     controllerContainer(ChannelController.delete),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/leave',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.leave,
     controllerContainer(ChannelController.leave),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/kick-user',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.kickUser,
     controllerContainer(ChannelController.kickUser),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/ban-user',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.banUser,
     controllerContainer(ChannelController.banUser),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/unban-user',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.unbanUser,
     controllerContainer(ChannelController.unbanUser),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/create-invitation',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.createInvitation,
     controllerContainer(ChannelController.createInvitation),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/accept-invitation',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.acceptInvitation,
     controllerContainer(ChannelController.acceptInvitation),
 );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/delete-invitation',
-    authMiddleware,
+    authorizationMiddleware,
     ChannelValidator.deleteInvitation,
     controllerContainer(ChannelController.deleteInvitation),
 );

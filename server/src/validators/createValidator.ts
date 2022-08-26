@@ -35,7 +35,7 @@ const validate: ValidationHandlerType = (validations) => {
 
                 throw ApiError.badRequest(errorMessage);
             }
-
+            
             next();
         } catch (error) {
             next(error);

@@ -19,6 +19,8 @@
         "server:build": "npm run this:build --prefix server",
         "server:lint": "npm run this:lint --prefix server",
         "server:lintFix": "npm run this:lintFix --prefix server",
+        "server:runTest": "npm run this:runTest --prefix server",
+        "server:watchTest": "npm run this:watchTest --prefix server",
         "//2": "",
         "project:install": "npm run prepare && npm run client:install && npm run server:install",
         "project:uninstall": "npm run client:uninstall && npm run server:uninstall",
@@ -27,16 +29,19 @@
         "project:build": "npm run client:build && npm run server:build",
         "project:lint": "eslint .",
         "project:lintFix": "eslint . --fix",
+        "project:runTest": "npm run server:runTest",
         "//3": "",
         "prepare": "husky install",
         "deploy": "git add . && git commit -m 'update' && git push",
         "dev": "cross-env NODE_ENV=development CUSTOM_NODE_ENV=development npm run project:start",
         "prod": "cross-env NODE_ENV=production CUSTOM_NODE_ENV=production npm run project:build",
+        "test": "npm run project:runTest",
         "//": ""
     },
     "dependencies": {
         "concurrently": "^7.2.2",
-        "cross-env": "^7.0.3"
+        "cross-env": "^7.0.3",
+        "node-fetch": "^3.2.10"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.30.0",

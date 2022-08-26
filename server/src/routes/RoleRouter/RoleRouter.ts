@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { RoleController } from '@controllers';
-import { authMiddleware} from '@middlewares';
+import { authorizationMiddleware} from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 
 
@@ -14,42 +14,42 @@ export const RoleRouter = Router();
 RoleRouter.post(
     CUSTOM_API_V1_URL + '/role/create',
     // (createUserValidator),
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(RoleController.create),
 );
 
 RoleRouter.post(
     CUSTOM_API_V1_URL + '/role/getOne',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(RoleController.getOne),
 );
 
 RoleRouter.post(
     CUSTOM_API_V1_URL + '/role/getMany',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(RoleController.getMany),
 );
 
 RoleRouter.post(
     CUSTOM_API_V1_URL + '/role/update',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(RoleController.update),
 );
 
 RoleRouter.post(
     CUSTOM_API_V1_URL + '/role/delete',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(RoleController.delete),
 );
 
 RoleRouter.post(
     CUSTOM_API_V1_URL + '/role/addUser',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(RoleController.addUser),
 );
 
 RoleRouter.post(
     CUSTOM_API_V1_URL + '/role/deleteUser',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(RoleController.deleteUser),
 );

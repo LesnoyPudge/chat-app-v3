@@ -15,6 +15,7 @@ interface IUserService {
     getOne: AuthorizedServiceType<IGetOneUserRequest, IUser>;
     getMany: AuthorizedServiceType<IGetManyUserRequest, IUser[]>;
     update: AuthorizedServiceType<IUpdateUserRequest, IUser>;
+    delete: AuthorizedServiceType<unknown, void>;
     blockUser: AuthorizedServiceType<IBlockUserRequest, IUser>;
     unblockUser: AuthorizedServiceType<IUnblockUserRequest, IUser>;
     requestAccessCode: AuthorizedServiceType<unknown, void>;
@@ -171,7 +172,8 @@ export const UserService: IUserService = {
 
     async getOne({ userId, targetId }) {
         const user = await UserModel.findById(targetId, {}, { lean: true });
-        if (!user) throw ApiError.badRequest('Пользователь не найден to delete');
+        console.log(`targetId: ${targetId}, user: ${user}`);
+        // if (!user) throw ApiError.badRequest('Пользователь не найден to delete');
 
         return UserDto.objectFromModel(user);
     },
@@ -211,6 +213,14 @@ export const UserService: IUserService = {
                 });
 
                 return updatedUserDto;
+            },
+        );
+    },
+
+    async delete({ userId }) {
+        return transactionContainer(
+            async({ queryOptions }) => {
+                await UserModel.deleteOne({ _id: userId }, queryOptions());
             },
         );
     },

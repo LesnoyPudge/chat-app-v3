@@ -16,6 +16,7 @@
         ],
         "@typescript-eslint/no-non-null-assertion": "off",
         "import/no-unresolved": "off",
-        "node/no-missing-import": "off"
+        "node/no-missing-import": "off",
+        "node/no-unpublished-import": "off"
     }
 }

@@ -650,3 +650,14 @@ export const isImInvitationCreator: ValidationChainCreator<{invitationCodePath: 
         return Promise.resolve();
     });
 };
+
+export const isRoleExistById: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Роль не найдена',
+}) => {
+    return check(fieldName).custom(async(roleId: string) => {
+        const isExist = await RoleServiceHelpers.isRoleExist({ _id: roleId });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};

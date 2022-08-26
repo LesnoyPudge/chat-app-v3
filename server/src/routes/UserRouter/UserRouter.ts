@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { UserController } from '@controllers';
-import { authMiddleware } from '@middlewares';
+import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 import { UserValidator } from '@validators';
 
@@ -33,109 +33,115 @@ UserRouter.get(
 
 UserRouter.get(
     CUSTOM_API_V1_URL + '/user/some',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(UserController.some),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/update',
-    authMiddleware,
-    UserValidator.update,
-    controllerContainer(UserController.update),
-);
-
-UserRouter.post(
     CUSTOM_API_V1_URL + '/user/getOne',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.getOne,
     controllerContainer(UserController.getOne),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/getMany',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.getMany,
     controllerContainer(UserController.getMany),
 );
 
 UserRouter.post(
+    CUSTOM_API_V1_URL + '/user/update',
+    authorizationMiddleware,
+    UserValidator.update,
+    controllerContainer(UserController.update),
+);
+
+UserRouter.get(
+    CUSTOM_API_V1_URL + '/user/delete',
+    authorizationMiddleware,
+    controllerContainer(UserController.delete),
+);
+
+UserRouter.post(
     CUSTOM_API_V1_URL + '/user/blockUser',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.blockUser,
     controllerContainer(UserController.blockUser),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/unblockUser',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.unblockUser,
     controllerContainer(UserController.unblockUser),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/requestAccessCode',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(UserController.requestAccessCode),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/sendFriendRequest',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.sendFriendRequest,
     controllerContainer(UserController.sendFriendRequest),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/acceptFriendRequest',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.acceptFriendRequest,
     controllerContainer(UserController.acceptFriendRequest),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/declineFriendRequest',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.declineFriendRequest,
     controllerContainer(UserController.declineFriendRequest),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/deleteFriend',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.deleteFriend,
     controllerContainer(UserController.deleteFriend),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/activate-account/:activationCode',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.activateAccount,
     controllerContainer(UserController.activateAccount),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/requestActivationLink',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(UserController.requestActivationLink),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/changeAvatar',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.changeAvatar,
     controllerContainer(UserController.changeAvatar),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/changePassword',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.changePassword,
     controllerContainer(UserController.changePassword),
 );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/changeExtraStatus',
-    authMiddleware,
+    authorizationMiddleware,
     UserValidator.changeExtraStatus,
     controllerContainer(UserController.changeExtraStatus),
 );

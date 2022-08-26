@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { PrivateChannelController } from '@controllers';
-import { authMiddleware} from '@middlewares';
+import { authorizationMiddleware} from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 
 
@@ -14,30 +14,30 @@ export const PrivateChannelRouter = Router();
 PrivateChannelRouter.post(
     CUSTOM_API_V1_URL + '/private-channel/create',
     // (createUserValidator),
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(PrivateChannelController.create),
 );
 
 PrivateChannelRouter.post(
     CUSTOM_API_V1_URL + '/private-channel/getOne',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(PrivateChannelController.getOne),
 );
 
 PrivateChannelRouter.post(
     CUSTOM_API_V1_URL + '/private-channel/getMany',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(PrivateChannelController.getMany),
 );
 
 PrivateChannelRouter.post(
     CUSTOM_API_V1_URL + '/private-channel/update',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(PrivateChannelController.update),
 );
 
 PrivateChannelRouter.post(
     CUSTOM_API_V1_URL + '/private-channel/leave',
-    authMiddleware,
+    authorizationMiddleware,
     controllerContainer(PrivateChannelController.leave),
 );

@@ -1,9 +1,9 @@
-import { AuthorizedMiddlewareType } from '@types';
+import { AuthorizedMiddlewareType, MiddlewareType } from '@types';
 import { ApiError, token } from '@utils';
 
 
 
-export const authMiddleware: AuthorizedMiddlewareType<never, never, never> = async(req, res, next) => {
+export const authorizationMiddleware: AuthorizedMiddlewareType<never, never, never> = async(req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader) throw ApiError.unauthorized();
