@@ -1,13 +1,13 @@
 import { ICreateRoleRequest, IGetOneRoleRequest, IGetManyRolesRequest, IUpdateRoleRequest, IDeleteRoleRequest, IAddUserRoleRequest, IDeleteUserRoleRequest } from '@types';
 import { createValidator, ObjectToValidatorsChain } from '../createValidator';
-import { isChannelExistById, isImChannelAdministrator, isImChannelOwner, isMongoId, isRoleExistById, notEmpty, reject, sanitizeInput, toString } from '../validationChains';
+import { isChannelExistById, isImChannelAdministrator, isImChannelMember, isImChannelOwner, isMongoId, isRoleExistById, notEmpty, reject, sanitizeInput, toString } from '../validationChains';
 
 
 
 interface IRoleValidators {
     create: ObjectToValidatorsChain<ICreateRoleRequest>;
     getOne: ObjectToValidatorsChain<IGetOneRoleRequest>;
-    getMany: ObjectToValidatorsChain<IGetManyRolesRequest>;
+    // getMany: ObjectToValidatorsChain<IGetManyRolesRequest>;
     update: ObjectToValidatorsChain<IUpdateRoleRequest>;
     delete: ObjectToValidatorsChain<IDeleteRoleRequest>;
     addUser: ObjectToValidatorsChain<IAddUserRoleRequest>;
@@ -35,6 +35,14 @@ const roleValidators: IRoleValidators = {
     },
     
     getOne: {
+        channelId: [
+            sanitizeInput({ fieldName: 'channelId' }),
+            notEmpty({ fieldName: 'channelId' }),
+            toString({ fieldName: 'channelId' }),
+            isMongoId({ fieldName: 'channelId' }),
+            isImChannelMember({ fieldName: 'channelId' }), 
+        ],
+
         roleId: [
             sanitizeInput({ fieldName: 'roleId' }),
             notEmpty({ fieldName: 'roleId' }),
@@ -44,7 +52,9 @@ const roleValidators: IRoleValidators = {
         ],
     },
     
-    getMany: {},
+    // getMany: {
+    //     channelId: [],
+    // },
     
     update: {},
     

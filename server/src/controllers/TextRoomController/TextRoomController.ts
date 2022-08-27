@@ -6,7 +6,7 @@ import { AuthorizedControllerType, ICreateTextRoomRequest, IDeleteTextRoomReques
 interface ITextRoomController {
     create: AuthorizedControllerType<ICreateTextRoomRequest, never, ITextRoom>;
     getOne: AuthorizedControllerType<IGetOneTextRoomRequest, never, ITextRoom>;
-    getMany: AuthorizedControllerType<IGetManyTextRoomsRequest, never, ITextRoom[]>;
+    // getMany: AuthorizedControllerType<IGetManyTextRoomsRequest, never, ITextRoom[]>;
     update: AuthorizedControllerType<IUpdateTextRoomRequest, never, ITextRoom>;
     delete: AuthorizedControllerType<IDeleteTextRoomRequest, never, ITextRoom>;
 }
@@ -30,14 +30,14 @@ export const TextRoomController: ITextRoomController = {
         res.json(TextRoom);
     },
 
-    async getMany(req, res) {
-        const { textRoomIds } = req.body;
-        const { id } = req.auth.user;
+    // async getMany(req, res) {
+    //     const { textRoomIds } = req.body;
+    //     const { id } = req.auth.user;
 
-        const textRooms = await TextRoomService.getMany({ userId: id, textRoomIds });
+    //     const textRooms = await TextRoomService.getMany({ userId: id, textRoomIds });
 
-        res.json(textRooms);
-    },
+    //     res.json(textRooms);
+    // },
 
     async update(req, res) {
         const { textRoomId, newValues } = req.body;

@@ -9,7 +9,7 @@ import { ChannelServiceHelpers } from '../ChannelService';
 interface IRoleService {
     create: AuthorizedServiceType<ICreateRoleRequest, IRole>;
     getOne: AuthorizedServiceType<IGetOneRoleRequest, IRole>;
-    getMany: AuthorizedServiceType<IGetManyRolesRequest, IRole[]>;
+    // getMany: AuthorizedServiceType<IGetManyRolesRequest, IRole[]>;
     update: AuthorizedServiceType<IUpdateRoleRequest, IRole>;
     delete: AuthorizedServiceType<IDeleteRoleRequest, IRole>;
     addUser: AuthorizedServiceType<IAddUserRoleRequest, IRole>;
@@ -45,18 +45,18 @@ export const RoleService: IRoleService = {
         return roleDto;
     },
 
-    async getMany({ userId, roleIds }) {
-        const roles = await RoleModel.find({ _id: { $in: roleIds } }, {}, { lean: true });
-        if (!roles.length) {
-            throw ApiError.badRequest('Роли не найдены');
-        }
+    // async getMany({ userId }) {
+    //     const roles = await RoleModel.find({ _id: { $in: roleIds } }, {}, { lean: true });
+    //     if (!roles.length) {
+    //         throw ApiError.badRequest('Роли не найдены');
+    //     }
 
-        const roleDtos = roles.map((role) => {
-            return RoleDto.objectFromModel(role);
-        });
+    //     const roleDtos = roles.map((role) => {
+    //         return RoleDto.objectFromModel(role);
+    //     });
 
-        return roleDtos;
-    },
+    //     return roleDtos;
+    // },
 
     async update({ userId, roleId, newValues }) {
         return transactionContainer(

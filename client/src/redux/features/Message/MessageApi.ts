@@ -22,13 +22,13 @@ export const MessageApi = rootApi.injectEndpoints({
                 body,
             }),
         }),
-        getManyMessage: build.query<IMessage[], IGetManyMessagesRequest>({
-            query: (body) => ({
-                url: CUSTOM_API_V1_URL + '/message/getMany',
-                method: 'POST',
-                body,
-            }),
-        }),
+        // getManyMessage: build.query<IMessage[], IGetManyMessagesRequest>({
+        //     query: (body) => ({
+        //         url: CUSTOM_API_V1_URL + '/message/getMany',
+        //         method: 'POST',
+        //         body,
+        //     }),
+        // }),
         updateMessage: build.mutation<IMessage, IUpdateMessageRequest>({
             query: (body) => ({
                 url: CUSTOM_API_V1_URL + '/message/update',
@@ -50,7 +50,7 @@ export const MessageApi = rootApi.injectEndpoints({
 export const { 
     useCreateMessageMutation,
     useGetOneMessageQuery,
-    useGetManyMessageQuery,
+    // useGetManyMessageQuery,
     useUpdateMessageMutation,
     useDeleteMessageMutation,
 } = MessageApi;

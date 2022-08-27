@@ -61,94 +61,94 @@ describe('User API /getOne', () => {
     });
 });
 
-describe('User API /getMany', () => {
-    beforeAll(async() => {
-        userMockData.USER_1 = await createUser();
-        userMockData.USER_2 = await createUser();
-    });
+// describe('User API /getMany', () => {
+//     beforeAll(async() => {
+//         userMockData.USER_1 = await createUser();
+//         userMockData.USER_2 = await createUser();
+//     });
 
-    afterAll(async() => {
-        await deleteUser(userMockData.USER_1.ACCESS_TOKEN);
-        await deleteUser(userMockData.USER_2.ACCESS_TOKEN);
-    });
+//     afterAll(async() => {
+//         await deleteUser(userMockData.USER_1.ACCESS_TOKEN);
+//         await deleteUser(userMockData.USER_2.ACCESS_TOKEN);
+//     });
 
-    it('статус код 200 и 2 элемента в массиве ответа', async() => {
-        const response = await supertest('http://localhost:5000')
-            .post('/api/v1/user/getMany')
-            .send({
-                targetIds: [userMockData.USER_1.ID, userMockData.USER_2.ID],
-            }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
+//     it('статус код 200 и 2 элемента в массиве ответа', async() => {
+//         const response = await supertest('http://localhost:5000')
+//             .post('/api/v1/user/getMany')
+//             .send({
+//                 targetIds: [userMockData.USER_1.ID, userMockData.USER_2.ID],
+//             }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
 
-        expect(response.statusCode).toBe(200);
-        expect(response.body).length(2);
-        console.log(response.body);
-    });
+//         expect(response.statusCode).toBe(200);
+//         expect(response.body).length(2);
+//         console.log(response.body);
+//     });
 
-    it('статус код 200 и 1 элемент в массиве ответа', async() => {
-        const response = await supertest('http://localhost:5000')
-            .post('/api/v1/user/getMany')
-            .send({
-                targetIds: [userMockData.USER_1.ID, userMockData.USER_1.ID],
-            }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
+//     it('статус код 200 и 1 элемент в массиве ответа', async() => {
+//         const response = await supertest('http://localhost:5000')
+//             .post('/api/v1/user/getMany')
+//             .send({
+//                 targetIds: [userMockData.USER_1.ID, userMockData.USER_1.ID],
+//             }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
 
-        expect(response.statusCode).toBe(200);
-        expect(response.body).length(1);
-        console.log(response.body);
-    });
+//         expect(response.statusCode).toBe(200);
+//         expect(response.body).length(1);
+//         console.log(response.body);
+//     });
 
-    it('статус код 400, одно из значение не id', async() => {
-        const response = await supertest('http://localhost:5000')
-            .post('/api/v1/user/getMany')
-            .send({
-                targetIds: [userMockData.USER_1.ID, userMockData.NOT_AN_ID],
-            }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
+//     it('статус код 400, одно из значение не id', async() => {
+//         const response = await supertest('http://localhost:5000')
+//             .post('/api/v1/user/getMany')
+//             .send({
+//                 targetIds: [userMockData.USER_1.ID, userMockData.NOT_AN_ID],
+//             }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
 
-        expect(response.statusCode).toBe(400);
-        console.log(response.body);
-    });
+//         expect(response.statusCode).toBe(400);
+//         console.log(response.body);
+//     });
 
-    it('статус код 400, один из пользователей не найден', async() => {
-        const response = await supertest('http://localhost:5000')
-            .post('/api/v1/user/getMany')
-            .send({
-                targetIds: [userMockData.USER_1.ID, userMockData.NOT_AN_ID],
-            }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
+//     it('статус код 400, один из пользователей не найден', async() => {
+//         const response = await supertest('http://localhost:5000')
+//             .post('/api/v1/user/getMany')
+//             .send({
+//                 targetIds: [userMockData.USER_1.ID, userMockData.NOT_AN_ID],
+//             }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
 
-        expect(response.statusCode).toBe(400);
-        console.log(response.body);
-    });
+//         expect(response.statusCode).toBe(400);
+//         console.log(response.body);
+//     });
 
-    it('статус код 400, одно из значений не указано', async() => {
-        const response = await supertest('http://localhost:5000')
-            .post('/api/v1/user/getMany')
-            .send({
-                targetIds: [userMockData.USER_1.ID, userMockData.NOT_AN_ID],
-            }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
+//     it('статус код 400, одно из значений не указано', async() => {
+//         const response = await supertest('http://localhost:5000')
+//             .post('/api/v1/user/getMany')
+//             .send({
+//                 targetIds: [userMockData.USER_1.ID, userMockData.NOT_AN_ID],
+//             }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
 
-        expect(response.statusCode).toBe(400);
-        console.log(response.body);
-    });
+//         expect(response.statusCode).toBe(400);
+//         console.log(response.body);
+//     });
 
-    it('статус код 400, значение не массив', async() => {
-        const response = await supertest('http://localhost:5000')
-            .post('/api/v1/user/getMany')
-            .send({
-                targetIds: [userMockData.USER_1.ID, userMockData.NOT_AN_ID],
-            }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
+//     it('статус код 400, значение не массив', async() => {
+//         const response = await supertest('http://localhost:5000')
+//             .post('/api/v1/user/getMany')
+//             .send({
+//                 targetIds: [userMockData.USER_1.ID, userMockData.NOT_AN_ID],
+//             }).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
 
-        expect(response.statusCode).toBe(400);
-        console.log(response.body);
-    });
+//         expect(response.statusCode).toBe(400);
+//         console.log(response.body);
+//     });
 
-    it('статус код 400, значение не указано', async() => {
-        const response = await supertest('http://localhost:5000')
-            .post('/api/v1/user/getMany')
-            .send({}).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
+//     it('статус код 400, значение не указано', async() => {
+//         const response = await supertest('http://localhost:5000')
+//             .post('/api/v1/user/getMany')
+//             .send({}).set('Authorization', getBearerString(userMockData.USER_1.ACCESS_TOKEN));
 
-        expect(response.statusCode).toBe(400);
-        console.log(response.body);
-    });
-});
+//         expect(response.statusCode).toBe(400);
+//         console.log(response.body);
+//     });
+// });
 
 
 // registration:            <IRegistrationUserRequest, never, IAuthResponse>;

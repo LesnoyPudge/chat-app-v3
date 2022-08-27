@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { PrivateChannelController } from '@controllers';
-import { authorizationMiddleware} from '@middlewares';
+import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 
 
@@ -24,11 +24,11 @@ PrivateChannelRouter.post(
     controllerContainer(PrivateChannelController.getOne),
 );
 
-PrivateChannelRouter.post(
-    CUSTOM_API_V1_URL + '/private-channel/getMany',
-    authorizationMiddleware,
-    controllerContainer(PrivateChannelController.getMany),
-);
+// PrivateChannelRouter.post(
+//     CUSTOM_API_V1_URL + '/private-channel/getMany',
+//     authorizationMiddleware,
+//     controllerContainer(PrivateChannelController.getMany),
+// );
 
 PrivateChannelRouter.post(
     CUSTOM_API_V1_URL + '/private-channel/update',

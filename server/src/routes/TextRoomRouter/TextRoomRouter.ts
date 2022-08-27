@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { TextRoomController } from '@controllers';
-import { authorizationMiddleware} from '@middlewares';
+import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 
 
@@ -24,11 +24,11 @@ TextRoomRouter.post(
     controllerContainer(TextRoomController.getOne),
 );
 
-TextRoomRouter.post(
-    CUSTOM_API_V1_URL + '/text-room/getMany',
-    authorizationMiddleware,
-    controllerContainer(TextRoomController.getMany),
-);
+// TextRoomRouter.post(
+//     CUSTOM_API_V1_URL + '/text-room/getMany',
+//     authorizationMiddleware,
+//     controllerContainer(TextRoomController.getMany),
+// );
 
 TextRoomRouter.post(
     CUSTOM_API_V1_URL + '/text-room/update',

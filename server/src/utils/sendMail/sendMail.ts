@@ -23,7 +23,15 @@ const transporter = createTransport({
 });
 
 export const sendMail = {
-    async sendActivationLink({ username, activationCode, email }: IUser) {
+    async sendActivationLink({ 
+        username, 
+        activationCode, 
+        email, 
+    }: {
+        username: string, 
+        activationCode: string, 
+        email: string
+    }) {
         // изменить на client url / activation / code
         const link = CUSTOM_SERVER_URL + CUSTOM_API_V1_URL + `/user/activate-account/${activationCode}`;
         const emailName = 'Активация аккаунта в ChatApp';

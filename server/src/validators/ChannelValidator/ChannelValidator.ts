@@ -7,7 +7,7 @@ import { isArray, isChannelExistById, isChannelIdentifierUnoccupied, isChannelsE
 interface IChannelValidators {
     create: ObjectToValidatorsChain<ICreateChannelRequest>;
     getOne: ObjectToValidatorsChain<IGetOneChannelRequest>;
-    getMany: ObjectToValidatorsChain<IGetManyChannelsRequest>;
+    // getMany: ObjectToValidatorsChain<IGetManyChannelsRequest>;
     update: ObjectToValidatorsChain<IUpdateChannelRequest>;
     delete: ObjectToValidatorsChain<IDeleteChannelRequest>;
     leave: ObjectToValidatorsChain<ILeaveChannelRequest>;
@@ -46,18 +46,18 @@ const channelValidators: IChannelValidators = {
         ],
     },
     
-    getMany: {
-        channelIds: [
-            isArray({ fieldName: 'channelIds' }),
-            notEmpty({ fieldName: 'channelIds' }),
-            sanitizeInput({ fieldName: 'channelIds.*' }),
-            toString({ fieldName: 'channelIds.*' }),
-            notEmpty({ fieldName: 'channelIds.*' }),
-            isMongoId({ fieldName: 'channelIds.*' }),
-            isChannelsExistsById({ fieldName: 'channelIds' }),
-            isImChannelsMember({ fieldName: 'channelIds' }),
-        ],
-    },
+    // getMany: {
+    //     channelIds: [
+    //         isArray({ fieldName: 'channelIds' }),
+    //         notEmpty({ fieldName: 'channelIds' }),
+    //         sanitizeInput({ fieldName: 'channelIds.*' }),
+    //         toString({ fieldName: 'channelIds.*' }),
+    //         notEmpty({ fieldName: 'channelIds.*' }),
+    //         isMongoId({ fieldName: 'channelIds.*' }),
+    //         isChannelsExistsById({ fieldName: 'channelIds' }),
+    //         isImChannelsMember({ fieldName: 'channelIds' }),
+    //     ],
+    // },
     
     update: {
         channelId: [

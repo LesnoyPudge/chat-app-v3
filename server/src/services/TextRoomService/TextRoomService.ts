@@ -10,7 +10,7 @@ import { ChannelServiceHelpers } from '@services';
 interface ITextRoomService {
     create: AuthorizedServiceType<ICreateTextRoomRequest, ITextRoom>;
     getOne: AuthorizedServiceType<IGetOneTextRoomRequest, ITextRoom>;
-    getMany: AuthorizedServiceType<IGetManyTextRoomsRequest, ITextRoom[]>;
+    // getMany: AuthorizedServiceType<IGetManyTextRoomsRequest, ITextRoom[]>;
     update: AuthorizedServiceType<IUpdateTextRoomRequest, ITextRoom>;
     delete: AuthorizedServiceType<IDeleteTextRoomRequest, ITextRoom>;
 }
@@ -43,18 +43,18 @@ export const TextRoomService: ITextRoomService = {
         return textRoomDto;
     },
 
-    async getMany({ userId, textRoomIds }) {
-        const textRooms = await TextRoomModel.find({ _id: { $in: textRoomIds } }, {}, { lean: true });
-        if (!textRooms.length) {
-            throw ApiError.badRequest('Комнаты не найдены');
-        }
+    // async getMany({ userId, textRoomIds }) {
+    //     const textRooms = await TextRoomModel.find({ _id: { $in: textRoomIds } }, {}, { lean: true });
+    //     if (!textRooms.length) {
+    //         throw ApiError.badRequest('Комнаты не найдены');
+    //     }
 
-        const textRoomDtos = textRooms.map((textRoom) => {
-            return TextRoomDto.objectFromModel(textRoom);
-        });
+    //     const textRoomDtos = textRooms.map((textRoom) => {
+    //         return TextRoomDto.objectFromModel(textRoom);
+    //     });
 
-        return textRoomDtos;
-    },
+    //     return textRoomDtos;
+    // },
 
     async update({ userId, textRoomId, newValues }) {
         return transactionContainer(

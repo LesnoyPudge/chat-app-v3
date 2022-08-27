@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { RoleController } from '@controllers';
-import { authorizationMiddleware} from '@middlewares';
+import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 
 
@@ -24,11 +24,11 @@ RoleRouter.post(
     controllerContainer(RoleController.getOne),
 );
 
-RoleRouter.post(
-    CUSTOM_API_V1_URL + '/role/getMany',
-    authorizationMiddleware,
-    controllerContainer(RoleController.getMany),
-);
+// RoleRouter.post(
+//     CUSTOM_API_V1_URL + '/role/getMany',
+//     authorizationMiddleware,
+//     controllerContainer(RoleController.getMany),
+// );
 
 RoleRouter.post(
     CUSTOM_API_V1_URL + '/role/update',

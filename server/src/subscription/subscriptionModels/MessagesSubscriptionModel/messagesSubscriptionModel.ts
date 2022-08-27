@@ -32,7 +32,7 @@ export const messagesSubscriptionModel: ISubscriptionModel<IMessage> = {
             subscribeOn({ entityId, entityKey, userId });
             sendMessageEntity({ entityId, to: userId });
         } catch (error) {
-            console.log('error during subscribe:', error);
+            console.log('error during subscription:', error);
         }
     },
 
@@ -68,7 +68,7 @@ const addMessageEntity = ({ message }: {message: IMessage}) => {
         info: {
             ...message,
         },
-        subscribers: {},
+        subscribers: new Map(),
     };
 };
 

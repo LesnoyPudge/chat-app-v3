@@ -22,13 +22,13 @@ export const TextRoomApi = rootApi.injectEndpoints({
                 body,
             }),
         }),
-        getManyTextRoom: build.query<ITextRoom[], IGetManyTextRoomsRequest>({
-            query: (body) => ({
-                url: CUSTOM_API_V1_URL + '/text-room/getMany',
-                method: 'POST',
-                body,
-            }),
-        }),
+        // getManyTextRoom: build.query<ITextRoom[], IGetManyTextRoomsRequest>({
+        //     query: (body) => ({
+        //         url: CUSTOM_API_V1_URL + '/text-room/getMany',
+        //         method: 'POST',
+        //         body,
+        //     }),
+        // }),
         updateTextRoom: build.mutation<ITextRoom, IUpdateTextRoomRequest>({
             query: (body) => ({
                 url: CUSTOM_API_V1_URL + '/text-room/update',
@@ -50,7 +50,7 @@ export const TextRoomApi = rootApi.injectEndpoints({
 export const { 
     useCreateTextRoomMutation,
     useGetOneTextRoomQuery,
-    useGetManyTextRoomQuery,
+    // useGetManyTextRoomQuery,
     useUpdateTextRoomMutation,
     useDeleteTextRoomMutation,
 } = TextRoomApi;

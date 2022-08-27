@@ -1,11 +1,11 @@
-import { IUser } from '@types';
+import { IUser, IUserPreview } from '@types';
 import { IUserModel } from '@models';
 
 
 
 interface IUserDto {
     objectFromModel: (user: IUserModel) => IUser;
-    defaultPreset: (user: Partial<IUser>) => IUser; // TO CHANGE: THIS SHOULD RETURN PARTIAL PUBLIC INFO ABOUT USER
+    preview: (user: Partial<IUser & {status: 'online' | 'offline'}>) => IUserPreview;
 }
 
 export const UserDto: IUserDto = {
@@ -14,11 +14,9 @@ export const UserDto: IUserDto = {
             id: user._id.toString(),
             login: user.login,
             username: user.username,
-            password: user.password,
             avatar: user.avatar,
             email: user.email,
             extraStatus: user.extraStatus,
-            activationCode: user.activationCode,
             isActivated: user.isActivated,
             settings: user.settings,
             blockList: user.blockList.map((blockedUserId) => {
@@ -30,10 +28,6 @@ export const UserDto: IUserDto = {
             privateChannels: user.privateChannels.map((privateChannelId) => {
                 return privateChannelId.toString();
             }),
-            accessCode: {
-                code: user.accessCode.code,
-                expiryDate: user.accessCode.expiryDate.toString(),
-            },
             friendRequests: {
                 incoming: user.friendRequests.incoming.map((incomingRequest) => {
                     return {
@@ -52,47 +46,15 @@ export const UserDto: IUserDto = {
             updatedAt: user.updatedAt.toString(),
         };
     },
-    defaultPreset(user) {
+    
+    preview(user) {
         return {
-            id: user?.id,
-            login: user?.login,
-            username: user?.username,
-            password: user?.password,
-            avatar: user?.avatar,
-            email: user?.email,
-            extraStatus: user?.extraStatus,
-            activationCode: user?.activationCode,
-            isActivated: user?.isActivated,
-            settings: user?.settings,
-            blockList: user?.blockList.map((blockedUserId) => {
-                return blockedUserId.toString();
-            }),
-            channels: user?.channels.map((channelId) => {
-                return channelId.toString();
-            }),
-            privateChannels: user?.privateChannels.map((privateChannelId) => {
-                return privateChannelId.toString();
-            }),
-            accessCode: {
-                code: user?.accessCode.code,
-                expiryDate: user?.accessCode.expiryDate.toString(),
-            },
-            friendRequests: {
-                incoming: user?.friendRequests.incoming.map((incomingRequest) => {
-                    return {
-                        from: incomingRequest.from.toString(),
-                        createdAt: incomingRequest.createdAt.toString(),
-                    };
-                }),
-                outgoing: user?.friendRequests.outgoing.map((outgoingRequest) => {
-                    return {
-                        to: outgoingRequest.to.toString(),
-                        createdAt: outgoingRequest.createdAt.toString(),
-                    };
-                }),
-            },
-            createdAt: user?.createdAt,
-            updatedAt: user?.updatedAt,
+            id: user.id,
+            login: user.login,
+            username: user.username,
+            avatar: user.avatar,
+            extraStatus: user.extraStatus,
+            status: user.status,
         };
     },
 };

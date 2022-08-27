@@ -1,10 +1,10 @@
 import { io } from '@server';
-import { IUserWithStatus } from '@types';
+import { IUserPreview } from '@types';
 
 
 
 export const userEmitters = {
-    sendUserSubscription({ to, user }: {to: string | string[]; user: IUserWithStatus}) {
+    sendUserSubscription({ to, user }: {to: string | string[]; user: IUserPreview}) {
         io.to(to).emit('sendUserSubscription', user);
     },
 

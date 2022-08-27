@@ -32,7 +32,7 @@ export const textRoomsSubscriptionModel: ISubscriptionModel<ITextRoom> = {
             subscribeOn({ entityId, entityKey, userId });
             sendTextRoomEntity({ entityId, to: userId });
         } catch (error) {
-            console.log('error during subscribe:', error);
+            console.log('error during subscription:', error);
         }
     },
 
@@ -68,7 +68,7 @@ const addTextRoomEntity = ({ textRoom }: {textRoom: ITextRoom}) => {
         info: {
             ...textRoom,
         },
-        subscribers: {},
+        subscribers: new Map(),
     };
 };
 

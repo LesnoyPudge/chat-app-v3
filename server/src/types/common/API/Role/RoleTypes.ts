@@ -30,28 +30,34 @@ export interface ICreateRoleRequest {
 }
 
 export interface IDeleteRoleRequest {
+    channelId: string;
     roleId: string;
 }
 
 export interface IGetOneRoleRequest {
+    channelId: string;
     roleId: string;    
 }
 
 export interface IGetManyRolesRequest {
+    channelId: string;
     roleIds: string;
 }
 
 export interface IUpdateRoleRequest {
+    channelId: string;
     roleId: string;
     newValues: Partial<IRole>;
 }
 
 export interface IAddUserRoleRequest {
+    channelId: string;
     roleId: string;
     targetId: string;
 }
 
 export interface IDeleteUserRoleRequest {
+    channelId: string;
     roleId: string;
     targetId: string;
 }

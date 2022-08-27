@@ -11,7 +11,7 @@ interface IUserController {
     logout: ControllerType<void, never, void>;
     refresh: ControllerType<void, never, IAuthResponse>;
     getOne: AuthorizedControllerType<IGetOneUserRequest, never, IUser>;
-    getMany: AuthorizedControllerType<IGetManyUserRequest, never, IUser[]>
+    // getMany: AuthorizedControllerType<IGetManyUserRequest, never, IUser[]>
     update: AuthorizedControllerType<IUpdateUserRequest, never, IUser>;
     delete: AuthorizedControllerType<void, never, void>;
     blockUser: AuthorizedControllerType<IBlockUserRequest, never, IUser>;
@@ -80,14 +80,14 @@ export const UserController: IUserController = {
         res.json(user);
     },
 
-    async getMany(req, res) {
-        const { targetIds } = req.body;
-        const { id } = req.auth.user;
+    // async getMany(req, res) {
+    //     const { targetIds } = req.body;
+    //     const { id } = req.auth.user;
     
-        const users = await UserService.getMany({ userId: id, targetIds });
+    //     const users = await UserService.getMany({ userId: id, targetIds });
 
-        res.json(users);
-    },
+    //     res.json(users);
+    // },
     
     async update(req, res) {
         const { id } = req.auth.user;

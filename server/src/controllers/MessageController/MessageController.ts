@@ -6,7 +6,7 @@ import { AuthorizedControllerType, ICreateMessageRequest, IDeleteMessageRequest,
 interface IMessageController {
     create: AuthorizedControllerType<ICreateMessageRequest, never, IMessage>;
     getOne: AuthorizedControllerType<IGetOneMessageRequest, never, IMessage>;
-    getMany: AuthorizedControllerType<IGetManyMessagesRequest, never, IMessage[]>;
+    // getMany: AuthorizedControllerType<IGetManyMessagesRequest, never, IMessage[]>;
     update: AuthorizedControllerType<IUpdateMessageRequest, never, IMessage>;
     delete: AuthorizedControllerType<IDeleteMessageRequest, never, IMessage>;
     restore: AuthorizedControllerType<IRestoreMessageRequest, never, IMessage>;
@@ -31,14 +31,14 @@ export const MessageController: IMessageController = {
         res.json(Message);
     },
 
-    async getMany(req, res) {
-        const { messageIds } = req.body;
-        const { id } = req.auth.user;
+    // async getMany(req, res) {
+    //     const { messageIds } = req.body;
+    //     const { id } = req.auth.user;
 
-        const messages = await MessageService.getMany({ userId: id, messageIds });
+    //     const messages = await MessageService.getMany({ userId: id, messageIds });
 
-        res.json(messages);
-    },
+    //     res.json(messages);
+    // },
 
     async update(req, res) {
         const { messageId, newValues } = req.body;

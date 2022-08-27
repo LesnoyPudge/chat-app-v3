@@ -10,7 +10,11 @@ interface ISubscriptionHelpers {
     unsubscribeFrom: (args: {entityId: string, userId: string, entityKey: EntityKeyType}) => void;
     getSubscribersArray: (args: {entityId: string, entityKey: EntityKeyType}) => string[];
     deleteEntity: (args: {entityId: string, entityKey: EntityKeyType}) => void;
-    updateEntity: (args: {entityId: string, newValues: Record<string, unknown>, entityKey: EntityKeyType}) => void;
+    updateEntity: <T extends Record<string, unknown>>(args: {
+        entityId: string, 
+        newValues: T, 
+        entityKey: EntityKeyType
+    }) => T & {id: string};
 }
 
 export const subscriptionHelpers: ISubscriptionHelpers = {
@@ -19,22 +23,25 @@ export const subscriptionHelpers: ISubscriptionHelpers = {
     },
 
     subscribeOn({ entityId, userId, entityKey }) {
-        subscription[entityKey].entityList[entityId].subscribers[userId].counter++;
+        const counter = subscription[entityKey].entityList[entityId].subscribers.get(userId);
+        const newValue = counter ? counter + 1 : 1;
+        subscription[entityKey].entityList[entityId].subscribers.set(userId, newValue);
     },
 
     unsubscribeFrom({ entityId, userId, entityKey }) {
-        const counter = subscription[entityKey].entityList[entityId].subscribers[userId].counter;
+        const counter = subscription[entityKey].entityList[entityId].subscribers.get(userId);
 
-        if (counter > 1) {
-            subscription[entityKey].entityList[entityId].subscribers[userId].counter--;
-            return;
+        if (counter && counter > 1) {
+            return subscription[entityKey].entityList[entityId].subscribers.set(userId, counter - 1);
         }
-
-        delete subscription[entityKey].entityList[entityId].subscribers[userId];
+        
+        if (counter && counter === 1) {
+            return subscription[entityKey].entityList[entityId].subscribers.delete(userId);
+        }
     },
 
     getSubscribersArray({ entityId, entityKey }) {
-        return Object.keys(subscription[entityKey].entityList[entityId].subscribers);
+        return [...subscription[entityKey].entityList[entityId].subscribers.keys()];
     },
 
     deleteEntity({ entityId, entityKey }) {
@@ -47,5 +54,7 @@ export const subscriptionHelpers: ISubscriptionHelpers = {
     updateEntity({ entityId, newValues, entityKey }) {
         const prevState = subscription[entityKey].entityList[entityId].info;
         subscription[entityKey].entityList[entityId].info = Object.assign(prevState, newValues);
+
+        return Object.assign({ id: prevState.id }, newValues);
     },
 };

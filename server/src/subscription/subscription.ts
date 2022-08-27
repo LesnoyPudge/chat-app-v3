@@ -4,11 +4,7 @@ import { channelsSubscriptionModel, messagesSubscriptionModel, privateChannelsSu
 
 type EntityType<T> = {
     info: T;
-    subscribers: {
-        [subscriberId: string]: {
-            counter: number;
-        }
-    };
+    subscribers: Map<string, number>
 }
 
 interface IEntityList<T> {
@@ -19,7 +15,7 @@ export interface ISubscriptionModel<T> {
     entityList: IEntityList<T>;
     subscribe: ({ userId, entityId }: {userId: string, entityId: string}) => void;
     unsubscribe: ({ userId, entityId }: {userId: string, entityId: string}) => void;
-    update: ({ entity }: {entity: Partial<T>}) => void;
+    update: ({ entity, type }: {entity: Partial<T>, type?: 'private' | 'public'}) => void;
     delete: ({ entityId }: {entityId: string}) => void;
 }
 

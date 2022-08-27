@@ -7,21 +7,15 @@ export interface IUser {
     id: string;
     login: string;
     username: string;
-    password: string;
     avatar: string;
     email: string;
     extraStatus: ExtraStatusType;
-    activationCode: string;
     isActivated: boolean;
     settings: {
         theme: 'auto' | 'dark' | 'light';
         fontSize: 12 | 14 | 16 | 18 | 20;
         messageGroupSpacing: 16 | 20;
         transitionSpeed: 0 | 0.5 | 1 | 1.5 | 2;
-    };
-    accessCode: {
-        code: string;
-        expiryDate: string;
     };
     blockList: string[];
     channels: string[];
@@ -40,7 +34,12 @@ export interface IUser {
     updatedAt: string;
 }
 
-export interface IUserWithStatus extends IUser {
+export interface IUserPreview {
+    id: string,
+    login: string,
+    username: string,
+    avatar: string,
+    extraStatus: ExtraStatusType,
     status: 'online' | 'offline';
 }
 

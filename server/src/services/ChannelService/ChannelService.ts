@@ -11,7 +11,7 @@ import c from 'config';
 interface IChannelService {
     create: AuthorizedServiceType<ICreateChannelRequest, IChannel>;
     getOne: AuthorizedServiceType<IGetOneChannelRequest, IChannel>;
-    getMany: AuthorizedServiceType<IGetManyChannelsRequest, IChannel[]>;
+    // getMany: AuthorizedServiceType<IGetManyChannelsRequest, IChannel[]>;
     update: AuthorizedServiceType<IUpdateChannelRequest, IChannel>;
     delete: AuthorizedServiceType<IDeleteChannelRequest, IChannel>;
     leave: AuthorizedServiceType<ILeaveChannelRequest, IChannel>;
@@ -69,18 +69,18 @@ export const ChannelService: IChannelService = {
         return channelDto;
     },
 
-    async getMany({ channelIds }) {
-        const channels = await ChannelModel.find({ _id: { $in: channelIds } }, {}, { lean: true });
-        if (!channels.length) {
-            throw ApiError.badRequest('Каналы не найдены');
-        }
+    // async getMany({ channelIds }) {
+    //     const channels = await ChannelModel.find({ _id: { $in: channelIds } }, {}, { lean: true });
+    //     if (!channels.length) {
+    //         throw ApiError.badRequest('Каналы не найдены');
+    //     }
 
-        const channelDtos = channels.map((channel) => {
-            return ChannelDto.objectFromModel(channel);
-        });
+    //     const channelDtos = channels.map((channel) => {
+    //         return ChannelDto.objectFromModel(channel);
+    //     });
 
-        return channelDtos;
-    },
+    //     return channelDtos;
+    // },
 
     async update({ userId, channelId, newValues }) {
         return transactionContainer(

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { MessageController } from '@controllers';
-import { authorizationMiddleware} from '@middlewares';
+import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 
 
@@ -24,11 +24,11 @@ MessageRouter.post(
     controllerContainer(MessageController.getOne),
 );
 
-MessageRouter.post(
-    CUSTOM_API_V1_URL + '/message/getMany',
-    authorizationMiddleware,
-    controllerContainer(MessageController.getMany),
-);
+// MessageRouter.post(
+//     CUSTOM_API_V1_URL + '/message/getMany',
+//     authorizationMiddleware,
+//     controllerContainer(MessageController.getMany),
+// );
 
 MessageRouter.post(
     CUSTOM_API_V1_URL + '/message/update',

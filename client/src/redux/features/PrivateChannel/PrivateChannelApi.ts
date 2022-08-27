@@ -22,13 +22,13 @@ export const PrivateChannelApi = rootApi.injectEndpoints({
                 body,
             }),
         }),
-        getManyPrivateChannel: build.query<IPrivateChannel[], IGetManyPrivateChannelsRequest>({
-            query: (body) => ({
-                url: CUSTOM_API_V1_URL + '/private-channel/getMany',
-                method: 'POST',
-                body,
-            }),
-        }),
+        // getManyPrivateChannel: build.query<IPrivateChannel[], IGetManyPrivateChannelsRequest>({
+        //     query: (body) => ({
+        //         url: CUSTOM_API_V1_URL + '/private-channel/getMany',
+        //         method: 'POST',
+        //         body,
+        //     }),
+        // }),
         updatePrivateChannel: build.mutation<IPrivateChannel, IUpdatePrivateChannelRequest>({
             query: (body) => ({
                 url: CUSTOM_API_V1_URL + '/private-channel/update',
@@ -50,7 +50,7 @@ export const PrivateChannelApi = rootApi.injectEndpoints({
 export const {
     useCreatePrivateChannelMutation,
     useGetOnePrivateChannelQuery,
-    useGetManyPrivateChannelQuery,
+    // useGetManyPrivateChannelQuery,
     useUpdatePrivateChannelMutation,
     useLeavePrivateChannelMutation,
 } = PrivateChannelApi;

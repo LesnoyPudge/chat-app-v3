@@ -32,7 +32,7 @@ export const channelsSubscriptionModel: ISubscriptionModel<IChannel> = {
             subscribeOn({ entityId, entityKey, userId });
             sendChannelEntity({ entityId, to: userId });
         } catch (error) {
-            console.log('error during subscribe:', error);
+            console.log('error during subscription:', error);
         }
     },
 
@@ -68,7 +68,7 @@ const addChannelEntity = ({ channel }: {channel: IChannel}) => {
         info: {
             ...channel,
         },
-        subscribers: {},
+        subscribers: new Map(),
     };
 };
 

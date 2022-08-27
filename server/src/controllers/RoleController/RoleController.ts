@@ -6,7 +6,7 @@ import { AuthorizedControllerType, IAddUserRoleRequest, ICreateRoleRequest, IDel
 interface IRoleController {
     create: AuthorizedControllerType<ICreateRoleRequest, never, IRole>;
     getOne: AuthorizedControllerType<IGetOneRoleRequest, never, IRole>;
-    getMany: AuthorizedControllerType<IGetManyRolesRequest, never, IRole[]>;
+    // getMany: AuthorizedControllerType<IGetManyRolesRequest, never, IRole[]>;
     update: AuthorizedControllerType<IUpdateRoleRequest, never, IRole>;
     delete: AuthorizedControllerType<IDeleteRoleRequest, never, IRole>;
     addUser: AuthorizedControllerType<IAddUserRoleRequest, never, IRole>;
@@ -24,55 +24,55 @@ export const RoleController: IRoleController = {
     },
     
     async getOne(req, res) {
-        const { roleId } = req.body;
+        const { roleId, channelId } = req.body;
         const { id } = req.auth.user;
 
-        const Role = await RoleService.getOne({ userId: id, roleId });
+        const Role = await RoleService.getOne({ userId: id, roleId, channelId });
 
         res.json(Role);
     },
 
-    async getMany(req, res) {
-        const { roleIds } = req.body;
-        const { id } = req.auth.user;
+    // async getMany(req, res) {
+    //     const { channelId } = req.body;
+    //     const { id } = req.auth.user;
 
-        const roles = await RoleService.getMany({ userId: id, roleIds });
+    //     const roles = await RoleService.getMany({ userId: id, channelId });
 
-        res.json(roles);
-    },
+    //     res.json(roles);
+    // },
 
     async update(req, res) {
-        const { roleId, newValues } = req.body;
+        const { roleId, newValues, channelId } = req.body;
         const { id } = req.auth.user;
         
-        const updatedRole = await RoleService.update({ userId: id, roleId, newValues });
+        const updatedRole = await RoleService.update({ userId: id, roleId, newValues, channelId });
 
         res.json(updatedRole);
     },
 
     async delete(req, res) {
-        const { roleId } = req.body;
+        const { roleId, channelId } = req.body;
         const { id } = req.auth.user;
         
-        const deletedRole = await RoleService.delete({ userId: id, roleId });
+        const deletedRole = await RoleService.delete({ userId: id, roleId, channelId });
 
         res.json(deletedRole);
     },
 
     async addUser(req, res) {
-        const { roleId, targetId } = req.body;
+        const { roleId, targetId, channelId } = req.body;
         const { id } = req.auth.user;
         
-        const updatedRole = await RoleService.addUser({ userId: id, roleId, targetId });
+        const updatedRole = await RoleService.addUser({ userId: id, roleId, targetId, channelId });
 
         res.json(updatedRole);
     },
 
     async deleteUser(req, res) {
-        const { roleId, targetId } = req.body;
+        const { roleId, targetId, channelId } = req.body;
         const { id } = req.auth.user;
         
-        const updatedRole = await RoleService.deleteUser({ userId: id, roleId, targetId });
+        const updatedRole = await RoleService.deleteUser({ userId: id, roleId, targetId, channelId });
 
         res.json(updatedRole);
     },

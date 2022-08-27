@@ -22,13 +22,13 @@ export const ChannelApi = rootApi.injectEndpoints({
                 body,
             }),
         }),
-        getManyChannel: build.query<IChannel[], IGetManyChannelsRequest>({
-            query: (body) => ({
-                url: CUSTOM_API_V1_URL + '/channel/getMany',
-                method: 'POST',
-                body,
-            }),
-        }),
+        // getManyChannel: build.query<IChannel[], IGetManyChannelsRequest>({
+        //     query: (body) => ({
+        //         url: CUSTOM_API_V1_URL + '/channel/getMany',
+        //         method: 'POST',
+        //         body,
+        //     }),
+        // }),
         updateChannel: build.mutation<IChannel, IUpdateChannelRequest>({
             query: (body) => ({
                 url: CUSTOM_API_V1_URL + '/channel/update',
@@ -50,7 +50,7 @@ export const ChannelApi = rootApi.injectEndpoints({
 export const {
     useCreateChannelMutation,
     useGetOneChannelQuery,
-    useGetManyChannelQuery,
+    // useGetManyChannelQuery,
     useUpdateChannelMutation,
     useDeleteChannelMutation,
 } = ChannelApi;

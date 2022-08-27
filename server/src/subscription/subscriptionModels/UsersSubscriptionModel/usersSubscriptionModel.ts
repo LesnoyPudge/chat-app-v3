@@ -1,15 +1,11 @@
 import { UserService } from '@services';
 import { socket } from '@socket';
-import { IUser, IUserWithStatus } from '@types';
+import { IUser, IUserPreview } from '@types';
 import { ISubscriptionModel } from '@subscription';
 import { subscriptionHelpers } from '@subscription/helpers';
+import { UserDto } from '@dtos';
 
 
-
-interface IUserSubscriptionModel extends ISubscriptionModel<IUserWithStatus> {
-    wentOnline: ({ entity }: {entity: IUser}) => void;
-    wentOffline: ({ entityId }: {entityId: string}) => void;
-}
 
 const { 
     isEntityExist, 
@@ -22,22 +18,32 @@ const {
 
 const entityKey = 'users';
 
-export const usersSubscriptionModel: IUserSubscriptionModel = {
+export const usersSubscriptionModel: ISubscriptionModel<IUserPreview> = {
     entityList: {},
     
     async subscribe({ entityId, userId }) {
         console.log(userId, 'subscribed on', entityId);
         try {
+            const isSameId = userId === entityId;
+            const status = isSameId ? 'online' : 'offline';
+            const isSameStatus = usersSubscriptionModel.entityList[entityId].info.status === status;
+            
             const isExist = isEntityExist({ entityId, entityKey });
             if (!isExist) {
                 const entity = await UserService.getOne({ userId, targetId: entityId });
-                addUserEntity({ entity, status: 'offline' });
+                addUserEntity({ entity, status });
             } 
 
+            if (isSameId && !isSameStatus) {
+                updateEntity({ entityId, entityKey, newValues: { status } });
+                const subscribers = getSubscribersArray({ entityId, entityKey });
+                sendUserEntity({ entityId, to: subscribers, type: 'public' });
+            }
+
             subscribeOn({ entityId, entityKey, userId });
-            sendUserEntity({ entityId, to: userId });
+            if (!isSameId) sendUserEntity({ entityId, to: userId, type: 'private' });
         } catch (error) {
-            console.log('error during subscribe:', error);
+            console.log('error during subscription:', error);
         }
     },
 
@@ -50,36 +56,21 @@ export const usersSubscriptionModel: IUserSubscriptionModel = {
         deleteEntity({ entityId, entityKey });
     },
 
-    update({ entity }) {
+    update({ entity, type = 'public' }) {
         console.log(entity.id, 'updates');
         const isExist = isEntityExist({ entityId: entity.id, entityKey });
         if (!isExist) return;
 
-        updateEntity({ entityId: entity.id, entityKey, newValues: { ...entity } });
+        updateEntity({ entityId: entity.id, entityKey, newValues: entity });
 
-        const subscribers = getSubscribersArray({ entityId: entity.id, entityKey });
-        sendUserEntity({ entityId: entity.id, to: subscribers });
-    },
+        if (type === 'public') {
+            const subscribers = getSubscribersArray({ entityId: entity.id, entityKey });
+            sendUserEntity({ entityId: entity.id, to: subscribers, type });
+        }
 
-    wentOnline({ entity }) {
-        console.log(entity.id, 'went online');
-        const isExist = isEntityExist({ entityId: entity.id, entityKey });
-        if (!isExist) return addUserEntity({ entity, status: 'online' });
-
-        usersSubscriptionModel.entityList[entity.id].info.status = 'online';
-        const subscribersArray = getSubscribersArray({ entityId: entity.id, entityKey });
-        sendUserEntity({ entityId: entity.id, to: subscribersArray });
-    },
-
-    wentOffline({ entityId }) {
-        console.log(entityId, 'went offline');
-        const isExist = isEntityExist({ entityId, entityKey });
-        if (!isExist) return;
-
-        usersSubscriptionModel.entityList[entityId].info.status = 'offline';
-        const subscribers = getSubscribersArray({ entityId, entityKey });
-        sendUserEntity({ entityId, to: subscribers });
-        deleteEntity({ entityId, entityKey });
+        if (type === 'private') {
+            sendUserEntity({ entityId: entity.id, to: entity.id, type });
+        }
     },
 
     delete({ entityId }) {
@@ -95,14 +86,17 @@ const addUserEntity = ({ entity, status }: {entity: IUser, status: 'online' | 'o
             ...entity,
             status,
         },
-        subscribers: {},
+        subscribers: new Map(),
     };
 };
 
-const sendUserEntity = ({ entityId, to }: {entityId: string, to: string | string[]}) => {
+const sendUserEntity = ({ entityId, to, type }: {entityId: string, to: string | string[], type: 'private' | 'public'}) => {
+    const userEntity = usersSubscriptionModel.entityList[entityId].info;
+    const user = type === 'private' ? userEntity : UserDto.preview(userEntity);
+    
     socket.events.sendUserSubscription({
         to,
-        user: usersSubscriptionModel.entityList[entityId].info, // dto that returns partial info
+        user, 
     });
 };
 

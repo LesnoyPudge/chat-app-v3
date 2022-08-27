@@ -9,7 +9,7 @@ import { TextRoomServiceHelpers, PrivateChannelServiceHelpers } from '@services'
 interface IMessageService {
     create: AuthorizedServiceType<ICreateMessageRequest, IMessage>;
     getOne: AuthorizedServiceType<IGetOneMessageRequest, IMessage>;
-    getMany: AuthorizedServiceType<IGetManyMessagesRequest, IMessage[]>;
+    // getMany: AuthorizedServiceType<IGetManyMessagesRequest, IMessage[]>;
     update: AuthorizedServiceType<IUpdateMessageRequest, IMessage>;
     delete: AuthorizedServiceType<IDeleteMessageRequest, IMessage>;
     restore: AuthorizedServiceType<IRestoreMessageRequest, IMessage>;
@@ -49,18 +49,18 @@ export const MessageService: IMessageService = {
         return messageDto;
     },
 
-    async getMany({ userId, messageIds }) {
-        const messages = await MessageModel.find({ _id: { $in: messageIds } }, {}, { lean: true });
-        if (!messages.length) {
-            throw ApiError.badRequest('Сообщения не найдены');
-        }
+    // async getMany({ userId, messageIds }) {
+    //     const messages = await MessageModel.find({ _id: { $in: messageIds } }, {}, { lean: true });
+    //     if (!messages.length) {
+    //         throw ApiError.badRequest('Сообщения не найдены');
+    //     }
 
-        const messageDtos = messages.map((message) => {
-            return MessageDto.objectFromModel(message);
-        });
+    //     const messageDtos = messages.map((message) => {
+    //         return MessageDto.objectFromModel(message);
+    //     });
 
-        return messageDtos;
-    },
+    //     return messageDtos;
+    // },
 
     async update({ userId, messageId, newValues }) {
         return transactionContainer(

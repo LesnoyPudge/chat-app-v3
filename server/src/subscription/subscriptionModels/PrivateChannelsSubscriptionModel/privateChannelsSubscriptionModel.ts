@@ -32,7 +32,7 @@ export const privateChannelsSubscriptionModel: ISubscriptionModel<IPrivateChanne
             subscribeOn({ entityId, entityKey, userId });
             sendPrivateChannelsEntity({ entityId, to: userId });
         } catch (error) {
-            console.log('error during subscribe:', error);
+            console.log('error during subscription:', error);
         }
     },
 
@@ -68,7 +68,7 @@ const addPrivateChannelsEntity = ({ privateChannel }: {privateChannel: IPrivateC
         info: {
             ...privateChannel,
         },
-        subscribers: {},
+        subscribers: new Map(),
     };
 };
 

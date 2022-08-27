@@ -8,7 +8,7 @@ interface IUserValidators {
     registration: ObjectToValidatorsChain<IRegistrationUserRequest>;
     login: ObjectToValidatorsChain<ILoginUserRequest>;
     getOne: ObjectToValidatorsChain<IGetOneUserRequest>;
-    getMany: ObjectToValidatorsChain<IGetManyUserRequest>;
+    // getMany: ObjectToValidatorsChain<IGetManyUserRequest>;
     update: ObjectToValidatorsChain<IUpdateUserRequest>;
     blockUser: ObjectToValidatorsChain<IBlockUserRequest>;
     unblockUser: ObjectToValidatorsChain<IUnblockUserRequest>;
@@ -77,17 +77,17 @@ const userValidators: IUserValidators = {
         ],
     },
 
-    getMany: {
-        targetIds: [
-            isArray({ fieldName:  'targetIds' }),
-            notEmpty({ fieldName:  'targetIds' }),
-            sanitizeInput({ fieldName:  'targetIds.*' }),
-            toString({ fieldName:  'targetIds.*' }),
-            notEmpty({ fieldName:  'targetIds.*' }),
-            isMongoId({ fieldName:  'targetIds.*', plural: true }),
-            isUsersExistsById({ fieldName:  'targetIds' }),
-        ],
-    },
+    // getMany: {
+    //     targetIds: [
+    //         isArray({ fieldName:  'targetIds' }),
+    //         notEmpty({ fieldName:  'targetIds' }),
+    //         sanitizeInput({ fieldName:  'targetIds.*' }),
+    //         toString({ fieldName:  'targetIds.*' }),
+    //         notEmpty({ fieldName:  'targetIds.*' }),
+    //         isMongoId({ fieldName:  'targetIds.*', plural: true }),
+    //         isUsersExistsById({ fieldName:  'targetIds' }),
+    //     ],
+    // },
 
     update: {
         newValues: [

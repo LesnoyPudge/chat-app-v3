@@ -10,7 +10,7 @@ import { subscription } from '@subscription';
 interface IPrivateChannelService {
     create: AuthorizedServiceType<ICreatePrivateChannelRequest, IPrivateChannel>;
     getOne: AuthorizedServiceType<IGetOnePrivateChannelRequest, IPrivateChannel>;
-    getMany: AuthorizedServiceType<IGetManyPrivateChannelsRequest, IPrivateChannel[]>;
+    // getMany: AuthorizedServiceType<IGetManyPrivateChannelsRequest, IPrivateChannel[]>;
     update: AuthorizedServiceType<IUpdatePrivateChannelRequest, IPrivateChannel>;
     leave: AuthorizedServiceType<ILeavePrivateChannelRequest, IPrivateChannel>;
 }
@@ -74,18 +74,18 @@ export const PrivateChannelService: IPrivateChannelService = {
         return privateChannelDto;
     },
 
-    async getMany({ userId, privateChannelIds }) {
-        const privateChannels = await PrivateChannelModel.find({ _id: { $in: privateChannelIds } }, {}, { lean: true });
-        if (!privateChannels.length) {
-            throw ApiError.badRequest('Каналы не найдены');
-        }
+    // async getMany({ userId, privateChannelIds }) {
+    //     const privateChannels = await PrivateChannelModel.find({ _id: { $in: privateChannelIds } }, {}, { lean: true });
+    //     if (!privateChannels.length) {
+    //         throw ApiError.badRequest('Каналы не найдены');
+    //     }
 
-        const privateChannelDtos = privateChannels.map((privateChannel) => {
-            return PrivateChannelDto.objectFromModel(privateChannel);
-        });
+    //     const privateChannelDtos = privateChannels.map((privateChannel) => {
+    //         return PrivateChannelDto.objectFromModel(privateChannel);
+    //     });
 
-        return privateChannelDtos;
-    },
+    //     return privateChannelDtos;
+    // },
 
     async update({ userId, privateChannelId, newValues }) {
         return transactionContainer(

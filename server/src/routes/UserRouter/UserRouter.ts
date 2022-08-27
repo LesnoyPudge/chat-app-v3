@@ -44,12 +44,12 @@ UserRouter.post(
     controllerContainer(UserController.getOne),
 );
 
-UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/getMany',
-    authorizationMiddleware,
-    UserValidator.getMany,
-    controllerContainer(UserController.getMany),
-);
+// UserRouter.post(
+//     CUSTOM_API_V1_URL + '/user/getMany',
+//     authorizationMiddleware,
+//     UserValidator.getMany,
+//     controllerContainer(UserController.getMany),
+// );
 
 UserRouter.post(
     CUSTOM_API_V1_URL + '/user/update',

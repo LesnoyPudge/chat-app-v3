@@ -23,12 +23,12 @@ ChannelRouter.post(
     controllerContainer(ChannelController.getOne),
 );
 
-ChannelRouter.post(
-    CUSTOM_API_V1_URL + '/channel/getMany',
-    authorizationMiddleware,
-    ChannelValidator.getMany,
-    controllerContainer(ChannelController.getMany),
-);
+// ChannelRouter.post(
+//     CUSTOM_API_V1_URL + '/channel/getMany',
+//     authorizationMiddleware,
+//     ChannelValidator.getMany,
+//     controllerContainer(ChannelController.getMany),
+// );
 
 ChannelRouter.post(
     CUSTOM_API_V1_URL + '/channel/update',

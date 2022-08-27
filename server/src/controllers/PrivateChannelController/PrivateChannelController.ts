@@ -6,7 +6,7 @@ import { AuthorizedControllerType, ICreatePrivateChannelRequest, ILeavePrivateCh
 interface IPrivateChannelController {
     create: AuthorizedControllerType<ICreatePrivateChannelRequest, never, IPrivateChannel>;
     getOne: AuthorizedControllerType<IGetOnePrivateChannelRequest, never, IPrivateChannel>;
-    getMany: AuthorizedControllerType<IGetManyPrivateChannelsRequest, never, IPrivateChannel[]>;
+    // getMany: AuthorizedControllerType<IGetManyPrivateChannelsRequest, never, IPrivateChannel[]>;
     update: AuthorizedControllerType<IUpdatePrivateChannelRequest, never, IPrivateChannel>;
     leave: AuthorizedControllerType<ILeavePrivateChannelRequest, never, IPrivateChannel>;
 }
@@ -30,14 +30,14 @@ export const PrivateChannelController: IPrivateChannelController = {
         res.json(privateChannel);
     },
 
-    async getMany(req, res) {
-        const { privateChannelIds } = req.body;
-        const { id } = req.auth.user;
+    // async getMany(req, res) {
+    //     const { privateChannelIds } = req.body;
+    //     const { id } = req.auth.user;
 
-        const privateChannels = await PrivateChannelService.getMany({ userId: id, privateChannelIds });
+    //     const privateChannels = await PrivateChannelService.getMany({ userId: id, privateChannelIds });
 
-        res.json(privateChannels);
-    },
+    //     res.json(privateChannels);
+    // },
 
     async update(req, res) {
         const { privateChannelId, newValues } = req.body;

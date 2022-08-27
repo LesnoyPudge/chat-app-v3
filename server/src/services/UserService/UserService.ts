@@ -13,7 +13,7 @@ interface IUserService {
     logout: ServiceType<{refreshToken: string}, void>;
     refresh: ServiceType<{refreshToken: string}, IAuthResponse>;
     getOne: AuthorizedServiceType<IGetOneUserRequest, IUser>;
-    getMany: AuthorizedServiceType<IGetManyUserRequest, IUser[]>;
+    // getMany: AuthorizedServiceType<IGetManyUserRequest, IUser[]>;
     update: AuthorizedServiceType<IUpdateUserRequest, IUser>;
     delete: AuthorizedServiceType<unknown, void>;
     blockUser: AuthorizedServiceType<IBlockUserRequest, IUser>;
@@ -73,16 +73,14 @@ export const UserService: IUserService = {
                     throw ApiError.badRequest('Не удалось зарегистрироваться');
                 });
 
-                const userDto = UserDto.objectFromModel(user);
-
                 onCommit(() => {
-                    if (email) sendActivationLink(userDto).catch((error) => {
+                    if (email) sendActivationLink({ username, email, activationCode }).catch((error) => {
                         console.log('Не удалось отправить письмо', error.message);
                     });
                 });
 
                 return {
-                    user: userDto,
+                    user: UserDto.objectFromModel(user),
                     ...tokens,
                 };
             },
@@ -120,20 +118,12 @@ export const UserService: IUserService = {
 
     async logout({ refreshToken }) {
         return transactionContainer(
-            async({ onCommit, queryOptions }) => {
-                const user = await UserModel.findOneAndUpdate(
+            async({ queryOptions }) => {
+                await UserModel.updateOne(
                     { refreshJWT: refreshToken },
                     { refreshJWT: '' },
                     queryOptions(),
-                ).catch(() => {
-                    throw ApiError.badRequest('Не удалось выйти');
-                });
-
-                const userDto = UserDto.objectFromModel(user);
-                
-                onCommit(() => {
-                    subscription.users.wentOffline({ entityId: userDto.id });
-                });
+                );
             },
         );
     },
@@ -178,22 +168,22 @@ export const UserService: IUserService = {
         return UserDto.objectFromModel(user);
     },
 
-    async getMany({ userId, targetIds }) {
-        const users = await UserModel.find(
-            { _id: { $in: targetIds } }, 
-            {}, 
-            { lean: true },
-        );
-        if (users.length === 0) {
-            throw ApiError.badRequest('Пользователи не найдены');
-        }
+    // async getMany({ userId, targetIds }) {
+    //     const users = await UserModel.find(
+    //         { _id: { $in: targetIds } }, 
+    //         {}, 
+    //         { lean: true },
+    //     );
+    //     if (users.length === 0) {
+    //         throw ApiError.badRequest('Пользователи не найдены');
+    //     }
 
-        const usersDto = users.map((user) => {
-            return UserDto.objectFromModel(user);
-        });
+    //     const usersDto = users.map((user) => {
+    //         return UserDto.objectFromModel(user);
+    //     });
 
-        return usersDto;
-    },
+    //     return usersDto;
+    // },
 
     async update({ userId, newValues }) {
         return transactionContainer(
@@ -461,7 +451,11 @@ export const UserService: IUserService = {
         if (!hasEmail) throw ApiError.badRequest('Не указан адрес электронной почты');
         if (isActivated) throw ApiError.badRequest('Аккаунт уже активирован');
 
-        await sendActivationLink(UserDto.objectFromModel(user)).catch(() => {
+        await sendActivationLink({
+            username: user.username, 
+            email: user.email, 
+            activationCode: user.activationCode,
+        }).catch(() => {
             throw ApiError.badRequest('Не удалось отправить письмо с ссылкой для активации');
         }); 
     },

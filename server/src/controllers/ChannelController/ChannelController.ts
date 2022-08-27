@@ -6,7 +6,7 @@ import { AuthorizedControllerType, IAcceptInvitationChannelRequest, IBanUserChan
 interface IChannelController {
     create: AuthorizedControllerType<ICreateChannelRequest, never, IChannel>;
     getOne: AuthorizedControllerType<IGetOneChannelRequest, never, IChannel>;
-    getMany: AuthorizedControllerType<IGetManyChannelsRequest, never, IChannel[]>;
+    // getMany: AuthorizedControllerType<IGetManyChannelsRequest, never, IChannel[]>;
     update: AuthorizedControllerType<IUpdateChannelRequest, never, IChannel>;
     delete: AuthorizedControllerType<IDeleteChannelRequest, never, IChannel>;
     leave: AuthorizedControllerType<ILeaveChannelRequest, never, IChannel>;
@@ -37,14 +37,14 @@ export const ChannelController: IChannelController = {
         res.json(channel);
     },
 
-    async getMany(req, res) {
-        const { channelIds } = req.body;
-        const { id } = req.auth.user;
+    // async getMany(req, res) {
+    //     const { channelIds } = req.body;
+    //     const { id } = req.auth.user;
 
-        const channels = await ChannelService.getMany({ userId: id, channelIds });
+    //     const channels = await ChannelService.getMany({ userId: id, channelIds });
 
-        res.json(channels);
-    },
+    //     res.json(channels);
+    // },
 
     async update(req, res) {
         const { channelId, newValues } = req.body;
