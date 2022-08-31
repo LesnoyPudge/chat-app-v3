@@ -1,7 +1,7 @@
 import { Application } from 'express';
 import { ChannelRouter } from './ChannelRouter';
 import { UserRouter } from './UserRouter';
-import { TextRoomRouter } from './TextRoomRouter';
+import { RoomRouter } from './RoomRouter';
 import { PrivateChannelRouter } from './PrivateChannelRouter';
 import { MessageRouter } from './MessageRouter';
 import { RoleRouter } from './RoleRouter';
@@ -14,7 +14,7 @@ export const routesInit = (app: Application) => {
     app.use([
         UserRouter,
         ChannelRouter,
-        TextRoomRouter,
+        RoomRouter,
         PrivateChannelRouter,
         MessageRouter,
         RoleRouter,

@@ -3,23 +3,24 @@ import { ChannelModel, IChannelModel } from '@models';
 import { subscription } from '@subscription';
 import { objectId, transactionContainer } from '@utils';
 import { FilterQuery, Types } from 'mongoose';
+import { channelsSubscriptionModel } from 'src/subscription/subscriptionModels';
 
 
 
 const { toObjectId } = objectId;
 
 export const ChannelServiceHelpers = {
-    async addTextRoom({ channelId, textRoomId }: 
+    async addRoom({ channelId, roomId }: 
         {
             channelId: string | Types.ObjectId, 
-            textRoomId: string | Types.ObjectId
+            roomId: string | Types.ObjectId
         },
     ) {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const updatedChannel = await ChannelModel.findByIdAndUpdate(
                     channelId, 
-                    { $push: { textRooms: toObjectId(textRoomId) } },
+                    { $push: { rooms: toObjectId(roomId) } },
                     queryOptions({ new: true }),
                 );
 
@@ -32,12 +33,12 @@ export const ChannelServiceHelpers = {
         );
     },
 
-    async removeTextRoom({ textRoomId }: { textRoomId: string | Types.ObjectId }) {
+    async removeRoom({ roomId }: { roomId: string | Types.ObjectId }) {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const updatedChannel = await ChannelModel.findOneAndUpdate(
-                    { textRooms: textRoomId }, 
-                    { $pull: { textRooms: textRoomId } }, 
+                    { rooms: roomId }, 
+                    { $pull: { rooms: roomId } }, 
                     queryOptions({ new: true }),
                 );
                 

@@ -24,7 +24,7 @@ export interface IUserModel extends Document<Types.ObjectId> {
         theme: 'auto' | 'dark' | 'light';
         fontSize: 12 | 14 | 16 | 18 | 20;
         messageGroupSpacing: 16 | 20;
-        transitionSpeed: 0 | 0.5 | 1 | 1.5 | 2;
+        transitionSpeedModifier: 0 | 0.5 | 1 | 1.5 | 2;
     };
     friendRequests: {
         incoming: {
@@ -60,7 +60,7 @@ const UserSchema = new Schema<IUserModel>(
             theme: { type: String, default: 'auto' },
             fontSize: { type: Number, default: 16 },
             messageGroupSpacing: { type: Number, default: 16 },
-            transitionSpeed: { type: Number, default: 1 },
+            transitionSpeedModifier: { type: Number, default: 1 },
         },
         refreshJWT: { type: String, default: '' },
         channels: [{ type: Schema.Types.ObjectId, ref: 'Channel' }],

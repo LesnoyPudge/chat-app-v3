@@ -12,3 +12,4 @@ export * from './password';
 export * from './fileToText';
 export * from './getRandomNumber';
 export * from './base64';
+export * from './array';

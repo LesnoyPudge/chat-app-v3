@@ -2,7 +2,7 @@ import { MessageDto } from '@dtos';
 import { MessageModel } from '@models';
 import { AuthorizedServiceType, ICreateMessageRequest, IDeleteMessageRequest, IGetManyMessagesRequest, IGetOneMessageRequest, IMessage, IRestoreMessageRequest, IUpdateMessageRequest } from '@types';
 import { ApiError, transactionContainer } from '@utils';
-import { TextRoomServiceHelpers, PrivateChannelServiceHelpers } from '@services';
+import { RoomServiceHelpers, PrivateChannelServiceHelpers } from '@services';
 
 
 
@@ -33,7 +33,7 @@ export const MessageService: IMessageService = {
                 const isPrivate = PrivateChannelServiceHelpers.isExist({ filter: { 'chat._id': chatId } });
                 
                 if (isPrivate) await PrivateChannelServiceHelpers.addMessage({ chatId, messageId: message._id });
-                if (!isPrivate) await TextRoomServiceHelpers.addMessage({ chatId, messageId: message._id });
+                if (!isPrivate) await RoomServiceHelpers.addMessage({ chatId, messageId: message._id });
 
                 const messageDto = MessageDto.objectFromModel(message);
                 return messageDto;

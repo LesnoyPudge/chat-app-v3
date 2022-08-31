@@ -3,7 +3,7 @@ import { Schema, model, Types, Document } from 'mongoose';
 
 
 export interface IAttachmentModel extends Document<Types.ObjectId> {
-    identifier: string;
+    isDefault: boolean;
     filename: string;
     base64url: string;
     createdAt: Date;
@@ -12,7 +12,7 @@ export interface IAttachmentModel extends Document<Types.ObjectId> {
 
 const AttachmentSchema = new Schema<IAttachmentModel>(
     {
-        identifier: { type: String, default: '' },
+        isDefault: { type: Boolean, default: false },
         filename: { type: String, required: true },
         base64url: { type: String, required: true },
     },

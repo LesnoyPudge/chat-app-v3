@@ -1,11 +1,12 @@
 import { RoleDto } from '@dtos';
 import { IRoleModel, RoleModel } from '@models';
-import { objectId, transactionContainer } from '@utils';
+import { array, objectId, transactionContainer } from '@utils';
 import { FilterQuery, Types } from 'mongoose';
 
 
 
 const { toObjectId } = objectId;
+const { moveElement } = array;
 
 export const RoleServiceHelpers = {
     async createDefaultRole({ userId, channelId }: {userId: string, channelId: string | Types.ObjectId}) {
@@ -56,5 +57,21 @@ export const RoleServiceHelpers = {
 
     async isRoleExist(filter: FilterQuery<IRoleModel>) {
         return !!await RoleModel.exists(filter);
+    },
+
+    async saveReorderedRoles(reorderedRoles: (IRoleModel & {_id: Types.ObjectId})[]) {
+        return transactionContainer(
+            async({ queryOptions }) => {
+                await Promise.all(
+                    reorderedRoles.map(async(role, index) => {
+                        if (role.order === index) return;
+
+                        role.order = index;
+                        
+                        await role.save(queryOptions());
+                    }),
+                );
+            },
+        );
     },
 };

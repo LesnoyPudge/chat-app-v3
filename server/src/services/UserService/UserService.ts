@@ -1,6 +1,6 @@
 import { UserDto } from '@dtos';
 import { UserModel } from '@models';
-import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IGetManyUserRequest, IUpdateUserRequest, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateAccountUserRequest, IChangeAvatarUserRequest, IChangePasswordUserRequest, IChangeExtraStatusUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
+import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateAccountUserRequest, IVerifyAccessCodeUserReuqest, IProfileUpdateUserRequest, ICredentialsUpdateUserRequest } from '@types';
 import { transactionContainer, ApiError, token, createAccessCode, objectId, date, sendMail, password, getRandomString } from '@utils';
 import { subscription } from '@subscription';
 import { UserServiceHelpers, AttachmentServiceHelpers } from '@services';
@@ -13,8 +13,8 @@ interface IUserService {
     logout: ServiceType<{refreshToken: string}, void>;
     refresh: ServiceType<{refreshToken: string}, IAuthResponse>;
     getOne: AuthorizedServiceType<IGetOneUserRequest, IUser>;
-    // getMany: AuthorizedServiceType<IGetManyUserRequest, IUser[]>;
-    update: AuthorizedServiceType<IUpdateUserRequest, IUser>;
+    update: AuthorizedServiceType<IProfileUpdateUserRequest, IUser>;
+    credentialsUpdate: AuthorizedServiceType<ICredentialsUpdateUserRequest, IUser>;
     delete: AuthorizedServiceType<unknown, void>;
     blockUser: AuthorizedServiceType<IBlockUserRequest, IUser>;
     unblockUser: AuthorizedServiceType<IUnblockUserRequest, IUser>;
@@ -26,9 +26,6 @@ interface IUserService {
     deleteFriend: AuthorizedServiceType<IDeleteFriendUserRequest, IUser>;
     requestActivationLink: AuthorizedServiceType<unknown, void>;
     activateAccount: ServiceType<IActivateAccountUserRequest, void>;
-    changeAvatar: AuthorizedServiceType<IChangeAvatarUserRequest, IUser>;
-    changePassword: AuthorizedServiceType<IChangePasswordUserRequest, void>;
-    changeExtraStatus: AuthorizedServiceType<IChangeExtraStatusUserRequest, IUser>;
     verifyAccessCode: AuthorizedServiceType<IVerifyAccessCodeUserReuqest, void>;
 }
 
@@ -168,41 +165,58 @@ export const UserService: IUserService = {
         return UserDto.objectFromModel(user);
     },
 
-    // async getMany({ userId, targetIds }) {
-    //     const users = await UserModel.find(
-    //         { _id: { $in: targetIds } }, 
-    //         {}, 
-    //         { lean: true },
-    //     );
-    //     if (users.length === 0) {
-    //         throw ApiError.badRequest('Пользователи не найдены');
-    //     }
-
-    //     const usersDto = users.map((user) => {
-    //         return UserDto.objectFromModel(user);
-    //     });
-
-    //     return usersDto;
-    // },
-
-    async update({ userId, newValues }) {
+    async update({ userId, avatar, extraStatus, settings, username }) {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
-                const updatedUser = await UserModel.findByIdAndUpdate(
-                    userId, 
-                    newValues, 
-                    queryOptions({ new: true }),
-                ).catch(() => {
-                    throw ApiError.badRequest();
-                });
+                const userToUpdate = await UserModel.findById(userId, {}, { lean: true });
+                const isntEmptyAvatar = avatar && avatar.filename && avatar.base64url;
+                const isEmptyAvatar = avatar && !avatar.filename || !avatar.base64url;
 
-                const updatedUserDto = UserDto.objectFromModel(updatedUser);
+                if (extraStatus) userToUpdate.extraStatus = extraStatus;
+                if (settings) userToUpdate.settings = Object.assign(userToUpdate.settings, settings);
+                if (username) userToUpdate.username = username;
+
+                if (avatar) await AttachmentServiceHelpers.delete({ attachmentId: userToUpdate.avatar });
+                if (isEmptyAvatar) {
+                    const defaultAvatar = await AttachmentServiceHelpers.getDefaultUserAvatar();
+                    userToUpdate.avatar = defaultAvatar.id;
+                }
+                if (isntEmptyAvatar) {
+                    const newAvatar = await AttachmentServiceHelpers.create({ 
+                        base64url: avatar.base64url, 
+                        filename: avatar.filename,
+                    });
+                    userToUpdate.avatar = newAvatar.id;
+                }
+
+                await userToUpdate.save(queryOptions());
+
+                const updatedUserDto = UserDto.objectFromModel(userToUpdate);
 
                 onCommit(() => {
                     subscription.users.update({ entity: updatedUserDto });
                 });
 
                 return updatedUserDto;
+            },
+        );
+    },
+
+    async credentialsUpdate({ userId, newEmail, newLogin, newPassword }) {
+        return transactionContainer(
+            async({ queryOptions }) => {
+                const userToUpdate = await UserModel.findById(userId, {}, { lean: true });
+                
+                if (newEmail) userToUpdate.email = newEmail;
+                if (newLogin) userToUpdate.login = newLogin;
+                if (newPassword) {
+                    const hashedPassword = await hashPassword(newPassword);
+                    userToUpdate.password = hashedPassword;
+                }
+
+                await userToUpdate.save(queryOptions());
+
+                return UserDto.objectFromModel(userToUpdate);
             },
         );
     },
@@ -474,83 +488,6 @@ export const UserService: IUserService = {
                 onCommit(() => {
                     subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
                 });
-            },
-        );
-    },
-
-    async changeAvatar({ userId, filename, base64url }) {
-        return transactionContainer(
-            async({ queryOptions, onCommit }) => {
-                const userToUpdate = await UserModel.findById(userId);
-
-                const oldAvatarId = userToUpdate.avatar;
-
-                await AttachmentServiceHelpers.delete({ attachmentId: oldAvatarId });
-                
-                const isNoNewAvatar = !filename || !base64url;
-                if (isNoNewAvatar) {
-                    const defaultAvatar = await AttachmentServiceHelpers.getDefaultUserAvatar();
-                    
-                    userToUpdate.avatar = defaultAvatar.id;
-                    
-                    const updatedUserDto = UserDto.objectFromModel(userToUpdate);
-                    
-                    onCommit(() => {
-                        subscription.users.update({ entity: updatedUserDto });
-                    });
-
-                    return updatedUserDto;
-                }
-
-                const newAvatar = await AttachmentServiceHelpers.create({ base64url, filename });
-                
-                userToUpdate.avatar = newAvatar.id;
-
-                const updatedUserDto = UserDto.objectFromModel(userToUpdate);
-                    
-                onCommit(() => {
-                    subscription.users.update({ entity: updatedUserDto });
-                });
-
-                return updatedUserDto;
-            },
-        );
-    },
-
-    async changePassword({ userId, newPassword, oldPassord }) {
-        return transactionContainer(
-            async({ queryOptions }) => {
-                const userToUpdate = await UserModel.findById(userId);
-                
-                const isValidPassword = isPasswordsEquals({ password: oldPassord, hashedPassword: userToUpdate.password });
-                if (!isValidPassword) {
-                    throw ApiError.badRequest('Неверный пароль');
-                }
-
-                const hashedPassword = await hashPassword(newPassword);
-
-                userToUpdate.password = hashedPassword;
-                await userToUpdate.save(queryOptions());
-            },
-        );
-    },
-
-    async changeExtraStatus({ userId, extraStatus }) {
-        return transactionContainer(
-            async({ queryOptions, onCommit }) => {
-                const updatedUser = await UserModel.findByIdAndUpdate(
-                    userId, 
-                    { $set: { extraStatus: extraStatus } },
-                    queryOptions(),
-                );
-
-                const updatedUserDto = UserDto.objectFromModel(updatedUser);
-
-                onCommit(() => {
-                    subscription.users.update({ entity: updatedUserDto });
-                });
-
-                return updatedUserDto;
             },
         );
     },

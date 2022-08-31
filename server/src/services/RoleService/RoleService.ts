@@ -1,8 +1,10 @@
 import { RoleDto } from '@dtos';
 import { ChannelModel, RoleModel, UserModel } from '@models';
 import { AuthorizedServiceType, IAddUserRoleRequest, ICreateRoleRequest, IDeleteRoleRequest, IDeleteUserRoleRequest, IGetManyRolesRequest, IGetOneRoleRequest, IRole, IUpdateRoleRequest } from '@types';
-import { ApiError, objectId, transactionContainer } from '@utils';
+import { ApiError, array, objectId, transactionContainer } from '@utils';
+import { AttachmentServiceHelpers } from '../AttachmentService';
 import { ChannelServiceHelpers } from '../ChannelService';
+import { RoleServiceHelpers } from './RoleServiceHelpers';
 
 
 
@@ -17,16 +19,21 @@ interface IRoleService {
 }
 
 const { toObjectId } = objectId;
+const { moveElement } = array;
 
 export const RoleService: IRoleService = {
     async create({ userId, channelId, name }) {
         return transactionContainer(
             async({ queryOptions }) => {
+                const roles = await RoleModel.find({ channel: channelId });
                 const role = new RoleModel({
                     name,
                     channel: channelId,
+                    order: 0,
                 });
+                roles.splice(0, 0, role);
 
+                await RoleServiceHelpers.saveReorderedRoles(roles);
                 await ChannelServiceHelpers.addRole({ channelId, roleId: role._id });
 
                 await role.save(queryOptions());
@@ -58,17 +65,41 @@ export const RoleService: IRoleService = {
     //     return roleDtos;
     // },
 
-    async update({ userId, roleId, newValues }) {
+    async update({ userId, roleId, channelId, color, image, name, order, permissions }) {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
-                const updatedRole = await RoleModel.findByIdAndUpdate(
-                    roleId,
-                    newValues,
-                    queryOptions({ new: true }),
-                );
-                if (!updatedRole) throw ApiError.badRequest('Не удалось обновить роль');
+                const roleToUpdate = await RoleModel.findById(roleId, {}, { lean: true });
+                const isEmptyImage = image && !image.filename || !image.base64url;
+                const isntEmptyImage = image && image.filename && image.base64url;
 
-                const updatedRoleDto = RoleDto.objectFromModel(updatedRole);
+                if (color) roleToUpdate.color = color;
+                if (name) roleToUpdate.name = name;
+                if (permissions) roleToUpdate.permissions = Object.assign(roleToUpdate.permissions, permissions);
+                
+                if (image) await AttachmentServiceHelpers.delete({ attachmentId: roleToUpdate.image });
+                if (isEmptyImage) roleToUpdate.image = '';
+                if (isntEmptyImage) {
+                    const newImage = await AttachmentServiceHelpers.create({ 
+                        base64url: image.base64url, 
+                        filename: image.filename,
+                    });
+                    roleToUpdate.image = newImage.id;
+                }
+
+                if (order) {
+                    const roles = await RoleModel.find({ channel: channelId }, 'order');
+                    const sortedRoles = roles.sort((a, b) => a.order - b.order);
+                    const reorderedRoles = moveElement(sortedRoles, roleToUpdate.order, order);
+
+                    await RoleServiceHelpers.saveReorderedRoles(reorderedRoles);
+                    
+                    roleToUpdate.order = order;
+                }
+
+
+                await roleToUpdate.save(queryOptions());
+
+                const updatedRoleDto = RoleDto.objectFromModel(roleToUpdate);
 
                 onCommit(() => {
                     // RoleSubscription.update({ userId, role: updatedRoleDto });
@@ -79,14 +110,14 @@ export const RoleService: IRoleService = {
         );
     },
 
-    async delete({ userId, roleId }) {
+    async delete({ userId, roleId, channelId }) {
         return transactionContainer(
             async({ queryOptions }) => {
+                const roles = await RoleModel.find({ channel: channelId });
                 const deletedRole = await RoleModel.findByIdAndDelete(roleId, queryOptions());
-                if (!deletedRole) {
-                    throw ApiError.badRequest('Не удалось удалить роль');
-                }
+                roles.splice(deletedRole.order, 1);
 
+                await RoleServiceHelpers.saveReorderedRoles(roles);
                 await ChannelServiceHelpers.removeRole({ roleId: deletedRole._id });
  
                 const deletedRoleDto = RoleDto.objectFromModel(deletedRole);

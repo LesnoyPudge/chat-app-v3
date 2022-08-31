@@ -47,10 +47,10 @@ export const ChannelController: IChannelController = {
     // },
 
     async update(req, res) {
-        const { channelId, newValues } = req.body;
+        const { channelId, avatar, name } = req.body;
         const { id } = req.auth.user;
         
-        const updatedChannel = await ChannelService.update({ userId: id, channelId, newValues });
+        const updatedChannel = await ChannelService.update({ userId: id, channelId, avatar, name });
 
         res.json(updatedChannel);
     },

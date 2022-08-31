@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, ILoginUserRequest, IRegistrationUserRequest, IGetOneUserRequest, IGetManyUserRequest, IUpdateUserRequest, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateAccountUserRequest, IChangeAvatarUserRequest, IChangePasswordUserRequest, IChangeExtraStatusUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
+import { AuthorizedControllerType, ControllerType, IAuthResponse, IUser, ILoginUserRequest, IRegistrationUserRequest, IGetOneUserRequest, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateAccountUserRequest, IVerifyAccessCodeUserReuqest, IProfileUpdateUserRequest, ICredentialsUpdateUserRequest } from '@types';
 import { UserService } from '@services';
 import { getEnv } from '@utils';
 
@@ -12,7 +12,8 @@ interface IUserController {
     refresh: ControllerType<void, never, IAuthResponse>;
     getOne: AuthorizedControllerType<IGetOneUserRequest, never, IUser>;
     // getMany: AuthorizedControllerType<IGetManyUserRequest, never, IUser[]>
-    update: AuthorizedControllerType<IUpdateUserRequest, never, IUser>;
+    update: AuthorizedControllerType<IProfileUpdateUserRequest, never, IUser>;
+    credentialsUpdate: AuthorizedControllerType<ICredentialsUpdateUserRequest, never, IUser>;
     delete: AuthorizedControllerType<void, never, void>;
     blockUser: AuthorizedControllerType<IBlockUserRequest, never, IUser>;
     unblockUser: AuthorizedControllerType<IUnblockUserRequest, never, IUser>;
@@ -24,12 +25,7 @@ interface IUserController {
     deleteFriend: AuthorizedControllerType<IDeleteFriendUserRequest, never, IUser>;
     requestActivationLink: AuthorizedControllerType<void, never, void>;
     activateAccount: ControllerType<void, IActivateAccountUserRequest, void>;
-    changeAvatar: AuthorizedControllerType<IChangeAvatarUserRequest, never, IUser>;
-    changePassword: AuthorizedControllerType<IChangePasswordUserRequest, never, void>;
-    changeExtraStatus: AuthorizedControllerType<IChangeExtraStatusUserRequest, never, IUser>;
     verifyAccessCode: AuthorizedControllerType<IVerifyAccessCodeUserReuqest, never, void>;
-    
-    some: AuthorizedControllerType<void, never, void>;
 }
 
 const { REFRESH_TOKEN_DURATION } = getEnv();
@@ -80,20 +76,33 @@ export const UserController: IUserController = {
         res.json(user);
     },
 
-    // async getMany(req, res) {
-    //     const { targetIds } = req.body;
-    //     const { id } = req.auth.user;
-    
-    //     const users = await UserService.getMany({ userId: id, targetIds });
-
-    //     res.json(users);
-    // },
-    
     async update(req, res) {
         const { id } = req.auth.user;
-        const { newValues } = req.body;
+        const { avatar, extraStatus, settings, username } = req.body;
         
-        const updatedUser = await UserService.update({ userId: id, newValues });
+        const updatedUser = await UserService.update({ 
+            userId: id,
+            avatar, 
+            extraStatus, 
+            settings, 
+            username,
+        });
+
+        res.json(updatedUser);
+    },
+
+    async credentialsUpdate(req, res) {
+        const { id } = req.auth.user;
+        const { accessCode, password, newEmail, newLogin, newPassword } = req.body;
+        
+        const updatedUser = await UserService.credentialsUpdate({ 
+            userId: id, 
+            accessCode, 
+            password, 
+            newEmail, 
+            newLogin, 
+            newPassword, 
+        });
 
         res.json(updatedUser);
     },
@@ -193,46 +202,11 @@ export const UserController: IUserController = {
         res.status(200).json();
     },
 
-    async changeAvatar(req, res) {
-        const { filename, base64url } = req.body;
-        const { id } = req.auth.user;
-
-        const updatedUser = await UserService.changeAvatar({ userId: id, base64url, filename });
-
-        res.json(updatedUser);
-    },
-
-    async changePassword(req, res) {
-        const { newPassword, oldPassord } = req.body;
-        const { id } = req.auth.user;
-
-        await UserService.changePassword({ userId: id, newPassword, oldPassord });
-
-        res.status(200).json();
-    },
-
-    async changeExtraStatus(req, res) {
-        const { extraStatus } = req.body;
-        const { id } = req.auth.user;
-    
-        const updatedUser = await UserService.changeExtraStatus({ userId: id, extraStatus });
-
-        res.json(updatedUser);
-    },
-
     async verifyAccessCode(req, res) {
         const { accessCode } = req.body;
         const { id } = req.auth.user;
 
         await UserService.verifyAccessCode({ userId: id, accessCode });
-
-        res.status(200).json();
-    },
-
-    async some(req, res) {
-        const user = req.auth.user;
-
-        console.log('got some:', user.username);
 
         res.status(200).json();
     },

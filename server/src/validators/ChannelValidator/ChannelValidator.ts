@@ -1,6 +1,6 @@
 import { ICreateChannelRequest, IGetOneChannelRequest, IGetManyChannelsRequest, IUpdateChannelRequest, IDeleteChannelRequest, ILeaveChannelRequest, IKickUserChannelRequest, IBanUserChannelRequest, IUnbanUserChannelRequest, ICreateInvitationChannelRequest, IAcceptInvitationChannelRequest, IDeleteInvitationChannelRequest } from '@types';
 import { createValidator, ObjectToValidatorsChain } from '../createValidator';
-import { isArray, isChannelExistById, isChannelIdentifierUnoccupied, isChannelsExistsById, isImChannelAdministrator, isImChannelMember, isImChannelOwner, isImChannelsMember, isImInvitationCreator, isInvitationCodeUnoccupied, isMongoId, isntImChannelMember, isntUserChannelOwner, isPermittedToBanMember, isPermittedToChangeChannel, isPermittedToCreateInvitaion, isPermittedToKickMember, isUserChannelMember, isUserExistById, isUserInChannelBanList, isValidInvitationCode, notEmpty, nullable, reject, sanitizeInput, toInt, toString } from '../validationChains';
+import { isArray, isBase64Url, isChannelExistById, isChannelIdentifierUnoccupied, isChannelsExistsById, isImChannelAdministrator, isImChannelMember, isImChannelOwner, isImChannelsMember, isImInvitationCreator, isInvitationCodeUnoccupied, isMongoId, isntImChannelMember, isntUserChannelOwner, isPermittedToBanMember, isPermittedToChangeChannel, isPermittedToCreateInvitaion, isPermittedToKickMember, isUserChannelMember, isUserExistById, isUserInChannelBanList, isValidInvitationCode, notEmpty, nullable, reject, sanitizeInput, toInt, toString } from '../validationChains';
 
 
 
@@ -71,8 +71,30 @@ const channelValidators: IChannelValidators = {
             isPermittedToChangeChannel({ fieldName: 'channelId' }),
         ],
 
-        newValues: [
-            notEmpty({ fieldName: 'newValues' }),
+        avatar: [
+            nullable({ fieldName: 'avatar' }),
+            nullable({ fieldName: 'avatar.filename' }),
+            nullable({ fieldName: 'avatar.base64url' }),
+
+            sanitizeInput({ fieldName: 'avatar' }),
+            sanitizeInput({ fieldName: 'avatar.filename' }),
+            sanitizeInput({ fieldName: 'avatar.base64url' }),
+
+            notEmpty({ fieldName: 'avatar' }),
+            notEmpty({ fieldName: 'avatar.filename' }),
+            notEmpty({ fieldName: 'avatar.base64url' }),
+
+            toString({ fieldName: 'avatar.filename' }),
+            toString({ fieldName: 'avatar.base64url' }),
+
+            isBase64Url({ fieldName:  'avatar.base64url' }),
+        ],
+
+        name: [
+            nullable({ fieldName: 'avatar' }),
+            sanitizeInput({ fieldName: 'channelId' }),
+            notEmpty({ fieldName: 'channelId' }),
+            toString({ fieldName: 'channelId' }),
         ],
     },
     

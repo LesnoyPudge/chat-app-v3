@@ -9,7 +9,7 @@ export interface IChannel {
     owner: string;
     isPrivate: boolean;
     members: string[];
-    textRooms: string[];
+    rooms: string[];
     roles: string[];
     banList: {
         user: string;
@@ -21,6 +21,10 @@ export interface IChannel {
         expiryDate: string;
         createdAt: string;
     }[];
+    categories: {
+        id: string;
+        name: string;
+    }[],
     createdAt: string;
     updatedAt: string;
 }
@@ -35,12 +39,16 @@ export interface IGetOneChannelRequest {
 }
 
 export interface IGetManyChannelsRequest {
-    channelIds: string[]
+    channelIds: string[];
 }
 
 export interface IUpdateChannelRequest {
-    channelId: string,
-    newValues: Partial<IChannel>,
+    channelId: string;
+    avatar?: {
+        filename: string;
+        base64url: string;
+    };
+    name?: string;
 }
 
 export interface IDeleteChannelRequest {

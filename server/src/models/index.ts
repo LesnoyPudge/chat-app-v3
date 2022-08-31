@@ -1,6 +1,6 @@
 export * from './UserModel';
 export * from './ChannelModel';
-export * from './TextRoomModel';
+export * from './RoomModel';
 export * from './MessageModel';
 export * from './PrivateChannelModel';
 export * from './RoleModel';

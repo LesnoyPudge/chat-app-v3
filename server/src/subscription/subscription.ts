@@ -1,4 +1,4 @@
-import { channelsSubscriptionModel, messagesSubscriptionModel, privateChannelsSubscriptionModel, textRoomsSubscriptionModel, usersSubscriptionModel } from './subscriptionModels';
+import { channelsSubscriptionModel, messagesSubscriptionModel, privateChannelsSubscriptionModel, roomsSubscriptionModel, usersSubscriptionModel } from './subscriptionModels';
 
 
 
@@ -22,7 +22,7 @@ export interface ISubscriptionModel<T> {
 export const subscription = {
     users: usersSubscriptionModel,
     channels: channelsSubscriptionModel,
-    textRooms: textRoomsSubscriptionModel,
+    rooms: roomsSubscriptionModel,
     // voiceRooms: {} 
     messages: messagesSubscriptionModel,
     privateChannels: privateChannelsSubscriptionModel,

@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@hooks';
-import { selectAllTextRooms, subscribeOnTextRoom, unsubscribeFromTextRoom, useCreateTextRoomMutation, useDeleteTextRoomMutation, useUpdateTextRoomMutation } from '@redux/features';
+import { selectAllRooms, subscribeOnRoom, unsubscribeFromRoom, useCreateRoomMutation, useDeleteRoomMutation, useUpdateRoomMutation } from '@redux/features';
 import { log, socket } from '@utils';
 import { FC } from 'react';
 import { Container } from '../Container';
@@ -8,11 +8,11 @@ import { Form } from '../Form';
 
 
 export const RoomManager: FC = () => {
-    const textRooms = useAppSelector(selectAllTextRooms);
+    const rooms = useAppSelector(selectAllRooms);
     const dispatch = useAppDispatch();
-    const [updateTextRoom] = useUpdateTextRoomMutation();
-    const [createTextRoom] = useCreateTextRoomMutation();
-    const [deleteTextRoom] = useDeleteTextRoomMutation();
+    const [updateRoom] = useUpdateRoomMutation();
+    const [createRoom] = useCreateRoomMutation();
+    const [deleteRoom] = useDeleteRoomMutation();
 
     return (
         <>
@@ -29,7 +29,7 @@ export const RoomManager: FC = () => {
                     submit={{
                         text: 'create room',
                         handler({ name, channelId }) {
-                            createTextRoom({ channelId, name, identifier: name });
+                            createRoom({ channelId, name, identifier: name });
                         },
                     }}
                 />
@@ -40,13 +40,13 @@ export const RoomManager: FC = () => {
                             name: 'name',
                         },
                         {
-                            name: 'textRoomId',
+                            name: 'roomId',
                         },
                     ]}
                     submit={{
                         text: 'update room',
-                        handler({ name, textRoomId }) {
-                            updateTextRoom({ textRoomId, newValues: { name } });
+                        handler({ name, roomId }) {
+                            updateRoom({ roomId, newValues: { name } });
                         },
                     }}
                 />
@@ -54,13 +54,13 @@ export const RoomManager: FC = () => {
                 <Form
                     inputs={[
                         {
-                            name: 'textRoomId',
+                            name: 'roomId',
                         },
                     ]}
                     submit={{
                         text: 'delete room',
-                        handler({ textRoomId }) {
-                            deleteTextRoom({ textRoomId });
+                        handler({ roomId }) {
+                            deleteRoom({ roomId });
                         },
                     }}
                 />
@@ -70,13 +70,13 @@ export const RoomManager: FC = () => {
                 <Form
                     inputs={[
                         {
-                            name: 'textRoomId',
+                            name: 'roomId',
                         },
                     ]}
                     submit={{
                         text: 'subscribe',
-                        handler({ textRoomId }) {
-                            dispatch(subscribeOnTextRoom(textRoomId));
+                        handler({ roomId }) {
+                            dispatch(subscribeOnRoom(roomId));
                         },
                     }}
                 />
@@ -84,13 +84,13 @@ export const RoomManager: FC = () => {
                 <Form
                     inputs={[
                         {
-                            name: 'textRoomId',
+                            name: 'roomId',
                         },
                     ]}
                     submit={{
                         text: 'unsubscribe',
-                        handler({ textRoomId }) {
-                            dispatch(unsubscribeFromTextRoom(textRoomId));
+                        handler({ roomId }) {
+                            dispatch(unsubscribeFromRoom(roomId));
                         },
                     }}
                 />
@@ -98,23 +98,23 @@ export const RoomManager: FC = () => {
 
             <Container title='room list'>
                 {
-                    textRooms.length ?
+                    rooms.length ?
 
                         <ul style={{ display: 'flex', flexDirection: 'column', gap: '50px' }}>
                             {
-                                textRooms.map((textRoom) => {
+                                rooms.map((room) => {
                                     return (
                                         <li 
-                                            key={textRoom.id} 
+                                            key={room.id} 
                                             style={{ 
                                                 display: 'flex', 
                                                 flexDirection: 'column', 
                                                 gap: '10px', 
                                             }}
                                         >
-                                            <span>id: {textRoom.id}</span>
-                                            <span>name: {textRoom.name}</span>
-                                            <span>updatedAt: {textRoom.updatedAt}</span>
+                                            <span>id: {room.id}</span>
+                                            <span>name: {room.name}</span>
+                                            <span>updatedAt: {room.updatedAt}</span>
                                         </li>
                                     );
                                 })

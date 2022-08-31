@@ -1,4 +1,5 @@
 import { ChannelServiceHelpers, RoleServiceHelpers, UserServiceHelpers } from '@services';
+import { IUserSettings } from '@types';
 import { date, password } from '@utils';
 import { ValidationChain, check } from 'express-validator';
 
@@ -293,19 +294,6 @@ export const isMyAccountActivated: ValidationChainCreator = ({
         const myId = req.auth.user.id as string;
         const isActivated = await UserServiceHelpers.isUserExist({ _id: myId, isActivated: true });
         if (!isActivated) return Promise.reject();
-        return Promise.resolve();
-    }).bail().withMessage(errorMessage);
-};
-
-export const isValidExtraStatus: ValidationChainCreator = ({
-    fieldName,
-    errorMessage = 'Значение не является статусом',
-}) => {
-    return check(fieldName).custom(async(extraStatus: string) => {
-        const extraStatuses = ['default', 'afk', 'dnd', 'invisible'];
-        const isValidExtraStatus = extraStatuses.includes(extraStatus);
-
-        if (!isValidExtraStatus) return Promise.reject();
         return Promise.resolve();
     }).bail().withMessage(errorMessage);
 };
@@ -658,6 +646,83 @@ export const isRoleExistById: ValidationChainCreator = ({
     return check(fieldName).custom(async(roleId: string) => {
         const isExist = await RoleServiceHelpers.isRoleExist({ _id: roleId });
         if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isRoleColor: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Указанное значение не является одним из доступных цветов',
+}) => {
+    return check(fieldName).custom(async(color: string) => {
+        const validColors = [''];
+        const isValid = validColors.includes(color);
+        if (!isValid) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isValidRoleOrder: ValidationChainCreator<{channelIdPath: string}> = ({
+    fieldName,
+    errorMessage = 'Указанное значение более или менее допустимого диапазона',
+    extraFields,
+}) => {
+    return check(fieldName).custom(async(order: number, { req }) => {
+        const channelId = req[extraFields.channelIdPath];
+        const { roles } = await ChannelServiceHelpers.getOne({ _id: channelId });
+        const isValid = 0 <= order && order < roles.length;
+
+        if (!isValid) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isntRoleDefault: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Указанную роль нельзя удалить',
+}) => {
+    return check(fieldName).custom(async(roleId: number) => {
+        const isDefault = await RoleServiceHelpers.isRoleExist({ _id: roleId, isDefault: true });
+        if (isDefault) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const toBoolean: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Указанное значение должно быть одним из: true, false, 1, 0, yes, no',
+}) => {
+    return check(fieldName).custom((value: unknown) => {
+        const booleans = ['true', 'false', '1', '0', 'yes', 'no'];
+        return booleans.includes(value.toString().toLocaleLowerCase());
+    }).customSanitizer((value: string | boolean) => {
+        if (typeof value === 'string') return value;
+        return String(value);
+    }).bail().withMessage(errorMessage);
+};
+
+export const isRoleHasUser: ValidationChainCreator<{targetIdPath: string}> = ({
+    fieldName,
+    errorMessage = '',
+    extraFields,
+}) => {
+    return check(fieldName).custom(async(roleId: string, { req }) => {
+        const targetId = req[extraFields.targetIdPath];
+        const hasUser = await RoleServiceHelpers.isRoleExist({ _id: roleId, users: targetId });
+        if (!hasUser) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isntRoleHasUser: ValidationChainCreator<{targetIdPath: string}> = ({
+    fieldName,
+    errorMessage = '',
+    extraFields,
+}) => {
+    return check(fieldName).custom(async(roleId: string, { req }) => {
+        const targetId = req[extraFields.targetIdPath];
+        const hasUser = await RoleServiceHelpers.isRoleExist({ _id: roleId, users: targetId });
+        if (hasUser) return Promise.reject();
         return Promise.resolve();
     }).bail().withMessage(errorMessage);
 };

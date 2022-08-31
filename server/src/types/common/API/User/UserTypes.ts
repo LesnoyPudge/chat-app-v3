@@ -3,6 +3,13 @@
 
 type ExtraStatusType = 'default' | 'afk' | 'dnd' | 'invisible';
 
+export interface IUserSettings {
+    theme: 'auto' | 'dark' | 'light';
+    fontSize: 12 | 14 | 16 | 18 | 20;
+    messageGroupSpacing: 16 | 20;
+    transitionSpeedModifier: 0 | 0.5 | 1 | 1.5 | 2;
+}
+
 export interface IUser {
     id: string;
     login: string;
@@ -11,12 +18,7 @@ export interface IUser {
     email: string;
     extraStatus: ExtraStatusType;
     isActivated: boolean;
-    settings: {
-        theme: 'auto' | 'dark' | 'light';
-        fontSize: 12 | 14 | 16 | 18 | 20;
-        messageGroupSpacing: 16 | 20;
-        transitionSpeed: 0 | 0.5 | 1 | 1.5 | 2;
-    };
+    settings: IUserSettings;
     blockList: string[];
     channels: string[];
     privateChannels: string[];
@@ -35,11 +37,10 @@ export interface IUser {
 }
 
 export interface IUserPreview {
-    id: string,
-    login: string,
-    username: string,
-    avatar: string,
-    extraStatus: ExtraStatusType,
+    id: string;
+    username: string;
+    avatar: string;
+    extraStatus: ExtraStatusType;
     status: 'online' | 'offline';
 }
 
@@ -58,19 +59,28 @@ export interface ILoginUserRequest {
 export interface IGetOneUserRequest {
     targetId: string;
 }
-
-export interface IGetManyUserRequest {
-    targetIds: string[];
-}
-
 export interface IAuthResponse {
     user: IUser;
     accessToken: string;
     refreshToken: string;
 }
 
-export interface IUpdateUserRequest {
-    newValues: Partial<IUser>;
+export interface IProfileUpdateUserRequest {
+    username?: string;
+    avatar?: {
+        filename: string;
+        base64url: string;
+    };
+    settings?: Partial<IUserSettings>;
+    extraStatus?: ExtraStatusType;
+}
+
+export interface ICredentialsUpdateUserRequest {
+    password: string;
+    accessCode: string;
+    newPassword?: string;
+    newEmail?: string;
+    newLogin?: string;
 }
 
 export interface IBlockUserRequest {
@@ -103,20 +113,6 @@ export interface IDeleteFriendUserRequest {
 
 export interface IActivateAccountUserRequest {
     activationCode: string;
-}
-
-export interface IChangeAvatarUserRequest {
-    filename?: string;
-    base64url?: string;
-}
-
-export interface IChangePasswordUserRequest {
-    oldPassord: string;
-    newPassword: string;
-}
-
-export interface IChangeExtraStatusUserRequest {
-    extraStatus: ExtraStatusType;
 }
 
 export interface IVerifyAccessCodeUserReuqest {

@@ -1,6 +1,6 @@
 export * from './User';
 export * from './Channel';
-export * from './TextRoom';
+export * from './Room';
 export * from './PrivateChannel';
 export * from './Message';
 export * from './Role';

@@ -19,8 +19,8 @@ export const ChannelDto: IChannelDto = {
             members: channel.members.map((memberId) => {
                 return memberId.toString();
             }),
-            textRooms: channel.textRooms.map((textRoomId) => {
-                return textRoomId.toString();
+            rooms: channel.rooms.map((roomId) => {
+                return roomId.toString();
             }),
             roles: channel.roles.map((roleId) => {
                 return roleId.toString();
@@ -37,6 +37,12 @@ export const ChannelDto: IChannelDto = {
                     code: invitation.code,
                     expiryDate: invitation.expiryDate.toString(),
                     createdAt: invitation.createdAt.toString(),
+                };
+            }),
+            categories: channel.categories.map((category) => {
+                return {
+                    id: category._id.toString(),
+                    name: category.name,
                 };
             }),
             createdAt: channel.createdAt.toString(),

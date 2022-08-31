@@ -2,8 +2,8 @@ import { io } from '@server';
 import { ApiError, token } from '@utils';
 import { Socket } from 'socket.io';
 import { IUser } from '@types';
-import { channelEmitters, textRoomEmitters, userEmitters, messageEmitters, privateChannelEmitters } from './emitters';
-import { channelListeners, messageListeners, userListeners, textRoomListeners, privateChannelListeners } from './listeners';
+import { channelEmitters, roomEmitters, userEmitters, messageEmitters, privateChannelEmitters } from './emitters';
+import { channelListeners, messageListeners, userListeners, roomListeners, privateChannelListeners } from './listeners';
 
 
 
@@ -43,7 +43,7 @@ export const socket = {
     events: {
         ...userEmitters,
         ...channelEmitters,
-        ...textRoomEmitters,
+        ...roomEmitters,
         ...messageEmitters,
         ...privateChannelEmitters,
     },
@@ -69,7 +69,7 @@ const initListeners = (socketIO: AuthorizedSocketType) => {
 
     userListeners(socketIO);
     channelListeners(socketIO);
-    textRoomListeners(socketIO);
+    roomListeners(socketIO);
     messageListeners(socketIO);
     privateChannelListeners(socketIO);
 };

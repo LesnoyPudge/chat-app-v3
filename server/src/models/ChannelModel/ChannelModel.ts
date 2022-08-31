@@ -2,6 +2,16 @@ import { Schema, model, Types, Document } from 'mongoose';
 
 
 
+export interface ICategoriesSchema extends Document<Types.ObjectId> {
+    name: string;
+}
+
+const CategoriesSchema = new Schema<ICategoriesSchema>(
+    {
+        name: { type: String, required: true },
+    },
+);
+
 export interface IChannelModel extends Document<Types.ObjectId> {
     identifier: string; 
     avatar: string;
@@ -9,7 +19,7 @@ export interface IChannelModel extends Document<Types.ObjectId> {
     owner: Types.ObjectId;
     isPrivate: boolean;
     members: Types.ObjectId[];
-    textRooms: Types.ObjectId[];
+    rooms: Types.ObjectId[];
     roles: Types.ObjectId[];
     banList: {
         user: Types.ObjectId;
@@ -21,6 +31,7 @@ export interface IChannelModel extends Document<Types.ObjectId> {
         expiryDate: Date;
         createdAt: Date;
     }[];
+    categories: ICategoriesSchema[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -38,12 +49,13 @@ const ChannelSchema = new Schema<IChannelModel>(
             expiryDate: { type: Date, required: true },
         }],
         members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-        textRooms: [{ type: Schema.Types.ObjectId, ref: 'TextRooms' }],
+        rooms: [{ type: Schema.Types.ObjectId, ref: 'Rooms' }],
         roles: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
         banList: [{
             user: { type: Schema.Types.ObjectId, ref: 'User' },
             reason: { type: String, default: '' },
         }],
+        categories: [{ type: CategoriesSchema }],
     },
     { 
         timestamps: true, 

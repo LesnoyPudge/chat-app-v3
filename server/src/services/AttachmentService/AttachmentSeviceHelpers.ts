@@ -40,21 +40,25 @@ export const AttachmentServiceHelpers = {
         return transactionContainer(
             async({ queryOptions }) => {
                 const randomIndex = getRandomNumber({ min: 0, max: defaultAvatars });
-                const { identifier, filename, base64url } = defaultAvatars[randomIndex];
+                const { filename, base64url } = defaultAvatars[randomIndex];
 
-                const attachment = await AttachmentModel.findOne({ identifier }, {}, { lean: true });
+                const attachment = await AttachmentModel.findOne(
+                    { filename, base64url, isDefault: true }, 
+                    {}, 
+                    { lean: true },
+                );
                 if (attachment) return AttachmentDto.objectFromModel(attachment);
 
                 const newAttacment = await AttachmentModel.create(
                     [{
-                        identifier,
+                        isDefault: true,
                         filename,
                         base64url,
                     }],
                     queryOptions(),
                 ).then((attachments) => attachments[0]);
 
-                return AttachmentDto.objectFromModel(newAttacment);
+                return newAttacment;
             },
         );
     },
@@ -64,7 +68,7 @@ export const AttachmentServiceHelpers = {
             async({ queryOptions }) => {
                 const attachmentToDelete = await AttachmentModel.findById(attachmentId);
                 if (!attachmentToDelete) return;
-                if (attachmentToDelete.identifier) return;
+                if (attachmentToDelete.isDefault) return;
 
                 await attachmentToDelete.delete(queryOptions());
             },

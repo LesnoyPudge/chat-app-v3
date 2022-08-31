@@ -1,6 +1,7 @@
-import { IAcceptFriendRequestUserRequest, IActivateAccountUserRequest, IBlockUserRequest, IChangeAvatarUserRequest, IChangeExtraStatusUserRequest, IChangePasswordUserRequest, IDeclineFriendRequestUserRequest, IDeleteFriendUserRequest, IGetManyUserRequest, IGetOneUserRequest, ILoginUserRequest, IRegistrationUserRequest, IRevokeFriendRequestUserRequest, ISendFriendRequestUserRequest, IUnblockUserRequest, IUpdateUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
+import { IAcceptFriendRequestUserRequest, IActivateAccountUserRequest, IBlockUserRequest, ICredentialsUpdateUserRequest, IDeclineFriendRequestUserRequest, IDeleteFriendUserRequest, IGetOneUserRequest, ILoginUserRequest, IProfileUpdateUserRequest, IRegistrationUserRequest, IRevokeFriendRequestUserRequest, ISendFriendRequestUserRequest, IUnblockUserRequest, IVerifyAccessCodeUserReuqest } from '@types';
+import { check } from 'express-validator';
 import { createValidator, ObjectToValidatorsChain } from '../createValidator';
-import { nullable, sanitizeInput, notEmpty, isEmail, isEmailUnoccupied, toString, isLoginUnoccupied, isValidLogin, isValidPassword, isMongoId, isUserExistById, isArray, isUsersExistsById, isntInMyBlockList, isntInMyFriendList, isInMyBlockList, isntInMyIncomingFriendRequests, isntInMyOutgoingFriendRequests, isInMyIncomingFriendRequests, isntImInBlockList, isInMyOutgoingFriendRequests, isInMyFriendList, isUUID, isBase64Url, isntSameAsOldPassword, isValidExtraStatus, isValidAccessCode } from '../validationChains';
+import { nullable, sanitizeInput, notEmpty, isEmail, isEmailUnoccupied, toString, isLoginUnoccupied, isValidLogin, isValidPassword, isMongoId, isUserExistById, isntInMyBlockList, isntInMyFriendList, isInMyBlockList, isntInMyIncomingFriendRequests, isntInMyOutgoingFriendRequests, isInMyIncomingFriendRequests, isntImInBlockList, isInMyOutgoingFriendRequests, isInMyFriendList, isUUID, isBase64Url, isntSameAsOldPassword, isValidAccessCode, toInt } from '../validationChains';
 
 
 
@@ -8,8 +9,8 @@ interface IUserValidators {
     registration: ObjectToValidatorsChain<IRegistrationUserRequest>;
     login: ObjectToValidatorsChain<ILoginUserRequest>;
     getOne: ObjectToValidatorsChain<IGetOneUserRequest>;
-    // getMany: ObjectToValidatorsChain<IGetManyUserRequest>;
-    update: ObjectToValidatorsChain<IUpdateUserRequest>;
+    update: ObjectToValidatorsChain<IProfileUpdateUserRequest>;
+    credentialsUpdate: ObjectToValidatorsChain<ICredentialsUpdateUserRequest>
     blockUser: ObjectToValidatorsChain<IBlockUserRequest>;
     unblockUser: ObjectToValidatorsChain<IUnblockUserRequest>;
     sendFriendRequest: ObjectToValidatorsChain<ISendFriendRequestUserRequest>;
@@ -18,9 +19,6 @@ interface IUserValidators {
     revokeFriendRequest: ObjectToValidatorsChain<IRevokeFriendRequestUserRequest>;
     deleteFriend: ObjectToValidatorsChain<IDeleteFriendUserRequest>;
     activateAccount: ObjectToValidatorsChain<IActivateAccountUserRequest>;
-    changeAvatar: ObjectToValidatorsChain<IChangeAvatarUserRequest>;
-    changePassword: ObjectToValidatorsChain<IChangePasswordUserRequest>;
-    changeExtraStatus: ObjectToValidatorsChain<IChangeExtraStatusUserRequest>;
     verifyAccessCode: ObjectToValidatorsChain<IVerifyAccessCodeUserReuqest>;
 }
 
@@ -77,24 +75,120 @@ const userValidators: IUserValidators = {
         ],
     },
 
-    // getMany: {
-    //     targetIds: [
-    //         isArray({ fieldName:  'targetIds' }),
-    //         notEmpty({ fieldName:  'targetIds' }),
-    //         sanitizeInput({ fieldName:  'targetIds.*' }),
-    //         toString({ fieldName:  'targetIds.*' }),
-    //         notEmpty({ fieldName:  'targetIds.*' }),
-    //         isMongoId({ fieldName:  'targetIds.*', plural: true }),
-    //         isUsersExistsById({ fieldName:  'targetIds' }),
-    //     ],
-    // },
-
     update: {
-        newValues: [
-            nullable({ fieldName:  'newValues.username' }),
-            sanitizeInput({ fieldName:  'newValues.username' }),
-            notEmpty({ fieldName:  'newValues.username' }),
-            toString({ fieldName:  'newValues.username' }),
+        avatar: [
+            nullable({ fieldName: 'avatar' }),
+            nullable({ fieldName: 'avatar.filename' }),
+            nullable({ fieldName: 'avatar.base64url' }),
+
+            sanitizeInput({ fieldName: 'avatar' }),
+            sanitizeInput({ fieldName: 'avatar.filename' }),
+            sanitizeInput({ fieldName: 'avatar.base64url' }),
+
+            notEmpty({ fieldName: 'avatar' }),
+            notEmpty({ fieldName: 'avatar.filename' }),
+            notEmpty({ fieldName: 'avatar.base64url' }),
+
+            toString({ fieldName: 'avatar.filename' }),
+            toString({ fieldName: 'avatar.base64url' }),
+
+            isBase64Url({ fieldName:  'avatar.base64url' }),
+        ],
+
+        extraStatus: [
+            nullable({ fieldName: 'extraStatus' }),
+            sanitizeInput({ fieldName:  'extraStatus' }),
+            notEmpty({ fieldName:  'extraStatus' }),
+            toString({ fieldName:  'extraStatus' }),
+            check('extraStatus')
+                .isIn(['default', 'afk', 'dnd', 'invisible'])
+                .withMessage('Статус указан некорректно'),
+        ],
+
+        settings: [
+            nullable({ fieldName: 'settings' }),
+            sanitizeInput({ fieldName:  'settings' }),
+            notEmpty({ fieldName:  'settings' }),
+            
+            nullable({ fieldName: 'settings.theme' }),
+            sanitizeInput({ fieldName:  'settings.theme' }),
+            notEmpty({ fieldName:  'settings.theme' }),
+            toString({ fieldName: 'settings.theme' }),
+            check('settings.theme')
+                .isIn(['auto', 'dark', 'light'])
+                .withMessage('Тема указана некорректно'),
+
+            nullable({ fieldName: 'settings.fontSize' }),
+            sanitizeInput({ fieldName:  'settings.fontSize' }),
+            notEmpty({ fieldName:  'settings.fontSize' }),
+            toInt({ fieldName: 'settings.fontSize' }),
+            check('settings.fontSize')
+                .isInt({ min:12, max: 20 })
+                .withMessage('Размер шрифта указан некорректно'),
+
+            nullable({ fieldName: 'settings.messageGroupSpacing' }),
+            sanitizeInput({ fieldName:  'settings.messageGroupSpacing' }),
+            notEmpty({ fieldName:  'settings.messageGroupSpacing' }),
+            toInt({ fieldName: 'settings.messageGroupSpacing' }),
+            check('settings.fontSize')
+                .isInt({ min:12, max: 20 })
+                .withMessage('Размер отступа указан некорректно'),
+
+            nullable({ fieldName: 'settings.transitionSpeedModifier' }),
+            sanitizeInput({ fieldName:  'settings.transitionSpeedModifier' }),
+            notEmpty({ fieldName:  'settings.transitionSpeedModifier' }),
+            toInt({ fieldName: 'settings.transitionSpeedModifier' }),
+            check('settings.transitionSpeedModifier')
+                .isInt({ min:0, max: 2 })
+                .withMessage('Модификатор указан некорректно'),
+        ],
+
+        username: [
+            nullable({ fieldName: 'extraStatus' }),
+            sanitizeInput({ fieldName:  'extraStatus' }),
+            notEmpty({ fieldName:  'extraStatus' }),
+            toString({ fieldName:  'extraStatus' }),
+        ],
+    },
+
+    credentialsUpdate: {
+        accessCode: [
+            sanitizeInput({ fieldName:  'accessCode' }),
+            notEmpty({ fieldName:  'accessCode' }),
+            toString({ fieldName:  'accessCode' }),
+            isValidAccessCode({ fieldName:  'accessCode' }),
+        ],
+        
+        password: [
+            sanitizeInput({ fieldName:  'password' }),
+            notEmpty({ fieldName:  'password' }),
+            toString({ fieldName:  'password' }),
+            isValidPassword({ fieldName:  'password', errorMessage: 'Неверный пароль' }),
+        ],
+
+        newEmail: [
+            nullable({ fieldName:  'newEmail' }),
+            sanitizeInput({ fieldName:  'newEmail' }),
+            notEmpty({ fieldName:  'newEmail' }),
+            toString({ fieldName:  'newEmail' }),
+            isEmail({ fieldName:  'newEmail' }),
+            isEmailUnoccupied({ fieldName:  'newEmail' }),
+        ],
+        
+        newLogin: [
+            nullable({ fieldName:  'newLogin' }),
+            sanitizeInput({ fieldName:  'newLogin' }),
+            notEmpty({ fieldName:  'newLogin' }),
+            toString({ fieldName:  'newLogin' }),
+            isLoginUnoccupied({ fieldName:  'newLogin' }),
+        ],
+        
+        newPassword: [
+            nullable({ fieldName:  'newPassword' }),
+            sanitizeInput({ fieldName:  'newPassword' }),
+            notEmpty({ fieldName:  'newPassword' }),
+            toString({ fieldName:  'newPassword' }),
+            isntSameAsOldPassword({ fieldName:  'newPassword' }),
         ],
     },
 
@@ -185,46 +279,6 @@ const userValidators: IUserValidators = {
             notEmpty({ fieldName:  'activationCode' }),
             toString({ fieldName:  'activationCode' }),
             isUUID({ fieldName:  'activationCode' }),
-        ],
-    },
-
-    changeAvatar: {
-        filename: [
-            sanitizeInput({ fieldName:  'filename' }),
-            notEmpty({ fieldName:  'filename' }),
-            toString({ fieldName:  'filename' }),
-        ],
-
-        base64url: [
-            sanitizeInput({ fieldName:  'base64url' }),
-            notEmpty({ fieldName:  'base64url' }),
-            toString({ fieldName:  'base64url' }),
-            isBase64Url({ fieldName:  'base64url' }),
-        ],
-    },
-
-    changePassword: {
-        oldPassord: [
-            sanitizeInput({ fieldName:  'oldPassword' }),
-            notEmpty({ fieldName:  'oldPassword' }),
-            toString({ fieldName:  'oldPassword' }),
-            isValidPassword({ fieldName:  'oldPassword' }),
-        ],
-        
-        newPassword: [
-            sanitizeInput({ fieldName:  'newPassword' }),
-            notEmpty({ fieldName:  'newPassword' }),
-            toString({ fieldName:  'newPassword' }),
-            isntSameAsOldPassword({ fieldName:  'newPassword' }),
-        ],
-    },
-
-    changeExtraStatus: {
-        extraStatus: [
-            sanitizeInput({ fieldName:  'extraStatus' }),
-            notEmpty({ fieldName:  'extraStatus' }),
-            toString({ fieldName:  'extraStatus' }),
-            isValidExtraStatus({ fieldName:  'extraStatus' }),
         ],
     },
 

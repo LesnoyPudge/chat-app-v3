@@ -50,7 +50,6 @@ export const UserDto: IUserDto = {
     preview(user) {
         return {
             id: user.id,
-            login: user.login,
             username: user.username,
             avatar: user.avatar,
             extraStatus: user.extraStatus,

@@ -10,138 +10,111 @@ const { CUSTOM_API_V1_URL } = getEnv();
 export const UserRouter = Router();
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/registration',
+    CUSTOM_API_V1_URL + '/users/auth/registration',
     UserValidator.registration,
     controllerContainer(UserController.registration),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/login',
+    CUSTOM_API_V1_URL + '/users/auth/login',
     UserValidator.login,
     controllerContainer(UserController.login),
 );
 
-UserRouter.get(
-    CUSTOM_API_V1_URL + '/user/logout',
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/users/auth/logout',
     controllerContainer(UserController.logout),
 );
 
-UserRouter.get(
-    CUSTOM_API_V1_URL + '/user/refresh',
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/users/auth/refresh',
     controllerContainer(UserController.refresh),
 );
 
-UserRouter.get(
-    CUSTOM_API_V1_URL + '/user/some',
-    authorizationMiddleware,
-    controllerContainer(UserController.some),
-);
-
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/getOne',
+    CUSTOM_API_V1_URL + '/users/:targetId',
     authorizationMiddleware,
     UserValidator.getOne,
     controllerContainer(UserController.getOne),
 );
 
-// UserRouter.post(
-//     CUSTOM_API_V1_URL + '/user/getMany',
-//     authorizationMiddleware,
-//     UserValidator.getMany,
-//     controllerContainer(UserController.getMany),
-// );
-
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/update',
+    CUSTOM_API_V1_URL + '/users/profile/update',
     authorizationMiddleware,
     UserValidator.update,
     controllerContainer(UserController.update),
 );
 
+UserRouter.post(
+    CUSTOM_API_V1_URL + '/users/credentials/update',
+    authorizationMiddleware,
+    UserValidator.credentialsUpdate,
+    controllerContainer(UserController.credentialsUpdate),
+);
+
 UserRouter.get(
-    CUSTOM_API_V1_URL + '/user/delete',
+    CUSTOM_API_V1_URL + '/users/delete',
     authorizationMiddleware,
     controllerContainer(UserController.delete),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/blockUser',
+    CUSTOM_API_V1_URL + '/users/blocked/:targetId/add',
     authorizationMiddleware,
     UserValidator.blockUser,
     controllerContainer(UserController.blockUser),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/unblockUser',
+    CUSTOM_API_V1_URL + '/users/blocked/:targetId/remove',
     authorizationMiddleware,
     UserValidator.unblockUser,
     controllerContainer(UserController.unblockUser),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/requestAccessCode',
+    CUSTOM_API_V1_URL + '/users/emails/access-code',
     authorizationMiddleware,
     controllerContainer(UserController.requestAccessCode),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/sendFriendRequest',
+    CUSTOM_API_V1_URL + '/users/friends/:targetId/send',
     authorizationMiddleware,
     UserValidator.sendFriendRequest,
     controllerContainer(UserController.sendFriendRequest),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/acceptFriendRequest',
+    CUSTOM_API_V1_URL + '/users/friends/:targetId/accept',
     authorizationMiddleware,
     UserValidator.acceptFriendRequest,
     controllerContainer(UserController.acceptFriendRequest),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/declineFriendRequest',
+    CUSTOM_API_V1_URL + '/users/friends/:targetId/decline',
     authorizationMiddleware,
     UserValidator.declineFriendRequest,
     controllerContainer(UserController.declineFriendRequest),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/deleteFriend',
+    CUSTOM_API_V1_URL + '/users/friends/:targetId/remove',
     authorizationMiddleware,
     UserValidator.deleteFriend,
     controllerContainer(UserController.deleteFriend),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/activate-account/:activationCode',
+    CUSTOM_API_V1_URL + '/users/activate/:activationCode',
     authorizationMiddleware,
     UserValidator.activateAccount,
     controllerContainer(UserController.activateAccount),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/requestActivationLink',
+    CUSTOM_API_V1_URL + '/users/emails/activation-code',
     authorizationMiddleware,
     controllerContainer(UserController.requestActivationLink),
-);
-
-UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/changeAvatar',
-    authorizationMiddleware,
-    UserValidator.changeAvatar,
-    controllerContainer(UserController.changeAvatar),
-);
-
-UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/changePassword',
-    authorizationMiddleware,
-    UserValidator.changePassword,
-    controllerContainer(UserController.changePassword),
-);
-
-UserRouter.post(
-    CUSTOM_API_V1_URL + '/user/changeExtraStatus',
-    authorizationMiddleware,
-    UserValidator.changeExtraStatus,
-    controllerContainer(UserController.changeExtraStatus),
 );

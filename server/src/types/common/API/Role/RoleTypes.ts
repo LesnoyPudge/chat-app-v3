@@ -1,6 +1,17 @@
 
 
 
+interface IRolePermissions {
+    channelControl: boolean;
+    roomControl: boolean;
+    createInvitation: boolean;
+    kickMember: boolean;
+    banMember: boolean;
+    sendMessage: boolean;
+    deleteMessage: boolean;
+    isAdministrator: boolean;
+}
+
 export interface IRole {
     id: string;
     name: string;
@@ -10,16 +21,7 @@ export interface IRole {
     color: string;
     image: string;
     order: number;
-    permissions: {
-        channelControl: boolean;
-        roomControl: boolean;
-        createInvitation: boolean;
-        kickMember: boolean;
-        banMember: boolean;
-        sendMessage: boolean;
-        deleteMessage: boolean;
-        isAdministrator: boolean;
-    };
+    permissions: IRolePermissions;
     createdAt: string;
     updatedAt: string;
 }
@@ -47,7 +49,14 @@ export interface IGetManyRolesRequest {
 export interface IUpdateRoleRequest {
     channelId: string;
     roleId: string;
-    newValues: Partial<IRole>;
+    name?: string;
+    color?: string;
+    image?: {
+        filename: string;
+        base64url: string;
+    };
+    order?: number;
+    permissions?: Partial<IRolePermissions>;
 }
 
 export interface IAddUserRoleRequest {

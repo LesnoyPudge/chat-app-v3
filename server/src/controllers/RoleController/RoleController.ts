@@ -42,10 +42,19 @@ export const RoleController: IRoleController = {
     // },
 
     async update(req, res) {
-        const { roleId, newValues, channelId } = req.body;
+        const { roleId, channelId, color, image, name, order, permissions } = req.body;
         const { id } = req.auth.user;
         
-        const updatedRole = await RoleService.update({ userId: id, roleId, newValues, channelId });
+        const updatedRole = await RoleService.update({ 
+            userId: id, 
+            roleId,
+            channelId,
+            color, 
+            image, 
+            name,
+            order,
+            permissions, 
+        });
 
         res.json(updatedRole);
     },

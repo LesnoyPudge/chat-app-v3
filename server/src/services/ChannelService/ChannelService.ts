@@ -1,10 +1,9 @@
 import { ChannelDto } from '@dtos';
 import { ChannelModel } from '@models';
 import { subscription } from '@subscription';
-import { AuthorizedServiceType, IAcceptInvitationChannelRequest, IBanUserChannelRequest, IChannel, ICreateChannelRequest, ICreateInvitationChannelRequest, IDeleteChannelRequest, IDeleteInvitationChannelRequest, IGetManyChannelsRequest, IGetOneChannelRequest, IKickUserChannelRequest, ILeaveChannelRequest, IUnbanUserChannelRequest, IUpdateChannelRequest } from '@types';
+import { AuthorizedServiceType, IAcceptInvitationChannelRequest, IBanUserChannelRequest, IChannel, ICreateChannelRequest, ICreateInvitationChannelRequest, IDeleteChannelRequest, IDeleteInvitationChannelRequest, IGetOneChannelRequest, IKickUserChannelRequest, ILeaveChannelRequest, IUnbanUserChannelRequest, IUpdateChannelRequest } from '@types';
 import { ApiError, getRandomString, objectId, transactionContainer } from '@utils';
-import { UserServiceHelpers, RoleServiceHelpers, TextRoomServiceHelpers } from '@services';
-import c from 'config';
+import { UserServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, AttachmentServiceHelpers } from '@services';
 
 
 
@@ -48,8 +47,8 @@ export const ChannelService: IChannelService = {
                 const adminRole = await RoleServiceHelpers.createAdminRole({ userId, channelId: channel._id });
                 channel.roles = [adminRole._id, defaulRole._id];
 
-                const textRoom = await TextRoomServiceHelpers.createDefaultTextRoom({ channelId: channel._id });
-                channel.textRooms = [textRoom._id];
+                const room = await RoomServiceHelpers.createDefaultRoom({ channelId: channel._id });
+                channel.rooms = [room._id];
 
                 await channel.save(queryOptions());
 
@@ -82,19 +81,28 @@ export const ChannelService: IChannelService = {
     //     return channelDtos;
     // },
 
-    async update({ userId, channelId, newValues }) {
+    async update({ userId, channelId, avatar, name }) {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
-                const updatedChannel = await ChannelModel.findByIdAndUpdate(
-                    channelId, 
-                    newValues, 
-                    queryOptions({ new: true }),
-                );
-                if (!updatedChannel) {
-                    throw ApiError.badRequest('Не удалось обновить канал');
+                const channelToUpdate = await ChannelModel.findById(channelId, {}, { lean: true });
+                const isntEmptyAvatar = avatar && avatar.filename && avatar.base64url;
+                const isEmptyAvatar = avatar && !avatar.filename || !avatar.base64url;
+
+                if (name) channelToUpdate.name = name;
+                
+                if (avatar) await AttachmentServiceHelpers.delete({ attachmentId: channelToUpdate.avatar });
+                if (isEmptyAvatar) channelToUpdate.avatar = '';
+                if (isntEmptyAvatar) {
+                    const newAvatar = await AttachmentServiceHelpers.create({ 
+                        base64url: avatar.base64url, 
+                        filename: avatar.filename,
+                    });
+                    channelToUpdate.avatar = newAvatar.id;
                 }
 
-                const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
+                await channelToUpdate.save(queryOptions());
+
+                const updatedChannelDto = ChannelDto.objectFromModel(channelToUpdate);
 
                 onCommit(() => {
                     subscription.channels.update({ entity: updatedChannelDto });
@@ -115,7 +123,7 @@ export const ChannelService: IChannelService = {
 
                 await UserServiceHelpers.removeChannelFromMany({ channelId });
                 await RoleServiceHelpers.deleteManyByChannelId({ channelId });
-                await TextRoomServiceHelpers.deleteManyByChannelId({ channelId });
+                await RoomServiceHelpers.deleteManyByChannelId({ channelId });
                 
                 onCommit(() => {
                     subscription.channels.delete({ entityId: channelId });
