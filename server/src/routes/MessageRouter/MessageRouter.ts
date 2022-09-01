@@ -2,48 +2,53 @@ import { Router } from 'express';
 import { MessageController } from '@controllers';
 import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
+import { MessageValidator } from '@validators';
 
 
 
 
 const { CUSTOM_API_V1_URL } = getEnv();
 
-// const { createUserValidator } = validator.user;
 export const MessageRouter = Router();
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + '/message/create',
-    // (createUserValidator),
+    CUSTOM_API_V1_URL + 'chat/:chatId/messages/create',
     authorizationMiddleware,
+    MessageValidator.create,
     controllerContainer(MessageController.create),
 );
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + '/message/getOne',
+    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId',
     authorizationMiddleware,
+    MessageValidator.getOne,
     controllerContainer(MessageController.getOne),
 );
 
-// MessageRouter.post(
-//     CUSTOM_API_V1_URL + '/message/getMany',
-//     authorizationMiddleware,
-//     controllerContainer(MessageController.getMany),
-// );
-
 MessageRouter.post(
-    CUSTOM_API_V1_URL + '/message/update',
+    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId/update',
     authorizationMiddleware,
+    MessageValidator.update,
     controllerContainer(MessageController.update),
 );
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + '/message/delete',
+    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId/delete',
     authorizationMiddleware,
+    MessageValidator.delete,
     controllerContainer(MessageController.delete),
 );
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + '/message/restore',
+    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId/restore',
     authorizationMiddleware,
+    MessageValidator.restore,
     controllerContainer(MessageController.restore),
+);
+
+MessageRouter.post(
+    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId/attachment/:attachmentId/delete',
+    authorizationMiddleware,
+    MessageValidator.deleteAttachment,
+    controllerContainer(MessageController.deleteAttachment),
 );

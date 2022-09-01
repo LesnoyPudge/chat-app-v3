@@ -17,7 +17,6 @@ export interface IRoleModel extends Document<Types.ObjectId> {
         kickMember: boolean;
         banMember: boolean;
         sendMessage: boolean;
-        deleteMessage: boolean;
         isAdministrator: boolean;
     };
     createdAt: Date;
@@ -40,7 +39,6 @@ const RoleSchema = new Schema<IRoleModel>(
             kickMember: { type: Boolean, default: false },
             banMember: { type: Boolean, default: false },
             sendMessage: { type: Boolean, default: true },
-            deleteMessage: { type: Boolean, default: false },
             isAdministrator: { type: Boolean, default: false },
         },
     },

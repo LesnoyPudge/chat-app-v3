@@ -4,4 +4,4 @@ export * from './Room';
 export * from './PrivateChannel';
 export * from './Message';
 export * from './Role';
-export * from './Attachment';
+export * from './File';

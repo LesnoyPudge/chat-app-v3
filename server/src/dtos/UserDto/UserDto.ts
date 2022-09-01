@@ -1,11 +1,12 @@
-import { IUser, IUserPreview } from '@types';
+import { IUser, IUserDeleted, IUserPreview } from '@types';
 import { IUserModel } from '@models';
 
 
 
 interface IUserDto {
     objectFromModel: (user: IUserModel) => IUser;
-    preview: (user: Partial<IUser & {status: 'online' | 'offline'}>) => IUserPreview;
+    preview: (user: Partial<IUserPreview>) => IUserPreview;
+    deleted: (user: Partial<IUserPreview | IUser>) => IUserDeleted;
 }
 
 export const UserDto: IUserDto = {
@@ -42,6 +43,7 @@ export const UserDto: IUserDto = {
                     };
                 }),
             },
+            isDeleted: user.isDeleted,
             createdAt: user.createdAt.toString(),
             updatedAt: user.updatedAt.toString(),
         };
@@ -54,6 +56,14 @@ export const UserDto: IUserDto = {
             avatar: user.avatar,
             extraStatus: user.extraStatus,
             status: user.status,
+            isDeleted: user.isDeleted,
+        };
+    },
+
+    deleted(user) {
+        return {
+            id: user.id,
+            isDeleted: true,
         };
     },
 };

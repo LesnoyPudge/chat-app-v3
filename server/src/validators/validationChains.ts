@@ -1,4 +1,4 @@
-import { ChannelServiceHelpers, RoleServiceHelpers, UserServiceHelpers } from '@services';
+import { ChannelServiceHelpers, FileServiceHelpers, MessageServiceHelpers, PrivateChannelServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, UserServiceHelpers } from '@services';
 import { IUserSettings } from '@types';
 import { date, password } from '@utils';
 import { ValidationChain, check } from 'express-validator';
@@ -469,33 +469,19 @@ export const isPermittedToBanMember: ValidationChainCreator = ({
     }).bail().withMessage(errorMessage);
 };
 
-export const isPermittedToSendMessage: ValidationChainCreator = ({
+export const isPermittedToSendMessageByChatId: ValidationChainCreator = ({
     fieldName,
     errorMessage = 'Отсутствует разрешение на отправку сообщений',
 }) => {
-    return check(fieldName).custom(async(channelId: string, { req }) => {
+    return check(fieldName).custom(async(chatId: string, { req }) => {
         const myId = req.auth.user.id as string;
+        const room = await RoomServiceHelpers.getOne({ chat: chatId });
+        const channel = await ChannelServiceHelpers.getOne({ rooms: room._id });
+
         const isPermitted = await RoleServiceHelpers.isRoleExist({
-            channel: channelId, 
+            channel: channel._id, 
             users: myId,
             'permissions.sendMessage': true,
-        });
-
-        if (!isPermitted) return Promise.reject();
-        return Promise.resolve();
-    }).bail().withMessage(errorMessage);
-};
-
-export const isPermittedToDeleteMessage: ValidationChainCreator = ({
-    fieldName,
-    errorMessage = 'Отсутствует разрешение на удаление сообщений',
-}) => {
-    return check(fieldName).custom(async(channelId: string, { req }) => {
-        const myId = req.auth.user.id as string;
-        const isPermitted = await RoleServiceHelpers.isRoleExist({
-            channel: channelId, 
-            users: myId,
-            'permissions.deleteMessage': true,
         });
 
         if (!isPermitted) return Promise.reject();
@@ -703,7 +689,7 @@ export const toBoolean: ValidationChainCreator = ({
 
 export const isRoleHasUser: ValidationChainCreator<{targetIdPath: string}> = ({
     fieldName,
-    errorMessage = '',
+    errorMessage = 'У пользователя нет указанной роли',
     extraFields,
 }) => {
     return check(fieldName).custom(async(roleId: string, { req }) => {
@@ -716,13 +702,183 @@ export const isRoleHasUser: ValidationChainCreator<{targetIdPath: string}> = ({
 
 export const isntRoleHasUser: ValidationChainCreator<{targetIdPath: string}> = ({
     fieldName,
-    errorMessage = '',
+    errorMessage = 'У пользователя есть указанная роль',
     extraFields,
 }) => {
     return check(fieldName).custom(async(roleId: string, { req }) => {
         const targetId = req[extraFields.targetIdPath];
         const hasUser = await RoleServiceHelpers.isRoleExist({ _id: roleId, users: targetId });
         if (hasUser) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isFileExistById: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Указанного файла не существует',
+}) => {
+    return check(fieldName).custom(async(fileId: string) => {
+        const isExist = await FileServiceHelpers.isFileExistById({ fileId });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isImChannelMemberByRoleId: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Вы не являетесь участником канала',
+}) => {
+    return check(fieldName).custom(async(roleId: string, { req }) => {
+        const myId = req.auth.user.id;
+        const role = await RoleServiceHelpers.getOne({ _id: roleId });
+        const isExist = await ChannelServiceHelpers.isChannelExist({ _id: role.channel, members: myId });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isImChannelMemberByMessageId: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Вы не являетесь участником канала',
+}) => {
+    return check(fieldName).custom(async(messageId: string, { req }) => {
+        const myId = req.auth.user.id;
+        const message = await MessageServiceHelpers.getOne({ _id: messageId });
+        const room = await RoomServiceHelpers.getOne({ chat: message.chat });
+        const isExist = await ChannelServiceHelpers.isChannelExist({ _id: room.channel, members: myId });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isImHasAccessToRoomByMessageId: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Вы не имеете доступа к комнате',
+}) => {
+    return check(fieldName).custom(async(messageId: string, { req }) => {
+        const myId = req.auth.user.id;
+        const message = await MessageServiceHelpers.getOne({ _id: messageId });
+        const room = await RoomServiceHelpers.getOne({ chat: message.chat });
+        
+        const rolesAccess = !!await RoleServiceHelpers.getMany({ 
+            $in: { _id: { $in: room.whiteList.roles } },
+            channel: room.channel,
+            users: myId,
+        });
+        const usersAccess = room.whiteList.users.includes(myId); 
+        const hasAccess = usersAccess || rolesAccess;
+
+        if (!hasAccess) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isMessageExistById: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Указанного сообщения не существует',
+}) => {
+    return check(fieldName).custom(async(messageId: string) => {
+        const isExist = await MessageServiceHelpers.isExist({ _id: messageId });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isMessageDeletedById: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Указанное сообщение не удалено',
+}) => {
+    return check(fieldName).custom(async(messageId: string) => {
+        const isExist = await MessageServiceHelpers.isExist({ _id: messageId, isDeleted: true });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isntMessageDeletedById: ValidationChainCreator = ({
+    fieldName,
+    errorMessage = 'Указанное сообщение удалено',
+}) => {
+    return check(fieldName).custom(async(messageId: string) => {
+        const isExist = await MessageServiceHelpers.isExist({ _id: messageId, isDeleted: false });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isPrivateChannelByChatId: ValidationChainCreator = ({ fieldName }) => {
+    return check(fieldName).if(async(chatId: string) => {
+        const isExist = await PrivateChannelServiceHelpers.isExist({ chat: chatId });
+        if (isExist) return Promise.reject();
+        return Promise.resolve();
+    });
+};
+
+export const isImMessageOwner: ValidationChainCreator = ({ fieldName }) => {
+    return check(fieldName).if(async(messageId: string, { req }) => {
+        const myId = req.auth.user.id;
+        const isExist = await MessageServiceHelpers.isExist({ _id: messageId, user: myId });
+        if (isExist) return Promise.reject();
+        return Promise.resolve();
+    });
+};
+
+export const isRoomExistById: ValidationChainCreator = ({ 
+    fieldName,
+    errorMessage = 'Указанной комнаты не существует',
+}) => {
+    return check(fieldName).custom(async(roomId: string) => {
+        const isExist = await RoomServiceHelpers.isExist({ _id: roomId });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isCategoryExist: ValidationChainCreator<{channelIdPath: string}> = ({ 
+    fieldName,
+    errorMessage = 'Указанной категории не существует',
+    extraFields,
+}) => {
+    return check(fieldName).custom(async(categoryId: string, { req }) => {
+        const channelId = req[extraFields.channelIdPath];
+        const isExist = await ChannelServiceHelpers.isExist({ _id: channelId, categories: categoryId });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+
+export const isPrivateChannelExist: ValidationChainCreator = ({ 
+    fieldName,
+    errorMessage = 'Приватный канал не существует',
+}) => {
+    return check(fieldName).custom(async(privateChannelId: string) => {
+        const isExist = await PrivateChannelServiceHelpers.isExist({ _id:  privateChannelId });
+        if (!isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isntPrivateChannelExistByTargetId: ValidationChainCreator = ({ 
+    fieldName,
+    errorMessage = 'Приватный канал существует',
+}) => {
+    return check(fieldName).custom(async(targetId: string, { req }) => {
+        const myId = req.auth.user.id;
+        const isExist = await PrivateChannelServiceHelpers.isExist({ $in: { members: [myId, targetId] } });
+        if (isExist) return Promise.reject();
+        return Promise.resolve();
+    }).bail().withMessage(errorMessage);
+};
+
+export const isImPrivateChannelMember: ValidationChainCreator = ({ 
+    fieldName,
+    errorMessage = 'Вы не являетесь участником приватного канала',
+}) => {
+    return check(fieldName).custom(async(privateChannelId: string, { req }) => {
+        const myId = req.auth.user.id;
+        const isExist = await PrivateChannelServiceHelpers.isExist({ _id: privateChannelId, members: myId });
+        if (isExist) return Promise.reject();
         return Promise.resolve();
     }).bail().withMessage(errorMessage);
 };

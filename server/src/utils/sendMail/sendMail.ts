@@ -22,18 +22,20 @@ const transporter = createTransport({
     },
 });
 
+interface ISendActivationLinkArgs {
+    username: string, 
+    activationCode: string, 
+    email: string
+}
+
+interface ISendAccessCodeArgs {
+    to: string, 
+    code: string
+}
+
 export const sendMail = {
-    async sendActivationLink({ 
-        username, 
-        activationCode, 
-        email, 
-    }: {
-        username: string, 
-        activationCode: string, 
-        email: string
-    }) {
-        // изменить на client url / activation / code
-        const link = CUSTOM_SERVER_URL + CUSTOM_API_V1_URL + `/user/activate-account/${activationCode}`;
+    async sendActivationLink({ username, activationCode, email }: ISendActivationLinkArgs) {
+        const link = CUSTOM_SERVER_URL + CUSTOM_API_V1_URL + `/users/activate/${activationCode}`;
         const emailName = 'Активация аккаунта в ChatApp';
         const html = ActivationLinkEmail({ emailName, username, link });
 
@@ -45,10 +47,12 @@ export const sendMail = {
             html,
         }).then(() => {
             console.log('Письмо успешно отправлено');
+        }).catch((error) => {
+            console.log('Не удалось отправить письмо', error.message);
         });
     },
 
-    async sendAccessCode({ to, code }: {to: string, code: string}) {
+    async sendAccessCode({ to, code }: ISendAccessCodeArgs) {
         await transporter.sendMail({
             from: SMTP_USER,
             to,
@@ -61,6 +65,10 @@ export const sendMail = {
                     <span>${code}</span>
                 </div>
             `,
+        }).then(() => {
+            console.log('Письмо успешно отправлено');
+        }).catch((error) => {
+            console.log('Не удалось отправить код доступа', error.message);
         });
     },
 };

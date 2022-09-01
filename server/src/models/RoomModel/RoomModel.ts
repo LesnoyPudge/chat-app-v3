@@ -5,7 +5,6 @@ import { ChatSchema, IChatSchema } from '@models/schemas';
 
 export interface IRoomModel extends Document<Types.ObjectId> {
     name: string;
-    identifier: string;
     channel: Types.ObjectId;
     chat: IChatSchema;
     whiteList: {
@@ -20,7 +19,6 @@ export interface IRoomModel extends Document<Types.ObjectId> {
 
 const RoomSchema = new Schema<IRoomModel>(
     {
-        identifier: { type: String, required: true },
         name: { type: String, required: true },
         channel: { type: Schema.Types.ObjectId, ref: 'Channel', required: true },
         chat: {

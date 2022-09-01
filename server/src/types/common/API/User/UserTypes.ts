@@ -32,6 +32,7 @@ export interface IUser {
             createdAt: string;
         }[];
     };
+    isDeleted: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -42,6 +43,12 @@ export interface IUserPreview {
     avatar: string;
     extraStatus: ExtraStatusType;
     status: 'online' | 'offline';
+    isDeleted: boolean;
+}
+
+export interface IUserDeleted {
+    id: string;
+    isDeleted: true;
 }
 
 export interface IRegistrationUserRequest {

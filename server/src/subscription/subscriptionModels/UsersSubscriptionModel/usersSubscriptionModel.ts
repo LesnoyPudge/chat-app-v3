@@ -93,10 +93,10 @@ const addUserEntity = ({ entity, status }: {entity: IUser, status: 'online' | 'o
 const sendUserEntity = ({ entityId, to, type }: {entityId: string, to: string | string[], type: 'private' | 'public'}) => {
     const userEntity = usersSubscriptionModel.entityList[entityId].info;
     const user = type === 'private' ? userEntity : UserDto.preview(userEntity);
-    
+
     socket.events.sendUserSubscription({
         to,
-        user, 
+        user: userEntity.isDeleted ? UserDto.deleted(user) : user, 
     });
 };
 

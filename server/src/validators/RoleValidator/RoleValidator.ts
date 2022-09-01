@@ -1,5 +1,4 @@
 import { ICreateRoleRequest, IGetOneRoleRequest, IUpdateRoleRequest, IDeleteRoleRequest, IAddUserRoleRequest, IDeleteUserRoleRequest } from '@types';
-import { check } from 'express-validator';
 import { createValidator, ObjectToValidatorsChain } from '../createValidator';
 import { isBase64Url, isChannelExistById, isImChannelAdministrator, isImChannelMember, isImChannelOwner, isMongoId, isntRoleDefault, isntRoleHasUser, isRoleColor, isRoleExistById, isRoleHasUser, isUserExistById, isValidRoleOrder, notEmpty, nullable, reject, sanitizeInput, toBoolean, toInt, toString } from '../validationChains';
 

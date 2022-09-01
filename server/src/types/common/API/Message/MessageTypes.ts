@@ -17,8 +17,11 @@ export interface IMessage {
 export interface ICreateMessageRequest {
     chatId: string;
     content?: string;
-    atttachments?: string[];
-    respondOn?: string[];
+    atttachments?: {
+        filename: string;
+        base64url: string;
+    }[];
+    respondOn?: string;
 }
 
 export interface IDeleteMessageRequest {
@@ -35,9 +38,14 @@ export interface IGetManyMessagesRequest {
 
 export interface IUpdateMessageRequest {
     messageId: string;
-    newValues: Partial<IMessage>;
+    content: string;
 }
 
 export interface IRestoreMessageRequest {
     messageId: string;
+}
+
+export interface IDeleteAttachmentMessageRequest {
+    messageId: string;
+    attachmentId: string;
 }

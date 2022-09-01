@@ -36,6 +36,7 @@ export interface IUserModel extends Document<Types.ObjectId> {
             createdAt: Date;
         }[];
     };
+    isDeleted: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -75,6 +76,7 @@ const UserSchema = new Schema<IUserModel>(
                 createdAt: { type: Date, default: Date.now },
             }],
         },
+        isDeleted: { type: Boolean, default: false },
     },
     { 
         timestamps: true, 

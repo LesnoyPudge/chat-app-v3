@@ -4,7 +4,6 @@
 export interface IRoom {
     id: string;
     name: string;
-    identifier: string;
     channel: string;
     chat: string;
     whiteList: {
@@ -20,23 +19,22 @@ export interface IRoom {
 
 export interface ICreateRoomRequest {
     name: string;
-    identifier: string;
     channelId: string;
 }
 
 export interface IGetOneRoomRequest {
+    channelId: string;
     roomId: string;
 }
 
-export interface IGetManyRoomsRequest {
-    roomIds: string[]
-}
-
 export interface IUpdateRoomRequest {
-    roomId: string,
-    newValues: Partial<IRoom>,
+    channelId: string;
+    roomId: string;
+    name: string;
+    category: string;
 }
 
 export interface IDeleteRoomRequest {
+    channelId: string;
     roomId: string;
 }

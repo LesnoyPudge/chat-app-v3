@@ -3,7 +3,7 @@ import { UserModel } from '@models';
 import { IGetOneUserRequest, IUser, ILoginUserRequest, IRegistrationUserRequest, ServiceType, AuthorizedServiceType, IAuthResponse, IBlockUserRequest, IUnblockUserRequest, ISendFriendRequestUserRequest, IAcceptFriendRequestUserRequest, IDeclineFriendRequestUserRequest, IRevokeFriendRequestUserRequest, IDeleteFriendUserRequest, IActivateAccountUserRequest, IVerifyAccessCodeUserReuqest, IProfileUpdateUserRequest, ICredentialsUpdateUserRequest } from '@types';
 import { transactionContainer, ApiError, token, createAccessCode, objectId, date, sendMail, password, getRandomString } from '@utils';
 import { subscription } from '@subscription';
-import { UserServiceHelpers, AttachmentServiceHelpers } from '@services';
+import { UserServiceHelpers, FileServiceHelpers } from '@services';
 
 
 
@@ -26,13 +26,11 @@ interface IUserService {
     deleteFriend: AuthorizedServiceType<IDeleteFriendUserRequest, IUser>;
     requestActivationLink: AuthorizedServiceType<unknown, void>;
     activateAccount: ServiceType<IActivateAccountUserRequest, void>;
-    verifyAccessCode: AuthorizedServiceType<IVerifyAccessCodeUserReuqest, void>;
 }
 
 const { toObjectId } = objectId;
-const { isExpired } = date;
 const { sendAccessCode, sendActivationLink } = sendMail;
-const { hashPassword, isPasswordsEquals } = password;
+const { hashPassword } = password;
 const { getUUID } = getRandomString;
 
 export const UserService: IUserService = {
@@ -42,7 +40,7 @@ export const UserService: IUserService = {
                 const hashedPassword = await hashPassword(password);
                 const activationCode = getUUID();
                 const { code, expiryDate } = createAccessCode();
-                const attachment = await AttachmentServiceHelpers.getDefaultUserAvatar();
+                const attachment = await FileServiceHelpers.getDefaultUserAvatar();
 
                 const user = await UserModel.create(
                     [{
@@ -58,22 +56,16 @@ export const UserService: IUserService = {
                         },
                     }],
                     queryOptions(),
-                ).then((users) => users[0]).catch(() => {
-                    throw ApiError.badRequest('Не удалось зарегистрироваться');
-                });
+                ).then((users) => users[0]);
 
                 const tokens = token.generateTokens(UserDto.objectFromModel(user));
                 
                 user.refreshJWT = tokens.refreshToken;
 
-                await user.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось зарегистрироваться');
-                });
+                await user.save(queryOptions());
 
                 onCommit(() => {
-                    if (email) sendActivationLink({ username, email, activationCode }).catch((error) => {
-                        console.log('Не удалось отправить письмо', error.message);
-                    });
+                    if (email) sendActivationLink({ username, email, activationCode });
                 });
 
                 return {
@@ -88,22 +80,11 @@ export const UserService: IUserService = {
         return transactionContainer(
             async({ queryOptions }) => {
                 const user = await UserModel.findOne({ login });
-                if (!user) {
-                    throw ApiError.badRequest('Неверный логин или пароль');
-                }
-
-                const isCorrectPassword = await isPasswordsEquals({ password, hashedPassword: user.password });
-                if (!isCorrectPassword) {
-                    throw ApiError.badRequest('Неверный логин или пароль');
-                }
-
-                const tokens = token.generateTokens(UserDto.objectFromModel(user));
+                const tokens = token.generateTokens({ id: user._id.toString() });
 
                 user.refreshJWT = tokens.refreshToken;
 
-                await user.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось войти');
-                });
+                await user.save(queryOptions());
 
                 return {
                     user: UserDto.objectFromModel(user),
@@ -159,9 +140,6 @@ export const UserService: IUserService = {
 
     async getOne({ userId, targetId }) {
         const user = await UserModel.findById(targetId, {}, { lean: true });
-        console.log(`targetId: ${targetId}, user: ${user}`);
-        // if (!user) throw ApiError.badRequest('Пользователь не найден to delete');
-
         return UserDto.objectFromModel(user);
     },
 
@@ -176,13 +154,14 @@ export const UserService: IUserService = {
                 if (settings) userToUpdate.settings = Object.assign(userToUpdate.settings, settings);
                 if (username) userToUpdate.username = username;
 
-                if (avatar) await AttachmentServiceHelpers.delete({ attachmentId: userToUpdate.avatar });
+                if (avatar) await FileServiceHelpers.delete({ attachmentId: userToUpdate.avatar });
                 if (isEmptyAvatar) {
-                    const defaultAvatar = await AttachmentServiceHelpers.getDefaultUserAvatar();
+                    const defaultAvatar = await FileServiceHelpers.getDefaultUserAvatar();
                     userToUpdate.avatar = defaultAvatar.id;
                 }
                 if (isntEmptyAvatar) {
-                    const newAvatar = await AttachmentServiceHelpers.create({ 
+                    const newAvatar = await FileServiceHelpers.create({
+                        type: 'avatar',
                         base64url: avatar.base64url, 
                         filename: avatar.filename,
                     });
@@ -223,8 +202,16 @@ export const UserService: IUserService = {
 
     async delete({ userId }) {
         return transactionContainer(
-            async({ queryOptions }) => {
-                await UserModel.deleteOne({ _id: userId }, queryOptions());
+            async({ queryOptions, onCommit }) => {
+                const deletedUser = await UserModel.findByIdAndUpdate(
+                    userId, 
+                    { $set: { isDeleted: true } }, 
+                    queryOptions({ new: true }),
+                );
+                
+                onCommit(() => {
+                    subscription.users.update({ entity: UserDto.objectFromModel(deletedUser), type: 'public' });
+                });
             },
         );
     },
@@ -252,9 +239,7 @@ export const UserService: IUserService = {
 
                 userToUpdate.blockList.push(toObjectId(targetId));
                 
-                await userToUpdate.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось заблокировать пользователя');
-                });
+                await userToUpdate.save(queryOptions());
 
                 const updatedUserDto = UserDto.objectFromModel(userToUpdate);
 
@@ -291,32 +276,15 @@ export const UserService: IUserService = {
         return transactionContainer(
             async({ queryOptions }) => {
                 const user = await UserModel.findById(userId, {}, { lean: true });
-                const isAccessCodeExpired = isExpired(user.accessCode.expiryDate);
-                const hasEmail = !!user.email;
-                const isActivated = user.isActivated;
+                if (!user.email) throw ApiError.badRequest('Не указан адрес электронной почты');
 
-                if (!hasEmail) throw ApiError.badRequest('Не указан адрес электронной почты');
-                if (!isActivated) throw ApiError.badRequest('Аккаунт не активирован');
-                if (!isAccessCodeExpired) {
-                    return sendAccessCode({ to: user.email, code: user.accessCode.code }).catch(() => {
-                        throw ApiError.badRequest('Не удалось отправить код доступа');
-                    });
-                }
-                
                 const { code, expiryDate } = createAccessCode();
 
-                user.accessCode = {
-                    code,
-                    expiryDate,
-                };
+                user.accessCode = { code, expiryDate };
 
-                await user.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось отправить код доступа');
-                });
-
-                await sendAccessCode({ to: user.email, code }).catch(() => {
-                    throw ApiError.badRequest('Не удалось отправить код доступа');
-                });
+                await user.save(queryOptions());
+                
+                await sendAccessCode({ to: user.email, code });
             },
         );
     },
@@ -333,14 +301,12 @@ export const UserService: IUserService = {
 
                 await UserServiceHelpers.addIncomingFriendRequest({ userId: to, from: userId });
 
-                userToUpdate.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось отправить запрос в друзья');
-                });
+                userToUpdate.save(queryOptions());
 
                 const updatedUserDto = UserDto.objectFromModel(userToUpdate);
 
                 onCommit(() => {
-                    subscription.users.update({ entity: updatedUserDto });
+                    subscription.users.update({ entity: updatedUserDto, type: 'private' });
                 });
 
                 return updatedUserDto;
@@ -365,14 +331,12 @@ export const UserService: IUserService = {
                 await UserServiceHelpers.removeOutgoingFriendRequest({ userId: from, to: userId });
                 await UserServiceHelpers.removeIncomingFriendRequest({ userId: from, from: userId });
 
-                await userToUpdate.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось принять запрос в друзья');
-                });
+                await userToUpdate.save(queryOptions());
 
                 const updatedUserDto = UserDto.objectFromModel(userToUpdate);
 
                 onCommit(() => {
-                    subscription.users.update({ entity: updatedUserDto });
+                    subscription.users.update({ entity: updatedUserDto, type: 'private' });
                 });
 
                 return updatedUserDto;
@@ -391,14 +355,12 @@ export const UserService: IUserService = {
 
                 await UserServiceHelpers.removeOutgoingFriendRequest({ userId: from, to: userId });
 
-                await userToUpdate.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось отклонить запрос в друзья');
-                });
+                await userToUpdate.save(queryOptions());
 
                 const updatedUserDto = UserDto.objectFromModel(userToUpdate);
 
                 onCommit(() => {
-                    subscription.users.update({ entity: updatedUserDto });
+                    subscription.users.update({ entity: updatedUserDto, type: 'private' });
                 });
 
                 return updatedUserDto;
@@ -417,14 +379,12 @@ export const UserService: IUserService = {
 
                 await UserServiceHelpers.removeIncomingFriendRequest({ userId: to, from: userId });
 
-                await userToUpdate.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось отозвать запрос в друзья');
-                });
+                await userToUpdate.save(queryOptions());
 
                 const updatedUserDto = UserDto.objectFromModel(userToUpdate);
 
                 onCommit(() => {
-                    subscription.users.update({ entity: updatedUserDto });
+                    subscription.users.update({ entity: updatedUserDto, type: 'private' });
                 });
 
                 return updatedUserDto;
@@ -446,7 +406,7 @@ export const UserService: IUserService = {
                 const updatedUserDto = UserDto.objectFromModel(updatedUser);
 
                 onCommit(() => {
-                    subscription.users.update({ entity: updatedUserDto });
+                    subscription.users.update({ entity: updatedUserDto, type: 'private' });
                 });
 
                 return updatedUserDto;
@@ -456,9 +416,6 @@ export const UserService: IUserService = {
 
     async requestActivationLink({ userId }) {
         const user = await UserModel.findById(userId, {}, { lean: true });
-        if (!user) {
-            throw ApiError.badRequest('Пользователь не найден');
-        }
         const hasEmail = !!user.email;
         const isActivated = user.isActivated;
 
@@ -469,8 +426,6 @@ export const UserService: IUserService = {
             username: user.username, 
             email: user.email, 
             activationCode: user.activationCode,
-        }).catch(() => {
-            throw ApiError.badRequest('Не удалось отправить письмо с ссылкой для активации');
         }); 
     },
 
@@ -481,29 +436,12 @@ export const UserService: IUserService = {
                     { activationCode },
                     { $set: { isActivated: true } }, 
                     queryOptions({ new: true }),
-                ).catch(() => {
-                    throw ApiError.badRequest('Не удалось активировать пользователя');
-                });
+                );
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser), type: 'private' });
                 });
             },
         );
-    },
-
-    async verifyAccessCode({ userId, accessCode }) {
-        const user = await UserModel.findById(userId, {}, { lean: true });
-
-        const isCodesEqual = user.accessCode.code === accessCode;
-        const isCodeExpired = isExpired(user.accessCode.expiryDate);
-
-        if (!isCodesEqual) {
-            throw ApiError.badRequest('Неверный код доступа');
-        }
-        
-        if (isCodeExpired) {
-            throw ApiError.badRequest('Срок действия кода доступа истёк');
-        }
     },
 };

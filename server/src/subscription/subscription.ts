@@ -1,4 +1,4 @@
-import { channelsSubscriptionModel, messagesSubscriptionModel, privateChannelsSubscriptionModel, roomsSubscriptionModel, usersSubscriptionModel } from './subscriptionModels';
+import { channelsSubscriptionModel, messagesSubscriptionModel, privateChannelsSubscriptionModel, roomsSubscriptionModel, usersSubscriptionModel, rolesSubscriptionModel } from './subscriptionModels';
 
 
 
@@ -23,7 +23,7 @@ export const subscription = {
     users: usersSubscriptionModel,
     channels: channelsSubscriptionModel,
     rooms: roomsSubscriptionModel,
-    // voiceRooms: {} 
     messages: messagesSubscriptionModel,
     privateChannels: privateChannelsSubscriptionModel,
+    roles: rolesSubscriptionModel,
 };

@@ -1,8 +1,8 @@
 import { RoomDto } from '@dtos';
-import { RoomModel } from '@models';
+import { IRoomModel, RoomModel } from '@models';
 import { subscription } from '@subscription';
 import { objectId, transactionContainer } from '@utils';
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { MessageServiceHelpers } from '../MessageService';
 
 
@@ -26,7 +26,7 @@ export const RoomServiceHelpers = {
 
     async deleteManyByChannelId({ channelId }: {channelId: string | Types.ObjectId}) {
         return transactionContainer(
-            async({ queryOptions }) => {
+            async({ queryOptions, onCommit }) => {
                 const roomsToDelete = await RoomModel.find({ channel: channelId });
 
                 await Promise.all(
@@ -35,6 +35,10 @@ export const RoomServiceHelpers = {
                         if (room.chat.messages.length === 0) return; 
                         
                         await MessageServiceHelpers.deleteManyByChatId({ chatId: room.chat._id });
+
+                        onCommit(() => {
+                            subscription.rooms.delete({ entityId: room._id.toString() });
+                        });
                     }),
                 );
             },
@@ -57,5 +61,14 @@ export const RoomServiceHelpers = {
                 return updatedRoom;
             },
         );
+    },
+
+    async getOne(filter: FilterQuery<IRoomModel>) {
+        const room = await RoomModel.findOne(filter, {}, { lean: true });
+        return room;
+    },
+
+    async isExist(filter: FilterQuery<IRoomModel>) {
+        return !!await RoomModel.exists(filter);
     },
 };

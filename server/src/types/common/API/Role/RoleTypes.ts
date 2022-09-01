@@ -8,7 +8,6 @@ interface IRolePermissions {
     kickMember: boolean;
     banMember: boolean;
     sendMessage: boolean;
-    deleteMessage: boolean;
     isAdministrator: boolean;
 }
 

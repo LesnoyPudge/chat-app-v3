@@ -2,42 +2,32 @@ import { Router } from 'express';
 import { PrivateChannelController } from '@controllers';
 import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
+import { PrivateChannelValidator } from '@validators';
 
 
 
 
 const { CUSTOM_API_V1_URL } = getEnv();
 
-// const { createUserValidator } = validator.user;
 export const PrivateChannelRouter = Router();
 
 PrivateChannelRouter.post(
-    CUSTOM_API_V1_URL + '/private-channel/create',
-    // (createUserValidator),
+    CUSTOM_API_V1_URL + '/users/private-channel/create',
     authorizationMiddleware,
+    PrivateChannelValidator.create,
     controllerContainer(PrivateChannelController.create),
 );
 
 PrivateChannelRouter.post(
-    CUSTOM_API_V1_URL + '/private-channel/getOne',
+    CUSTOM_API_V1_URL + ' /users/private-channel/:privateChannelId',
     authorizationMiddleware,
+    PrivateChannelValidator.getOne,
     controllerContainer(PrivateChannelController.getOne),
 );
 
-// PrivateChannelRouter.post(
-//     CUSTOM_API_V1_URL + '/private-channel/getMany',
-//     authorizationMiddleware,
-//     controllerContainer(PrivateChannelController.getMany),
-// );
-
 PrivateChannelRouter.post(
-    CUSTOM_API_V1_URL + '/private-channel/update',
+    CUSTOM_API_V1_URL + '/users/private-channel/:privateChannelId/leave',
     authorizationMiddleware,
-    controllerContainer(PrivateChannelController.update),
-);
-
-PrivateChannelRouter.post(
-    CUSTOM_API_V1_URL + '/private-channel/leave',
-    authorizationMiddleware,
+    PrivateChannelValidator.leave,
     controllerContainer(PrivateChannelController.leave),
 );

@@ -3,7 +3,7 @@ import { ChannelModel } from '@models';
 import { subscription } from '@subscription';
 import { AuthorizedServiceType, IAcceptInvitationChannelRequest, IBanUserChannelRequest, IChannel, ICreateChannelRequest, ICreateInvitationChannelRequest, IDeleteChannelRequest, IDeleteInvitationChannelRequest, IGetOneChannelRequest, IKickUserChannelRequest, ILeaveChannelRequest, IUnbanUserChannelRequest, IUpdateChannelRequest } from '@types';
 import { ApiError, getRandomString, objectId, transactionContainer } from '@utils';
-import { UserServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, AttachmentServiceHelpers } from '@services';
+import { UserServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, FileServiceHelpers } from '@services';
 
 
 
@@ -28,12 +28,7 @@ const { getOnlyLettersString } = getRandomString;
 export const ChannelService: IChannelService = {
     async create({ name, identifier, userId }) {
         return transactionContainer(
-            async({ queryOptions }) => {
-                const isChannelExist = await ChannelModel.exists({ identifier });
-                if (isChannelExist) {
-                    throw ApiError.badRequest('Канал с данным идентификатором уже существует');
-                }
-
+            async({ queryOptions, onCommit }) => {
                 const channel = new ChannelModel({
                     identifier,
                     name,
@@ -52,34 +47,16 @@ export const ChannelService: IChannelService = {
 
                 await channel.save(queryOptions());
 
-                const channelDto = ChannelDto.objectFromModel(channel);
-                return channelDto;
+                return ChannelDto.objectFromModel(channel);
             },
         );
     },
 
     async getOne({ channelId }) {
         const channel = await ChannelModel.findById(channelId, {}, { lean: true });
-        if (!channel) {
-            throw ApiError.badRequest('Канал не найден');
-        }
 
-        const channelDto = ChannelDto.objectFromModel(channel);
-        return channelDto;
+        return ChannelDto.objectFromModel(channel);
     },
-
-    // async getMany({ channelIds }) {
-    //     const channels = await ChannelModel.find({ _id: { $in: channelIds } }, {}, { lean: true });
-    //     if (!channels.length) {
-    //         throw ApiError.badRequest('Каналы не найдены');
-    //     }
-
-    //     const channelDtos = channels.map((channel) => {
-    //         return ChannelDto.objectFromModel(channel);
-    //     });
-
-    //     return channelDtos;
-    // },
 
     async update({ userId, channelId, avatar, name }) {
         return transactionContainer(
@@ -90,10 +67,11 @@ export const ChannelService: IChannelService = {
 
                 if (name) channelToUpdate.name = name;
                 
-                if (avatar) await AttachmentServiceHelpers.delete({ attachmentId: channelToUpdate.avatar });
+                if (avatar) await FileServiceHelpers.delete({ attachmentId: channelToUpdate.avatar });
                 if (isEmptyAvatar) channelToUpdate.avatar = '';
                 if (isntEmptyAvatar) {
-                    const newAvatar = await AttachmentServiceHelpers.create({ 
+                    const newAvatar = await FileServiceHelpers.create({
+                        type: 'avatar',
                         base64url: avatar.base64url, 
                         filename: avatar.filename,
                     });
@@ -117,9 +95,6 @@ export const ChannelService: IChannelService = {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const deletedChannel = await ChannelModel.findByIdAndDelete(channelId, queryOptions());
-                if (!deletedChannel) {
-                    throw ApiError.badRequest('Не удалось удалить канал');
-                }
 
                 await UserServiceHelpers.removeChannelFromMany({ channelId });
                 await RoleServiceHelpers.deleteManyByChannelId({ channelId });
@@ -142,9 +117,7 @@ export const ChannelService: IChannelService = {
                     channelId, 
                     { $pull: { members: userId } },
                     queryOptions({ new: true }),
-                ).catch(() => {
-                    throw ApiError.badRequest('Не удалось покинуть канал');
-                });
+                );
 
                 await UserServiceHelpers.removeChannel({ userId, channelId });
 
@@ -166,9 +139,7 @@ export const ChannelService: IChannelService = {
                     channelId, 
                     { $pull: { members: targetId } },
                     queryOptions({ new: true }),
-                ).catch(() => {
-                    throw ApiError.badRequest('Не удалось выгнать пользователя');
-                });
+                );
 
                 await UserServiceHelpers.removeChannel({ userId: targetId, channelId });
 
@@ -196,9 +167,7 @@ export const ChannelService: IChannelService = {
                         } },
                     },
                     queryOptions({ new: true }),
-                ).catch(() => {
-                    throw ApiError.badRequest('Не удалось забанить пользователя');
-                });
+                );
 
                 await UserServiceHelpers.removeChannel({ userId: targetId, channelId });
 
@@ -222,9 +191,7 @@ export const ChannelService: IChannelService = {
                     banEntity.user !== toObjectId(targetId);
                 });
 
-                await channel.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось разбанить пользователя');
-                });
+                await channel.save(queryOptions());
 
                 const updatedChannelDto = ChannelDto.objectFromModel(channel);
 
@@ -252,9 +219,7 @@ export const ChannelService: IChannelService = {
                         createdAt: new Date(createdAt),
                     } } },
                     queryOptions({ new: true }),
-                ).catch(() => {
-                    throw ApiError.badRequest('Не удалось создать приглашение');
-                });
+                );
 
                 const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
 
@@ -274,9 +239,7 @@ export const ChannelService: IChannelService = {
                     channelId,
                     { $push: { members: toObjectId(userId) } },
                     queryOptions({ new: true }),
-                ).catch(() => {
-                    throw ApiError.badRequest('Не удалось принять приглашение');
-                });
+                );
 
                 const updatedChannelDto = ChannelDto.objectFromModel(updatedChannel);
 
@@ -298,9 +261,7 @@ export const ChannelService: IChannelService = {
                     invitation.code !== code;
                 });
 
-                await channel.save(queryOptions()).catch(() => {
-                    throw ApiError.badRequest('Не удалось разбанить пользователя');
-                });
+                await channel.save(queryOptions());
 
                 const updatedChannelDto = ChannelDto.objectFromModel(channel);
 

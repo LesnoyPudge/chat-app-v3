@@ -3,7 +3,6 @@ import { ChannelModel, IChannelModel } from '@models';
 import { subscription } from '@subscription';
 import { objectId, transactionContainer } from '@utils';
 import { FilterQuery, Types } from 'mongoose';
-import { channelsSubscriptionModel } from 'src/subscription/subscriptionModels';
 
 
 
@@ -98,4 +97,9 @@ export const ChannelServiceHelpers = {
     async getOne(filter: FilterQuery<IChannelModel>) {
         return await ChannelModel.findOne(filter, {}, { lean: true });
     },
+
+    async isExist(filter: FilterQuery<IChannelModel>) {
+        return !!await ChannelModel.exists(filter);
+    },
+
 };

@@ -203,11 +203,6 @@ export const UserController: IUserController = {
     },
 
     async verifyAccessCode(req, res) {
-        const { accessCode } = req.body;
-        const { id } = req.auth.user;
-
-        await UserService.verifyAccessCode({ userId: id, accessCode });
-
         res.status(200).json();
     },
 };

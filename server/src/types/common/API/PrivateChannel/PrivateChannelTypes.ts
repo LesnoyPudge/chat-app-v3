@@ -24,12 +24,3 @@ export interface ILeavePrivateChannelRequest {
 export interface IGetOnePrivateChannelRequest {
     privateChannelId: string;    
 }
-
-export interface IGetManyPrivateChannelsRequest {
-    privateChannelIds: string;
-}
-
-export interface IUpdatePrivateChannelRequest {
-    privateChannelId: string;
-    newValues: Partial<IPrivateChannel>;
-}

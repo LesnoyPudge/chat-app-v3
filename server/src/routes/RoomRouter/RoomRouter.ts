@@ -2,42 +2,39 @@ import { Router } from 'express';
 import { RoomController } from '@controllers';
 import { authorizationMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
+import { RoomValidator } from '@validators';
 
 
 
 
 const { CUSTOM_API_V1_URL } = getEnv();
 
-// const { createUserValidator } = validator.user;
 export const RoomRouter = Router();
 
 RoomRouter.post(
-    CUSTOM_API_V1_URL + '/room/create',
-    // (createUserValidator),
+    CUSTOM_API_V1_URL + '/channels/:channelId/rooms/create',
     authorizationMiddleware,
+    RoomValidator.create,
     controllerContainer(RoomController.create),
 );
 
 RoomRouter.post(
-    CUSTOM_API_V1_URL + '/room/getOne',
+    CUSTOM_API_V1_URL + '/channels/:channelId/rooms/:roomId',
     authorizationMiddleware,
+    RoomValidator.getOne,
     controllerContainer(RoomController.getOne),
 );
 
-// RoomRouter.post(
-//     CUSTOM_API_V1_URL + '/room/getMany',
-//     authorizationMiddleware,
-//     controllerContainer(RoomController.getMany),
-// );
-
 RoomRouter.post(
-    CUSTOM_API_V1_URL + '/room/update',
+    CUSTOM_API_V1_URL + '/channels/:channelId/rooms/:roomId/update',
     authorizationMiddleware,
+    RoomValidator.update,
     controllerContainer(RoomController.update),
 );
 
 RoomRouter.post(
-    CUSTOM_API_V1_URL + '/room/delete',
+    CUSTOM_API_V1_URL + '/channels/:channelId/rooms/:roomId/delete',
     authorizationMiddleware,
+    RoomValidator.delete,
     controllerContainer(RoomController.delete),
 );

@@ -5,7 +5,7 @@ import { RoomRouter } from './RoomRouter';
 import { PrivateChannelRouter } from './PrivateChannelRouter';
 import { MessageRouter } from './MessageRouter';
 import { RoleRouter } from './RoleRouter';
-import { AttachmentRouter } from './AttachmentRouter';
+import { FileRouter } from './FileRouter';
 import { errorHandlerMiddleware } from '@middlewares';
 
 
@@ -18,7 +18,7 @@ export const routesInit = (app: Application) => {
         PrivateChannelRouter,
         MessageRouter,
         RoleRouter,
-        AttachmentRouter,
+        FileRouter,
     ]);
 
     app.use(errorHandlerMiddleware);

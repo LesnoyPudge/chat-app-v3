@@ -1,16 +1,12 @@
 import { UserDto } from '@dtos';
 import { IUserModel, UserModel } from '@models';
-import { ApiError, createAccessCode, getRandomString, objectId, password, token, transactionContainer } from '@utils';
+import { objectId, transactionContainer } from '@utils';
 import { FilterQuery, Types } from 'mongoose';
 import { subscription } from '@subscription';
-import { AttachmentServiceHelpers } from '../AttachmentService';
 
 
 
 const { toObjectId } = objectId;
-// const { hashPassword } = password;
-// const { getUUID } = getRandomString;
-// const { generateTokens } = token;
 
 export const UserServiceHelpers = {
     async addChannel({ userId, channelId }: {userId: string, channelId: string | Types.ObjectId}) {
@@ -23,7 +19,7 @@ export const UserServiceHelpers = {
                 );
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser), type: 'private' });
                 });
 
                 return updatedUser;
@@ -35,13 +31,13 @@ export const UserServiceHelpers = {
         return transactionContainer(
             async({ queryOptions, onCommit }) => {
                 const updatedUser = await UserModel.findByIdAndUpdate(
-                    { channels: channelId }, 
+                    userId, 
                     { $pull: { channels: channelId } }, 
                     queryOptions({ new: true }),
                 );
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser), type: 'private' });
                 });
 
                 return updatedUser;
@@ -59,7 +55,7 @@ export const UserServiceHelpers = {
                     await user.save(queryOptions());
 
                     onCommit(() => {
-                        subscription.users.update({ entity: UserDto.objectFromModel(user) });
+                        subscription.users.update({ entity: UserDto.objectFromModel(user), type: 'private' });
                     });
 
                     return user;
@@ -80,7 +76,7 @@ export const UserServiceHelpers = {
                 );
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser), type: 'private' });
                 });
 
                 return updatedUser;
@@ -98,7 +94,7 @@ export const UserServiceHelpers = {
                 );
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser), type: 'private' });
                 });
 
                 return updatedUser;
@@ -116,7 +112,7 @@ export const UserServiceHelpers = {
                 );
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser), type: 'private' });
                 });
             },
         );
@@ -132,7 +128,7 @@ export const UserServiceHelpers = {
                 );
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(updatedUser), type: 'private' });
                 });
             },
         );
@@ -151,7 +147,7 @@ export const UserServiceHelpers = {
                 await userToUpdate.save(queryOptions());
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate), type: 'private' });
                 });
             },
         );
@@ -168,7 +164,7 @@ export const UserServiceHelpers = {
                 await userToUpdate.save(queryOptions());
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate), type: 'private' });
                 });
             },
         );
@@ -187,7 +183,7 @@ export const UserServiceHelpers = {
                 await userToUpdate.save(queryOptions());
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate), type: 'private' });
                 });
             },
         );
@@ -204,7 +200,7 @@ export const UserServiceHelpers = {
                 await userToUpdate.save(queryOptions());
 
                 onCommit(() => {
-                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate) });
+                    subscription.users.update({ entity: UserDto.objectFromModel(userToUpdate), type: 'private' });
                 });
             },
         );
@@ -221,38 +217,4 @@ export const UserServiceHelpers = {
     async isUsersExists(filter: FilterQuery<IUserModel>) {
         return await UserModel.find(filter, '_id', { lean: true });
     },
-
-    // async createTestUser() {
-    //     return transactionContainer(
-    //         async({ queryOptions }) => {
-    //             const hashedPassword = await hashPassword('testUserPassword');
-    //             const activationCode = getUUID();
-    //             const { code, expiryDate } = createAccessCode();
-    //             const attachment = await AttachmentServiceHelpers.getDefaultUserAvatar();
-    //             const login = getUUID();
-
-    //             const testUser = await UserModel.create(
-    //                 [{
-    //                     avatar: attachment.id,
-    //                     login,
-    //                     password: hashedPassword,
-    //                     username: login,
-    //                     activationCode,
-    //                     accessCode: {
-    //                         code,
-    //                         expiryDate,
-    //                     },
-    //                 }],
-    //                 queryOptions(),
-    //             ).then((users) => users[0]);
-
-    //             const tokens = generateTokens(UserDto.objectFromModel(testUser));
-
-    //             return {
-    //                 user: UserDto.objectFromModel(testUser),
-    //                 ...tokens,
-    //             };
-    //         },
-    //     );
-    // },
 };

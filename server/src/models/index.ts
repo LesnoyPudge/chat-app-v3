@@ -4,4 +4,4 @@ export * from './RoomModel';
 export * from './MessageModel';
 export * from './PrivateChannelModel';
 export * from './RoleModel';
-export * from './AttachmentModel';
+export * from './FileModel';

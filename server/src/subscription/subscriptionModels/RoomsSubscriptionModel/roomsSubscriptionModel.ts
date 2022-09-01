@@ -1,8 +1,9 @@
-import { RoomService } from '@services';
+import { RoomService, RoomServiceHelpers } from '@services';
 import { socket } from '@socket';
 import { IRoom } from '@types';
 import { ISubscriptionModel } from '@subscription';
 import { subscriptionHelpers } from '@subscription/helpers';
+import { RoomDto } from '@dtos';
 
 
 
@@ -25,8 +26,8 @@ export const roomsSubscriptionModel: ISubscriptionModel<IRoom> = {
         try {
             const isExist = isEntityExist({ entityId, entityKey });
             if (!isExist) {
-                const room = await RoomService.getOne({ roomId: entityId, userId });
-                addRoomEntity({ room });
+                const room = await RoomServiceHelpers.getOne({ _id: entityId });
+                addRoomEntity({ room: RoomDto.objectFromModel(room) });
             } 
 
             subscribeOn({ entityId, entityKey, userId });

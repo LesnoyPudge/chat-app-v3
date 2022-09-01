@@ -29,7 +29,7 @@ export const PrivateChannelServiceHelpers = {
         );
     },
 
-    async isExist({ filter }: {filter: FilterQuery<IPrivateChannelModel>}) {
+    async isExist(filter: FilterQuery<IPrivateChannelModel>) {
         return !!await PrivateChannelModel.exists(filter); 
     },
 };

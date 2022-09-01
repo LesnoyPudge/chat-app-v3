@@ -11,7 +11,6 @@ export const RoomDto: IRoomDto = {
     objectFromModel(room) {
         return {
             id: room._id.toString(),
-            identifier: room.identifier,
             name: room.name,
             channel: room.channel.toString(),
             chat: room.chat.toString(),

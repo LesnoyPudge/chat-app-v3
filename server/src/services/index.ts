@@ -4,4 +4,4 @@ export * from './RoomService';
 export * from './PrivateChannelService';
 export * from './MessageService';
 export * from './RoleService';
-export * from './AttachmentService';
+export * from './FileService';

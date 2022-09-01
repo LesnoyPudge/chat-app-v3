@@ -2,7 +2,7 @@ import { io } from '@server';
 import { ApiError, token } from '@utils';
 import { Socket } from 'socket.io';
 import { IUser } from '@types';
-import { channelEmitters, roomEmitters, userEmitters, messageEmitters, privateChannelEmitters } from './emitters';
+import { channelEmitters, roomEmitters, userEmitters, messageEmitters, privateChannelEmitters, roleEmitters } from './emitters';
 import { channelListeners, messageListeners, userListeners, roomListeners, privateChannelListeners } from './listeners';
 
 
@@ -46,6 +46,7 @@ export const socket = {
         ...roomEmitters,
         ...messageEmitters,
         ...privateChannelEmitters,
+        ...roleEmitters,
     },
 };
 

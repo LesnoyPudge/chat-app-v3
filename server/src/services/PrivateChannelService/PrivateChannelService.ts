@@ -1,6 +1,6 @@
 import { PrivateChannelDto } from '@dtos';
 import { PrivateChannelModel } from '@models';
-import { AuthorizedServiceType, ICreatePrivateChannelRequest, ILeavePrivateChannelRequest, IGetManyPrivateChannelsRequest, IGetOnePrivateChannelRequest, IPrivateChannel, IUpdatePrivateChannelRequest } from '@types';
+import { AuthorizedServiceType, ICreatePrivateChannelRequest, ILeavePrivateChannelRequest, IGetOnePrivateChannelRequest, IPrivateChannel } from '@types';
 import { ApiError, objectId, transactionContainer } from '@utils';
 import { PrivateChannelServiceHelpers, UserServiceHelpers, MessageServiceHelpers } from '@services';
 import { subscription } from '@subscription';
@@ -10,8 +10,6 @@ import { subscription } from '@subscription';
 interface IPrivateChannelService {
     create: AuthorizedServiceType<ICreatePrivateChannelRequest, IPrivateChannel>;
     getOne: AuthorizedServiceType<IGetOnePrivateChannelRequest, IPrivateChannel>;
-    // getMany: AuthorizedServiceType<IGetManyPrivateChannelsRequest, IPrivateChannel[]>;
-    update: AuthorizedServiceType<IUpdatePrivateChannelRequest, IPrivateChannel>;
     leave: AuthorizedServiceType<ILeavePrivateChannelRequest, IPrivateChannel>;
 }
 
@@ -54,9 +52,7 @@ export const PrivateChannelService: IPrivateChannelService = {
                             ],
                         }],
                         queryOptions(),
-                    ).then((privateChannels) => privateChannels[0]).catch(() => {
-                        throw ApiError.badRequest('Не удалось создать канал');
-                    });
+                    ).then((privateChannels) => privateChannels[0]);
     
                     await UserServiceHelpers.addPrivateChannel({ userId, privateChannelId: privateChannel._id });
                     
@@ -68,44 +64,7 @@ export const PrivateChannelService: IPrivateChannelService = {
 
     async getOne({ userId, privateChannelId }) {
         const privateChannel = await PrivateChannelModel.findById(privateChannelId, {}, { lean: true });
-        if (!privateChannel) throw ApiError.badRequest('Канал не найден');
-
-        const privateChannelDto = PrivateChannelDto.objectFromModel(privateChannel);
-        return privateChannelDto;
-    },
-
-    // async getMany({ userId, privateChannelIds }) {
-    //     const privateChannels = await PrivateChannelModel.find({ _id: { $in: privateChannelIds } }, {}, { lean: true });
-    //     if (!privateChannels.length) {
-    //         throw ApiError.badRequest('Каналы не найдены');
-    //     }
-
-    //     const privateChannelDtos = privateChannels.map((privateChannel) => {
-    //         return PrivateChannelDto.objectFromModel(privateChannel);
-    //     });
-
-    //     return privateChannelDtos;
-    // },
-
-    async update({ userId, privateChannelId, newValues }) {
-        return transactionContainer(
-            async({ queryOptions, onCommit }) => {
-                const updatedPrivateChannel = await PrivateChannelModel.findByIdAndUpdate(
-                    privateChannelId,
-                    newValues,
-                    queryOptions({ new: true }),
-                );
-                if (!updatedPrivateChannel) throw ApiError.badRequest('Не удалось обновить канал');
-
-                const updatedPrivateChannelDto = PrivateChannelDto.objectFromModel(updatedPrivateChannel);
-
-                onCommit(() => {
-                    subscription.privateChannels.update({ entity: updatedPrivateChannelDto });
-                });
-
-                return updatedPrivateChannelDto;
-            },
-        );
+        return PrivateChannelDto.objectFromModel(privateChannel);
     },
 
     async leave({ userId, privateChannelId }) {
@@ -117,9 +76,7 @@ export const PrivateChannelService: IPrivateChannelService = {
                         $pull: { activeMembers: userId },
                     },
                     queryOptions({ new: true }),
-                ).catch(() => {
-                    throw ApiError.badRequest('Канал не найден');
-                });
+                );
 
                 await UserServiceHelpers.removePrivateChannel({ userId, privateChannelId });
 

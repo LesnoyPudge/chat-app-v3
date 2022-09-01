@@ -2,7 +2,7 @@ import { subscription } from './subscription';
 
 
 
-type EntityKeyType = 'users' | 'channels' | 'rooms' | 'messages' | 'privateChannels';
+type EntityKeyType = 'users' | 'channels' | 'rooms' | 'messages' | 'privateChannels' | 'roles';
 
 interface ISubscriptionHelpers {
     isEntityExist: (args: {entityId: string, entityKey: EntityKeyType}) => boolean;

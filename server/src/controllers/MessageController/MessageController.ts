@@ -1,15 +1,15 @@
 import { MessageService } from '@services';
-import { AuthorizedControllerType, ICreateMessageRequest, IDeleteMessageRequest, IGetManyMessagesRequest, IGetOneMessageRequest, IMessage, IRestoreMessageRequest, IUpdateMessageRequest } from '@types';
+import { AuthorizedControllerType, ICreateMessageRequest, IDeleteAttachmentMessageRequest, IDeleteMessageRequest, IGetManyMessagesRequest, IGetOneMessageRequest, IMessage, IRestoreMessageRequest, IUpdateMessageRequest } from '@types';
 
 
 
 interface IMessageController {
     create: AuthorizedControllerType<ICreateMessageRequest, never, IMessage>;
     getOne: AuthorizedControllerType<IGetOneMessageRequest, never, IMessage>;
-    // getMany: AuthorizedControllerType<IGetManyMessagesRequest, never, IMessage[]>;
     update: AuthorizedControllerType<IUpdateMessageRequest, never, IMessage>;
     delete: AuthorizedControllerType<IDeleteMessageRequest, never, IMessage>;
     restore: AuthorizedControllerType<IRestoreMessageRequest, never, IMessage>;
+    deleteAttachment: AuthorizedControllerType<IDeleteAttachmentMessageRequest, never, IMessage>;
 }
 
 export const MessageController: IMessageController = {
@@ -31,20 +31,11 @@ export const MessageController: IMessageController = {
         res.json(Message);
     },
 
-    // async getMany(req, res) {
-    //     const { messageIds } = req.body;
-    //     const { id } = req.auth.user;
-
-    //     const messages = await MessageService.getMany({ userId: id, messageIds });
-
-    //     res.json(messages);
-    // },
-
     async update(req, res) {
-        const { messageId, newValues } = req.body;
+        const { messageId, content } = req.body;
         const { id } = req.auth.user;
         
-        const updatedMessage = await MessageService.update({ userId: id, messageId, newValues });
+        const updatedMessage = await MessageService.update({ userId: id, messageId, content });
 
         res.json(updatedMessage);
     },
@@ -65,5 +56,14 @@ export const MessageController: IMessageController = {
         const restoredMessage = await MessageService.restore({ userId: id, messageId });
 
         res.json(restoredMessage);
+    },
+
+    async deleteAttachment(req, res) {
+        const { attachmentId, messageId } = req.body;
+        const { id } = req.auth.user;
+
+        const updatedMessage = await MessageService.deleteAttachment({ userId: id, attachmentId, messageId });
+        
+        res.json(updatedMessage);
     },
 };
