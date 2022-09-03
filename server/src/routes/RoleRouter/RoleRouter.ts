@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { RoleController } from '@controllers';
-import { authorizationMiddleware } from '@middlewares';
+import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 import { RoleValidator } from '@validators';
 

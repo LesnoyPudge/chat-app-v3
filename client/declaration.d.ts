@@ -3,4 +3,4 @@ declare module '*.scss' {
     export default content;
 }
 
-declare module '*';
+// declare module '*';

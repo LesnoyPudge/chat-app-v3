@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { PrivateChannelController } from '@controllers';
-import { authorizationMiddleware } from '@middlewares';
+import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 import { PrivateChannelValidator } from '@validators';
 

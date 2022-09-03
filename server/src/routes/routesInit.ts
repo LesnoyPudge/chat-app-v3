@@ -6,11 +6,13 @@ import { PrivateChannelRouter } from './PrivateChannelRouter';
 import { MessageRouter } from './MessageRouter';
 import { RoleRouter } from './RoleRouter';
 import { FileRouter } from './FileRouter';
-import { errorHandlerMiddleware } from '@middlewares';
+import { errorHandlerMiddleware, paramsToBodyMiddleware } from '@middlewares';
 
 
 
 export const routesInit = (app: Application) => {
+    app.use(paramsToBodyMiddleware);
+
     app.use([
         UserRouter,
         ChannelRouter,

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { FileController } from '@controllers';
 import { controllerContainer, getEnv } from '@utils';
-import { authorizationMiddleware } from '@middlewares';
+import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
 import { FileValidator } from '@validators';
 
 

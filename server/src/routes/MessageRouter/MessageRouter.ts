@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { MessageController } from '@controllers';
-import { authorizationMiddleware } from '@middlewares';
+import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
 import { controllerContainer, getEnv } from '@utils';
 import { MessageValidator } from '@validators';
 

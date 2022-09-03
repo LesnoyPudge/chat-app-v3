@@ -4,6 +4,7 @@ import envCompalible from 'vite-plugin-env-compatible';
 import tsconfigPaths from 'vite-tsconfig-paths';
 // import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import svgrPlugin from 'vite-plugin-svgr';
+import path from 'path';
 
 
 
@@ -16,9 +17,25 @@ export default defineConfig(() => {
     const { CUSTOM_CLIENT_PORT } = process.env as unknown as IEnv;
 
     return {
+        plugins: [
+            react(),
+            envCompalible(),
+            tsconfigPaths(),
+            svgrPlugin({
+                svgrOptions: {
+                    icon: true,
+                },
+            }),
+        ],
         envPrefix: 'CUSTOM_',
         server: {
             port: CUSTOM_CLIENT_PORT,
+        },
+        resolve: {
+            alias: {
+                'mixins': path.join(__dirname, 'src/root/styles/mixins'),
+                'variables': path.join(__dirname, 'src/root/styles/variables'),
+            },
         },
         // optimizeDeps: {
         //     esbuildOptions: {
@@ -32,16 +49,5 @@ export default defineConfig(() => {
         //         ],
         //     },
         // },
-
-        plugins: [
-            react(),
-            envCompalible(),
-            tsconfigPaths(),
-            svgrPlugin({
-                svgrOptions: {
-                    icon: true,
-                },
-            }),
-        ],
     };
 });

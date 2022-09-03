@@ -1,7 +1,7 @@
 
 
 
-interface ILocalStorageValues extends Record<string, any> {
+interface ILocalStorageValues {
     token?: string;
     some?: string;
 }
@@ -23,7 +23,7 @@ export const getLocalStorage = () => {
         some: get('some'),
     };
 
-    const set = (key: UpdatableKeysType, value: any) => {
+    const set = (key: UpdatableKeysType, value: unknown) => {
         localStorage.setItem(key, JSON.stringify(value));
     };
 
