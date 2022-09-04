@@ -1,0 +1,32 @@
+@use './initial.scss';
+@import 'variables';
+
+
+
+body {
+    font-size: 1.6rem;
+    font-family: Arial, sans-serif;
+    text-rendering: optimizeSpeed;
+}
+
+#root {
+    overflow-x: hidden;
+}
+
+#app-root {
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--color-bg-primary-500);
+    color: var(--color-font-text-normal);
+    overflow: hidden;
+}
+
+#modal-root {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: hidden;
+}

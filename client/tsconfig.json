@@ -33,6 +33,7 @@
             "@redux/rootApi": ["src/redux/store/rootApi"],
             "@types": ["src/types/index"],
             "@utils": ["src/utils/index"],
+            "@pages/*": ["src/pages/*"],
         },
     },
     "include": [
