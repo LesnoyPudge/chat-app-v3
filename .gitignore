@@ -6,3 +6,4 @@ node_modules
 todo.txt
 **/coverage
 APIendpoints.txt
+tmp

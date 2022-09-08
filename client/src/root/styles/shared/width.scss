@@ -1,0 +1,21 @@
+@use 'mixins';
+
+
+
+.w {
+    &-half {
+        width: 50%!important;
+    }
+
+    &-full {
+        width: 100%!important;
+    }
+}
+
+@for $i from 0 through 100 {
+    $size: 2 * $i;
+
+    .w-#{$size} {
+        width: $size + px!important;
+    }
+}

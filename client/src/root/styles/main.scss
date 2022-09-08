@@ -1,12 +1,21 @@
 @use './initial.scss';
-@import 'variables';
+@import './variables';
+@import './shared';
 
 
+
+html {
+    background-color: var(--color-bg-primary-500);
+    color: var(--color-font-text-normal);
+    overflow: hidden;
+}
 
 body {
-    font-size: 1.6rem;
-    font-family: Arial, sans-serif;
-    text-rendering: optimizeSpeed;
+    font-size: var(--text-font-size);
+    line-height: var(--text-line-height);
+    font-weight: 400;
+    font-family: Arial, Helvetica, sans-serif;
+    text-rendering: optimizeLegibility;
 }
 
 #root {
@@ -30,3 +39,56 @@ body {
     pointer-events: none;
     overflow: hidden;
 }
+
+input,
+textarea {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font-size: inherit;
+    padding: 0;
+    resize: none;
+    // outline: none;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}
+
+*:focus {
+    outline: none;
+}
+
+// *:focus-visible { 
+//     outline-color: var(--outline);
+//     outline-style: solid;
+//     outline-width: 4px;
+//     // border-radius: 5px;
+//     isolation: isolate;
+//     z-index: 100;
+// }
+
+button,
+[role="button"] {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    // width: fit-content;
+    color: inherit;
+    font-size: inherit;
+    padding: 0;
+    // text-align: center;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}
+
+form {
+    display: contents;
+}
+
+// * {
+    // outline: 1px solid red!important;
+    // background-color: rgba($color: limegreen, $alpha: 0.05)!important;
+// }

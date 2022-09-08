@@ -25,7 +25,7 @@
         "paths": {
             "@root": ["src/root/index"],
             "@backendTypes": ["../server/src/types/common/index"],
-            "@assets": ["src/assets/*"],
+            "@assets/*": ["src/assets/*"],
             "@components": ["src/components/index"],
             "@hooks": ["src/hooks/index"],
             "@redux/store": ["src/redux/store/store"],
@@ -39,5 +39,5 @@
     "include": [
         "src",
         "declaration.d.ts"
-    ]
+, "../tmp"    ]
 }

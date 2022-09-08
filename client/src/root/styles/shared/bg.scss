@@ -1,0 +1,40 @@
+
+
+
+.bgc {
+    &-primary {
+        &-100 {
+            background-color: var(--color-bg-primary-100)!important;
+        }
+
+        &-200 {
+            background-color: var(--color-bg-primary-200)!important;
+        }
+
+        &-300 {
+            background-color: var(--color-bg-primary-300)!important;
+        }
+
+        &-400 {
+            background-color: var(--color-bg-primary-400)!important;
+        }
+
+        &-500 {
+            background-color: var(--color-bg-primary-500)!important;
+        }
+    }
+
+    &-secondary {
+        &-100 {
+            background-color: var(--color-bg-secondary-100)!important;
+        }
+
+        &-200 {
+            background-color: var(--color-bg-secondary-200)!important;
+        }
+
+        &-300 {
+            background-color: var(--color-bg-secondary-300)!important;
+        }
+    }
+}

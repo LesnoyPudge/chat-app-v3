@@ -6,6 +6,7 @@
         "this:build": "env-cmd -f ../.env tsc && vite build",
         "this:lint": "eslint .",
         "this:lintFix": "eslint --fix .",
+        "this:watchSass": "sass --watch --no-source-map src/root/styles/main.scss output.css",
         "//": ""
     },
     "browserslist": {

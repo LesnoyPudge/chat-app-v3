@@ -32,9 +32,7 @@ footer, header, hgroup, main, menu, nav, section {
 *[hidden] {
     display: none;
 }
-body {
-	line-height: 1;
-}
+
 menu, ol, ul {
 	list-style: none;
 }
@@ -77,9 +75,9 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, 
 }
 
 abbr[title] {
-    border-bottom: none; /* 1 */
-    text-decoration: underline; /* 2 */
-    text-decoration: underline dotted; /* 2 */
+    border-bottom: none;
+    text-decoration: underline;
+    text-decoration: underline dotted;
 }
 
 *,
@@ -125,5 +123,21 @@ small {
 }
 
 html {
-    font-size: 62.5%;
+    font-size: 10px;
+    line-height: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

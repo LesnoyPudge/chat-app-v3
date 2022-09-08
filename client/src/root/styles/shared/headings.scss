@@ -1,0 +1,36 @@
+.headingSize {
+    &__xxl {
+        font-size: 3.4rem!important;
+        line-height:4.0rem!important;
+    }
+
+    &__xl {
+        font-size:2.5rem!important;
+        line-height:3.0rem!important;
+    }
+
+    &__l {
+        font-size:2.0rem!important;
+        line-height:2.4rem!important;
+    }
+
+    &__m {
+        font-size:1.7rem!important;
+        line-height:2.2rem!important;
+    }
+
+    &__s {
+        font-size:1.2rem!important;
+        line-height:1.6rem!important;
+    }
+}
+
+.headingColor {
+    &__primary {
+        color: var(--color-font-heading-primary)!important;
+    }
+
+    &__secondary {
+        color: var(--color-font-heading-secondary)!important;
+    }
+}

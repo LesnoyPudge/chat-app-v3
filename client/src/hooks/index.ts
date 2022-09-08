@@ -3,3 +3,4 @@ export * from './useAppSelector';
 export * from './useWebRTC';
 export * from './useSocket';
 export * from './useUserSettings';
+export * from './useShrinkDetector';

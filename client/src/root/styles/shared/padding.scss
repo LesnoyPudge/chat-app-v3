@@ -1,0 +1,12 @@
+@use 'mixins';
+
+
+@include mixins.generateSpacing(pt, padding-top);
+@include mixins.generateSpacing(pr, padding-right);
+@include mixins.generateSpacing(pb, padding-bottom);
+@include mixins.generateSpacing(pl, padding-left);
+
+@include mixins.generateSpacing(p, padding);
+
+@include mixins.generateSpacing(px, padding-left, padding-right);
+@include mixins.generateSpacing(py, padding-top, padding-bottom);

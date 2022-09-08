@@ -1,0 +1,45 @@
+
+
+
+
+.overflow {
+    &-hidden {
+        overflow: hidden!important;
+    }
+
+    &-scroll {
+        overflow: scroll!important;
+    }
+
+    &-visible {
+        overflow: visible!important;
+    }
+
+    &-x {
+        &-hidden {
+            overflow-x: hidden!important;
+        }
+    
+        &-scroll {
+            overflow-x: scroll!important;
+        }
+    
+        &-visible {
+            overflow-x: visible!important;
+        }
+    }
+
+    &-y {
+        &-hidden {
+            overflow-y: hidden!important;
+        }
+    
+        &-scroll {
+            overflow-y: scroll!important;
+        }
+    
+        &-visible {
+            overflow-y: visible!important;
+        }
+    }
+}
