@@ -1,0 +1,33 @@
+:root {
+    --color-bg-primary-100: #40444B;
+    --color-bg-primary-200: #36393F;
+    --color-bg-primary-300: #2F3136;
+    --color-bg-primary-400: #292b2f;
+    --color-bg-primary-500: #202225;
+
+    --color-bg-secondary-100: #5865f2;
+    --color-bg-secondary-200: #4752c4;
+    --color-bg-secondary-300: #3c45a5;
+
+    --color-bg-hover: rgba(79, 84, 92, 0.4);
+    --color-bg-active: rgba(79, 84, 92, 0.48);
+    --color-bg-selected: rgba(79, 84, 92, 0.6);
+
+    --color-font-primary: #ffffff;
+    --color-font-secondary: #b9bbbe;
+    --color-font-normal: #dcddde;
+    --color-font-muted: #a3a6aa;
+    --color-font-link: #00aff4;
+    --color-font-rooms: #96989d;
+    // --color-font-interactive-normal: #b9bbbe;
+    // --color-font-interactive-hover: #dcddde;
+    // --color-font-interactive-active: #ffffff;
+    // --color-font-interactive-muted: #4f545c;
+    
+    --color-font-error: #f38688;
+    --color-font-required: #ed4245;
+
+    --outline: #00aff4;
+
+    --icon-accent: #b9bbbe;
+}

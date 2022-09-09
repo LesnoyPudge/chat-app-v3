@@ -1,6 +1,7 @@
-import classNames from 'classnames/bind';
+import classNames from 'classnames';
 import React, { FC, PropsWithChildren } from 'react';
-import styles from './Button.module.scss';
+// import styles from './Button.module.scss';
+import './Button.scss';
 
 
 
@@ -13,7 +14,7 @@ export interface IButtonProps extends PropsWithChildren {
     onHoverEnd?: (args?: never) => void;
     // variant?: 'default' | 'wide';
     // theme?: 'none' | 'default' | 'brand' | 'link' | 'lite';
-    variant?: 'default' | 'brand' | 'link' | 'lite';
+    variant?: 'brand' | 'link' | 'lite';
     type?: 'button' | 'submit' | 'reset';
     className?: string;
     isLoading?: boolean;
@@ -30,20 +31,20 @@ export const Button: FC<IButtonProps> = ({
     onRightClick,
     onHoverStart,
     onHoverEnd,
-    // variant = 'default',
-    // theme = 'default',
-    variant = '',
+    variant,
     className = '',
     type = 'button',
     isLoading = false,
     isActive = false,
     isDisabled = false,
-    // nativeAttributes,
 }) => {
-    const cx = classNames.bind(styles);
-    const buttonCN = cx({
-        button: true,
-        [`variant-${variant}`]: !!variant,
+    // const cx = classNames.bind(styles);
+    const buttonCN = classNames({
+        'button': true,
+        // variant_brand: variant === 'brand',
+        // variant_link: variant === 'link',
+        // variant_lite: variant === 'lite',
+        [`variant_${variant}`]: !!variant,
         [className]: className,
     });
 
@@ -97,7 +98,6 @@ export const Button: FC<IButtonProps> = ({
             disabled={isDisabled || isLoading}
             data-loading={isLoading}
             data-active={isActive}
-            data-disabled={isDisabled || isLoading}
             onClick={handleLeftClick}
             onAuxClick={handleMiddleClick}
             onContextMenu={handleRightClick}

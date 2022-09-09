@@ -33,22 +33,10 @@ export default defineConfig(() => {
         },
         resolve: {
             alias: {
-                'mixins': path.join(__dirname, 'src/root/styles/mixins'),
-                'functions': path.join(__dirname, 'src/root/styles/functions'),
+                // 'mixins': path.join(__dirname, 'src/root/styles/mixins'),
+                // 'functions': path.join(__dirname, 'src/root/styles/functions'),
                 // 'variables': path.join(__dirname, 'src/root/styles/variables'),
             },
         },
-        // optimizeDeps: {
-        //     esbuildOptions: {
-        //         define: {
-        //             globalThis: 'globalThis',
-        //         },
-        //         plugins: [
-        //             NodeGlobalsPolyfillPlugin({
-        //                 buffer: true,
-        //             }),
-        //         ],
-        //     },
-        // },
     };
 });

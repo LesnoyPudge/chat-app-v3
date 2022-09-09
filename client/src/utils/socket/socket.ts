@@ -6,19 +6,19 @@ import { UserEmitters, ChannelEmitters, RoomEmitters, MessageEmitters, PrivateCh
 
 export type SocketType = Socket;
 
-const socketEntity: SocketType = io(getEnv().CUSTOM_WS_SERVER, {
-    auth: {
-        token: getLocalStorage().values.token,
-    },
-});
+// const socketEntity: SocketType = io(getEnv().CUSTOM_WS_SERVER, {
+//     auth: {
+//         token: getLocalStorage().values.token,
+//     },
+// });
 
 export const socket = {
-    socketEntity,
-    events: {
-        user: UserEmitters,
-        channel: ChannelEmitters,
-        room: RoomEmitters,
-        message: MessageEmitters,
-        privateChannel: PrivateChannelEmitters,
-    },
+    // socketEntity,
+    // events: {
+    //     user: UserEmitters,
+    //     channel: ChannelEmitters,
+    //     room: RoomEmitters,
+    //     message: MessageEmitters,
+    //     privateChannel: PrivateChannelEmitters,
+    // },
 };
