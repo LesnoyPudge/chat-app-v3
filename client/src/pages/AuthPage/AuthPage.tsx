@@ -11,7 +11,7 @@ export const AuthPage: FC = () => {
             <div className='flex h-screen isolate'>
                 <img src={AuthPageBGSrc} className='custom-image-bg-fullscreen'/>
 
-                <div className='p-8 sm:px-4 rounded bg-primary-200 m-auto'>
+                <div className='p-8 rounded bg-primary-200 m-auto w-[480px]'>
                     <TabContexProvider 
                         tabs={[
                             { 

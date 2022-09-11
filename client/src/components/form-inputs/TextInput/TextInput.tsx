@@ -71,12 +71,23 @@ export const TextInput: FC<ITextInputProps> = ({
                         type === 'password' &&
                         <Button
                             onClick={handleTypeToggle}
-                            className='px-2'
+                            className='px-2 group'
                         >
                             {
                                 typeState === 'text' 
-                                    ? <Icon iconId='password-eye-on' height={30} width={30}/>
-                                    : <Icon iconId='password-eye-off' height={30} width={30}/>
+                                    ? <Icon 
+                                        iconId='password-eye-on' 
+                                        height={30}
+                                        width={30}
+                                        className='fill-icon-100 group-hover:fill-icon-200'
+                                    />
+                                    
+                                    : <Icon 
+                                        iconId='password-eye-off' 
+                                        height={30} 
+                                        width={30}
+                                        className='fill-icon-100 group-hover:fill-icon-200'
+                                    />
                             }
                             
                         </Button>

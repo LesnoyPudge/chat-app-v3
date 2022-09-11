@@ -12,8 +12,7 @@ export interface IButtonProps extends PropsWithChildren {
     onRightClick?: (args?: never) => void;
     onHoverStart?: (args?: never) => void;
     onHoverEnd?: (args?: never) => void;
-    // variant?: 'default' | 'wide';
-    // theme?: 'none' | 'default' | 'brand' | 'link' | 'lite';
+    isDefaultStyled?: boolean;
     variant?: 'brand' | 'link' | 'lite';
     type?: 'button' | 'submit' | 'reset';
     className?: string;
@@ -24,13 +23,14 @@ export interface IButtonProps extends PropsWithChildren {
 }
 
 export const Button: FC<IButtonProps> = ({
-    children,
     onClick,
     onLeftClick,
     onMiddleClick,
     onRightClick,
     onHoverStart,
     onHoverEnd,
+    children,
+    isDefaultStyled = true,
     variant,
     className = '',
     type = 'button',
@@ -40,7 +40,7 @@ export const Button: FC<IButtonProps> = ({
 }) => {
     // const cx = classNames.bind(styles);
     const buttonCN = classNames({
-        'button': true,
+        'button': isDefaultStyled,
         // variant_brand: variant === 'brand',
         // variant_link: variant === 'link',
         // variant_lite: variant === 'lite',

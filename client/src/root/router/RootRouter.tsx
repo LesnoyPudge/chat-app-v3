@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 
 
+const AppLayout = lazy(() => import('@layouts/AppLayout'));
 const AppPage = lazy(() => import('@pages/AppPage'));
 const AuthPage = lazy(() => import('@pages/AuthPage'));
 
@@ -21,13 +22,16 @@ export const RootRouter: FC = () => {
                 }/>
 
                 {/* <Route element={<ProtectedRoutes/>}> */}
-
                 <Route path='app' element={
-                    <Suspense fallback={<>loading app page...</>}>
-                        <AppPage />
+                    <Suspense fallback={<>loading...</>}>
+                        <AppLayout/>
                     </Suspense>
                 }>
-                    <Route index element={<>friend page</>}/>
+                    <Route index element={
+                        <Suspense fallback={<>loading app page...</>}>
+                            <AppPage />
+                        </Suspense>
+                    }/>
 
                     <Route path='private-chat/:privateChannelId' element={<>private chat page</>}/>
 
@@ -37,6 +41,7 @@ export const RootRouter: FC = () => {
 
                     <Route path='*' element={<Navigate to={'.'}/>}/>
                 </Route>
+                {/* </Route> */}
 
                 <Route path='invitation/:invitationLink' element={<>invitation page</>}/>
             

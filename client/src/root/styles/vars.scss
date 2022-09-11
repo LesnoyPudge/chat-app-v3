@@ -13,6 +13,8 @@
     --color-bg-active: rgba(79, 84, 92, 0.48);
     --color-bg-selected: rgba(79, 84, 92, 0.6);
 
+    --color-bg-light: var(--color-font-primary);
+
     --color-font-primary: #ffffff;
     --color-font-secondary: #b9bbbe;
     --color-font-normal: #dcddde;
@@ -29,5 +31,11 @@
 
     --outline: #00aff4;
 
-    --icon-accent: #b9bbbe;
+    --icon-100: #b9bbbe;
+    --icon-200: #8c8f94;
+    
+    --white: #ffffff;
+    --green: #3BA55D;
+
+    --shadow-top-bar: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
 }

@@ -1,0 +1,122 @@
+.wrapper {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+    transition: 0.175s ease-in;
+
+    &.active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &.right {
+        transform: translateY(-50%) translateX(5px);
+
+        &.active {
+            transform: translateY(-50%);
+        }
+    }
+
+    &.left {
+        transform: translateY(-50%) translateX(calc(-100% - 5px));
+
+        &.active {
+            transform: translateY(-50%) translateX(-100%);
+        }
+    }
+
+    &.top {
+        transform: translateY(calc(-100% - 5px)) translateX(-50%);
+
+        &.active {
+            transform: translateY(-100%) translateX(-50%);
+        }
+    }
+
+    &.bottom {
+        transform: translateY(5px) translateX(-50%);
+
+        &.active {
+            transform: translateY(0) translateX(-50%);
+        }
+    }
+}
+
+.tooltip {
+    position: relative;
+    background-color: #fff;
+    color: black;
+    border-radius: 5px;
+    width: max-content;
+    max-width: 200px;
+    overflow-wrap: break-all;
+    hyphens: auto;
+    padding: 5px 10px;
+    transform: scale(0.8);
+    transition: 0.175s ease-in;
+
+    &.active {
+        transform: scale(1);
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        height: 0;
+        width: 0;
+    }
+
+    &.left {
+        margin-right: 5px;
+
+        &::before {
+            top: 50%;
+            left: 100%;
+            transform: translate(0%, -50%);
+            border-left: 5px solid white;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+    }
+
+    &.right {
+        margin-left: 5px;
+
+        &::before {
+            top: 50%;
+            left: 0;
+            transform: translate(-100%, -50%);
+            border-right: 5px solid white;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        } 
+    }
+
+    &.top {
+        margin-bottom: 5px;
+        
+        &::before {
+            top: 100%;
+            left: 50%;
+            transform: translate(-50%, 0%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid white;
+        }
+    }
+
+    &.bottom {
+        margin-top: 5px;
+
+        &::before {
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -100%);
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid white;
+        }
+    }
+}   

@@ -49,7 +49,7 @@ export const LoginForm: FC = () => {
                             Вход
                         </Button>
 
-                        <div>
+                        <div className='self-start'>
                             <span className='fs-14 text-muted mr-1'>
                                 Нужна учётная запись?
                             </span>

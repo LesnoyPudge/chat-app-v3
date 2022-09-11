@@ -19,7 +19,9 @@
     // --color-font-interactive-hover: #2e3338;
     // --color-font-interactive-active: #060607;
     // --color-font-interactive-muted: #c7ccd1;
-    --icon-accent: #4f5660;
+    
+    --icon-100: #4f5660;
+    --icon-200: #3d4147;
 }
 
 @media (prefers-color-scheme: light) {
@@ -44,6 +46,8 @@
         --color-font-interactive-hover: #2e3338;
         --color-font-interactive-active: #060607;
         --color-font-interactive-muted: #c7ccd1;
-        --icon-accent: #4f5660;
+
+        --icon-100: #4f5660;
+        --icon-200: #3d4147;
     }
 }

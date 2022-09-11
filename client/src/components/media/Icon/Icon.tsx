@@ -12,13 +12,17 @@ interface IIcon {
 
 export const Icon: FC<IIcon> = ({ 
     iconId, 
-    height = 30, 
-    width = 30, 
+    height, 
+    width, 
     className = '', 
 }) => {
     return (
         <>
-            <svg className={`fill-icon ${className}`} width={width} height={height}>
+            <svg 
+                className={`transition-all ${className}`} 
+                width={width} 
+                height={height}
+            >
                 <use xlinkHref={`${sprite}#${iconId}`}></use>
             </svg>
         </>

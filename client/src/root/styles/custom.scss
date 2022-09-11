@@ -16,4 +16,12 @@
             object-cover 
             object-center;
     }
+
+    .custom-scrollbar {
+        &-hide {
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+    }
 }

@@ -16,6 +16,11 @@ module.exports = {
             fontFamily: {
                 'sans': ['Arial', 'Helvetica', ...defaultTheme.fontFamily.sans],
             },
+
+            colors: {
+                green: 'var(--green)',
+                white: 'var(--white)',
+            },
               
             textColor: {
                 primary: 'var(--color-font-primary)',
@@ -40,6 +45,8 @@ module.exports = {
                     200: 'var(--color-bg-secondary-200)',
                     300: 'var(--color-bg-secondary-300)',
                 },
+
+                light: 'var(--color-bg-light)',
             },
 
             fontSize: {
@@ -51,7 +58,10 @@ module.exports = {
             },
 
             fill: {
-                icon: 'var(--icon-accent)',
+                icon: {
+                    100: 'var(--icon-100)',
+                    200: 'var(--icon-200)',
+                },
             },
 
             screens: {
@@ -66,6 +76,16 @@ module.exports = {
     
                 sm: { max: '639px' },
                 // => @media (max-width: 639px) { ... }
+            },
+
+            boxShadow: {
+                top_bar: 'var(--shadow-top-bar)',
+            },
+
+            borderColor: {
+                primary: {
+                    500: 'var(--color-bg-primary-500)',
+                },
             },
         },
     },
