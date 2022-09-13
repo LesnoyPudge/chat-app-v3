@@ -1,9 +1,9 @@
-import { createContext, FC, useState } from 'react';
+import { createContext, FC, ReactNode, useState } from 'react';
 
 
 
 export interface ITab {
-    tab: React.ReactNode;
+    tab: ReactNode | any;
     identifier: string;
 }
 
@@ -50,7 +50,7 @@ export const TabContexProvider: FC<ITabContexProviderProps> = ({
                         const isCurrent = currentTab.identifier === identifier;
                         
                         return (
-                            <div key={identifier} className={`contents ${!isCurrent && 'hidden'}`}>
+                            <div key={identifier} className={`contents ${!isCurrent ? 'hidden' : ''}`}>
                                 {tab}
                             </div>
                         );

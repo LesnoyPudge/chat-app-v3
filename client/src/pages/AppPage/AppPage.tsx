@@ -1,46 +1,36 @@
-import { Tooltip, TopBar } from '@components';
+import { Button, PageContent, PageContentNavigation, Tooltip, TopBar } from '@components';
 import { FC } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 
 
 export const AppPage: FC = () => {
+    const navigate = useNavigate();
     return (
-        <>
-            <div className='flex w-full'>
-                <div className='flex flex-col bg-primary-300 shrink-0 w-[min(240px,100%)]'>
-                    <TopBar>
-                        top bar
-                    </TopBar>
+        <div className='flex w-full'>
+            <PageContentNavigation>
+                <TopBar>
+                    top bar
+                </TopBar>
 
-                    <div className='p-2.5'>
-                        PrivateMessages
-                    </div>
+                <div className='p-2.5 flex flex-col gap-5'>
+                    PrivateMessages 1 2 3 4 5
 
-                    {/* AccountPanel */}
+                    <Button variant='brand' onClick={() => navigate('private-chat/1')}>
+                        to private-chat 1
+                    </Button>
+
+                    <Button variant='brand' onClick={() => navigate('private-chat/2')}>
+                        to private-chat 2
+                    </Button>
                 </div>
 
-                <div className='flex flex-col bg-primary-200 w-full gap-10'>
-                    <TopBar>
-                        friends | online | offline | ...
-                    </TopBar>
+                {/* AccountPanel */}
+            </PageContentNavigation>
 
-                    <Tooltip content='wow' position='top'>
-                        <div className='flex w-12 h-12 overflow-hidden border-red-500 border-2'>top</div>
-                    </Tooltip>
-
-                    <Tooltip content='wow' position='right'>
-                        <div className='flex w-12 h-12 overflow-hidden border-red-500 border-2'>right</div>
-                    </Tooltip>
-
-                    <Tooltip content='wow' position='bottom'>
-                        <div className='flex w-12 h-12 overflow-hidden border-red-500 border-2'>bottom</div>
-                    </Tooltip>
-
-                    <Tooltip content='wow' position='left'>
-                        <div className='flex w-12 h-12 overflow-hidden border-red-500 border-2'>left</div>
-                    </Tooltip>
-                </div>
-            </div>
-        </>
+            <PageContent>
+                <Outlet/>
+            </PageContent>
+        </div>
     );
 };

@@ -1,4 +1,3 @@
-import { setTitle } from '@utils';
 import { FC, lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
@@ -7,10 +6,9 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 const AppLayout = lazy(() => import('@layouts/AppLayout'));
 const AppPage = lazy(() => import('@pages/AppPage'));
 const AuthPage = lazy(() => import('@pages/AuthPage'));
+const FriendsPage = lazy(() => import('@pages/FriendsPage'));
 
 export const RootRouter: FC = () => {
-    setTitle('Wow');
-    
     return (
         <BrowserRouter>
             <Routes>
@@ -22,24 +20,32 @@ export const RootRouter: FC = () => {
                 }/>
 
                 {/* <Route element={<ProtectedRoutes/>}> */}
-                <Route path='app' element={
+                <Route element={
                     <Suspense fallback={<>loading...</>}>
                         <AppLayout/>
                     </Suspense>
                 }>
-                    <Route index element={
-                        <Suspense fallback={<>loading app page...</>}>
-                            <AppPage />
-                        </Suspense>
-                    }/>
-
-                    <Route path='private-chat/:privateChannelId' element={<>private chat page</>}/>
-
-                    <Route path='channel/:channelId' element={<>channel page</>}>
-                        <Route path='room/:roomId' element={<>roomPage</>}/>
+                    <Route path='app'>
+                        <Route element={
+                            <Suspense fallback={<>loading app page...</>}>
+                                <AppPage />
+                            </Suspense>
+                        }>
+                            <Route index element={
+                                <Suspense fallback={<>loading friends page...</>}>
+                                    <FriendsPage/>
+                                </Suspense>
+                            }/>
+                            
+                            <Route path='private-chat/:privateChannelId' element={<>private chat page</>}/>
+                        </Route>
+                        
+                        <Route path='channel/:channelId' element={<>channel page</>}>
+                            <Route path='room/:roomId' element={<>roomPage</>}/>
+                        </Route>
                     </Route>
 
-                    <Route path='*' element={<Navigate to={'.'}/>}/>
+                    <Route path='*' element={<Navigate to={'app'}/>}/>
                 </Route>
                 {/* </Route> */}
 
