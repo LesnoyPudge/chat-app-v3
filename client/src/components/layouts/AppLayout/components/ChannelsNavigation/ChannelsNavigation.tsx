@@ -59,7 +59,7 @@ export const ChannelsNavigation: FC = () => {
                     </ContextMenu>
                 </RefContextProvider>
                 
-                <Separator/>
+                <Separator className='w-1/2'/>
 
                 <div className='flex flex-col gap-2 py-1 overflow-y-auto custom-scrollbar-hide'>
                     {
@@ -78,7 +78,7 @@ export const ChannelsNavigation: FC = () => {
                                         <div className='px-[6px] w-full flex justify-center'>
                                             <span 
                                                 className={`font-bold text-ellipsis overflow-hidden 
-                                                group-hover:text-white group-focus:text-white 
+                                                group-hover:text-white group-focus-within:text-white 
                                                 ${isActive && 'text-white'}`}
                                             >
                                                 {formatedName}
@@ -99,7 +99,7 @@ export const ChannelsNavigation: FC = () => {
                     }
                 </div>
 
-                <Separator/>
+                <Separator className='w-1/2'/>
 
                 <RefContextProvider>
                     <NavigationButton 

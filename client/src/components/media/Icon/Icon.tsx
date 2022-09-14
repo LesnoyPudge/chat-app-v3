@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import sprite from '@assets/sprite.svg';
+import { twMerge } from 'tailwind-merge';
 
 
 
@@ -19,7 +20,7 @@ export const Icon: FC<IIcon> = ({
     return (
         <>
             <svg 
-                className={`transition-all ${className}`} 
+                className={twMerge(`transition-all ${className}`)} 
                 width={width} 
                 height={height}
             >

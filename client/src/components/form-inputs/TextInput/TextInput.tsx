@@ -2,6 +2,7 @@ import { useField } from 'formik';
 import { FC, useId, useState } from 'react';
 import { Button, Icon } from '@components';
 import classNames from 'classnames';
+import { twMerge } from 'tailwind-merge';
 
 
 
@@ -43,7 +44,7 @@ export const TextInput: FC<ITextInputProps> = ({
     
     return (
         <>
-            <div className={`flex flex-col gap-2 w-full ${className}`}>
+            <div className={twMerge(`flex flex-col gap-2 w-full ${className}`)}>
                 <label htmlFor={id} className={labelCN}>
                     <span className='uppercase'>
                         {label}

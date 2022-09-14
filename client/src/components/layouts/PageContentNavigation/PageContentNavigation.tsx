@@ -1,4 +1,5 @@
 import { FC, PropsWithChildren } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 
 
@@ -8,7 +9,7 @@ interface IPageContentNavigation extends PropsWithChildren {
 
 export const PageContentNavigation: FC<IPageContentNavigation> = ({ children, className = '' }) => {
     return (
-        <div className={`flex flex-col bg-primary-300 w-[240px] ${className}`}>
+        <div className={twMerge(`flex flex-col bg-primary-300 w-[240px] ${className}`)}>
             {children}
         </div>
     );

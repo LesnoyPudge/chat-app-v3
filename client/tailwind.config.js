@@ -61,6 +61,7 @@ module.exports = {
                 icon: {
                     100: 'var(--icon-100)',
                     200: 'var(--icon-200)',
+                    300: 'var(--icon-300)',
                 },
             },
 

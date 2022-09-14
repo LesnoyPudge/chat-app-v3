@@ -1,6 +1,6 @@
-import { FC, useRef } from 'react';
+import { FC, useContext, useRef } from 'react';
 import AuthPageBGSrc from '@assets/auth-page-bg.jpg';
-import { TabContexProvider } from '@components';
+import { ITabContext, TabContex, TabContexProvider } from '@components';
 import { LoginForm, RegistrationForm } from './tabs';
 import { animated, useTransition } from '@react-spring/web';
 
@@ -8,11 +8,6 @@ import { animated, useTransition } from '@react-spring/web';
 
 export const AuthPage: FC = () => {
     const someRef = useRef<string | null>(null);
-    const transitions = useTransition(someRef.current, {
-        from: { opacity: 0 },
-        enter: { opacity: 1 },
-        leave: { opacity: 0 },
-    });
     
     return (
         <div className='flex h-screen isolate'>
@@ -40,22 +35,13 @@ export const AuthPage: FC = () => {
                                     tabs.map(({ identifier, tab }) => {
                                         const isCurrent = currentTab.identifier === identifier;
                                             
-                                        return transitions(({ opacity }, item) => (
-                                            <animated.div 
-                                                style={{
-                                                    opacity: opacity,
-                                                    display: isCurrent ? '' : 'none',
-                                                }}
-                                                key={identifier}
-                                            >
+                                        // return <Tab identifier={identifier} key={identifier}/>;
+                                        
+                                        return (
+                                            <div key={identifier} className={`contents ${!isCurrent ? 'hidden' : ''}`}>
                                                 {tab}
-                                            </animated.div>
-                                        ));
-                                        // return (
-                                        //     <div key={identifier} className={`contents ${!isCurrent ? 'hidden' : ''}`}>
-                                        //         {tab}
-                                        //     </div>
-                                        // );
+                                            </div>
+                                        );
                                     })
                                 }
                             </>
@@ -66,3 +52,24 @@ export const AuthPage: FC = () => {
         </div>
     );
 };
+
+// const Tab: FC<{identifier: string}> = ({ identifier }) => {
+//     const { currentTab } = useContext(TabContex) as ITabContext;
+//     const transitions = useTransition(identifier === currentTab.identifier, {
+//         from: { opacity: 0 },
+//         enter: { opacity: 1 },
+//         leave: { opacity: 0 },
+//     });
+
+//     return transitions(({ opacity }, item) => (
+//         <animated.div 
+//             style={{
+//                 opacity: opacity,
+//                 display: item ? '' : 'none',
+//             }}
+//             key={identifier}
+//         >
+//             {currentTab.tab}
+//         </animated.div>                            
+//     ));
+// };

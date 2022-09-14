@@ -23,6 +23,7 @@ export const Tooltip: FC<ITooltipProps> = ({
         from: { opacity: 0, animationOffset },
         enter: { opacity: 1, animationOffset: 0 },
         leave: { opacity: 0, animationOffset },
+        config: { duration: 150 },
     });
 
     useEffect(() => {

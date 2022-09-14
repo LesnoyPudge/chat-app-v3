@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React, { FC, PropsWithChildren } from 'react';
-// import styles from './Button.module.scss';
-import './Button.scss';
+import { twMerge } from 'tailwind-merge';
 
 
 
@@ -19,7 +18,6 @@ export interface IButtonProps extends PropsWithChildren {
     isLoading?: boolean;
     isActive?: boolean;
     isDisabled?: boolean;
-    // nativeAttributes?: React.ButtonHTMLAttributes<HTMLButtonElement>;
 }
 
 export const Button: FC<IButtonProps> = ({
@@ -38,26 +36,34 @@ export const Button: FC<IButtonProps> = ({
     isActive = false,
     isDisabled = false,
 }) => {
-    // const cx = classNames.bind(styles);
-    const buttonCN = classNames({
-        'button': isDefaultStyled,
-        // variant_brand: variant === 'brand',
-        // variant_link: variant === 'link',
-        // variant_lite: variant === 'lite',
-        [`variant_${variant}`]: !!variant,
-        [className]: className,
-    });
+    const baseStyling = `text-center rounded underline-offset-4 decoration-1
+    decoration-current py-1 px-3 transition-all duration-100`;
+    const brandVariant = `text-primary bg-secondary-100 hover:bg-secondary-200 
+    focus-visible:bg-secondary-200 active:bg-secondary-300 
+    ${isActive ? 'bg-secondary-300' : ''}`;
+    const linkVariant = 'p-0 text-link hover:underline focus-visible:underline';
+    const liteVariant = `text-primary hover:underline hover:text-secondary
+    focus-visible:underline focus-visible:text-secondary active:bg-secondary-300
+    active:text-secondary ${isActive ? 'bg-secondary-300 text-secondary' : ''}`;
 
-    function handleLeftClick(e: React.MouseEvent) {
+    const buttonCN = twMerge(classNames({
+        [baseStyling]: isDefaultStyled,
+        [brandVariant]: variant === 'brand',
+        [linkVariant]: variant === 'link',
+        [liteVariant]: variant === 'lite',
+        [className]: !!className,
+    }));
+
+    const handleLeftClick = (e: React.MouseEvent) => {
         if (e.button !== 0) return;
         if (!onClick && !onLeftClick) return;
         if (isDisabled || isLoading) return;
 
         onLeftClick && onLeftClick();
         (!onLeftClick && onClick) && onClick();
-    }
+    };
 
-    function handleMiddleClick(e: React.MouseEvent) {
+    const handleMiddleClick = (e: React.MouseEvent) => {
         if (e.button !== 1) return;
         if (!onClick && !onMiddleClick) return;
         if (isDisabled || isLoading) return;
@@ -66,9 +72,9 @@ export const Button: FC<IButtonProps> = ({
 
         onMiddleClick && onMiddleClick();
         (!onMiddleClick && onClick) && onClick();
-    }
+    };
 
-    function handleRightClick(e: React.MouseEvent) {
+    const handleRightClick = (e: React.MouseEvent) => {
         if (e.button !== 2) return;
         if (!onClick && !onRightClick) return;
         if (isDisabled || isLoading) return;
@@ -77,34 +83,31 @@ export const Button: FC<IButtonProps> = ({
 
         onRightClick && onRightClick();
         (!onRightClick && onClick) && onClick();
-    }
+    };
 
-    function handleTouchStart(e: React.TouchEvent) {
+    const handleTouchStart = (e: React.TouchEvent) => {
         // e.stopPropagation();
         // e.preventDefault();
         onHoverStart && onHoverStart();
-    }
+    };
 
-    function handleTouchEnd(e: React.TouchEvent) {
+    const handleTouchEnd = (e: React.TouchEvent) => {
         // e.stopPropagation();
         // e.preventDefault();
         onHoverEnd && onHoverEnd();
-    }
+    };
 
     return (
         <button
             className={buttonCN}
             type={type}
             disabled={isDisabled || isLoading}
-            data-loading={isLoading}
-            data-active={isActive}
             onClick={handleLeftClick}
             onAuxClick={handleMiddleClick}
             onContextMenu={handleRightClick}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             onTouchCancel={handleTouchEnd}
-            // {...nativeAttributes}
         >
             {children}
         </button>

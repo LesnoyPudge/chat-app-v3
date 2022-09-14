@@ -1,5 +1,6 @@
 import { Button } from '@components';
 import { PropsWithChildren, FC } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 
 
@@ -20,7 +21,7 @@ export const NavigationButton: FC<INavigationButton> = ({
     const isBrand = theme === 'brand';
 
     return (
-        <div className={`flex w-full justify-center relative group ${className}`}>
+        <div className={twMerge(`flex w-full justify-center relative group ${className}`)}>
             <div 
                 className={
                     `opacity-0  transition-all w-2 h-0

@@ -1,4 +1,5 @@
 import { FC, PropsWithChildren } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 
 
@@ -8,7 +9,7 @@ interface ITopBar extends PropsWithChildren {
 
 export const TopBar: FC<ITopBar> = ({ children, className = '' }) => {
     return (
-        <div className={`p-2.5 shadow-top_bar ${className}`}>
+        <div className={twMerge(`flex items-center h-12 shadow-top_bar ${className}`)}>
             {children}
         </div>
     );
