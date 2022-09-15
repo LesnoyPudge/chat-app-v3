@@ -9,7 +9,7 @@ interface ITopBar extends PropsWithChildren {
 
 export const TopBar: FC<ITopBar> = ({ children, className = '' }) => {
     return (
-        <div className={twMerge(`flex items-center h-12 shadow-top_bar ${className}`)}>
+        <div className={twMerge(`flex shrink-0 items-center h-12 shadow-top_bar ${className}`)}>
             {children}
         </div>
     );

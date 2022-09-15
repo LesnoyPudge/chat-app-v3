@@ -20,6 +20,12 @@ module.exports = {
             colors: {
                 green: 'var(--green)',
                 white: 'var(--white)',
+                status: {
+                    online: 'var(--status-online)',
+                    afk: 'var(--status-afk)',
+                    offline: 'var(--status-offline)',
+                    dnd: 'var(--status-dnd)',
+                },
             },
               
             textColor: {

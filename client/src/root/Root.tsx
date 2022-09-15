@@ -1,7 +1,9 @@
 import { useUserSettings } from '@hooks';
 import { store } from '@redux/store';
+import { customBlur } from '@utils';
 import { FC, useEffect } from 'react';
 import { Provider } from 'react-redux';
+import { Masks } from './components';
 // import { useOutline } from './hooks';
 import { RootRouter } from './router';
 import './styles/main.scss';
@@ -11,10 +13,24 @@ import './styles/main.scss';
 export const Root: FC = () => {
     // useOutline();
 
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') customBlur();
+        };
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, []);
+
     return (
         <>
             {/* <Provider store={store}> */}
             {/* <div id='app-root'> */}
+            <Masks/>
+            
             <RootRouter/>
             {/* </div> */}
 

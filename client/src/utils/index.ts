@@ -6,4 +6,4 @@ export * from './socket';
 export * from './setTitle';
 export * from './debounce';
 export * from './throttle';
-export * from './blur';
+export * from './customBlur';

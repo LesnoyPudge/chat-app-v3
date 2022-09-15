@@ -1,7 +1,9 @@
 
 
 
-type ExtraStatusType = 'default' | 'afk' | 'dnd' | 'invisible';
+export type ExtraStatusType = 'default' | 'afk' | 'dnd' | 'invisible';
+
+export type StatusType = 'online' | 'offline';
 
 export interface IUserSettings {
     theme: 'auto' | 'dark' | 'light';
@@ -42,7 +44,7 @@ export interface IUserPreview {
     username: string;
     avatar: string;
     extraStatus: ExtraStatusType;
-    status: 'online' | 'offline';
+    status: StatusType;
     isDeleted: boolean;
 }
 

@@ -38,7 +38,7 @@ export const Button: FC<IButtonProps> = ({
 }) => {
     const baseStyling = `text-center rounded underline-offset-4 decoration-1
     decoration-current py-1 px-3 transition-all duration-100`;
-    const brandVariant = `text-primary bg-secondary-100 hover:bg-secondary-200 
+    const brandVariant = `text-white font-semibold bg-secondary-100 hover:bg-secondary-200 
     focus-visible:bg-secondary-200 active:bg-secondary-300 
     ${isActive ? 'bg-secondary-300' : ''}`;
     const linkVariant = 'p-0 text-link hover:underline focus-visible:underline';

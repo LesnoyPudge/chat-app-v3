@@ -2,9 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import envCompalible from 'vite-plugin-env-compatible';
 import tsconfigPaths from 'vite-tsconfig-paths';
-// import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import svgrPlugin from 'vite-plugin-svgr';
-import path from 'path';
 
 
 

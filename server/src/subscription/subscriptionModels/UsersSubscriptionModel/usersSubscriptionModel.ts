@@ -1,6 +1,6 @@
 import { UserService } from '@services';
 import { socket } from '@socket';
-import { IUser, IUserPreview } from '@types';
+import { IUser, IUserPreview, StatusType } from '@types';
 import { ISubscriptionModel } from '@subscription';
 import { subscriptionHelpers } from '@subscription/helpers';
 import { UserDto } from '@dtos';
@@ -80,7 +80,7 @@ export const usersSubscriptionModel: ISubscriptionModel<IUserPreview> = {
     },
 };
 
-const addUserEntity = ({ entity, status }: {entity: IUser, status: 'online' | 'offline'}) => {
+const addUserEntity = ({ entity, status }: {entity: IUser, status: StatusType}) => {
     usersSubscriptionModel.entityList[entity.id] = {
         info: {
             ...entity,

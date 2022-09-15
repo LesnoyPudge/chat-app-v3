@@ -16,41 +16,39 @@ export const FriendsPage: FC = () => {
         <TabContexProvider tabs={mockTabs}>
             {({ currentTab }) => (
                 <>
-                    <TopBar>
-                        <div className='flex px-2 items-center'>
-                            <Icon 
-                                iconId='friend-icon' 
-                                height={24} 
-                                width={24}
-                                className='fill-icon-300 mx-2'
-                            /> 
+                    <TopBar className='px-2 items-center'>
+                        <Icon 
+                            iconId='friend-icon' 
+                            height={24} 
+                            width={24}
+                            className='fill-icon-300 mx-2'
+                        /> 
                 
-                            <h3 className='text-heading_m text-primary font-medium'>
+                        <h3 className='text-heading_m text-primary font-medium'>
                                 Друзья
-                            </h3>
+                        </h3>
 
-                            <Separator spacing={16} orientation='vertical' height={24}/>
+                        <Separator spacing={16} orientation='vertical' height={24}/>
 
-                            <TabNavigationButton identifier='OnlineFriends'>
+                        <TabNavigationButton identifier='OnlineFriends'>
                                 В сети
-                            </TabNavigationButton>
+                        </TabNavigationButton>
 
-                            <TabNavigationButton identifier='AllFriends'>
+                        <TabNavigationButton identifier='AllFriends'>
                                 Все
-                            </TabNavigationButton>
+                        </TabNavigationButton>
 
-                            <TabNavigationButton identifier='IncomingRequests'>
+                        <TabNavigationButton identifier='IncomingRequests'>
                                 Ожидение
-                            </TabNavigationButton>
+                        </TabNavigationButton>
 
-                            <TabNavigationButton identifier='Blocked'>
+                        <TabNavigationButton identifier='Blocked'>
                                 Заблокированные
-                            </TabNavigationButton>
+                        </TabNavigationButton>
 
-                            <Button variant='brand'>
+                        <Button variant='brand'>
                                 Добавить в друзья
-                            </Button>
-                        </div>
+                        </Button>
                     </TopBar>
 
                     <div className='flex flex-col h-full'>

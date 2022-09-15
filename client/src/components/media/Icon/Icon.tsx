@@ -20,7 +20,7 @@ export const Icon: FC<IIcon> = ({
     return (
         <>
             <svg 
-                className={twMerge(`transition-all ${className}`)} 
+                className={twMerge(`transition-all flex flex-shrink-0 ${className}`)} 
                 width={width} 
                 height={height}
             >
