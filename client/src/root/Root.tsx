@@ -1,12 +1,14 @@
 import { useUserSettings } from '@hooks';
 import { store } from '@redux/store';
 import { customBlur } from '@utils';
-import { FC, useEffect } from 'react';
+import { FC, lazy, Suspense, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { Masks } from './components';
 // import { useOutline } from './hooks';
 import { RootRouter } from './router';
 import './styles/main.scss';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorPage from '@pages/ErrorPage';
 
 
 
@@ -31,7 +33,10 @@ export const Root: FC = () => {
             {/* <div id='app-root'> */}
             <Masks/>
             
-            <RootRouter/>
+            <ErrorBoundary FallbackComponent={ErrorPage}>
+                <RootRouter/>
+            </ErrorBoundary>
+            
             {/* </div> */}
 
             {/* <div id='modal-root'></div> */}

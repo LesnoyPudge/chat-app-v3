@@ -14,11 +14,36 @@
             object-cover 
             object-center;
     }
-
+    
     .custom-scrollbar {
         &-hide {
             &::-webkit-scrollbar {
-                display: none;
+                @apply hidden;
+            }
+        }
+
+        &-variant {
+            &-primary {
+                &::-webkit-scrollbar {
+                    @apply 
+                        w-4 
+                        bg-primary-300
+                        border-4
+                        border-solid
+                        border-transparent
+                        rounded-full
+                        bg-clip-content;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    @apply 
+                        bg-primary-500 
+                        border-4
+                        border-solid
+                        border-transparent
+                        rounded-full
+                        bg-clip-content;
+                }
             }
         }
     }

@@ -6,11 +6,18 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 /** @type {import('tailwindcss').Config} */
 // eslint-disable-next-line no-undef
 module.exports = {
-    // darkMode: ''
     content: [
         './index.html',
         './src/**/*.{js,ts,jsx,tsx}',
     ],
+
+    
+    plugins: [
+        require('tailwindcss-scoped-groups')({
+            groups: ['1', '2', '3', '4', '5'],
+        }),
+    ],
+
     theme: {
         extend: {
             fontFamily: {
@@ -20,6 +27,7 @@ module.exports = {
             colors: {
                 green: 'var(--green)',
                 white: 'var(--white)',
+                red: 'var(--red)',
                 status: {
                     online: 'var(--status-online)',
                     afk: 'var(--status-afk)',
@@ -46,11 +54,16 @@ module.exports = {
                     400: 'var(--color-bg-primary-400)',
                     500: 'var(--color-bg-primary-500)',
                 },
+                
                 secondary: {
                     100: 'var(--color-bg-secondary-100)',
                     200: 'var(--color-bg-secondary-200)',
                     300: 'var(--color-bg-secondary-300)',
                 },
+
+                hover: 'var(--color-bg-hover)',
+                active: 'var(--color-bg-active)',
+                selected: 'var(--color-bg-selected)',
 
                 light: 'var(--color-bg-light)',
             },
@@ -96,5 +109,4 @@ module.exports = {
             },
         },
     },
-    plugins: [],
 };

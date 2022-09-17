@@ -25,7 +25,7 @@ export const UserAvatar: FC<IUserAvatar> = ({
     size,
 }) => {
     const showStatus = !!status;
-    const isDefault = extraStatus === 'default';
+    const isDefault = extraStatus === 'default' || status === 'offline';
     const classes = 'absolute bottom-0 right-0 w-1/3 h-1/3';
     const statuses = {
         online: {

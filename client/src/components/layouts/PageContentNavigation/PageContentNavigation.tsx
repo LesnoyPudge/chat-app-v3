@@ -9,7 +9,7 @@ interface IPageContentNavigation extends PropsWithChildren {
 
 export const PageContentNavigation: FC<IPageContentNavigation> = ({ children, className = '' }) => {
     return (
-        <div className={twMerge(`flex flex-col bg-primary-300 w-[240px] ${className}`)}>
+        <div className={twMerge(`flex flex-col bg-primary-300 w-[240px] shrink-0 ${className}`)}>
             {children}
         </div>
     );

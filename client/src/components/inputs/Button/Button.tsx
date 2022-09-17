@@ -58,7 +58,9 @@ export const Button: FC<IButtonProps> = ({
         if (e.button !== 0) return;
         if (!onClick && !onLeftClick) return;
         if (isDisabled || isLoading) return;
-
+        e.stopPropagation();
+        e.preventDefault();
+        
         onLeftClick && onLeftClick();
         (!onLeftClick && onClick) && onClick();
     };

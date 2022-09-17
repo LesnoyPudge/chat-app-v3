@@ -1,5 +1,4 @@
-export * from './form-inputs';
-export * from './Button';
+export * from './inputs';
 export * from './media';
 export * from './contexts';
 export * from './other';
