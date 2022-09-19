@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon, Separator, Tooltip, ContextMenu, RefContextProvider } from '@components';
 import { NavigationButton } from '../NavigationButton';
+import classNames from 'classnames';
 
 
 
@@ -27,8 +28,7 @@ export const ChannelsNavigation: FC = () => {
         { id: '16gra', name: '1 4', rooms: [{ id: '2' }] },
         { id: '17tyjtjd', name: 'last', rooms: [{ id: '2' }] },
     ];
-    const isAppPage = pathname === '/app';
-    const isPrivateChatPage = pathname.includes('/app/private-chat');
+    const isAppOrPrivateChatPage = pathname === '/app' || pathname.includes('/app/private-chat');
 
     return (
         <>
@@ -36,17 +36,19 @@ export const ChannelsNavigation: FC = () => {
                 <RefContextProvider>
                     <NavigationButton 
                         theme='brand' 
-                        isActive={isAppPage || isPrivateChatPage}
+                        isActive={isAppOrPrivateChatPage}
                         onLeftClick={() => navigate('/app')}
                     >
                         <Icon 
                             iconId='home-page-navigation-icon'
                             height={28} 
                             width={28}
-                            className={
-                                `fill-icon-100 m-auto group-hover:fill-white group-focus-within:fill-white
-                                    ${(isAppPage || isPrivateChatPage) && 'fill-white'}`
-                            }
+                            className={classNames(
+                                'fill-icon-100 m-auto group-hover:fill-white group-focus-within:fill-white',
+                                {
+                                    'fill-white': isAppOrPrivateChatPage,
+                                },
+                            )}
                         />
                     </NavigationButton>
 
@@ -65,21 +67,25 @@ export const ChannelsNavigation: FC = () => {
                     {
                         channels.map((channel) => {
                             const isActive = pathname.includes(`/app/channel/${channel.id}`);
-                            const navigateTo = () => navigate(`/app/channel/${channel.id}/room/${channel.rooms[0].id}`);
                             const formatedName = channel.name.split(' ').map(word => word.charAt(0)).join('');
+
+                            const handleNavigate = () => navigate(`/app/channel/${channel.id}/room/${channel.rooms[0].id}`);
                             
                             return (
                                 <RefContextProvider key={channel.id}>
                                     <NavigationButton 
                                         theme='brand' 
                                         isActive={isActive}
-                                        onLeftClick={navigateTo}
+                                        onLeftClick={handleNavigate}
                                     >
                                         <div className='px-[6px] w-full flex justify-center'>
                                             <span 
-                                                className={`font-bold text-ellipsis overflow-hidden 
-                                                group-hover:text-white group-focus-within:text-white 
-                                                ${isActive && 'text-white'}`}
+                                                className={classNames(
+                                                    'font-bold text-ellipsis overflow-hidden group-hover:text-white group-focus-within:text-white',
+                                                    {
+                                                        'text-white': isActive,
+                                                    },
+                                                )}
                                             >
                                                 {formatedName}
                                             </span>

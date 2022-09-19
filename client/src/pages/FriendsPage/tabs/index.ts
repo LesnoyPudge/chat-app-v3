@@ -1,4 +1,3 @@
 export * from './AllFriends';
-export * from './OnlineFriends';
-export * from './IncomingRequests';
-export * from './Blocked';
+export * from './FriendRequestList';
+export * from './BlockedList';

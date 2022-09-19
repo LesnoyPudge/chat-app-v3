@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { createContext, FC, ReactNode, useState } from 'react';
 
 
@@ -47,10 +48,16 @@ export const TabContexProvider: FC<ITabContexProviderProps> = ({
                 children 
                     ? children({ ...contextValues }) 
                     : tabs.map(({ tab, identifier }) => {
-                        const isCurrent = currentTab.identifier === identifier;
-                        
                         return (
-                            <div key={identifier} className={`contents ${!isCurrent ? 'hidden' : ''}`}>
+                            <div 
+                                key={identifier} 
+                                className={classNames(
+                                    'contents',
+                                    {
+                                        'hidden': currentTab.identifier !== identifier,
+                                    },
+                                )}
+                            >
                                 {tab}
                             </div>
                         );

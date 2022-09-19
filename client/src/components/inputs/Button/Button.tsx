@@ -5,20 +5,36 @@ import { twMerge } from 'tailwind-merge';
 
 
 export interface IButtonProps extends PropsWithChildren {
+    className?: string;
+    isDefaultStyled?: boolean;
+    variant?: 'brand' | 'link' | 'lite';
+    type?: 'button' | 'submit' | 'reset';
+    isLoading?: boolean;
+    isActive?: boolean;
+    isDisabled?: boolean;
     onClick?: (args?: never) => void;
     onLeftClick?: (args?: never) => void;
     onMiddleClick?: (args?: never) => void;
     onRightClick?: (args?: never) => void;
     onHoverStart?: (args?: never) => void;
     onHoverEnd?: (args?: never) => void;
-    isDefaultStyled?: boolean;
-    variant?: 'brand' | 'link' | 'lite';
-    type?: 'button' | 'submit' | 'reset';
-    className?: string;
-    isLoading?: boolean;
-    isActive?: boolean;
-    isDisabled?: boolean;
 }
+
+const buttonClasses = {
+    base: 'text-center rounded underline-offset-4 decoration-1 decoration-current py-1 px-3 transition-all duration-100',
+    brand: {
+        base: 'text-white font-semibold bg-secondary-100 hover:bg-secondary-200 focus-visible:bg-secondary-200 active:bg-secondary-300',
+        active: 'bg-secondary-300',
+    },
+    link: {
+        base: 'p-0 text-link hover:underline focus-visible:underline',
+        active: 'underline',
+    },
+    lite: {
+        base: 'text-primary hover:underline hover:text-secondary focus-visible:underline focus-visible:text-secondary active:bg-secondary-300 active:text-secondary',
+        active: 'bg-secondary-300 text-secondary',
+    },
+};
 
 export const Button: FC<IButtonProps> = ({
     onClick,
@@ -36,21 +52,10 @@ export const Button: FC<IButtonProps> = ({
     isActive = false,
     isDisabled = false,
 }) => {
-    const baseStyling = `text-center rounded underline-offset-4 decoration-1
-    decoration-current py-1 px-3 transition-all duration-100`;
-    const brandVariant = `text-white font-semibold bg-secondary-100 hover:bg-secondary-200 
-    focus-visible:bg-secondary-200 active:bg-secondary-300 
-    ${isActive ? 'bg-secondary-300' : ''}`;
-    const linkVariant = 'p-0 text-link hover:underline focus-visible:underline';
-    const liteVariant = `text-primary hover:underline hover:text-secondary
-    focus-visible:underline focus-visible:text-secondary active:bg-secondary-300
-    active:text-secondary ${isActive ? 'bg-secondary-300 text-secondary' : ''}`;
-
     const buttonCN = twMerge(classNames({
-        [baseStyling]: isDefaultStyled,
-        [brandVariant]: variant === 'brand',
-        [linkVariant]: variant === 'link',
-        [liteVariant]: variant === 'lite',
+        [buttonClasses.base]: isDefaultStyled,
+        [buttonClasses[variant || 'brand'].base]: !!variant,
+        [buttonClasses[variant || 'brand'].active]: !!variant && isActive,
         [className]: !!className,
     }));
 

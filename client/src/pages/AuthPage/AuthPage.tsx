@@ -3,6 +3,7 @@ import AuthPageBGSrc from '@assets/auth-page-bg.jpg';
 import { ITabContext, TabContex, TabContexProvider } from '@components';
 import { LoginForm, RegistrationForm } from './tabs';
 import { animated, useTransition } from '@react-spring/web';
+import classNames from 'classnames';
 
 
 
@@ -33,12 +34,15 @@ export const AuthPage: FC = () => {
                             <>
                                 {
                                     tabs.map(({ identifier, tab }) => {
-                                        const isCurrent = currentTab.identifier === identifier;
-                                            
                                         // return <Tab identifier={identifier} key={identifier}/>;
                                         
                                         return (
-                                            <div key={identifier} className={`contents ${!isCurrent ? 'hidden' : ''}`}>
+                                            <div key={identifier} className={classNames(
+                                                'contents',
+                                                {
+                                                    'hidden': currentTab.identifier !== identifier,
+                                                },
+                                            )}>
                                                 {tab}
                                             </div>
                                         );

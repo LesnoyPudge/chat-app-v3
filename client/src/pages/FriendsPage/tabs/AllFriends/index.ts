@@ -1,1 +1,1 @@
-export * from './AllFriends';
+export * from './FriendList';

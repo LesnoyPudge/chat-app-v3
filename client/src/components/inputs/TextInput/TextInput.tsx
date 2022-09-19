@@ -31,12 +31,13 @@ export const TextInput: FC<ITextInputProps> = ({
     const isError = meta.error && meta.touched;
     const [typeState, setTypeState] = useState(type);
     const id = useId();
-    const labelCN = classNames({
-        'text-secondary': !isError,
-        'text-error': isError,
-        'text-xs': true,
-        'w-full': true,
-    });
+    const labelCN = classNames(
+        'text-xs w-full',
+        {
+            'text-secondary': !isError,
+            'text-error': isError,
+        },
+    );
     
     const handleTypeToggle = () => {
         setTypeState(prev => prev === 'password' ? 'text' : 'password');
