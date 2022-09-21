@@ -1,6 +1,7 @@
-import { Button, PageContent, PageContentNavigation, Tooltip, TopBar } from '@components';
+import { Button, ContextMenu, PageContent, PageContentNavigation, RefContextProvider, Tooltip, TopBar } from '@components';
 import { FC } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { UserToolBar } from './components';
 
 
 
@@ -25,6 +26,8 @@ export const AppPage: FC = () => {
                     </Button>
                 </div>
 
+                
+                <UserToolBar/>
                 {/* AccountPanel */}
             </PageContentNavigation>
 

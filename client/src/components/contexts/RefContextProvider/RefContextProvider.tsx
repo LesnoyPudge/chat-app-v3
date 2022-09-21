@@ -17,9 +17,12 @@ export const RefContextProvider: FC<PropsWithChildren> = ({ children }) => {
         if (!containerRef.current || !containerRef.current.firstElementChild) return;
         targetRef.current = containerRef.current.firstElementChild as HTMLElement;
     }, []);
-
+    
     return (
-        <div className='contents' ref={containerRef}>
+        <div 
+            className='contents'
+            ref={containerRef}
+        >
             <RefContext.Provider value={{
                 container: containerRef,
                 target: targetRef,

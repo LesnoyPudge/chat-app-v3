@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useState , FC, useContext } from 'react';
+import { PropsWithChildren, useEffect, useState , FC, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { animated, useTransition, to } from '@react-spring/web';
 import { IRefContext, RefContext } from '@components';
@@ -40,30 +40,30 @@ export const Tooltip: FC<ITooltipProps> = ({
         if (!container.current) return;
         const containerElem = container.current;
 
-        containerElem.addEventListener('mouseenter', handleMount);
-        containerElem.addEventListener('mouseleave', handleUnmount);
-        containerElem.addEventListener('focusin', handleMount);
-        containerElem.addEventListener('focusout', handleUnmount);
-        // containerElem.addEventListener('click', handleToggle);
+        containerElem.addEventListener('mouseenter', mount);
+        containerElem.addEventListener('mouseleave', unmount);
+        containerElem.addEventListener('focusin', mount);
+        containerElem.addEventListener('focusout', unmount);
+        // containerElem.addEventListener('click', toggle);
 
         return () => {
-            containerElem.removeEventListener('mouseenter', handleMount);
-            containerElem.removeEventListener('mouseleave', handleUnmount);
-            containerElem.removeEventListener('focusin', handleMount);
-            containerElem.removeEventListener('focusout', handleUnmount);
-            // containerElem.removeEventListener('click', handleToggle);
+            containerElem.removeEventListener('mouseenter', mount);
+            containerElem.removeEventListener('mouseleave', unmount);
+            containerElem.removeEventListener('focusin', mount);
+            containerElem.removeEventListener('focusout', unmount);
+            // containerElem.removeEventListener('click', toggle);
         };
     }, [container]);
 
-    // const handleToggle = () => {
+    // const toggle = () => {
     //     setIsExist(prev => !prev);
     // };
 
-    const handleMount = () => {
+    const mount = () => {
         setIsExist(true);
     };
 
-    const handleUnmount = () => {
+    const unmount = () => {
         setIsExist(false);
     };
 

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useEffect, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 
@@ -37,21 +37,22 @@ const buttonClasses = {
 };
 
 export const Button: FC<IButtonProps> = ({
-    onClick,
-    onLeftClick,
-    onMiddleClick,
-    onRightClick,
-    onHoverStart,
-    onHoverEnd,
     children,
+    className = '',
     isDefaultStyled = true,
     variant,
-    className = '',
     type = 'button',
     isLoading = false,
     isActive = false,
     isDisabled = false,
+    onClick,
+    onLeftClick,
+    onMiddleClick,
+    onRightClick,
+    // onHoverStart,
+    // onHoverEnd,
 }) => {
+    const ref = useRef<HTMLButtonElement | null>(null);
     const buttonCN = twMerge(classNames({
         [buttonClasses.base]: isDefaultStyled,
         [buttonClasses[variant || 'brand'].base]: !!variant,
@@ -59,62 +60,97 @@ export const Button: FC<IButtonProps> = ({
         [className]: !!className,
     }));
 
-    const handleLeftClick = (e: React.MouseEvent) => {
-        if (e.button !== 0) return;
-        if (!onClick && !onLeftClick) return;
-        if (isDisabled || isLoading) return;
-        e.stopPropagation();
-        e.preventDefault();
-        
-        onLeftClick && onLeftClick();
-        (!onLeftClick && onClick) && onClick();
-    };
+    useEffect(() => {
+        if (!ref.current) return;
+        const button = ref.current;
 
-    const handleMiddleClick = (e: React.MouseEvent) => {
-        if (e.button !== 1) return;
-        if (!onClick && !onMiddleClick) return;
-        if (isDisabled || isLoading) return;
-        e.stopPropagation();
-        e.preventDefault();
+        const handleLeftClick = (e: MouseEvent) => {
+            if (e.button !== 0) return;
+            if (!onClick && !onLeftClick) return;
+            if (isDisabled || isLoading) return;
+            e.stopPropagation();
+            e.preventDefault();
+            
+            onLeftClick && onLeftClick();
+            (!onLeftClick && onClick) && onClick();
+        };
+    
+        const handleMiddleClick = (e: MouseEvent) => {
+            if (e.button !== 1) return;
+            if (!onClick && !onMiddleClick) return;
+            if (isDisabled || isLoading) return;
+            e.stopPropagation();
+            e.preventDefault();
+    
+            onMiddleClick && onMiddleClick();
+            (!onMiddleClick && onClick) && onClick();
+        };
+    
+        const handleRightClick = (e: MouseEvent) => {
+            // if (e.button !== 2) return;
+            if (!onClick && !onRightClick) return;
+            if (isDisabled || isLoading) return;
+            e.stopPropagation();
+            e.preventDefault();
+    
+            onRightClick && onRightClick();
+            (!onRightClick && onClick) && onClick();
+        };
+    
+        const handleEnter = (e: KeyboardEvent) => {
+            if (e.code !== 'Enter') return;
+            if (!onClick && !onLeftClick) return;
+            if (isDisabled || isLoading) return;
+            e.stopPropagation();
+            e.preventDefault();
+            
+            onLeftClick && onLeftClick();
+            (!onLeftClick && onClick) && onClick();
+        };
 
-        onMiddleClick && onMiddleClick();
-        (!onMiddleClick && onClick) && onClick();
-    };
+        // const handleTouchStart = (e: TouchEvent) => {
+        //     // e.stopPropagation();
+        //     // e.preventDefault();
+        //     onHoverStart && onHoverStart();
+        // };
+    
+        // const handleTouchEnd = (e: TouchEvent) => {
+        //     // e.stopPropagation();
+        //     // e.preventDefault();
+        //     onHoverEnd && onHoverEnd();
+        // };
 
-    const handleRightClick = (e: React.MouseEvent) => {
-        if (e.button !== 2) return;
-        if (!onClick && !onRightClick) return;
-        if (isDisabled || isLoading) return;
-        e.stopPropagation();
-        e.preventDefault();
+        button.addEventListener('click', handleLeftClick);
+        button.addEventListener('auxclick', handleMiddleClick);
+        button.addEventListener('contextmenu', handleRightClick);
+        button.addEventListener('keydown', handleEnter);
+        // button.addEventListener('touchstart', handleTouchStart);
+        // button.addEventListener('touchend', handleTouchEnd);
+        // button.addEventListener('touchcancel', handleTouchEnd);
 
-        onRightClick && onRightClick();
-        (!onRightClick && onClick) && onClick();
-    };
-
-    const handleTouchStart = (e: React.TouchEvent) => {
-        // e.stopPropagation();
-        // e.preventDefault();
-        onHoverStart && onHoverStart();
-    };
-
-    const handleTouchEnd = (e: React.TouchEvent) => {
-        // e.stopPropagation();
-        // e.preventDefault();
-        onHoverEnd && onHoverEnd();
-    };
+        return () => {
+            button.removeEventListener('click', handleLeftClick);
+            button.removeEventListener('auxclick', handleMiddleClick);
+            button.removeEventListener('contextmenu', handleRightClick);
+            button.removeEventListener('keydown', handleEnter);
+            // button.removeEventListener('touchstart', handleTouchStart);
+            // button.removeEventListener('touchend', handleTouchEnd);
+            // button.removeEventListener('touchcancel', handleTouchEnd);
+        };
+    }, [isDisabled, isLoading, onClick, onLeftClick, onMiddleClick, onRightClick]);
 
     return (
         <button
             className={buttonCN}
             type={type}
             disabled={isDisabled || isLoading}
-            onClick={handleLeftClick}
-            onAuxClick={handleMiddleClick}
-            onContextMenu={handleRightClick}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-            onTouchCancel={handleTouchEnd}
+            ref={ref}
+            // onClick={handleLeftClick}
+            // onAuxClick={handleMiddleClick}
+            // onContextMenu={handleRightClick}
+            // onTouchStart={handleTouchStart}
+            // onTouchEnd={handleTouchEnd}
+            // onTouchCancel={handleTouchEnd}
         >
             {children}
         </button>
