@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { IRefContext, RefContext } from '@components';
 import { animated, useTransition } from '@react-spring/web';
@@ -6,7 +6,14 @@ import ReactFocusLock from 'react-focus-lock';
 
 
 
-interface IContextMenu extends PropsWithChildren {
+type UnmountType = (e?: Event | React.UIEvent) => void;
+
+interface ContextMenuChildrenProps {
+    unmount: UnmountType;
+}
+
+interface IContextMenu {
+    children: (args: ContextMenuChildrenProps) => JSX.Element;
     handleRightClick?: boolean;
     handleLeftClick?: boolean;
     handleMiddleClick?: boolean;
@@ -39,8 +46,8 @@ export const ContextMenu: FC<IContextMenu> = ({
         setIsExist(true);
     }, []);
 
-    const unmount = useCallback((e: Event | React.UIEvent) => {
-        e.preventDefault();
+    const unmount: UnmountType = useCallback((e) => {
+        e && e.preventDefault();
         if (isExist) setIsExist(false);
     }, [isExist]);
 
@@ -157,7 +164,7 @@ export const ContextMenu: FC<IContextMenu> = ({
                         ref={contextMenuRef}
                         // onKeyDown={handleKeyDown}
                     >
-                        {children}
+                        {children({ unmount })}
                     </animated.div>
                 </ReactFocusLock>
             </>

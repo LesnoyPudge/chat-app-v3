@@ -7,3 +7,4 @@ export * from './setTitle';
 export * from './debounce';
 export * from './throttle';
 export * from './customBlur';
+export * from './copyToClipboard';

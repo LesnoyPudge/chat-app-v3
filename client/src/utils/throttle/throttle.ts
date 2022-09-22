@@ -1,25 +1,24 @@
 
 
 
-export const throttle = <F extends (...args: never[]) => unknown>(callback: F, delay: number) => {
-    let isBlocked = false;
-    let timeout = 0;
+export const throttle = <F extends (...args: never[]) => unknown>(callback: F, delay = 200) => {
+    let isThrottling = false;
+    let lastArgs: Parameters<F> | null = null;
 
-    const throttled = (...args: Parameters<F>) => {
-        if (!isBlocked) {
-            isBlocked = true;
-            callback(...args);
-            setTimeout(() => isBlocked = false, delay);
-            return;
-        }
-
-        isBlocked = true;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            callback(...args);
-            isBlocked = false;
-        }, delay);
+    const timeoutFunc = () => {
+        if (lastArgs === null) return isThrottling = false;
+        
+        callback(...lastArgs);
+        lastArgs = null;
+        setTimeout(timeoutFunc, delay);
     };
-
-    return throttled as (...args: Parameters<F>) => ReturnType<F>;
+  
+    return (...args: Parameters<F>) => {
+        if (isThrottling) return lastArgs = args;
+  
+        callback(...args);
+        isThrottling = true;
+  
+        setTimeout(timeoutFunc, delay);
+    };
 };

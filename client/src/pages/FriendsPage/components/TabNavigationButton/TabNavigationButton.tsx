@@ -18,9 +18,9 @@ export const TabNavigationButton: FC<ITabNavigationButton> = ({ children, identi
             className={classNames(
                 'px-2 py-0.5 rounded text-secondary font-semibold transition-all duration-75 shrink-0',
                 {
-                    'text-white bg-active': isActive,
+                    'text-primary bg-active': isActive,
                     [`hover:text-normal hover:bg-hover focus-visible:text-normal 
-                    focus-visible:bg-hover active:text-white active:bg-active`]: !isActive,
+                    focus-visible:bg-hover active:text-primary active:bg-active`]: !isActive,
                 },
             )}
             isActive={isActive}

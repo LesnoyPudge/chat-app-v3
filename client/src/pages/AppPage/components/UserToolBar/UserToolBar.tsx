@@ -1,105 +1,89 @@
-import { Button, ContextMenu, RefContextProvider, Tooltip, UserAvatar } from '@components';
+import { Button, ContextMenu, Icon, RefContextProvider, Tooltip, UserAvatar } from '@components';
+import { useThrottle, useToggle } from '@hooks';
+import { copyToClipboard } from '@utils';
 import { FC } from 'react';
+import { ToolBarButton } from '..';
 
-// .accountPanel {
-//     background-color: #292b2f;
-//     margin-top: auto;
-// }
 
-// .accountPreview {
-//     display: flex;
-//     align-items: center;
-//     gap: 15px;
-// }
-
-// .username {
-//     font-size: 1.4rem;
-//     color: white;
-//     font-weight: 600;
-// }
-
-// .identifier {
-//     font-size: 1.2rem;
-//     color: #b9bbbe;
-// }
-
-// .inner {
-//     display: flex;
-//     align-items: center;
-//     justify-content: space-between;
-//     height: 52px;
-//     padding: 0 8px;
-// }
 
 export const UserToolBar: FC = () => {
+    const { throttle, isThrottling } = useThrottle();
+    const username = 'myName';
+    const handleCopy = throttle(() => copyToClipboard(username), 2000);
+    const micValue = useToggle();
+    const headValue = useToggle();
+
     return (
         <div className='bg-primary-400 h-[52px] py-0 px-2 flex mt-auto items-center'>
             <RefContextProvider>
-                <div className='flex items-center hover:bg-hover focus-visible:bg-hover' tabIndex={0}>
+                <div 
+                    className='px-1 py-0.5 rounded-md mr-1 flex items-center min-w-0 w-full
+                    cursor-pointer hover:bg-hover focus-visible:bg-hover focus-within:bg-hover' 
+                    tabIndex={0}
+                >
                     <UserAvatar
                         avatar='qwe'
                         status='online'
-                        size={36}
+                        size={32}
                     />
 
                     <RefContextProvider>
                         <Button
-                            className='text-white font-semibold text-sm ml-2'
+                            className='text-primary font-semibold text-sm ml-2 
+                            overflow-hidden text-ellipsis whitespace-nowrap rounded'
                             isDefaultStyled={false}
-                            onClick={() => {
-                                console.log('copied');
-                            }}
+                            onClick={handleCopy}
                         >
-                            {'myName'}
+                            {username}
                         </Button>
 
-                        <Tooltip position='top'>
-                            <>copy name</>
+                        <Tooltip position='top' className={isThrottling ? 'bg-green text-white' : ''}>
+                            { isThrottling ? 'Cкопировано!' : 'Нажмите, чтобы скопировать'}
                         </Tooltip>
                     </RefContextProvider>
                 </div>
 
                 <ContextMenu handleLeftClick handleMiddleClick>
-                    <div className='flex flex-col'>
-                        <button>change status</button>
-                        <button>copy username</button>
-                    </div>
+                    {({ unmount }) => (
+                        <div className='flex flex-col'>
+                            <button onClick={unmount}>change status</button>
+                            <button 
+                                onClick={() => {
+                                    console.log('copied');
+                                    handleCopy();
+                                    unmount();
+                                }}
+                            >
+                                <>copy username</>
+                            </button>
+                        </div>
+                    )}
                 </ContextMenu>
             </RefContextProvider>
             
+            <ToolBarButton
+                isActive={micValue.state}
+                defaultIconId='microphone'
+                activeIconId='microphone-muted'
+                defaultTooltipContent='Откл. микрофон'
+                activeTooltipContent= 'Вкл. микрофон'
+                onClick={micValue.toggle}
+            />
+
+            <ToolBarButton
+                isActive={headValue.state}
+                defaultIconId='headphone'
+                activeIconId='headphone-muted'
+                defaultTooltipContent='Откл. звук'
+                activeTooltipContent= 'Вкл. звук'
+                onClick={headValue.toggle}
+            />
+
+            <ToolBarButton
+                defaultIconId='settings-gear'
+                defaultTooltipContent='Настройки пользователя'
+                onClick={() => console.log('open modal settings')}
+            />
         </div>
-        // <div className={styles.accountPanel}>
-        //     <div className={styles.inner}>
-        //         <div className={styles.accountPreview}>
-        //             <UserAvatar
-        //                 userId={id}
-        //             />
-        //             <Tooltip 
-        //                 position='top' 
-        //                 content={
-        //                     isThrottling 
-        //                         ? 'Cкопировано' 
-        //                         : 'Нажмите, чтобы скопировать'
-        //                 }
-        //             >
-        //                 <Flex direction='column' cursor='pointer' nativeAttributes={{ onClick: handleCopy }}>
-        //                     <Text fontSize={1.4} fontWeight={600} color='#fff'>
-        //                         {username}
-        //                     </Text>
-
-    //                     <Text fontSize={1.2} color='#b9bbbe'>
-    //                             #{identifier}
-    //                     </Text>
-    //                 </Flex>
-    //             </Tooltip>
-    //         </div>
-
-    //         <OpenModalButton
-    //             name='AppSettings'
-    //         >
-    //                 Settings
-    //         </OpenModalButton>
-    //     </div>
-    // </div>
     );
 };

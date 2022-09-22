@@ -4,7 +4,7 @@ import { createContext, FC, ReactNode, useState } from 'react';
 
 
 export interface ITab {
-    tab: ReactNode | any;
+    tab: ReactNode;
     identifier: string;
 }
 

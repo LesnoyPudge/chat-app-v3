@@ -1,13 +1,11 @@
 
 
 
-export const debounce = <F extends (...args: never[]) => unknown>(callback: F, delay: number) => {
+export const debounce = <F extends (...args: never[]) => unknown>(callback: F, delay = 200) => {
     let timeout = 0;
 
-    const debounced = (...args: Parameters<F>) => {
+    return (...args: Parameters<F>) => {
         clearTimeout(timeout);
         timeout = setTimeout(() => callback(...args), delay);
     };
-
-    return debounced as (...args: Parameters<F>) => ReturnType<F>;
 };
