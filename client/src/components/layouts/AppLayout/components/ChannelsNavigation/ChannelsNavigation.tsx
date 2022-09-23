@@ -40,7 +40,7 @@ export const ChannelsNavigation: FC = () => {
                         onLeftClick={() => navigate('/app')}
                     >
                         <Icon 
-                            iconId='home-page-navigation-icon'
+                            iconId='discord-logo'
                             height={28} 
                             width={28}
                             className={classNames(
@@ -57,7 +57,9 @@ export const ChannelsNavigation: FC = () => {
                     </Tooltip>
 
                     <ContextMenu>
-                        <>menu</>
+                        {() => (
+                            <>menu</>
+                        )}
                     </ContextMenu>
                 </RefContextProvider>
                 
@@ -68,7 +70,6 @@ export const ChannelsNavigation: FC = () => {
                         channels.map((channel) => {
                             const isActive = pathname.includes(`/app/channel/${channel.id}`);
                             const formatedName = channel.name.split(' ').map(word => word.charAt(0)).join('');
-
                             const handleNavigate = () => navigate(`/app/channel/${channel.id}/room/${channel.rooms[0].id}`);
                             
                             return (
@@ -97,7 +98,9 @@ export const ChannelsNavigation: FC = () => {
                                     </Tooltip>
 
                                     <ContextMenu>
-                                        <>menu</>
+                                        {() => (
+                                            <>menu</>
+                                        )}
                                     </ContextMenu>
                                 </RefContextProvider>
                             );
@@ -125,7 +128,9 @@ export const ChannelsNavigation: FC = () => {
                     </Tooltip>
 
                     <ContextMenu>
-                        <>menu</>
+                        {() => (
+                            <>menu</>
+                        )}
                     </ContextMenu>
                 </RefContextProvider>
             </div>

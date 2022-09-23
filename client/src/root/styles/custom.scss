@@ -46,5 +46,47 @@
                 }
             }
         }
+
+        &-w {
+            &-1 {
+                &::-webkit-scrollbar {
+                    @apply w-1 border-1;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    @apply border-1;
+                }
+            }
+
+            &-2 {
+                &::-webkit-scrollbar {
+                    @apply w-2 border-2;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    @apply border-2;
+                }
+            }
+
+            &-3 {
+                &::-webkit-scrollbar {
+                    @apply w-3 border-[3px];
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    @apply border-[3px];
+                }
+            }
+
+            &-4 {
+                &::-webkit-scrollbar {
+                    @apply w-4 border-4;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    @apply border-4;
+                }
+            }
+        }
     }
 }

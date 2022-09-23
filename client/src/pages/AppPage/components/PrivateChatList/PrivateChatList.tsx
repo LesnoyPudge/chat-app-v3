@@ -16,6 +16,223 @@ interface IPrivateChats {
 const privateChats: IPrivateChats[] = [
     {
         id: '1',
+        username: 'friend 1 qweqweqweqweqweqweqweqweqweqweqweqweqweqwwew',
+        avatar: 'https://i.pravatar.cc/51',
+        status: 'online',
+        extraStatus: 'default',
+    },
+
+    {
+        id: '2',
+        username: 'friend 2',
+        avatar: 'https://i.pravatar.cc/52',
+        status: 'offline',
+        extraStatus: 'dnd',
+    },
+
+    {
+        id: '3',
+        username: 'friend 3',
+        avatar: 'https://i.pravatar.cc/53',
+        status: 'online',
+        extraStatus: 'afk',
+    },
+
+    {
+        id: '4',
+        username: 'friend 4',
+        avatar: 'https://i.pravatar.cc/54',
+        status: 'online',
+        extraStatus: 'dnd',
+    },
+    {
+        id: '1',
+        username: 'friend 1',
+        avatar: 'https://i.pravatar.cc/51',
+        status: 'online',
+        extraStatus: 'default',
+    },
+
+    {
+        id: '2',
+        username: 'friend 2',
+        avatar: 'https://i.pravatar.cc/52',
+        status: 'offline',
+        extraStatus: 'dnd',
+    },
+
+    {
+        id: '3',
+        username: 'friend 3',
+        avatar: 'https://i.pravatar.cc/53',
+        status: 'online',
+        extraStatus: 'afk',
+    },
+
+    {
+        id: '4',
+        username: 'friend 4',
+        avatar: 'https://i.pravatar.cc/54',
+        status: 'online',
+        extraStatus: 'dnd',
+    },
+    {
+        id: '1',
+        username: 'friend 1',
+        avatar: 'https://i.pravatar.cc/51',
+        status: 'online',
+        extraStatus: 'default',
+    },
+
+    {
+        id: '2',
+        username: 'friend 2',
+        avatar: 'https://i.pravatar.cc/52',
+        status: 'offline',
+        extraStatus: 'dnd',
+    },
+
+    {
+        id: '3',
+        username: 'friend 3',
+        avatar: 'https://i.pravatar.cc/53',
+        status: 'online',
+        extraStatus: 'afk',
+    },
+
+    {
+        id: '4',
+        username: 'friend 4',
+        avatar: 'https://i.pravatar.cc/54',
+        status: 'online',
+        extraStatus: 'dnd',
+    },
+    {
+        id: '1',
+        username: 'friend 1',
+        avatar: 'https://i.pravatar.cc/51',
+        status: 'online',
+        extraStatus: 'default',
+    },
+
+    {
+        id: '2',
+        username: 'friend 2',
+        avatar: 'https://i.pravatar.cc/52',
+        status: 'offline',
+        extraStatus: 'dnd',
+    },
+
+    {
+        id: '3',
+        username: 'friend 3',
+        avatar: 'https://i.pravatar.cc/53',
+        status: 'online',
+        extraStatus: 'afk',
+    },
+
+    {
+        id: '4',
+        username: 'friend 4',
+        avatar: 'https://i.pravatar.cc/54',
+        status: 'online',
+        extraStatus: 'dnd',
+    },
+    {
+        id: '1',
+        username: 'friend 1',
+        avatar: 'https://i.pravatar.cc/51',
+        status: 'online',
+        extraStatus: 'default',
+    },
+
+    {
+        id: '2',
+        username: 'friend 2',
+        avatar: 'https://i.pravatar.cc/52',
+        status: 'offline',
+        extraStatus: 'dnd',
+    },
+
+    {
+        id: '3',
+        username: 'friend 3',
+        avatar: 'https://i.pravatar.cc/53',
+        status: 'online',
+        extraStatus: 'afk',
+    },
+
+    {
+        id: '4',
+        username: 'friend 4',
+        avatar: 'https://i.pravatar.cc/54',
+        status: 'online',
+        extraStatus: 'dnd',
+    },
+    {
+        id: '1',
+        username: 'friend 1',
+        avatar: 'https://i.pravatar.cc/51',
+        status: 'online',
+        extraStatus: 'default',
+    },
+
+    {
+        id: '2',
+        username: 'friend 2',
+        avatar: 'https://i.pravatar.cc/52',
+        status: 'offline',
+        extraStatus: 'dnd',
+    },
+
+    {
+        id: '3',
+        username: 'friend 3',
+        avatar: 'https://i.pravatar.cc/53',
+        status: 'online',
+        extraStatus: 'afk',
+    },
+
+    {
+        id: '4',
+        username: 'friend 4',
+        avatar: 'https://i.pravatar.cc/54',
+        status: 'online',
+        extraStatus: 'dnd',
+    },
+    {
+        id: '1',
+        username: 'friend 1',
+        avatar: 'https://i.pravatar.cc/51',
+        status: 'online',
+        extraStatus: 'default',
+    },
+
+    {
+        id: '2',
+        username: 'friend 2',
+        avatar: 'https://i.pravatar.cc/52',
+        status: 'offline',
+        extraStatus: 'dnd',
+    },
+
+    {
+        id: '3',
+        username: 'friend 3',
+        avatar: 'https://i.pravatar.cc/53',
+        status: 'online',
+        extraStatus: 'afk',
+    },
+
+    {
+        id: '4',
+        username: 'friend 4',
+        avatar: 'https://i.pravatar.cc/54',
+        status: 'online',
+        extraStatus: 'dnd',
+    },
+    {
+        id: '1',
         username: 'friend 1',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -51,23 +268,18 @@ export const PrivateChatList: FC = () => {
     const { navigateToPrivateChat } = useNavigateTo();
 
     return (
-        <div className='flex flex-col'>
-            <h2 className='mx-3.5 mb-4 mt-10 uppercase font-semibold text-xs text-normal'>
+        <div className='flex flex-col shrink-0 grow'>
+            <h2 className='mx-3.5 mb-4 uppercase font-semibold text-xs text-normal'>
                 Личные сообщения
             </h2>
 
-            {/* <div 
-                className='flex flex-col w-full h-full overflow-x-hidden overflow-y-scroll relative custom-scrollbar-variant-primary'
+            <div 
+                className='flex flex-col overflow-x-hidden overflow-y-scroll relative 
+                h-full custom-scrollbar-variant-primary custom-scrollbar-w-2'
             >
-                <ul className='absolute w-full pr-2.5'>
-                    {children}
-                </ul>
-            </div> */}
-
-            <ul className='flex flex-col gap-0.5 mx-1.5 overflow-y-scroll h-[500px] relative h-full'>
-                <div className='flex flex-col gap-0.5 absolute h-full'>
+                <ul className='flex flex-col gap-[3px] absolute w-full pt-1 pb-4'>
                     {
-                        privateChats.map(({ id, avatar, extraStatus, status, username }) => {
+                        privateChats.map(({ id, avatar, extraStatus, status, username }, index) => {
                             const handleNavigate = () => navigateToPrivateChat({ privateChatId: id });
                             const handleHideChat = () => console.log('chat hidden');
                             const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -76,10 +288,11 @@ export const PrivateChatList: FC = () => {
 
                             return (
                                 <li 
-                                    className='flex px-2 h-[42px] items-center rounded-md
-                                hover:bg-hover focus-visible:bg-hover focus-within:bg-hover group'
+                                    className='flex shrink-0 ml-2 mr-0.5 pl-2 pr-1 h-[42px] items-center 
+                                    rounded-md cursor-pointer hover:bg-hover focus-visible:bg-hover 
+                                    focus-within:bg-hover group'
                                     tabIndex={0}
-                                    key={id}
+                                    key={id + index}
                                     onClick={handleNavigate}
                                     onKeyDown={handleKeyDown}
                                 >
@@ -93,23 +306,24 @@ export const PrivateChatList: FC = () => {
                                     />
 
                                     <span 
-                                        className='ml-3 font-semibold text-muted group-hover:text-normal 
-                                    group-focus-visible:text-normal group-focus-within:text-normal'
+                                        className='ml-3 font-medium text-muted overflow-hidden
+                                        text-ellipsis whitespace-nowrap group-hover:text-normal 
+                                        group-focus-visible:text-normal group-focus-within:text-normal'
                                     >
                                         {username}
                                     </span>
 
                                     <RefContextProvider>
                                         <Button
-                                            className='ml-auto flex shrink-0 group-1'
+                                            className='ml-auto flex shrink-0 h-7 w-7 group-1'
                                             isDefaultStyled={false}
                                             onClick={handleHideChat}
                                         >
                                             <Icon
                                                 className='m-auto fill-icon-200 opacity-0
-                                            group-hover:opacity-100 group-focus-visible:opacity-100 
-                                            group-focus-within:opacity-100 group-1-hover:fill-icon-100
-                                            group-1-focus-visible:fill-icon-100 transition-none'
+                                                group-hover:opacity-100 group-focus-visible:opacity-100 
+                                                group-focus-within:opacity-100 group-1-hover:fill-icon-100
+                                                group-1-focus-visible:fill-icon-100 transition-none'
                                                 iconId='cross-icon'
                                                 height={20}
                                                 width={20}
@@ -124,8 +338,8 @@ export const PrivateChatList: FC = () => {
                             );
                         })
                     }
-                </div>
-            </ul>
+                </ul>
+            </div>
         </div>
     );
 };

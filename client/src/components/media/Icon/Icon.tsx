@@ -1,6 +1,7 @@
 import { FC } from 'react';
-import sprite from '@assets/sprite.svg';
 import { twMerge } from 'tailwind-merge';
+import SVG from 'react-inlinesvg';
+import { useToggle } from '@hooks';
 
 
 
@@ -18,14 +19,16 @@ export const Icon: FC<IIcon> = ({
     className = '', 
 }) => {
     return (
-        <>
-            <svg 
-                className={twMerge(`transition-all flex flex-shrink-0 ${className}`)} 
+        <div 
+            className={twMerge(`transition-all flex flex-shrink-0 ${className}`)}
+            style={{ width, height }}
+        >
+            <SVG
+                src={`/src/assets/icons/${iconId}.svg`} 
                 width={width} 
                 height={height}
-            >
-                <use xlinkHref={`${sprite}#${iconId}`}></use>
-            </svg>
-        </>
+                cacheRequests
+            />
+        </div>
     );
 };
