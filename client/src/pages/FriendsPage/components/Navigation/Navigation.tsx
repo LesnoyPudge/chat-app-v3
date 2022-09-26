@@ -1,4 +1,4 @@
-import { Button, Icon, Separator, TopBar } from '@components';
+import { Button, Icon, ModalContextProvider, Separator, AddFriendModal, TopBar } from '@components';
 import { FC } from 'react';
 import { TabNavigationButton } from '../TabNavigationButton';
 
@@ -48,9 +48,17 @@ export const Navigation: FC = () => {
 
             <Separator spacing={16} orientation='vertical' height={24}/>
 
-            <Button variant='brand'>
-                Добавить в друзья
-            </Button>
+            <ModalContextProvider>
+                {({ openModal }) => (
+                    <>
+                        <Button variant='brand' onClick={openModal}>
+                            Добавить в друзья
+                        </Button>
+
+                        <AddFriendModal/>
+                    </>
+                )}
+            </ModalContextProvider>
         </TopBar>
     );
 };

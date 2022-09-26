@@ -6,6 +6,7 @@ import { twMerge } from 'tailwind-merge';
 
 export interface IButtonProps extends PropsWithChildren {
     className?: string;
+    activeClassName?: string;
     isDefaultStyled?: boolean;
     variant?: 'brand' | 'link' | 'lite';
     type?: 'button' | 'submit' | 'reset';
@@ -39,6 +40,7 @@ const buttonClasses = {
 export const Button: FC<IButtonProps> = ({
     children,
     className = '',
+    activeClassName = '',
     isDefaultStyled = true,
     variant,
     type = 'button',
@@ -58,6 +60,7 @@ export const Button: FC<IButtonProps> = ({
         [buttonClasses[variant || 'brand'].base]: !!variant,
         [buttonClasses[variant || 'brand'].active]: !!variant && isActive,
         [className]: !!className,
+        [activeClassName]: !!activeClassName && isActive,
     }));
 
     useEffect(() => {
@@ -145,12 +148,6 @@ export const Button: FC<IButtonProps> = ({
             type={type}
             disabled={isDisabled || isLoading}
             ref={ref}
-            // onClick={handleLeftClick}
-            // onAuxClick={handleMiddleClick}
-            // onContextMenu={handleRightClick}
-            // onTouchStart={handleTouchStart}
-            // onTouchEnd={handleTouchEnd}
-            // onTouchCancel={handleTouchEnd}
         >
             {children}
         </button>
