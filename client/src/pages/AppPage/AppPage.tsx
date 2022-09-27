@@ -1,8 +1,8 @@
 import { Button, Icon, PageContent, PageContentNavigation, TopBar } from '@components';
-import { useNavigateTo } from '@hooks';
+import { useNavigator } from '@hooks';
 import classNames from 'classnames';
 import { FC } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import { PrivateChatList, UserToolBar } from './components';
 
@@ -14,9 +14,8 @@ const iconCN = `mr-3 fill-icon-200 group-hover:fill-icon-100
 group-focus-visible:fill-icon-100 transition-none`;
 
 export const AppPage: FC = () => {
-    const { pathname } = useLocation();
-    const { navigateToApp } = useNavigateTo();
-    const isActive = pathname === '/app';
+    const { navigateTo, myLocationIs } = useNavigator();
+    const isActive = myLocationIs.app;
 
     return (
         <div className='flex w-full'>
@@ -26,7 +25,7 @@ export const AppPage: FC = () => {
                         className={twMerge(classNames(buttonCN, { 'bg-hover': isActive }))}
                         isDefaultStyled={false}
                         isActive={isActive}
-                        onClick={navigateToApp}
+                        onClick={navigateTo.app}
                     >
                         <Icon
                             className={twMerge(classNames(iconCN, { 'fill-icon-100': isActive }))}

@@ -1,7 +1,6 @@
 import { FC, useMemo } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { ActionButton, List, ListHeading, ListItem } from '../../components';
-import { useNavigateTo } from '@hooks';
 
 
 

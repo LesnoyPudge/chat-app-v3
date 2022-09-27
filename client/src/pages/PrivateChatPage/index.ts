@@ -1,0 +1,1 @@
+export { PrivateChatPage as default } from './PrivateChatPage';

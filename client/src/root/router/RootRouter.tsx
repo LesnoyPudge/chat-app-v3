@@ -7,6 +7,7 @@ const AppLayout = lazy(() => import('@layouts/AppLayout'));
 const AppPage = lazy(() => import('@pages/AppPage'));
 const AuthPage = lazy(() => import('@pages/AuthPage'));
 const FriendsPage = lazy(() => import('@pages/FriendsPage'));
+const PrivateChatPage = lazy(() => import('@pages/PrivateChatPage'));
 
 export const RootRouter: FC = () => {
     return (
@@ -37,7 +38,11 @@ export const RootRouter: FC = () => {
                                 </Suspense>
                             }/>
                             
-                            <Route path='private-chat/:privateChannelId' element={<>private chat page</>}/>
+                            <Route path='private-chat/:privateChatId' element={
+                                <Suspense fallback={<>loading private chat page page...</>}>
+                                    <PrivateChatPage/>
+                                </Suspense>
+                            }/>
                         </Route>
                         
                         <Route path='channel/:channelId' element={<>channel page</>}>

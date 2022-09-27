@@ -1,7 +1,7 @@
 import { FC, Fragment, useMemo } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { ActionButton, List, ListHeading, ListItem } from '../../components';
-import { useNavigateTo } from '@hooks';
+import { useNavigator } from '@hooks';
 
 
 
@@ -11,7 +11,7 @@ interface IFriendList {
 }
 
 export const FriendList: FC<IFriendList> = ({ filterValue, friends }) => {
-    const { navigateToPrivateChat } = useNavigateTo();
+    const { navigateTo } = useNavigator();
 
     const filtredFriends = useMemo(() => {
         return filterValue 
@@ -33,7 +33,7 @@ export const FriendList: FC<IFriendList> = ({ filterValue, friends }) => {
             <List>
                 {
                     filtredFriends.map(({ id, avatar, username, status, extraStatus }) => {
-                        const handleNavigate = () => navigateToPrivateChat({ privateChatId: id });
+                        const handleNavigate = () => navigateTo.privateChat(id);
                         
                         return (
                             <ListItem
