@@ -1,30 +1,41 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 
 
 export const useThrottle = () => {
-    const [isThrottling, setIsThrottling] = useState(false);
-    const lastArgs = useRef<never[] | null>(null);
+    const throttleRef = useRef(false);
+    const calledDuringThrottleRef = useRef(false);
+    const lastArgsRef = useRef<unknown[] | null>(null);
+    const [isThrottling, setIsThrottling] = useState(throttleRef.current);
 
-    const throttle = <F extends (...args: never[]) => unknown>(callback: F, delay = 200) => {
+    const throttle = useCallback(<F extends (...args: unknown[]) => unknown>(callback: F, delay = 200) => {
         const timeoutFunc = () => {
-            if (lastArgs.current === null) return setIsThrottling(false);
-            
-            callback(...lastArgs.current);
-            lastArgs.current = null;
-            setTimeout(timeoutFunc, delay);
-        };
-      
-        return (...args: Parameters<F>) => {
-            if (isThrottling) return lastArgs.current = args;
-      
-            callback(...args);
-            setIsThrottling(true);
-      
-            setTimeout(timeoutFunc, delay);
-        };
-    };
+            if (!calledDuringThrottleRef.current) {
+                throttleRef.current = false;
+                lastArgsRef.current = null;
+                setIsThrottling(false);
+                return;
+            }
 
+            callback(...lastArgsRef.current || []);
+            calledDuringThrottleRef.current = false;
+            lastArgsRef.current = null;
+            setTimeout(timeoutFunc, delay);
+        };
+        
+        return (...args: Parameters<F>): void => {
+            if (throttleRef.current) {
+                lastArgsRef.current = args;
+                calledDuringThrottleRef.current = true;
+                return;
+            }
+      
+            throttleRef.current = true;
+            setIsThrottling(true);
+            callback(...args);
+            setTimeout(timeoutFunc, delay);
+        };
+    }, []);
 
     return {
         throttle,

@@ -7,3 +7,5 @@ export * from './useNavigator';
 export * from './useThrottle';
 export * from './useDebounce';
 export * from './useToggle';
+export * from './useUpdateEffect';
+export * from './useIsFirstRender';

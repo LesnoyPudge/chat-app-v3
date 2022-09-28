@@ -2,6 +2,7 @@ import { ExtraStatusType, StatusType } from '@backendTypes';
 import { TopBar } from '@components';
 import { useNavigator } from '@hooks';
 import React, { FC, useEffect, useRef, useState } from 'react';
+import { MessageInputBar } from './components';
 
 
 
@@ -62,34 +63,7 @@ const privateChats: IPrivateChat[] = [
 export const PrivateChatPage: FC = () => {
     const { params } = useNavigator();
     const friend = privateChats.filter(item => item.id === params.privateChatId)[0].friend;
-    const [value, setValue] = useState('');
-    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-    const initialHeightRef = useRef<number | null>(null);
-    const inputRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        if (!textareaRef.current) return;
-        const target = textareaRef.current;
-        // const setHeight = (target: HTMLElement) => {
-        target.style.height = '0px';
-        target.style.height = target.scrollHeight + 'px';
-        target.scrollTo({ behavior: 'auto', top: target.scrollHeight });
-        console.log([...target.value.matchAll(/\n/g)].length);
-        // };
-    }, [value]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setValue(e.currentTarget.value);
-    };
-
-    const handleKeydown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.code !== 'Enter') return;
-        e.preventDefault();
-        if (!e.shiftKey) return console.log('submit');
-
-        e.preventDefault();
-        setValue(prev => prev + '\n');
-    };
+    
 
     // useEffect(() => {
     //     if (!textareaRef.current) return;
@@ -134,39 +108,7 @@ export const PrivateChatPage: FC = () => {
 
             <ul>chat</ul>
 
-            <div 
-                className='flex min-h-[44px] max-h-[50vh] mt-auto 
-                mb-6 mx-4 rounded-lg bg-primary-100'
-            >
-                <button>attach</button>
-
-                <textarea
-                    // contentEditable
-                    className='w-full max-h-[50vh] whitespace-pre-line min-h-full p-2
-                    overflow-x-hidden overflow-y-auto custom-scrollbar-variant-primary'
-                    // type='text'
-                    placeholder={`Написать ${friend.username}`}
-                    value={value}
-                    onChange={handleChange}
-                    onKeyDown={handleKeydown}
-                    // onChange={(e) => {
-                    //     console.log('change');
-                    //     setValue(e.currentTarget.value);
-                    // }}
-                    // onKeyDown={(e) => {
-                    //     if (e.code === 'Enter') {
-                    //         console.log('enter');
-                    //         e.preventDefault();
-                    //         setValue(prev => prev + '\n');
-                    //     }
-                    // }}
-                    rows={1}
-                    ref={textareaRef}
-                    // ref={inputRef}
-                ></textarea>
-
-                <button>send</button>
-            </div>
+            <MessageInputBar/>
         </>
     );
 };

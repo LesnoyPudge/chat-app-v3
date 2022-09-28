@@ -1,24 +1,33 @@
 
 
 
-export const throttle = <F extends (...args: never[]) => unknown>(callback: F, delay = 200) => {
+export const throttle = <F extends (...args: unknown[]) => unknown>(callback: F, delay = 200) => {
     let isThrottling = false;
     let lastArgs: Parameters<F> | null = null;
+    let calledDuringThrottle = false;
 
     const timeoutFunc = () => {
-        if (lastArgs === null) return isThrottling = false;
+        if (!calledDuringThrottle) {
+            isThrottling = false;
+            lastArgs = null;
+            return;
+        }
         
-        callback(...lastArgs);
+        callback(...lastArgs || []);
         lastArgs = null;
+        calledDuringThrottle = false;
         setTimeout(timeoutFunc, delay);
     };
   
-    return (...args: Parameters<F>) => {
-        if (isThrottling) return lastArgs = args;
-  
-        callback(...args);
+    return (...args: Parameters<F>): void => {
+        if (isThrottling) {
+            lastArgs = args;
+            calledDuringThrottle = true;
+            return;
+        }
+
         isThrottling = true;
-  
+        callback(...args);
         setTimeout(timeoutFunc, delay);
     };
 };

@@ -21,8 +21,8 @@ export const SearchBar: FC<ISearchBar> = ({
     
     const focusOnSearch = () => inputRef.current && inputRef.current.focus();
     const handleClick = () => {
-        if (value) onReset();
-        if (!value) focusOnSearch();
+        if (value) return onReset();
+        return focusOnSearch();
     };
 
     return (

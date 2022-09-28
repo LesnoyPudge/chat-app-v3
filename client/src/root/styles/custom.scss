@@ -24,6 +24,8 @@
 
         &-variant {
             &-primary {
+                scrollbar-gutter: stable;
+                
                 &::-webkit-scrollbar {
                     @apply 
                         w-4 
@@ -50,11 +52,11 @@
         &-w {
             &-1 {
                 &::-webkit-scrollbar {
-                    @apply w-1 border-1;
+                    @apply w-1 border-[1px];
                 }
 
                 &::-webkit-scrollbar-thumb {
-                    @apply border-1;
+                    @apply border-[1px];
                 }
             }
 
