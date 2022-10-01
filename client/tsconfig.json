@@ -35,6 +35,7 @@
             "@types": ["src/types/index"],
             "@utils": ["src/utils/index"],
             "@pages/*": ["src/pages/*"],
+            "@libs": ["src/libs/index"],
         },
     },
     "include": [

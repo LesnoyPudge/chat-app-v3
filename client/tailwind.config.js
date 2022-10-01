@@ -44,6 +44,7 @@ module.exports = {
                 link: 'var(--color-font-link)',
                 error: 'var(--color-font-error)',
                 required: 'var(--color-font-required)',
+                placeholder: 'var(--color-font-placeholder)',
             },
 
             backgroundColor: {

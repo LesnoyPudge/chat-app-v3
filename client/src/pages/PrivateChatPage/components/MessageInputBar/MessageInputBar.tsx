@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { FC, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { MessageInput } from '..';
+import { MessageInput, MessageInputV2 } from '..';
 
 
 
@@ -26,7 +26,8 @@ export const MessageInputBar: FC<IMessageInputBar> = ({
         >
             <button className='h-11'>attach</button>
 
-            <MessageInput placeholder={placeholder}/>
+            <MessageInput/>
+            {/* <MessageInputV2/> */}
 
             <button className='h-11'>send</button>
         </div>
