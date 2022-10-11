@@ -1,7 +1,8 @@
-import { FC, PropsWithChildren, useState } from 'react';
-import { Descendant, createEditor } from 'slate';
+import { FC, PropsWithChildren, useMemo, useState } from 'react';
+import { Descendant, createEditor, Element, Node, Transforms, Editor, Text } from 'slate';
 import { withHistory } from 'slate-history';
 import { withReact, Slate } from 'slate-react';
+import { withEmoji } from './plugins';
 
 
 
@@ -22,12 +23,12 @@ export const SlateContainer: FC<ISlateContainer> = ({
     value = initialValue,
     onChange,
 }) => {
-    const [editor] = useState(() => withReact(withHistory(createEditor())));
+    const editor = useMemo(() => withEmoji(withReact(withHistory(createEditor()))), []);
 
     return (
         <Slate 
             editor={editor} 
-            value={value} 
+            value={value}
             onChange={onChange}
         >
             {children}

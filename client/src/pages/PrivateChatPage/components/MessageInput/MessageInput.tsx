@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { SlateEditor, SerializedSlateContent, SlateContainer, useAddEmoji } from '@libs';
 import { useSlate } from 'slate-react';
+import { twMerge } from 'tailwind-merge';
+import classNames from 'classnames';
 
 
 
@@ -17,11 +19,12 @@ export const MessageInput: FC<IMessageInput> = ({
     return (
         <SlateContainer>
             <SlateEditor
-                className='min-h-[44px]'
+                className={twMerge(classNames('min-h-[44px] py-[11px]', className))}
+                placeholder={placeholder}
             />
-
-            <Debug/>
-
+            
+            {/* <Serialized/>
+            <Debug/> */}
             <AddEmojiButton/>
         </SlateContainer>
     );
@@ -30,7 +33,7 @@ export const MessageInput: FC<IMessageInput> = ({
 const AddEmojiButton: FC = () => {
     const { addEmoji } = useAddEmoji();
     
-    const handleClick = () => addEmoji('');
+    const handleClick = () => addEmoji(':poop:');
 
     return (
         <button onClick={handleClick}>
@@ -39,12 +42,22 @@ const AddEmojiButton: FC = () => {
     );
 };
 
-const Debug: FC = () => {
+const Serialized: FC = () => {
     const editor = useSlate();
 
     return (
         <div>
             <SerializedSlateContent nodes={editor.children}/>
+        </div>
+    );
+};
+
+const Debug: FC = () => {
+    const editor = useSlate();
+    console.log(editor);
+    return (
+        <div>
+            {/* {JSON.stringify(editor.children)} */}
         </div>
     );
 };

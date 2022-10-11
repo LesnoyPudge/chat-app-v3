@@ -14,10 +14,6 @@ export const TextComponent: FC<ITextComponent> = ({
     bold = false,
     italic = false,
 }) => {
-    const isStyled = bold || italic;
-
-    if (!isStyled) return <>{text}</>;
-
     return (
         <span 
             className={classNames({ 

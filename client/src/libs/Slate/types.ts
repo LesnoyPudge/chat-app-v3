@@ -1,6 +1,7 @@
-import { BaseEditor } from 'slate';
+import { BaseEditor, ExtendedType } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { ReactEditor } from 'slate-react';
+import { EmojiCodeType } from './components';
 
 
 
@@ -8,7 +9,7 @@ export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor
 
 export type EmojiElement = {
     type: 'emoji';
-    code: string;
+    code: EmojiCodeType;
     children: [{text: ''}];
 }
 
