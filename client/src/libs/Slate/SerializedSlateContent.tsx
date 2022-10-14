@@ -1,6 +1,6 @@
 import { FC, useRef, ReactElement, useCallback, useMemo } from 'react';
 import { Descendant, Text } from 'slate';
-import { Emoji, TextComponent } from './components';
+import { Emoji, Link, Paragraph, TextComponent } from './components';
 
 
 
@@ -33,14 +33,17 @@ export const SerializedSlateContent: FC<ISerializedNode> = ({
             }
         
             const serialized = node.children.map((childrenNode) => serialize([childrenNode]));
-
+            
             switch (node.type) {
             case 'paragraph':
-                return <p key={key()}>{serialized}</p>;
-            case 'link':
-                return <a href={node.url} key={key()}>{serialized}</a>;
+                return <Paragraph isSerialized key={key()}>{serialized}</Paragraph>;
+
             case 'emoji':
-                return <Emoji code={node.code} key={key()}/>;
+                return <Emoji isSerialized code={node.code} key={key()}/>;
+
+            case 'link': 
+                return <Link isSerialized url={node.url} key={key()}>{node.url}</Link>;
+
             default:
                 return <>{serialized}</>;
             }

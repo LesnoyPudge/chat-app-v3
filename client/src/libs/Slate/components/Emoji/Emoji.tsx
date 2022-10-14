@@ -1,24 +1,39 @@
 import classNames from 'classnames';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { RenderElementProps } from 'slate-react';
 import { twMerge } from 'tailwind-merge';
+import { CustomRenderElementProps, EmojiElement, RenderElementAttributes } from '../../types';
 
 
 
 // https://unicode.org/emoji/charts/full-emoji-list.html
 export type EmojiCodeType = ':poop:' | ':smile:' | ':shit:';
 
-interface IEmoji {
+type EmojiPropsType = {
     className?: string;
+} & ({
+    isSerialized: true;
     code: EmojiCodeType;
-    props?: RenderElementProps;
-}
+    children?: never;
+    attributes?: never;
+} | {
+    isSerialized?: never;
+    code: EmojiCodeType;
+    children: ReactNode;
+    attributes: RenderElementAttributes;
+})
 
 interface IEmojiItem {
     code: EmojiCodeType[]; 
     label: string;
     filename: string;
 }
+
+export const emojiCodeList: EmojiCodeType[] = [
+    ':poop:', 
+    ':shit:', 
+    ':smile:',
+];
 
 const emojiList: IEmojiItem[] = [
     {
@@ -33,31 +48,33 @@ const emojiList: IEmojiItem[] = [
     },
 ];
 
-export const Emoji: FC<IEmoji> = ({
+export const Emoji: FC<EmojiPropsType> = ({ 
     className = '',
     code,
-    props,
+    attributes,
+    children,
 }) => {
-    const currentEmoji = emojiList.find(item => item.code.includes(code));
-
-    if (!currentEmoji) return null;
+    const formatedCode = code.toLowerCase() as EmojiCodeType;
+    const currentEmoji = emojiList.find(item => item.code.includes(formatedCode));
 
     return (
         <span
-            className={twMerge(classNames('inline-block', className))}
+            className={twMerge(classNames('inline-block w-6 h-6 mx-0.5', className))}
             contentEditable={false}
-            // eslint-disable-next-line react/prop-types
-            {...props?.attributes}
+            {...attributes}
         >
-            {props?.children}
+            {children}
             
-            <img
-                className='w-6 h-6 inline-block'
-                contentEditable={false}
-                draggable={false}
-                src={`/src/assets/emoji/${currentEmoji.filename}.svg`}
-                alt={currentEmoji.label}
-            />
+            {
+                currentEmoji &&
+                <img
+                    className='inline-block w-full h-auto'
+                    contentEditable={false}
+                    draggable={false}
+                    src={`/src/assets/emoji/${currentEmoji.filename}.svg`}
+                    alt={currentEmoji.label}
+                />
+            }
         </span>
     );
 };

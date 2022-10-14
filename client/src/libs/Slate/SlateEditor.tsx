@@ -1,11 +1,9 @@
-import { IRefContext, RefContext, RefContextProvider } from '@components';
 import classNames from 'classnames';
-import { FC, useContext, useEffect } from 'react';
-import { Editor, Text, Transforms } from 'slate';
+import { FC, useEffect } from 'react';
 import { Editable, ReactEditor, useSlate } from 'slate-react';
-import { EditableProps } from 'slate-react/dist/components/editable';
+import { EditableProps, RenderElementProps } from 'slate-react/dist/components/editable';
 import { twMerge } from 'tailwind-merge';
-import { Emoji } from './components';
+import { Emoji, Link, Paragraph } from './components';
 
 
 
@@ -15,13 +13,40 @@ interface ISlateEditor {
     rest?: Omit<EditableProps, keyof ISlateEditor>;
 }
 
+const baseClassName = 'w-full overflow-y-auto break-all';
+
+const renderElement = ({ attributes, children, element }: RenderElementProps) => {
+    switch (element.type) {
+    case 'paragraph':
+        return <Paragraph attributes={attributes}>{children}</Paragraph>;
+
+    case 'emoji':
+        return <Emoji code={element.code} attributes={attributes}>{children}</Emoji>;
+
+    case 'link': 
+        return <Link url={element.url} attributes={attributes}>{children}</Link>;
+
+    default:
+        return <>{children}</>;
+    }
+};
+
+const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.code === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        console.log('submit');
+    }
+
+    // bold shortkey
+};
+
 export const SlateEditor: FC<ISlateEditor> = ({
     className = '',
     placeholder = 'Введите текст',
     rest,
 }) => {
     const editor = useSlate();
-
+    
     useEffect(() => {
         const prevFocusedElem = document.activeElement as HTMLDivElement;
         ReactEditor.focus(editor);
@@ -32,40 +57,13 @@ export const SlateEditor: FC<ISlateEditor> = ({
     return (
         <Editable
             autoFocus={false}
-            className={twMerge(classNames('w-full overflow-y-auto break-all', className))}
-            onKeyDown={e => {
-                if (e.code === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    console.log('submit');
-                }
-            }}
+            className={twMerge(classNames(baseClassName, className))}
+            onKeyDown={onKeyDown}
             placeholder={placeholder}
-
-            // renderLeaf={({ attributes, children, leaf, text }) => {
-            //     return <></>;
+            renderElement={renderElement}
+            // renderLeaf={({ attributes, children, leaf }) => {
+            //     return <span {...attributes}>{children}</span>;
             // }}
-            renderElement={({ attributes, children, element }) => {
-                switch (element.type) {
-                case 'paragraph':
-                    return <p {...attributes}>{children}</p>;
-                case 'link':
-                    return <a 
-                        href={element.url} 
-                        target='_blank' 
-                        rel='noreferrer' 
-                        {...attributes}
-                    >
-                        {children}
-                    </a>;
-                case 'emoji':
-                    return <Emoji 
-                        code={element.code} 
-                        props={{ attributes, children, element }}
-                    />;
-                default:
-                    return <>{children}</>;
-                }
-            }}
             {...rest}
         />
     );

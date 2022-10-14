@@ -9,11 +9,7 @@ export const useAddEmoji = () => {
     const editor = useSlate();
 
     const addEmoji = useCallback((code: EmojiCodeType) => {
-        Transforms.insertNodes(editor, {
-            type: 'emoji',
-            code,
-            children: [{ text: '' }],
-        });
+        Transforms.insertText(editor, code);
     }, [editor]);
 
     return {

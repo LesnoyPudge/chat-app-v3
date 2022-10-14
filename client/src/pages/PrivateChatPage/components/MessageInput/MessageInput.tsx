@@ -23,8 +23,8 @@ export const MessageInput: FC<IMessageInput> = ({
                 placeholder={placeholder}
             />
             
-            {/* <Serialized/>
-            <Debug/> */}
+            {/* <Serialized/> */}
+            <Debug/>
             <AddEmojiButton/>
         </SlateContainer>
     );
@@ -54,7 +54,7 @@ const Serialized: FC = () => {
 
 const Debug: FC = () => {
     const editor = useSlate();
-    console.log(editor);
+    console.log(editor.children);
     return (
         <div>
             {/* {JSON.stringify(editor.children)} */}
