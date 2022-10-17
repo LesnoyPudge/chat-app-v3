@@ -17,7 +17,6 @@ export const withEmoji = (editor: CustomEditor) => {
 
     editor.normalizeNode = (entry) => {
         const [node, path] = entry;
-
         const parent = Text.isText(node) && Editor.parent(editor, path);
         const isParagraph = parent && Element.isElement(parent[0]) && parent[0].type === 'paragraph';
         const match = Text.isText(node) && node.text.match(/:[a-zA-Z]+:/gm);
@@ -31,7 +30,7 @@ export const withEmoji = (editor: CustomEditor) => {
         if (!validEmojiMatchList.length) return normalizeNode(entry);
 
         const emojiCode = validEmojiMatchList[0] as EmojiCodeType;
-        
+
         Transforms.wrapNodes(
             editor,
             {

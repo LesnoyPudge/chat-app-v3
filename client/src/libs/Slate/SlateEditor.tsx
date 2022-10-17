@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { FC, useEffect } from 'react';
-import { Editable, ReactEditor, useSlate } from 'slate-react';
+import { Editable, ReactEditor, useSlateStatic } from 'slate-react';
 import { EditableProps, RenderElementProps } from 'slate-react/dist/components/editable';
 import { twMerge } from 'tailwind-merge';
 import { Emoji, Link, Paragraph } from './components';
@@ -13,7 +13,7 @@ interface ISlateEditor {
     rest?: Omit<EditableProps, keyof ISlateEditor>;
 }
 
-const baseClassName = 'w-full overflow-y-auto break-all';
+const baseClassName = 'w-full break-all h-fit';
 
 const renderElement = ({ attributes, children, element }: RenderElementProps) => {
     switch (element.type) {
@@ -36,8 +36,6 @@ const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         e.preventDefault();
         console.log('submit');
     }
-
-    // bold shortkey
 };
 
 export const SlateEditor: FC<ISlateEditor> = ({
@@ -45,7 +43,7 @@ export const SlateEditor: FC<ISlateEditor> = ({
     placeholder = 'Введите текст',
     rest,
 }) => {
-    const editor = useSlate();
+    const editor = useSlateStatic();
     
     useEffect(() => {
         const prevFocusedElem = document.activeElement as HTMLDivElement;
@@ -61,9 +59,6 @@ export const SlateEditor: FC<ISlateEditor> = ({
             onKeyDown={onKeyDown}
             placeholder={placeholder}
             renderElement={renderElement}
-            // renderLeaf={({ attributes, children, leaf }) => {
-            //     return <span {...attributes}>{children}</span>;
-            // }}
             {...rest}
         />
     );

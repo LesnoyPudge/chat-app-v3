@@ -1,6 +1,6 @@
 import { FC, useRef, ReactElement, useCallback, useMemo } from 'react';
 import { Descendant, Text } from 'slate';
-import { Emoji, Link, Paragraph, TextComponent } from './components';
+import { Emoji, Link, Paragraph } from './components';
 
 
 
@@ -21,16 +21,7 @@ export const SerializedSlateContent: FC<ISerializedNode> = ({
 
     const serialize = useCallback((nodes: Descendant[]): ReactElement[] => {
         return nodes.map((node) => {
-            if (Text.isText(node)) {
-                return (
-                    <TextComponent
-                        text={node.text} 
-                        bold={!!node.bold} 
-                        italic={!!node.italic}
-                        key={key()}
-                    />
-                );
-            }
+            if (Text.isText(node)) return <span>{node.text}</span>;
         
             const serialized = node.children.map((childrenNode) => serialize([childrenNode]));
             

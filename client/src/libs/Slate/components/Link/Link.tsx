@@ -34,7 +34,7 @@ export const Link: FC<LinkPropsType> = ({
     );
 
     const Unserialized = () => (
-        <span className='text-link'>
+        <span className='text-link' data-fake-url={url}>
             {children}
         </span>
     );

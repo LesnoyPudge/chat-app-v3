@@ -1,7 +1,7 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
 import { TopBar } from '@components';
 import { useNavigator } from '@hooks';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import { FC } from 'react';
 import { MessageInputBar } from './components';
 
 
@@ -63,42 +63,7 @@ const privateChats: IPrivateChat[] = [
 export const PrivateChatPage: FC = () => {
     const { params } = useNavigator();
     const friend = privateChats.filter(item => item.id === params.privateChatId)[0].friend;
-    
-
-    // useEffect(() => {
-    //     if (!textareaRef.current) return;
-    //     const textarea = textareaRef.current;
-    //     // if (!initialHeightRef.current) initialHeightRef.current = textarea.clientHeight;
-
-    //     const handleInput = (e: KeyboardEvent) => {
-    //         e.preventDefault();
-    //         const target = e.target as HTMLTextAreaElement;
-    //         target.style.height = '0px';
-    //         target.style.height = target.scrollHeight + 'px';
-    //         console.log(target.scrollHeight, target.clientHeight, target.offsetHeight);
-    //     };
-
-    //     textarea.addEventListener('keydown', handleInput);
-
-    //     return () => {
-    //         textarea.removeEventListener('keydown', handleInput);
-    //     };
-    // }, []);
-
-    // useEffect(() => {
-    //     if (!inputRef.current) return;
-    //     const input = inputRef.current;
-
-    //     const handleKeydown = (e: KeyboardEvent) => {
-    //         console.log(e.key);
-    //     };
-
-    //     input.addEventListener('keydown', handleKeydown);
-
-    //     return () => {
-    //         input.removeEventListener('keydown', handleKeydown);
-    //     };
-    // }, []);
+    const placeholder = `Отправте сообщение для ${friend.username}`;
 
     return (
         <>
@@ -106,9 +71,12 @@ export const PrivateChatPage: FC = () => {
                 {friend.username}
             </TopBar>
 
-            <ul>chat</ul>
+            <ol>
+                <li>message 1</li>
+                <li>message 2</li>
+            </ol>
 
-            <MessageInputBar/>
+            <MessageInputBar placeholder={placeholder}/>
         </>
     );
 };
