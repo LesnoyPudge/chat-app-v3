@@ -39,7 +39,7 @@ export const Root: FC = () => {
             
             {/* </div> */}
 
-            {/* <div id='modal-root'></div> */}
+            {/* <div id='overlay-root'></div> */}
 
             <ThemeSwithcer/>
             {/* </Provider> */}

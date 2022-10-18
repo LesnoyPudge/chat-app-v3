@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import { FC } from 'react';
-import { SlateEditor, SlateContainer, useAddEmoji } from '@libs';
+import { SlateEditor, SlateContainer } from '@libs';
 import { twMerge } from 'tailwind-merge';
+import { EmojiPickerButton } from '..';
 
 
 
@@ -26,29 +27,15 @@ export const MessageInputBar: FC<IMessageInputBar> = ({
             <div className={twMerge(classNames(baseWrapperClassName, className))}>
                 <button className='h-11'>attach</button>
 
-            
                 <SlateEditor
                     className={twMerge(editorClassName)}
                     placeholder={placeholder}
                 />
                 
-                <AddEmojiButton/>
-            
+                <EmojiPickerButton/>
 
                 <button className='h-11'>send</button>
             </div>
         </SlateContainer>
-    );
-};
-
-const AddEmojiButton: FC = () => {
-    const { addEmoji } = useAddEmoji();
-    
-    const handleClick = () => addEmoji(':poop:');
-
-    return (
-        <button onClick={handleClick}>
-            <>add emoji</>
-        </button>
     );
 };

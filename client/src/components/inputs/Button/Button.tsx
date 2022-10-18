@@ -17,8 +17,8 @@ export interface IButtonProps extends PropsWithChildren {
     onLeftClick?: (args?: never) => void;
     onMiddleClick?: (args?: never) => void;
     onRightClick?: (args?: never) => void;
-    onHoverStart?: (args?: never) => void;
-    onHoverEnd?: (args?: never) => void;
+    onMouseEnter?: (args?: never) => void;
+    onMouseLeave?: (args?: never) => void;
 }
 
 const buttonClasses = {
@@ -51,8 +51,8 @@ export const Button: FC<IButtonProps> = ({
     onLeftClick,
     onMiddleClick,
     onRightClick,
-    // onHoverStart,
-    // onHoverEnd,
+    onMouseEnter,
+    onMouseLeave,
 }) => {
     const ref = useRef<HTMLButtonElement | null>(null);
     const buttonCN = twMerge(classNames({
@@ -111,36 +111,34 @@ export const Button: FC<IButtonProps> = ({
             (!onLeftClick && onClick) && onClick();
         };
 
-        // const handleTouchStart = (e: TouchEvent) => {
-        //     // e.stopPropagation();
-        //     // e.preventDefault();
-        //     onHoverStart && onHoverStart();
-        // };
+        const handleMouseEnter = (e: MouseEvent) => {
+            // e.stopPropagation();
+            // e.preventDefault();
+            onMouseEnter && onMouseEnter();
+        };
     
-        // const handleTouchEnd = (e: TouchEvent) => {
-        //     // e.stopPropagation();
-        //     // e.preventDefault();
-        //     onHoverEnd && onHoverEnd();
-        // };
+        const handleMouseLeave = (e: MouseEvent) => {
+            // e.stopPropagation();
+            // e.preventDefault();
+            onMouseLeave && onMouseLeave();
+        };
 
         button.addEventListener('click', handleLeftClick);
         button.addEventListener('auxclick', handleMiddleClick);
         button.addEventListener('contextmenu', handleRightClick);
         button.addEventListener('keydown', handleEnter);
-        // button.addEventListener('touchstart', handleTouchStart);
-        // button.addEventListener('touchend', handleTouchEnd);
-        // button.addEventListener('touchcancel', handleTouchEnd);
+        button.addEventListener('mouseenter', handleMouseEnter);
+        button.addEventListener('mouseleave', handleMouseLeave);
 
         return () => {
             button.removeEventListener('click', handleLeftClick);
             button.removeEventListener('auxclick', handleMiddleClick);
             button.removeEventListener('contextmenu', handleRightClick);
             button.removeEventListener('keydown', handleEnter);
-            // button.removeEventListener('touchstart', handleTouchStart);
-            // button.removeEventListener('touchend', handleTouchEnd);
-            // button.removeEventListener('touchcancel', handleTouchEnd);
+            button.removeEventListener('mouseenter', handleMouseEnter);
+            button.removeEventListener('mouseleave', handleMouseLeave);
         };
-    }, [isDisabled, isLoading, onClick, onLeftClick, onMiddleClick, onRightClick]);
+    }, [isDisabled, isLoading, onClick, onMouseLeave, onMouseEnter, onLeftClick, onMiddleClick, onRightClick]);
 
     return (
         <button

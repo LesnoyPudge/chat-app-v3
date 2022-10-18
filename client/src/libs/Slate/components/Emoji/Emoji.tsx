@@ -1,8 +1,7 @@
 import classNames from 'classnames';
 import { FC, ReactNode } from 'react';
-import { RenderElementProps } from 'slate-react';
 import { twMerge } from 'tailwind-merge';
-import { CustomRenderElementProps, EmojiElement, RenderElementAttributes } from '../../types';
+import { RenderElementAttributes } from '../../types';
 
 
 
@@ -47,6 +46,8 @@ const emojiList: IEmojiItem[] = [
         filename: 'poop',
     },
 ];
+
+export const uniqueEmojiCodeList = emojiList.map((item) => item.code[0]);
 
 export const Emoji: FC<EmojiPropsType> = ({ 
     className = '',

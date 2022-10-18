@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { IRefContext, RefContext } from '@components';
+import { IRefContext, OverlayLayer, RefContext } from '@components';
 import { animated, useTransition } from '@react-spring/web';
 import ReactFocusLock from 'react-focus-lock';
 import { twMerge } from 'tailwind-merge';
@@ -22,6 +21,8 @@ interface IContextMenu {
     handleMiddleClick?: boolean;
     children: (args: ContextMenuChildrenProps) => JSX.Element;
 }
+
+const baseClassName = 'fixed pointer-events-auto bg-primary-500 rounded text-normal p-5';
 
 export const ContextMenu: FC<IContextMenu> = ({ 
     className = '',
@@ -184,23 +185,11 @@ export const ContextMenu: FC<IContextMenu> = ({
         };
     }, [handleKeyDown, isExist]);
 
-    const contextMenu = () => {
-        return transition((style, item) => (
-            item &&
+    const contextMenu = transition((style, item) => (
+        <OverlayLayer isRendered={item}>
             <ReactFocusLock autoFocus={false} returnFocus>
-                {/* <div 
-                    className='fixed top-0 left-0 w-screen h-screen pointer-events-auto'
-                    onClick={unmount}
-                    onContextMenu={unmount}
-                    onAuxClick={unmount}
-                    // onKeyDown={handleKeyDown}
-                ></div> */}
-            
                 <animated.div
-                    className={twMerge(classNames(
-                        'fixed pointer-events-auto bg-primary-500 rounded text-normal p-5',
-                        { [className]: !!className },
-                    ))}
+                    className={twMerge(classNames(baseClassName, className))}
                     style={{ 
                         opacity: style.opacity,
                         left: menuPosition.x + offset,
@@ -211,8 +200,8 @@ export const ContextMenu: FC<IContextMenu> = ({
                     {children({ unmount })}
                 </animated.div>
             </ReactFocusLock>
-        ));
-    };
+        </OverlayLayer>
+    ));
 
-    return ReactDOM.createPortal(contextMenu(), document.getElementById('modal-root') as HTMLElement);
+    return contextMenu;
 };

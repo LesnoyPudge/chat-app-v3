@@ -10,7 +10,7 @@ export const useOutline = () => {
         const target = e.target as HTMLElement;
         const targetRect = target.getBoundingClientRect();
         const targetStyle = window.getComputedStyle(target);
-        const modalRoot = document.getElementById('modal-root') as HTMLElement;
+        const modalRoot = document.getElementById('overlay-root') as HTMLElement;
         outline.style.width = targetRect.width + 'px';
         outline.style.height = targetRect.height + 'px';
         outline.style.outlineWidth = '4px';

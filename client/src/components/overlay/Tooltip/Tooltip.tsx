@@ -1,7 +1,7 @@
 import { PropsWithChildren, useEffect, useState , FC, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { animated, useTransition, to } from '@react-spring/web';
-import { IRefContext, RefContext } from '@components';
+import { IRefContext, OverlayLayer, RefContext } from '@components';
 import { twMerge } from 'tailwind-merge';
 
 
@@ -47,20 +47,14 @@ export const Tooltip: FC<ITooltipProps> = ({
         containerElem.addEventListener('mouseleave', unmount);
         containerElem.addEventListener('focusin', mount);
         containerElem.addEventListener('focusout', unmount);
-        // containerElem.addEventListener('click', toggle);
 
         return () => {
             containerElem.removeEventListener('mouseenter', mount);
             containerElem.removeEventListener('mouseleave', unmount);
             containerElem.removeEventListener('focusin', mount);
             containerElem.removeEventListener('focusout', unmount);
-            // containerElem.removeEventListener('click', toggle);
         };
     }, [container]);
-
-    // const toggle = () => {
-    //     setIsExist(prev => !prev);
-    // };
 
     const mount = () => {
         setIsExist(true);
@@ -71,10 +65,9 @@ export const Tooltip: FC<ITooltipProps> = ({
     };
 
     const tooltip = () => {
-        if (!target.current) return;
+        if (!target.current) return null;
 
         const rect = target.current.getBoundingClientRect();
-        // spacing += tailSize;
 
         return transition((style, item) => {
             const positions = {
@@ -83,52 +76,50 @@ export const Tooltip: FC<ITooltipProps> = ({
                     translateY: to([style.animationOffset], (animationOffset) => `calc(-100% - ${animationOffset}px)`),
                     top: `${rect.top - spacing}px`,
                     left: `${rect.left + rect.width / 2}px`,
-                    // tail: tailClasses.top,
                 },
                 right: {
                     translateX: to([style.animationOffset], (animationOffset) => `${animationOffset}px`),
                     translateY: '-50%',
                     top: `${rect.top + rect.height / 2}px`,
                     left: `${rect.left + rect.width + spacing}px`,
-                    // tail: tailClasses.right,
                 },
                 bottom: {
                     translateX: '-50%',
                     translateY: to([style.animationOffset], (animationOffset) => `${animationOffset}px`),
                     top: `${rect.top + rect.height + spacing}px`,
                     left: `${rect.left + rect.width / 2}px`,
-                    // tail: tailClasses.bottom,
                 },
                 left: {
                     translateX: to([style.animationOffset], (animationOffset) => `calc(-100% - ${animationOffset}px)`),
                     translateY: '-50%',
                     top: `${rect.top + rect.height / 2}px`,
                     left: `${rect.left - spacing}px`,
-                    // tail: tailClasses.left,
                 },
             };
 
             return (
-                item && <animated.div
-                    className='fixed pointer-events-none' //${positions[position].tail}
-                    style={{ 
-                        opacity: style.opacity,
-                        translateX: positions[position].translateX,
-                        translateY: positions[position].translateY,
-                        left: positions[position].left,
-                        top: positions[position].top,
-                    }}
-                >
-                    <div 
-                        className={twMerge(`relative bg-primary-500 text-ellipsis text-normal font-bold 
-                        py-[5px] px-2.5 rounded-md w-max max-w-[300px] ${className}`)}
+                <OverlayLayer isRendered={item}>
+                    <animated.div
+                        className='fixed pointer-events-none'
+                        style={{ 
+                            opacity: style.opacity,
+                            translateX: positions[position].translateX,
+                            translateY: positions[position].translateY,
+                            left: positions[position].left,
+                            top: positions[position].top,
+                        }}
                     >
-                        {children}
-                    </div>
-                </animated.div>
+                        <div 
+                            className={twMerge(`relative bg-primary-500 text-ellipsis text-normal font-bold 
+                            py-[5px] px-2.5 rounded-md w-max max-w-[300px] ${className}`)}
+                        >
+                            {children}
+                        </div>
+                    </animated.div>
+                </OverlayLayer>
             );
         });
     };
 
-    return ReactDOM.createPortal(tooltip(), document.getElementById('modal-root') as HTMLElement);
+    return tooltip();
 };

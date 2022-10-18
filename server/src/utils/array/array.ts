@@ -1,10 +1,6 @@
 
 
 
-// interface IArray {
-//     moveElement: <T extends Array<any>>(array: T, oldIndex: number, newIndex: number) => ;
-// }
-
 export const array = {
     moveElement<T extends unknown[]>(array: T, oldIndex: number, newIndex: number): T {
         if (newIndex === oldIndex) return array;
