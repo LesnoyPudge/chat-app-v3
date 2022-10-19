@@ -1,9 +1,10 @@
-import { Button } from '@components';
+import { Button, ModalContextProvider } from '@components';
 import { Emoji, uniqueEmojiCodeList } from '@libs';
 import { getOneOf } from '@utils';
 import classNames from 'classnames';
 import { FC, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+import { EmojiPicker } from '..';
 
 
 
@@ -12,26 +13,34 @@ group-focus-visible:grayscale-0 group-focus-visible:scale-[1.14]`;
 const emojiActiveClassName = 'grayscale-0 scale-[1.14]';
 
 export const EmojiPickerButton: FC = () => {
-    const [isActive, setIsActive] = useState(false);
     const [emojiCode, setEmojiCode] = useState(getOneOf(uniqueEmojiCodeList));
 
-    const handleClick = () => setIsActive(prev => !prev);
-    const changeEmojiCode = () => setEmojiCode(getOneOf(uniqueEmojiCodeList));
-
     return (
-        <Button
-            className='group'
-            onClick={handleClick} 
-            onMouseEnter={changeEmojiCode}
-        >
-            <Emoji
-                className={twMerge(classNames(
-                    emojiBaseClassName, 
-                    { [emojiActiveClassName]: isActive },
-                ))}
-                code={emojiCode}
-                isSerialized
-            />
-        </Button>
+        <ModalContextProvider>
+            {({ toggleModal, isOpen }) => {
+                const changeEmojiCode = () => !isOpen && setEmojiCode(getOneOf(uniqueEmojiCodeList));
+            
+                return (
+                    <>
+                        <Button
+                            className='group'
+                            onClick={toggleModal} 
+                            onMouseEnter={changeEmojiCode}
+                        >
+                            <Emoji
+                                className={twMerge(classNames(
+                                    emojiBaseClassName, 
+                                    { [emojiActiveClassName]: isOpen },
+                                ))}
+                                code={emojiCode}
+                                isSerialized
+                            />
+                        </Button>
+            
+                        <EmojiPicker/>
+                    </>
+                );
+            }}
+        </ModalContextProvider>
     );
 };

@@ -1,7 +1,7 @@
 import { IUserPreview } from '@backendTypes';
-import { ITab, TabContexProvider } from '@components';
+import { ITab, TabContexProvider, SearchBar } from '@components';
 import { FC, useMemo, useState } from 'react';
-import { Navigation, SearchBar } from './components';
+import { Navigation } from './components';
 import { FriendList, FriendRequestList, BlockedList } from './tabs';
 
 
@@ -113,7 +113,8 @@ export const FriendsPage: FC = () => {
 
                         <div className='flex flex-col h-full items-start py-4 px-[30px]'>
                             <SearchBar
-                                className='mb-5'
+                                className='mb-5 h-9'
+                                placeholder='Поиск по имени'
                                 value={filterValue}
                                 onChange={handleChange}
                                 onReset={resetValue}

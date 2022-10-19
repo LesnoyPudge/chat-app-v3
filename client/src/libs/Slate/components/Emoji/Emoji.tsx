@@ -34,7 +34,7 @@ export const emojiCodeList: EmojiCodeType[] = [
     ':smile:',
 ];
 
-const emojiList: IEmojiItem[] = [
+export const emojiList: IEmojiItem[] = [
     {
         code: [':smile:'],
         label: '',
@@ -60,7 +60,7 @@ export const Emoji: FC<EmojiPropsType> = ({
 
     return (
         <span
-            className={twMerge(classNames('inline-block w-6 h-6 mx-0.5', className))}
+            className={twMerge(classNames('inline-block h-6 aspect-square mx-0.5', className))}
             contentEditable={false}
             {...attributes}
         >

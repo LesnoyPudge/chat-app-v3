@@ -85,6 +85,17 @@ module.exports = {
                 },
             },
 
+            boxShadow: {
+                top_bar: 'var(--shadow-top-bar)',
+                emoji_picker: 'var(--shadow-emoji-picker)',
+            },
+
+            borderColor: {
+                primary: {
+                    500: 'var(--color-bg-primary-500)',
+                },
+            },
+
             screens: {
                 xl: { max: '1279px' },
                 // => @media (max-width: 1279px) { ... }
@@ -97,16 +108,6 @@ module.exports = {
     
                 sm: { max: '639px' },
                 // => @media (max-width: 639px) { ... }
-            },
-
-            boxShadow: {
-                top_bar: 'var(--shadow-top-bar)',
-            },
-
-            borderColor: {
-                primary: {
-                    500: 'var(--color-bg-primary-500)',
-                },
             },
         },
     },

@@ -1,4 +1,5 @@
 import { Button, Icon } from '@components';
+import classNames from 'classnames';
 import { FC, useRef } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -6,13 +7,21 @@ import { twMerge } from 'tailwind-merge';
 
 interface ISearchBar {
     className?: string;
+    placeholder?: string;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onReset: () => void;
 }
 
+const baseClassName = `bg-primary-500 rounded-md w-full text-normal 
+flex flex-shrink-0`;
+const iconClassName = `h-2/3 aspect-square m-auto fill-icon-200 
+group-hover:fill-icon-100 group-active:fill-icon-100
+group-focus-visible:fill-icon-100`;
+
 export const SearchBar: FC<ISearchBar> = ({
     className = '',
+    placeholder = 'Поиск',
     value,
     onChange,
     onReset,
@@ -26,14 +35,11 @@ export const SearchBar: FC<ISearchBar> = ({
     };
 
     return (
-        <div 
-            className={twMerge(`bg-primary-500 rounded-md w-full text-normal 
-            h-9 flex flex-shrink-0 ${className}`)}
-        >
+        <div className={twMerge(classNames(baseClassName, className))}>
             <input
                 className='py-1 px-2 w-full'
                 type='text' 
-                placeholder='Поиск по имени'
+                placeholder={placeholder}
                 value={value}
                 ref={inputRef}
                 onChange={onChange}
@@ -41,7 +47,7 @@ export const SearchBar: FC<ISearchBar> = ({
 
             {
                 <Button
-                    className='h-9 w-9 flex shrink-0 group'
+                    className='h-full aspect-square flex shrink-0 group'
                     isDefaultStyled={false}
                     onClick={handleClick}
                 >
@@ -49,20 +55,12 @@ export const SearchBar: FC<ISearchBar> = ({
                         value 
                             ? <Icon
                                 iconId='cross-icon'
-                                className='m-auto fill-icon-200 
-                                group-hover:fill-icon-100 group-active:fill-icon-100
-                                group-focus-visible:fill-icon-100'
-                                height={24}
-                                width={24}
+                                className={iconClassName}
                             />
 
                             : <Icon
                                 iconId='search-icon'
-                                className='m-auto fill-icon-200 
-                                group-hover:fill-icon-100 group-active:fill-icon-100
-                                group-focus-visible:fill-icon-100'
-                                height={24}
-                                width={24}
+                                className={iconClassName}
                             />
                     }
                 </Button>

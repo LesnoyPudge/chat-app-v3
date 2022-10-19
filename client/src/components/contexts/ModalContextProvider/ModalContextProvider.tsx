@@ -6,6 +6,7 @@ export interface IModalContext {
     isOpen: boolean;
     openModal: () => void;
     closeModal: () => void;
+    toggleModal: () => void;
 }
 
 interface IModalContextProvider {
@@ -19,12 +20,14 @@ export const ModalContextProvider: FC<IModalContextProvider> = ({ children }) =>
 
     const openModal = useCallback(() => setIsOpen(true), []);
     const closeModal = useCallback(() => setIsOpen(false), []);
+    const toggleModal = useCallback(() => setIsOpen(prev => !prev), []);
 
     const contextValues: IModalContext = useMemo(() => ({
         isOpen,
         openModal,
         closeModal,
-    }), [closeModal, isOpen, openModal]);
+        toggleModal,
+    }), [closeModal, isOpen, openModal, toggleModal]);
     
     const content = useMemo(() => {
         return children instanceof Function ? children(contextValues) : children;
