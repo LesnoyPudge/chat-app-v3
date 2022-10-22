@@ -21,7 +21,6 @@ export const MessageInputBar: FC<IMessageInputBar> = ({
     className = '',
     placeholder,
 }) => {
-    
     return (
         <SlateContainer>
             <div className={twMerge(classNames(baseWrapperClassName, className))}>
@@ -34,7 +33,11 @@ export const MessageInputBar: FC<IMessageInputBar> = ({
                 
                 <EmojiPickerButton/>
 
-                <button className='h-11'>send</button>
+                <button 
+                    className='h-11'
+                >
+                    send
+                </button>
             </div>
         </SlateContainer>
     );

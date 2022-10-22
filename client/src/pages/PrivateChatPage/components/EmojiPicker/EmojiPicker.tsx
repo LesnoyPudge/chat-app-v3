@@ -46,12 +46,12 @@ export const EmojiPicker: FC = () => {
                     />
                    
                     <ul 
-                        className='my-3 p-3 grid grid-cols-5 gap-3 
+                        className='my-3 py-2 pl-2 grid grid-cols-5 gap-3 
                         overflow-auto custom-scrollbar-variant-primary'
                     >
                         {
                             emojiListToRender.map((item) => {
-                                const handleMouseEnter = () => setCurrentEmoji(item);
+                                const changeCurrentEmoji = () => setCurrentEmoji(item);
                                 const handleClick = () => {
                                     closeModal();
                                     setTimeout(() => {
@@ -65,9 +65,10 @@ export const EmojiPicker: FC = () => {
                                             className='h-10 w-10 flex rounded-lg
                                             hover:bg-primary-100 focus-visible:bg-primary-100
                                             transition-all duration-75'
-                                            isDefaultStyled={false}
+                                            isntStyled
                                             onClick={handleClick}
-                                            onMouseEnter={handleMouseEnter}
+                                            onMouseEnter={changeCurrentEmoji}
+                                            onFocus={changeCurrentEmoji}
                                         >
                                             <Emoji 
                                                 className='h-8 m-auto' 

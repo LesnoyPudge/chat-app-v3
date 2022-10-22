@@ -31,7 +31,7 @@ export const UserToolBar: FC = () => {
                         <Button
                             className='text-primary font-semibold text-sm ml-2 
                             overflow-hidden text-ellipsis whitespace-nowrap rounded'
-                            isDefaultStyled={false}
+                            isntStyled
                             onClick={handleCopy}
                         >
                             {username}

@@ -6,7 +6,7 @@ import { RenderElementAttributes } from '../../types';
 
 
 // https://unicode.org/emoji/charts/full-emoji-list.html
-export type EmojiCodeType = ':poop:' | ':smile:' | ':shit:';
+export type EmojiCodeType = ':poop:' | ':smile:' | ':shit:' | ':thumbsup:' | ':thumbsdown:' | ':ok_hand:' | ':ok:';
 
 type EmojiPropsType = {
     className?: string;
@@ -32,18 +32,37 @@ export const emojiCodeList: EmojiCodeType[] = [
     ':poop:', 
     ':shit:', 
     ':smile:',
+    ':thumbsup:',
+    ':thumbsdown:',
+    ':ok_hand:',
+    ':ok:',
 ];
 
 export const emojiList: IEmojiItem[] = [
     {
         code: [':smile:'],
-        label: '',
+        label: '😀',
         filename: 'smile',
     },
     {
         code: [':poop:', ':shit:'],
-        label: '',
+        label: '💩',
         filename: 'poop',
+    },
+    {
+        code: [':thumbsup:'],
+        label: '👍',
+        filename: 'thumbsup',
+    },
+    {
+        code: [':thumbsdown:'],
+        label: '👎',
+        filename: 'thumbsdown',
+    },
+    {
+        code: [':ok_hand:', ':ok:'],
+        label: '👌',
+        filename: 'ok_hand',
     },
 ];
 

@@ -44,7 +44,7 @@ export const NavigationButton: FC<INavigationButton> = ({
 
             <Button
                 onLeftClick={onLeftClick}
-                isDefaultStyled={false}
+                isntStyled
                 className={twMerge(classNames(
                     'w-12 h-12 flex justify-center items-center bg-primary-300 rounded-full overflow-hidden transition-all group-hover:rounded-2xl group-focus-within:rounded-2xl',
                     {

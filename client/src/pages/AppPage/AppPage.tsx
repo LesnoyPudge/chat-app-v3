@@ -23,7 +23,7 @@ export const AppPage: FC = () => {
                 <TopBar className='mb-6'>
                     <Button
                         className={twMerge(classNames(buttonCN, { 'bg-hover': isActive }))}
-                        isDefaultStyled={false}
+                        isntStyled
                         isActive={isActive}
                         onClick={navigateTo.app}
                     >

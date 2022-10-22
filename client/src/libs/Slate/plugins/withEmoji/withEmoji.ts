@@ -17,19 +17,22 @@ export const withEmoji = (editor: CustomEditor) => {
 
     editor.normalizeNode = (entry) => {
         const [node, path] = entry;
-        const parent = Text.isText(node) && Editor.parent(editor, path);
+
+        if (!Text.isText(node)) return normalizeNode(entry);
+
+        const parent = Editor.parent(editor, path);
         const isParagraph = parent && Element.isElement(parent[0]) && parent[0].type === 'paragraph';
-        const match = Text.isText(node) && node.text.match(/:[a-zA-Z]+:/gm);
-        
-        if (!match) return normalizeNode(entry);
+
         if (!isParagraph) return normalizeNode(entry);
 
-        const validEmojiMatchList = match.filter((item) => {
-            return emojiCodeList.includes(item.toLowerCase() as EmojiCodeType);
-        });
-        if (!validEmojiMatchList.length) return normalizeNode(entry);
+        const regExpString = emojiCodeList.map(code => code.replace(/[^a-zA-Z]/g, '\\$&')).join('|');
+        const emojiCodeRegExp = new RegExp(regExpString);
+        const nodeText = node.text.toLowerCase();
+        const match = nodeText.toLowerCase().match(emojiCodeRegExp);
+  
+        if (!match || !match.length) return normalizeNode(entry);
 
-        const emojiCode = validEmojiMatchList[0] as EmojiCodeType;
+        const emojiCode = match[0].toLowerCase() as EmojiCodeType;
 
         Transforms.wrapNodes(
             editor,
@@ -42,18 +45,18 @@ export const withEmoji = (editor: CustomEditor) => {
                 at: {
                     anchor: {
                         path,
-                        offset: node.text.indexOf(emojiCode),
+                        offset: nodeText.indexOf(emojiCode),
                     },
                     focus: {
                         path,
-                        offset: node.text.indexOf(emojiCode) + emojiCode.length,
+                        offset: nodeText.indexOf(emojiCode) + emojiCode.length,
                     },
                 },
                 split: true,
-                match: (node, path) => {
-                    const parent = Text.isText(node) && Editor.parent(editor, path);
-                    return parent && Element.isElement(parent[0]) && parent[0].type === 'paragraph';
-                },
+                // match: (node, path) => {
+                //     const parent = Text.isText(node) && Editor.parent(editor, path);
+                //     return parent && Element.isElement(parent[0]) && parent[0].type === 'paragraph';
+                // },
             },
         );
 

@@ -48,7 +48,7 @@ export const SearchBar: FC<ISearchBar> = ({
             {
                 <Button
                     className='h-full aspect-square flex shrink-0 group'
-                    isDefaultStyled={false}
+                    isntStyled
                     onClick={handleClick}
                 >
                     {

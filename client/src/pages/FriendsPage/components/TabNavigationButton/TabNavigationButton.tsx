@@ -24,7 +24,7 @@ export const TabNavigationButton: FC<ITabNavigationButton> = ({ children, identi
                 },
             )}
             isActive={isActive}
-            isDefaultStyled={false}
+            isntStyled
             onClick={handleChangeTab}
         >
             {children}

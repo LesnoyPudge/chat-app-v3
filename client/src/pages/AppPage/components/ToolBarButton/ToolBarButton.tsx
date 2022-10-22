@@ -30,7 +30,7 @@ export const ToolBarButton: FC<IToolBarButton> = ({
         <RefContextProvider>
             <Button 
                 className={twMerge(`h-8 w-8 flex shrink-0 rounded group hover:bg-hover focus-visible:bg-hover ${className}`)}
-                isDefaultStyled={false}
+                isntStyled
                 onClick={onClick}
             >
                 <Icon

@@ -28,7 +28,7 @@ export const ActionButton: FC<IActionButton> = ({
                 bg-primary-300 hover:bg-primary-500 focus-visible:bg-primary-500
                 group-1-focus-within:bg-primary-500
                 group-1-hover:bg-primary-500 group-2 ${buttonClassName}`)}
-                isDefaultStyled={false}
+                isntStyled
                 onClick={onClick}
             >
                 <Icon

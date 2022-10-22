@@ -330,7 +330,7 @@ export const PrivateChatList: FC = () => {
                                                 group-focus-within:opacity-100 group-1`,
                                                 { 'opacity-100': isActive },
                                             ))}
-                                            isDefaultStyled={false}
+                                            isntStyled
                                             onClick={handleHideChat}
                                         >
                                             <Icon

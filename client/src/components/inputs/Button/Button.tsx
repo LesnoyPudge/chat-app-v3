@@ -7,18 +7,19 @@ import { twMerge } from 'tailwind-merge';
 export interface IButtonProps extends PropsWithChildren {
     className?: string;
     activeClassName?: string;
-    isDefaultStyled?: boolean;
+    isntStyled?: boolean;
     variant?: 'brand' | 'link' | 'lite';
     type?: 'button' | 'submit' | 'reset';
     isLoading?: boolean;
     isActive?: boolean;
     isDisabled?: boolean;
-    onClick?: (args?: never) => void;
-    onLeftClick?: (args?: never) => void;
-    onMiddleClick?: (args?: never) => void;
-    onRightClick?: (args?: never) => void;
-    onMouseEnter?: (args?: never) => void;
-    onMouseLeave?: (args?: never) => void;
+    onClick?: (e?: React.MouseEvent) => void;
+    onLeftClick?: (e?: React.MouseEvent) => void;
+    onMiddleClick?: (e?: React.MouseEvent) => void;
+    onRightClick?: (e?: React.MouseEvent) => void;
+    onMouseEnter?: (e?: React.MouseEvent) => void;
+    onMouseLeave?: (e?: React.MouseEvent) => void;
+    onFocus?: (e?: React.FocusEvent) => void;
 }
 
 const buttonClasses = {
@@ -41,7 +42,7 @@ export const Button: FC<IButtonProps> = ({
     children,
     className = '',
     activeClassName = '',
-    isDefaultStyled = true,
+    isntStyled = false,
     variant,
     type = 'button',
     isLoading = false,
@@ -53,92 +54,102 @@ export const Button: FC<IButtonProps> = ({
     onRightClick,
     onMouseEnter,
     onMouseLeave,
+    onFocus,
 }) => {
     const ref = useRef<HTMLButtonElement | null>(null);
     const buttonCN = twMerge(classNames({
-        [buttonClasses.base]: isDefaultStyled,
+        [buttonClasses.base]: !isntStyled,
         [buttonClasses[variant || 'brand'].base]: !!variant,
         [buttonClasses[variant || 'brand'].active]: !!variant && isActive,
         [className]: !!className,
         [activeClassName]: !!activeClassName && isActive,
     }));
 
-    useEffect(() => {
-        if (!ref.current) return;
-        const button = ref.current;
+    // useEffect(() => {
+    //     return;
+    //     if (!ref.current) return;
+    //     const button = ref.current;
 
-        const handleLeftClick = (e: MouseEvent) => {
-            if (e.button !== 0) return;
-            if (!onClick && !onLeftClick) return;
-            if (isDisabled || isLoading) return;
-            e.stopPropagation();
-            e.preventDefault();
+    //     const handleLeftClick = (e: MouseEvent) => {
+    //         if (e.button !== 0) return;
+    //         if (!onClick && !onLeftClick) return;
+    //         if (isDisabled || isLoading) return;
+    //         e.stopPropagation();
+    //         e.preventDefault();
             
-            onLeftClick && onLeftClick();
-            (!onLeftClick && onClick) && onClick();
-        };
+    //         onLeftClick && onLeftClick(e);
+    //         (!onLeftClick && onClick) && onClick(e);
+    //     };
     
-        const handleMiddleClick = (e: MouseEvent) => {
-            if (e.button !== 1) return;
-            if (!onClick && !onMiddleClick) return;
-            if (isDisabled || isLoading) return;
-            e.stopPropagation();
-            e.preventDefault();
+    //     const handleMiddleClick = (e: MouseEvent) => {
+    //         if (e.button !== 1) return;
+    //         if (!onClick && !onMiddleClick) return;
+    //         if (isDisabled || isLoading) return;
+    //         e.stopPropagation();
+    //         e.preventDefault();
     
-            onMiddleClick && onMiddleClick();
-            (!onMiddleClick && onClick) && onClick();
-        };
+    //         onMiddleClick && onMiddleClick(e);
+    //         (!onMiddleClick && onClick) && onClick(e);
+    //     };
     
-        const handleRightClick = (e: MouseEvent) => {
-            // if (e.button !== 2) return;
-            if (!onClick && !onRightClick) return;
-            if (isDisabled || isLoading) return;
-            e.stopPropagation();
-            e.preventDefault();
+    //     const handleRightClick = (e: MouseEvent) => {
+    //         // if (e.button !== 2) return;
+    //         if (!onClick && !onRightClick) return;
+    //         if (isDisabled || isLoading) return;
+    //         e.stopPropagation();
+    //         e.preventDefault();
     
-            onRightClick && onRightClick();
-            (!onRightClick && onClick) && onClick();
-        };
+    //         onRightClick && onRightClick(e);
+    //         (!onRightClick && onClick) && onClick(e);
+    //     };
     
-        const handleEnter = (e: KeyboardEvent) => {
-            if (e.code !== 'Enter') return;
-            if (!onClick && !onLeftClick) return;
-            if (isDisabled || isLoading) return;
-            e.stopPropagation();
-            e.preventDefault();
+    //     const handleEnter = (e: KeyboardEvent) => {
+    //         if (e.code !== 'Enter') return;
+    //         if (!onClick && !onLeftClick) return;
+    //         if (isDisabled || isLoading) return;
+    //         e.stopPropagation();
+    //         e.preventDefault();
             
-            onLeftClick && onLeftClick();
-            (!onLeftClick && onClick) && onClick();
-        };
+    //         onLeftClick && onLeftClick();
+    //         (!onLeftClick && onClick) && onClick();
+    //     };
 
-        const handleMouseEnter = (e: MouseEvent) => {
-            // e.stopPropagation();
-            // e.preventDefault();
-            onMouseEnter && onMouseEnter();
-        };
+    //     const handleMouseEnter = (e: MouseEvent) => {
+    //         // e.stopPropagation();
+    //         // e.preventDefault();
+    //         onMouseEnter && onMouseEnter(e);
+    //     };
     
-        const handleMouseLeave = (e: MouseEvent) => {
-            // e.stopPropagation();
-            // e.preventDefault();
-            onMouseLeave && onMouseLeave();
-        };
+    //     const handleMouseLeave = (e: MouseEvent) => {
+    //         // e.stopPropagation();
+    //         // e.preventDefault();
+    //         onMouseLeave && onMouseLeave(e);
+    //     };
 
-        button.addEventListener('click', handleLeftClick);
-        button.addEventListener('auxclick', handleMiddleClick);
-        button.addEventListener('contextmenu', handleRightClick);
-        button.addEventListener('keydown', handleEnter);
-        button.addEventListener('mouseenter', handleMouseEnter);
-        button.addEventListener('mouseleave', handleMouseLeave);
+    //     const handleFocus = (e: FocusEvent) => {
+    //         onFocus && onFocus(e);
+    //     };
 
-        return () => {
-            button.removeEventListener('click', handleLeftClick);
-            button.removeEventListener('auxclick', handleMiddleClick);
-            button.removeEventListener('contextmenu', handleRightClick);
-            button.removeEventListener('keydown', handleEnter);
-            button.removeEventListener('mouseenter', handleMouseEnter);
-            button.removeEventListener('mouseleave', handleMouseLeave);
-        };
-    }, [isDisabled, isLoading, onClick, onMouseLeave, onMouseEnter, onLeftClick, onMiddleClick, onRightClick]);
+    //     // button.addEventListener('click', handleLeftClick);
+    //     // button.addEventListener('auxclick', handleMiddleClick);
+    //     // button.addEventListener('contextmenu', handleRightClick);
+    //     // button.addEventListener('keydown', handleEnter);
+    //     // button.addEventListener('mouseenter', handleMouseEnter);
+    //     // button.addEventListener('mouseleave', handleMouseLeave);
+    //     // button.addEventListener('focusin', handleFocus);
+
+    //     // return () => {
+    //     //     button.removeEventListener('click', handleLeftClick);
+    //     //     button.removeEventListener('auxclick', handleMiddleClick);
+    //     //     button.removeEventListener('contextmenu', handleRightClick);
+    //     //     button.removeEventListener('keydown', handleEnter);
+    //     //     button.removeEventListener('mouseenter', handleMouseEnter);
+    //     //     button.removeEventListener('mouseleave', handleMouseLeave);
+    //     //     button.removeEventListener('focusin', handleFocus);
+    //     // };
+    // }, [isDisabled, isLoading, onClick, onMouseLeave, onMouseEnter, 
+    //     onLeftClick, onMiddleClick, onRightClick, onFocus],
+    // );
 
     return (
         <button
@@ -146,6 +157,12 @@ export const Button: FC<IButtonProps> = ({
             type={type}
             disabled={isDisabled || isLoading}
             ref={ref}
+            onClick={onLeftClick}
+            onAuxClick={onMiddleClick}
+            onContextMenu={onRightClick}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onFocus={onFocus}
         >
             {children}
         </button>
