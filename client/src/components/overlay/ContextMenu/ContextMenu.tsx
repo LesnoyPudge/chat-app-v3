@@ -135,7 +135,6 @@ export const ContextMenu: FC<IContextMenu> = ({
         target.addEventListener('auxclick', onMiddleClick);
         target.addEventListener('keydown', onEnter);
         
-        
         return () => {
             target.removeEventListener('click', onLeftClick);
             target.removeEventListener('contextmenu', onRightClick);
@@ -177,9 +176,7 @@ export const ContextMenu: FC<IContextMenu> = ({
 
     useEffect(() => {
         if (!isExist) return;
-        
         document.addEventListener('keydown', handleKeyDown);
-
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };

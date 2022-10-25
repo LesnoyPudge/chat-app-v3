@@ -9,3 +9,4 @@ export * from './throttle';
 export * from './customBlur';
 export * from './copyToClipboard';
 export * from './random';
+export * from './fpsToMs';

@@ -1,4 +1,4 @@
-import { Button, ContextMenu, Icon, RefContextProvider, Tooltip, UserAvatar } from '@components';
+import { Button, ContextMenu, RefContextProvider, Tooltip, UserAvatar } from '@components';
 import { useThrottle, useToggle } from '@hooks';
 import { copyToClipboard } from '@utils';
 import { FC } from 'react';
@@ -49,7 +49,6 @@ export const UserToolBar: FC = () => {
                             <button onClick={unmount}>change status</button>
                             <button 
                                 onClick={() => {
-                                    console.log('copied');
                                     handleCopy();
                                     unmount();
                                 }}
