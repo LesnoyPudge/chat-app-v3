@@ -2,7 +2,7 @@ import { ExtraStatusType, StatusType } from '@backendTypes';
 import { TopBar } from '@components';
 import { useNavigator } from '@hooks';
 import { FC } from 'react';
-import { MessageInputBar } from './components';
+import { MessageInputBar, MessageList } from './components';
 
 
 
@@ -71,10 +71,7 @@ export const PrivateChatPage: FC = () => {
                 {friend.username}
             </TopBar>
 
-            <ol>
-                <li>message 1</li>
-                <li>message 2</li>
-            </ol>
+            <MessageList/>
 
             <MessageInputBar placeholder={placeholder}/>
         </>

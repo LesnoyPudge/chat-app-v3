@@ -67,6 +67,8 @@ module.exports = {
                 selected: 'var(--color-bg-selected)',
 
                 light: 'var(--color-bg-light)',
+
+                message: 'var(--color-bg-message)',
             },
 
             fontSize: {

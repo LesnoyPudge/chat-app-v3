@@ -13,10 +13,11 @@ interface IMessageInputBar {
 }
 
 const baseWrapperClassName = `flex min-h-[44px] max-h-[50vh] mt-auto 
-mb-6 mx-4 rounded-lg bg-primary-100 overflow-y-auto `;
+mb-6 mx-4 rounded-lg bg-primary-100`;
 
-const editorClassName = `w-full my-auto py-[11px] px-2 
-placeholder:text-placeholder min-h-[44px]`;
+const editorClassName = `w-full px-2 h-full py-[11px]
+placeholder:text-placeholder min-h-[44px] max-h-[50vh] 
+overflow-y-auto overflow-x-hidden`;
 
 export const MessageInputBar: FC<IMessageInputBar> = ({
     className = '',
@@ -36,7 +37,7 @@ export const MessageInputBar: FC<IMessageInputBar> = ({
                 </Button>
 
                 <SlateEditor
-                    className={twMerge(editorClassName)}
+                    className={twMerge(editorClassName, 'scroll-py-4')}
                     placeholder={placeholder}
                 />
                 
