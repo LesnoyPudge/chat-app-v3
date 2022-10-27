@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "@juggle/resize-observer": "^3.4.0",
+        "@oyyds/react-auto-sizer": "^1.2.11",
         "@react-hook/resize-observer": "^1.2.6",
         "@react-spring/web": "^9.5.2",
         "@reduxjs/toolkit": "^1.8.3",
