@@ -22,7 +22,7 @@ export const UserToolBar: FC = () => {
                     tabIndex={0}
                 >
                     <UserAvatar
-                        avatar='qwe'
+                        avatar='https://i.pravatar.cc/52'
                         status='online'
                         size={32}
                     />
