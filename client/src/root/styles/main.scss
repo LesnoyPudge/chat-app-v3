@@ -74,6 +74,14 @@
     //     // background-color: rgba($color: limegreen, $alpha: 0.05)!important;
     // }
     
+    // * {
+    //     scrollbar-width: none;
+    // }
+
+    // *::-webkit-scrollbar, *::-webkit-scrollbar-thumb {
+    //     width: 0;
+    // }
+
     @media (prefers-reduced-motion: reduce) {
         html:focus-within {
             scroll-behavior: auto;
