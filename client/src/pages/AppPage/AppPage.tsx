@@ -18,7 +18,7 @@ export const AppPage: FC = () => {
     const isActive = myLocationIs.app;
 
     return (
-        <div className='flex w-full'>
+        <div className='flex w-full overflow-hidden'>
             <PageContentNavigation>
                 <TopBar className='mb-6'>
                     <Button

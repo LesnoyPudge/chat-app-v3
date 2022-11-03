@@ -7,7 +7,7 @@ import { ChannelsNavigation } from './components';
 export const AppLayout: FC = () => {
     return (
         <>
-            <div className='flex h-screen w-screen overflow-hidden'>
+            <div className='flex h-screen w-screen'>
                 <ChannelsNavigation/>
 
                 <Outlet/>

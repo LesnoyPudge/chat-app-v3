@@ -1,9 +1,8 @@
 import { IMessage } from '@backendTypes';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import Scrollbars from 'react-custom-scrollbars-2';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { MessageItem } from '..';
 import { fpsToMs, getRandomNumber, throttle } from '@utils';
+import { Scrollbars, ScrollbarsRefType, AutoSizer } from '@libs';
 
 
 
@@ -27,10 +26,10 @@ const getMessages = ((size = 20) => {
 export const MessageList: FC = () => {
     const isAutoScroll = useRef(true);
     const [isRefExist, setIsRefExist] = useState(false);
-    const scrollbarsRef = useRef<Scrollbars | null>(null);
+    const scrollbarsRef = useRef<ScrollbarsRefType | null>(null);
     const [messages, setMessages] = useState(getMessages(0));
     
-    const getRef = (ref: Scrollbars | null) => {
+    const getRef = (ref: ScrollbarsRefType | null) => {
         scrollbarsRef.current = ref;
         setIsRefExist(true);
     };
@@ -100,25 +99,22 @@ export const MessageList: FC = () => {
             >
                 add message
             </button>
-            <div className='h-full'>
-                <AutoSizer onResize={handleResize}>
-                    {(style) => (
-                        <Scrollbars
-                            className='scrollwow'
-                            style={style}
-                            ref={getRef}
-                            onScroll={handleScroll}
-                            renderView={(props) => {
-                                console.log(props);
-                                return <div {...props}></div>;
-                            }}
-                        >
-                            <ol className='flex flex-col justify-end min-h-full'>
-                                {messageList}
-                            </ol>
-                        </Scrollbars>
-                    )}
-                </AutoSizer>
+
+            <div className='h-full w-full overflow-auto'>
+                <ol className='flex flex-col justify-end min-h-full'>
+                    {messageList}
+                </ol>
+                {/* <AutoSizer onResize={handleResize}>
+                    <Scrollbars
+                        autoSized
+                        getRef={getRef}
+                        onScroll={handleScroll}
+                    >
+                        <ol className='flex flex-col justify-end min-h-full'>
+                            {messageList}
+                        </ol>
+                    </Scrollbars>
+                </AutoSizer> */}
             </div>
         </>
     );

@@ -73,6 +73,20 @@
     //     outline: 1px solid red!important;
     //     // background-color: rgba($color: limegreen, $alpha: 0.05)!important;
     // }
+
+    ::-webkit-scrollbar {
+        width: 8px;   // for vertical scroll bar
+        height: 8px;  // for horizontal scroll bar
+        background-color: red;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: green;
+    }
+      
+    // for Firefox add this class as well
+    * {
+        scrollbar-width: none; // auto | thin | none | <length>;
+    }
     
     // * {
     //     scrollbar-width: none;
