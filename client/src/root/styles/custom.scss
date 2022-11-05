@@ -4,91 +4,36 @@
 
 @layer components {
     .custom-image-bg-fullscreen {
-        @apply 
-            fixed 
-            top-0 
-            left-0 
-            w-screen 
-            h-screen 
-            -z-[1] 
-            object-cover 
-            object-center;
+        @apply fixed top-0 left-0 w-screen h-screen -z-[1] object-cover object-center;
     }
-    
-    .custom-scrollbar {
-        &-hide {
+
+    .scrollbar {
+        &-primary {
+            scrollbar-color: var(--color-bg-primary-300);
+
+            &::-webkit-scrollbar {
+                @apply bg-primary-300 rounded-full;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                @apply bg-primary-500 rounded-full;
+            }
+        }
+
+        &-hidden {
             &::-webkit-scrollbar {
                 @apply hidden;
             }
+
+            scrollbar-width: none;
         }
 
-        &-variant {
-            &-primary {
-                scrollbar-gutter: stable;
-                
-                &::-webkit-scrollbar {
-                    @apply 
-                        w-4 
-                        bg-primary-300
-                        border-4
-                        border-solid
-                        border-transparent
-                        rounded-full
-                        bg-clip-content;
-                }
-
-                &::-webkit-scrollbar-thumb {
-                    @apply 
-                        bg-primary-500 
-                        border-4
-                        border-solid
-                        border-transparent
-                        rounded-full
-                        bg-clip-content;
-                }
-            }
+        &-with-gutter {
+            scrollbar-gutter: stable;
         }
 
-        &-w {
-            &-1 {
-                &::-webkit-scrollbar {
-                    @apply w-1 border-[1px];
-                }
-
-                &::-webkit-scrollbar-thumb {
-                    @apply border-[1px];
-                }
-            }
-
-            &-2 {
-                &::-webkit-scrollbar {
-                    @apply w-2 border-2;
-                }
-
-                &::-webkit-scrollbar-thumb {
-                    @apply border-2;
-                }
-            }
-
-            &-3 {
-                &::-webkit-scrollbar {
-                    @apply w-3 border-[3px];
-                }
-
-                &::-webkit-scrollbar-thumb {
-                    @apply border-[3px];
-                }
-            }
-
-            &-4 {
-                &::-webkit-scrollbar {
-                    @apply w-4 border-4;
-                }
-
-                &::-webkit-scrollbar-thumb {
-                    @apply border-4;
-                }
-            }
+        &-with-gutters {
+            scrollbar-gutter: stable both-edges;
         }
     }
 }

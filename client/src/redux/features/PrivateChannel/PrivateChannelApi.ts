@@ -1,6 +1,6 @@
 import { getEnv } from '@utils';
 import { rootApi } from '@redux/rootApi';
-import { IPrivateChannel, ICreatePrivateChannelRequest, ILeavePrivateChannelRequest, IGetManyPrivateChannelsRequest, IGetOnePrivateChannelRequest, IUpdatePrivateChannelRequest } from '@backendTypes';
+import { IPrivateChannel, ICreatePrivateChannelRequest, ILeavePrivateChannelRequest, IGetOnePrivateChannelRequest } from '@backendTypes';
 
 
 
@@ -29,13 +29,13 @@ export const PrivateChannelApi = rootApi.injectEndpoints({
         //         body,
         //     }),
         // }),
-        updatePrivateChannel: build.mutation<IPrivateChannel, IUpdatePrivateChannelRequest>({
-            query: (body) => ({
-                url: CUSTOM_API_V1_URL + '/private-channel/update',
-                method: 'POST',
-                body,
-            }),
-        }),
+        // updatePrivateChannel: build.mutation<IPrivateChannel, IUpdatePrivateChannelRequest>({
+        //     query: (body) => ({
+        //         url: CUSTOM_API_V1_URL + '/private-channel/update',
+        //         method: 'POST',
+        //         body,
+        //     }),
+        // }),
         leavePrivateChannel: build.mutation<IPrivateChannel, ILeavePrivateChannelRequest>({
             query: (body) => ({
                 url: CUSTOM_API_V1_URL + '/private-channel/leave',
@@ -51,6 +51,6 @@ export const {
     useCreatePrivateChannelMutation,
     useGetOnePrivateChannelQuery,
     // useGetManyPrivateChannelQuery,
-    useUpdatePrivateChannelMutation,
+    // useUpdatePrivateChannelMutation,
     useLeavePrivateChannelMutation,
 } = PrivateChannelApi;

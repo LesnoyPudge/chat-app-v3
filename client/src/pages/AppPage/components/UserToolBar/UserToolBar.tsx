@@ -14,7 +14,7 @@ export const UserToolBar: FC = () => {
     const headValue = useToggle();
 
     return (
-        <div className='bg-primary-400 h-[52px] py-0 px-2 flex mt-auto items-center'>
+        <div className='flex shrink-0 mt-auto items-center h-[52px] py-0 px-2 bg-primary-400'>
             <RefContextProvider>
                 <div 
                     className='px-1 py-0.5 rounded-md mr-1 flex items-center min-w-0 w-full
@@ -22,9 +22,9 @@ export const UserToolBar: FC = () => {
                     tabIndex={0}
                 >
                     <UserAvatar
+                        className='h-8 w-8'
                         avatar='https://i.pravatar.cc/52'
                         status='online'
-                        size={32}
                     />
 
                     <RefContextProvider>

@@ -1,6 +1,6 @@
 import { getEnv } from '@utils';
 import { rootApi } from '@redux/rootApi';
-import { ICreateRoomRequest, IDeleteRoomRequest, IGetManyRoomsRequest, IGetOneRoomRequest, IRoom, IUpdateRoomRequest } from '@backendTypes';
+import { ICreateRoomRequest, IDeleteRoomRequest, IGetOneRoomRequest, IRoom, IUpdateRoomRequest } from '@backendTypes';
 
 
 

@@ -10,3 +10,4 @@ export * from './useToggle';
 export * from './useUpdateEffect';
 export * from './useIsFirstRender';
 export * from './useWindowSize';
+export * from './useAutoScroll';

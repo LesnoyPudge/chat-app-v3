@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import envCompalible from 'vite-plugin-env-compatible';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import svgrPlugin from 'vite-plugin-svgr';
+import { checker } from 'vite-plugin-checker';
 
 
 
@@ -24,6 +25,7 @@ export default defineConfig(() => {
                     icon: true,
                 },
             }),
+            checker({ typescript: true }),
         ],
         envPrefix: 'CUSTOM_',
         server: {

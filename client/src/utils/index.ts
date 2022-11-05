@@ -10,3 +10,4 @@ export * from './customBlur';
 export * from './copyToClipboard';
 export * from './random';
 export * from './fpsToMs';
+export * from './twClassNames';

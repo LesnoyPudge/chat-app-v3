@@ -30,8 +30,7 @@ export const ListItem: FC<IListItem> = ({
                 hover:bg-hover focus-within:bg-hover group-1'
             >
                 <UserAvatar
-                    className='mr-3'
-                    size={32}
+                    className='mr-3 h-8 w-8'
                     avatar={avatar} 
                     username={username} 
                     status={status} 

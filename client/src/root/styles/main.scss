@@ -13,13 +13,13 @@
         overflow: hidden;
         text-rendering: optimizeLegibility;
     }
-    
+
     #root {
         height: 100vh;
         width: 100vw;
         overflow: hidden;
     }
-    
+
     #overlay-root {
         position: fixed;
         height: 100vh;
@@ -29,7 +29,7 @@
         pointer-events: none;
         overflow: hidden;
     }
-    
+
     input,
     textarea {
         background-color: transparent;
@@ -38,69 +38,56 @@
         font-size: inherit;
         padding: 0;
         resize: none;
-    
+
         &:disabled {
             cursor: not-allowed;
         }
     }
-    
+
     *:focus {
         outline: none;
     }
-    
-    *:focus-visible { 
+
+    *:focus-visible {
         // outline-color: var(--outline);
         // outline-style: solid;
         // outline-width: 4px;
         // box-shadow: inset 4px 4px 0px 0px gold;
         box-shadow: inset 0 0 0px 3px var(--outline);
     }
-    
+
     button,
     [role="button"] {
         cursor: pointer;
-    
+
         &:disabled {
             cursor: not-allowed;
         }
     }
-    
+
     form {
         display: contents;
     }
-    
+
+    *::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    * {
+        scrollbar-width: thin;
+    }
+
     // * {
     //     outline: 1px solid red!important;
     //     // background-color: rgba($color: limegreen, $alpha: 0.05)!important;
-    // }
-
-    ::-webkit-scrollbar {
-        width: 8px;   // for vertical scroll bar
-        height: 8px;  // for horizontal scroll bar
-        background-color: red;
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: green;
-    }
-      
-    // for Firefox add this class as well
-    * {
-        scrollbar-width: none; // auto | thin | none | <length>;
-    }
-    
-    // * {
-    //     scrollbar-width: none;
-    // }
-
-    // *::-webkit-scrollbar, *::-webkit-scrollbar-thumb {
-    //     width: 0;
     // }
 
     @media (prefers-reduced-motion: reduce) {
         html:focus-within {
             scroll-behavior: auto;
         }
-    
+
         *,
         *::before,
         *::after {

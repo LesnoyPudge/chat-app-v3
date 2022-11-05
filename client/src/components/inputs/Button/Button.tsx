@@ -102,8 +102,8 @@ export const Button: FC<IButtonProps> = ({
             (!onRightClick && onClick) && onClick(e);
         };
     
-        const handleEnter = (e: KeyboardEvent) => {
-            if (e.code !== 'Enter') return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.code !== 'Enter' && e.code !== 'Space') return;
             if (!onClick && !onLeftClick) return;
             if (isDisabled || isLoading) return;
             e.stopPropagation();
@@ -132,7 +132,7 @@ export const Button: FC<IButtonProps> = ({
         button.addEventListener('click', handleLeftClick);
         button.addEventListener('auxclick', handleMiddleClick);
         button.addEventListener('contextmenu', handleRightClick);
-        button.addEventListener('keydown', handleEnter);
+        button.addEventListener('keydown', handleKeyDown);
         button.addEventListener('mouseenter', handleMouseEnter);
         button.addEventListener('mouseleave', handleMouseLeave);
         button.addEventListener('focusin', handleFocus);
@@ -141,7 +141,7 @@ export const Button: FC<IButtonProps> = ({
             button.removeEventListener('click', handleLeftClick);
             button.removeEventListener('auxclick', handleMiddleClick);
             button.removeEventListener('contextmenu', handleRightClick);
-            button.removeEventListener('keydown', handleEnter);
+            button.removeEventListener('keydown', handleKeyDown);
             button.removeEventListener('mouseenter', handleMouseEnter);
             button.removeEventListener('mouseleave', handleMouseLeave);
             button.removeEventListener('focusin', handleFocus);

@@ -33,8 +33,8 @@ export const MessageItem: FC<IMessageItem> = ({
 
                 <Conditional isRendered={!isHeadless}>
                     <UserAvatar
+                        className='h-10 w-10'
                         avatar='https://i.pravatar.cc/52'
-                        size={40}
                     />
                 </Conditional>
             </div>

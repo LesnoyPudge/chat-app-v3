@@ -1,9 +1,8 @@
 import { FC, useMemo } from 'react';
-import { Icon, Separator, Tooltip, ContextMenu, RefContextProvider } from '@components';
+import { Icon, Separator, Tooltip, ContextMenu, RefContextProvider, Conditional } from '@components';
 import { NavigationButton } from './components/NavigationButton';
 import classNames from 'classnames';
 import { useNavigator } from '@hooks';
-import { AutoSizer, Scrollbars } from '@libs';
 import { ChannelsNavigationItem } from './components';
 
 
@@ -38,76 +37,72 @@ export const ChannelsNavigation: FC = () => {
     )), [channels]);
 
     return (
-        <>
-            <div className='bg-primary-500 py-3 w-[72px] flex flex-col shrink-0'>
-                <RefContextProvider>
-                    <NavigationButton 
-                        theme='brand' 
-                        isActive={isAppOrPrivateChatPage}
-                        onLeftClick={navigateTo.app}
-                    >
-                        <Icon 
-                            iconId='discord-logo'
-                            height={28} 
-                            width={28}
-                            className={classNames(
-                                'fill-icon-100 m-auto group-hover:fill-white group-focus-within:fill-white',
-                                {
-                                    'fill-white': isAppOrPrivateChatPage,
-                                },
-                            )}
-                        />
-                    </NavigationButton>
-
-                    <Tooltip position='right'>
-                        Главная страница
-                    </Tooltip>
-
-                    <ContextMenu>
-                        {() => (
-                            <>menu</>
+        <div className='bg-primary-500 py-3 w-[72px] flex flex-col shrink-0'>
+            <RefContextProvider>
+                <NavigationButton 
+                    theme='brand' 
+                    isActive={isAppOrPrivateChatPage}
+                    onLeftClick={navigateTo.app}
+                >
+                    <Icon 
+                        iconId='discord-logo'
+                        height={28} 
+                        width={28}
+                        className={classNames(
+                            'fill-icon-100 m-auto group-hover:fill-white group-focus-within:fill-white',
+                            {
+                                'fill-white': isAppOrPrivateChatPage,
+                            },
                         )}
-                    </ContextMenu>
-                </RefContextProvider>
-                
-                <Separator className='w-1/2'/>
+                    />
+                </NavigationButton>
 
-                <div className='h-full overflow-hidden'>
-                    <AutoSizer>
-                        <Scrollbars autoSized>
-                            <ul className='flex flex-col h-full gap-2 py-1'>
-                                {channelsList}
-                            </ul>
-                        </Scrollbars>
-                    </AutoSizer>
+                <Tooltip position='right'>
+                        Главная страница
+                </Tooltip>
+
+                <ContextMenu>
+                    {() => (
+                        <>menu</>
+                    )}
+                </ContextMenu>
+            </RefContextProvider>
+                
+            <Separator className='w-1/2'/>
+
+            <Conditional isRendered={!!channelsList.length}>
+                <div className='overflow-y-scroll scrollbar-with-gutter scrollbar-hidden'>
+                    <ul className='flex flex-col h-full gap-2 py-1'>
+                        {channelsList}
+                    </ul>
                 </div>
 
                 <Separator className='w-1/2'/>
+            </Conditional>
 
-                <RefContextProvider>
-                    <NavigationButton 
-                        theme='action'
-                        onLeftClick={() => console.log('open add channel modal')}
-                    >
-                        <Icon 
-                            iconId='add-channel-navigation-icon'
-                            height={28} 
-                            width={28}
-                            className='m-auto fill-green group-hover:fill-white group-focus-within:fill-white'
-                        />
-                    </NavigationButton>
+            <RefContextProvider>
+                <NavigationButton 
+                    theme='action'
+                    onLeftClick={() => console.log('open add channel modal')}
+                >
+                    <Icon 
+                        iconId='add-channel-navigation-icon'
+                        height={28} 
+                        width={28}
+                        className='m-auto fill-green group-hover:fill-white group-focus-within:fill-white'
+                    />
+                </NavigationButton>
 
-                    <Tooltip position='right'>
+                <Tooltip position='right'>
                         Добавить канал
-                    </Tooltip>
+                </Tooltip>
 
-                    <ContextMenu>
-                        {() => (
-                            <>menu</>
-                        )}
-                    </ContextMenu>
-                </RefContextProvider>
-            </div>
-        </>
+                <ContextMenu>
+                    {() => (
+                        <>menu</>
+                    )}
+                </ContextMenu>
+            </RefContextProvider>
+        </div>
     );
 };

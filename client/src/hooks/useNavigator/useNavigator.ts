@@ -24,12 +24,27 @@ export const useNavigator = () => {
     }), [pathname]);
 
     const navigateTo = useMemo(() => ({
-        auth: () => navigate('/auth'),
-        app: () => navigate('/app'),
-        privateChat: (privateChatId: string) => navigate(`/app/private-chat/${privateChatId}`),
-        channel: (channelId: string) => navigate(`/app/channel/${channelId}`),
-        room: (channelId: string, roomId: string) => navigate(`/app/channel/${channelId}/room/${roomId}`),
-    }), [navigate]);
+        auth: () => {
+            const alreadyHere = myLocationIs.auth;
+            !alreadyHere && navigate('/auth');
+        },
+        app: () => {
+            const alreadyHere = myLocationIs.app;
+            !alreadyHere && navigate('/app');
+        },
+        privateChat: (privateChatId: string) => {
+            const alreadyHere = myLocationIs.privateChat(privateChatId);
+            !alreadyHere && navigate(`/app/private-chat/${privateChatId}`);
+        },
+        channel: (channelId: string) => {
+            const alreadyHere = myLocationIs.channel(channelId);
+            !alreadyHere && navigate(`/app/channel/${channelId}`);
+        },
+        room: (channelId: string, roomId: string) => {
+            const alreadyHere = myLocationIs.room(channelId, roomId);
+            !alreadyHere && navigate(`/app/channel/${channelId}/room/${roomId}`);
+        },
+    }), [myLocationIs, navigate]);
     
     return {
         myLocationIs,

@@ -1,7 +1,7 @@
 
 
 
-export const throttle = <F extends (...args: unknown[]) => unknown>(callback: F, delay = 200) => {
+export const throttle = <F extends (...args: never[]) => void>(callback: F, delay = 200) => {
     let isThrottling = false;
     let lastArgs: Parameters<F> | null = null;
     let calledDuringThrottle = false;
