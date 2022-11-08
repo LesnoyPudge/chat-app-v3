@@ -1,34 +1,32 @@
 import { FC } from 'react';
-import { twMerge } from 'tailwind-merge';
 import SVG from 'react-inlinesvg';
-import { useToggle } from '@hooks';
+import { twClassNames } from '@utils';
+import { AutoSizer } from '@libs';
 
 
 
 interface IIcon {
     className?: string;
     iconId: string;
-    width?: number;
-    height?: number;
 }
 
+const baseClassName = 'transition-all flex flex-shrink-0';
+
 export const Icon: FC<IIcon> = ({ 
-    iconId, 
-    height, 
-    width, 
+    iconId,
     className = '', 
 }) => {
     return (
-        <div 
-            className={twMerge(`transition-all flex flex-shrink-0 ${className}`)}
-            style={{ width, height }}
-        >
-            <SVG
-                src={`/src/assets/icons/${iconId}.svg`} 
-                width={width} 
-                height={height}
-                cacheRequests
-            />
+        <div className={twClassNames(baseClassName, className)}>
+            <AutoSizer>
+                {(size) => (
+                    <SVG
+                        src={`/src/assets/icons/${iconId}.svg`}
+                        cacheRequests
+                        {...size}
+                    />
+                )}
+            </AutoSizer>
         </div>
     );
 };

@@ -1,8 +1,8 @@
 import { useField } from 'formik';
 import { FC, useId, useState } from 'react';
-import { Button, Icon } from '@components';
-import classNames from 'classnames';
+import { Button, Conditional, Icon } from '@components';
 import { twMerge } from 'tailwind-merge';
+import { twClassNames } from '@utils';
 
 
 
@@ -28,16 +28,9 @@ export const TextInput: FC<ITextInputProps> = ({
     isRequired = false,
 }) => {
     const [field, meta] = useField(name);
-    const isError = meta.error && meta.touched;
     const [typeState, setTypeState] = useState(type);
     const id = useId();
-    const labelCN = classNames(
-        'text-xs w-full',
-        {
-            'text-secondary': !isError,
-            'text-error': isError,
-        },
-    );
+    const isError = !!(meta.error && meta.touched);
     
     const handleTypeToggle = () => {
         setTypeState(prev => prev === 'password' ? 'text' : 'password');
@@ -46,14 +39,26 @@ export const TextInput: FC<ITextInputProps> = ({
     return (
         <>
             <div className={twMerge(`flex flex-col gap-2 w-full ${className}`)}>
-                <label htmlFor={id} className={labelCN}>
+                <label 
+                    htmlFor={id} 
+                    className={twClassNames(
+                        'text-xs w-full text-secondary',
+                        { 'text-error': isError },
+                    )}
+                >
                     <span className='uppercase'>
                         {label}
                     </span>
                     
-                    {isRequired && <span className='ml-1 mr-1 text-required'>*</span>}
+                    <Conditional isRendered={isRequired}>
+                        <span className='ml-1 mr-1 text-required'>
+                            *
+                        </span>
+                    </Conditional>
 
-                    {isError && <> &#8722; {meta.error}</>}
+                    <Conditional isRendered={isError}>
+                        <> &#8722; {meta.error}</>
+                    </Conditional>
                 </label>
 
                 <div className='bg-primary-500 w-full rounded flex'>
@@ -69,31 +74,26 @@ export const TextInput: FC<ITextInputProps> = ({
                         required={isRequired}
                     />
 
-                    {
-                        type === 'password' &&
+                    <Conditional isRendered={type === 'password'}>
                         <Button
                             onClick={handleTypeToggle}
                             className='px-2 group'
                         >
-                            {
-                                typeState === 'text' 
-                                    ? <Icon 
-                                        iconId='password-eye-on' 
-                                        height={30}
-                                        width={30}
-                                        className='fill-icon-100 group-hover:fill-icon-200'
-                                    />
-                                    
-                                    : <Icon 
-                                        iconId='password-eye-off' 
-                                        height={30} 
-                                        width={30}
-                                        className='fill-icon-100 group-hover:fill-icon-200'
-                                    />
-                            }
-                            
+                            <Conditional isRendered={typeState === 'text'}>
+                                <Icon 
+                                    iconId='password-eye-on'
+                                    className='h-[30px] fill-icon-100 group-hover:fill-icon-200'
+                                />
+                            </Conditional>
+                        
+                            <Conditional isRendered={typeState === 'password'}>
+                                <Icon 
+                                    iconId='password-eye-off'
+                                    className='h-[30px] fill-icon-100 group-hover:fill-icon-200'
+                                />
+                            </Conditional>
                         </Button>
-                    }
+                    </Conditional>
                 </div>
             </div>
         </>

@@ -1,11 +1,21 @@
 import { FC, useMemo } from 'react';
-import { Icon, Separator, Tooltip, ContextMenu, RefContextProvider, Conditional } from '@components';
-import { NavigationButton } from './components/NavigationButton';
-import classNames from 'classnames';
+import { Icon, Separator, Tooltip, ContextMenu, RefContextProvider, Conditional, FocusableListItem, FocusableListWrapper } from '@components';
+import { NavigationButton, ChannelsNavigationItem } from './components';
 import { useNavigator } from '@hooks';
-import { ChannelsNavigationItem } from './components';
+import { twClassNames } from '@utils';
 
 
+
+const styles = {
+    section: 'bg-primary-500 py-3 w-[72px] flex flex-col shrink-0',
+    focusableListWrapper: `overflow-y-scroll scrollbar-with-gutter 
+    scrollbar-hidden`,
+    list: 'flex flex-col h-fit gap-2 py-1',
+    homePageButtonIcon: `w-7 h-7 fill-icon-100 m-auto group-hover:fill-white 
+    group-focus-within:fill-white`,
+    addChannelButtonIcon: `w-7 h-7 m-auto fill-green group-hover:fill-white 
+    group-focus-within:fill-white`,
+};
 
 export const ChannelsNavigation: FC = () => {
     const { myLocationIs, navigateTo } = useNavigator();
@@ -29,15 +39,19 @@ export const ChannelsNavigation: FC = () => {
         { id: '16gra', name: '1 4', rooms: [{ id: '2' }] },
         { id: '17tyjtjd', name: 'last', rooms: [{ id: '2' }] },
     ];
-    const channelsList = useMemo(() => channels.map((channel) => (
-        <ChannelsNavigationItem 
-            channel={channel} 
-            key={channel.id}
-        />
+    const channelsList = useMemo(() => channels.map((channel, index) => (
+        <FocusableListItem key={channel.id} index={index}>
+            {({ tabIndex }) => (
+                <ChannelsNavigationItem 
+                    channel={channel}
+                    tabIndex={tabIndex}
+                />
+            )}
+        </FocusableListItem>
     )), [channels]);
 
     return (
-        <div className='bg-primary-500 py-3 w-[72px] flex flex-col shrink-0'>
+        <div className={styles.section}>
             <RefContextProvider>
                 <NavigationButton 
                     theme='brand' 
@@ -46,13 +60,9 @@ export const ChannelsNavigation: FC = () => {
                 >
                     <Icon 
                         iconId='discord-logo'
-                        height={28} 
-                        width={28}
-                        className={classNames(
-                            'fill-icon-100 m-auto group-hover:fill-white group-focus-within:fill-white',
-                            {
-                                'fill-white': isAppOrPrivateChatPage,
-                            },
+                        className={twClassNames(
+                            styles.homePageButtonIcon,
+                            { 'fill-white': isAppOrPrivateChatPage },
                         )}
                     />
                 </NavigationButton>
@@ -70,14 +80,12 @@ export const ChannelsNavigation: FC = () => {
                 
             <Separator className='w-1/2'/>
 
-            <Conditional isRendered={!!channelsList.length}>
-                <div className='overflow-y-scroll scrollbar-with-gutter scrollbar-hidden'>
-                    <ul className='flex flex-col h-full gap-2 py-1'>
+            <Conditional isRendered={!!channels.length}>
+                <FocusableListWrapper className={styles.focusableListWrapper}>
+                    <ul className={styles.list}>
                         {channelsList}
                     </ul>
-                </div>
-
-                <Separator className='w-1/2'/>
+                </FocusableListWrapper>
             </Conditional>
 
             <RefContextProvider>
@@ -86,10 +94,8 @@ export const ChannelsNavigation: FC = () => {
                     onLeftClick={() => console.log('open add channel modal')}
                 >
                     <Icon 
+                        className={styles.addChannelButtonIcon}
                         iconId='add-channel-navigation-icon'
-                        height={28} 
-                        width={28}
-                        className='m-auto fill-green group-hover:fill-white group-focus-within:fill-white'
                     />
                 </NavigationButton>
 

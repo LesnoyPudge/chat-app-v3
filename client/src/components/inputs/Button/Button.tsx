@@ -13,6 +13,7 @@ export interface IButtonProps extends PropsWithChildren {
     isLoading?: boolean;
     isActive?: boolean;
     isDisabled?: boolean;
+    tabIndex?: number;
     onClick?: (e?: MouseEvent) => void;
     onLeftClick?: (e?: MouseEvent) => void;
     onMiddleClick?: (e?: MouseEvent) => void;
@@ -48,6 +49,7 @@ export const Button: FC<IButtonProps> = ({
     isLoading = false,
     isActive = false,
     isDisabled = false,
+    tabIndex = 0,
     onClick,
     onLeftClick,
     onMiddleClick,
@@ -155,6 +157,7 @@ export const Button: FC<IButtonProps> = ({
             className={buttonCN}
             type={type}
             disabled={isDisabled || isLoading}
+            tabIndex={tabIndex}
             ref={ref}
             // onClick={onLeftClick}
             // onAuxClick={onMiddleClick}

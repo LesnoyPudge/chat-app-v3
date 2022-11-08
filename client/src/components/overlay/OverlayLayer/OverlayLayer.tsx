@@ -3,16 +3,8 @@ import { createPortal } from 'react-dom';
 
 
 
-interface IOverlayLayer extends PropsWithChildren {
-    isRendered?: boolean;
-}
+const overlayLayer = document.getElementById('overlay-layer') as HTMLElement;
 
-const overlayLayer = document.getElementById('overlay-root') as HTMLElement;
-
-export const OverlayLayer: FC<IOverlayLayer> = ({ 
-    children,
-    isRendered = true,
-}) => {
-    const content = isRendered ? children : null;
-    return createPortal(content, overlayLayer);
+export const OverlayLayer: FC<PropsWithChildren> = ({ children }) => {
+    return createPortal(children, overlayLayer);
 };

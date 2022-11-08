@@ -1,4 +1,4 @@
-import { Button, IModalContext, IRefContext, ModalContext, OverlayLayer, RefContext, SearchBar } from '@components';
+import { Button, Conditional, IModalContext, IRefContext, ModalContext, OverlayLayer, RefContext, SearchBar } from '@components';
 import { Emoji, emojiList, useAddEmoji } from '@libs';
 import { animated, useTransition } from '@react-spring/web';
 import { fpsToMs, throttle } from '@utils';
@@ -6,6 +6,23 @@ import { FC, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import ReactFocusLock from 'react-focus-lock';
 
 
+
+const styles = {
+    wrapper: `bg-primary-400 pointer-events-auto flex flex-col 
+    max-h-[40vh] w-[min(300px,100%)] rounded-md p-3 ml-auto
+    shadow-emoji_picker absolute`,
+    searchBar: 'h-[30px]',
+    list: `my-3 py-2 pl-2 grid grid-cols-5 gap-3 
+    overflow-auto custom-scrollbar-variant-primary`,
+    listItemButton: `h-10 w-10 flex rounded-lg
+    hover:bg-primary-100 focus-visible:bg-primary-100
+    transition-all duration-75`,
+    listItemEmoji: 'h-8 m-auto',
+    previewWrapper: 'h-12 flex items-center px-2 bg-primary-500',
+    previewInner: 'overflow-hidden whitespace-nowrap text-ellipsis',
+    previewEmoji: 'mr-2 h-7',
+    previewText: 'font-bold',
+};
 
 export const EmojiPicker: FC = () => {
     const { target } = useContext(RefContext) as IRefContext;
@@ -80,75 +97,70 @@ export const EmojiPicker: FC = () => {
         };
 
         return (
-            <OverlayLayer isRendered={item}>
-                <ReactFocusLock autoFocus={false} returnFocus disabled={!isOpen}>
-                    <animated.div 
-                        className='bg-primary-400 pointer-events-auto flex flex-col 
-                        max-h-[40vh] w-[min(300px,100%)] rounded-md p-3 ml-auto
-                        shadow-emoji_picker absolute'
-                        style={wrapperStyle}
-                        ref={wrapperRef}
-                    >
-                        <SearchBar
-                            className='h-[30px]'
-                            placeholder={currentEmoji.code.join(' ')}
-                            value={searchValue}
-                            onChange={handleChange}
-                            onReset={handleReset}
-                        />
-                   
-                        <ul 
-                            className='my-3 py-2 pl-2 grid grid-cols-5 gap-3 
-                            overflow-auto custom-scrollbar-variant-primary'
+            <OverlayLayer>
+                <Conditional isRendered={item}>
+                    <ReactFocusLock autoFocus={false} returnFocus disabled={!isOpen}>
+                        <animated.div 
+                            className={styles.wrapper}
+                            style={wrapperStyle}
+                            ref={wrapperRef}
                         >
-                            {
-                                emojiListToRender.map((item) => {
-                                    const changeCurrentEmoji = () => setCurrentEmoji(item);
-                                    const handleClick = () => {
-                                        closeModal();
-                                        setTimeout(() => {
-                                            addEmoji(item.code[0]);   
-                                        });
-                                    };
+                            <SearchBar
+                                className={styles.searchBar}
+                                placeholder={currentEmoji.code.join(' ')}
+                                value={searchValue}
+                                onChange={handleChange}
+                                onReset={handleReset}
+                            />
+                   
+                            <ul className={styles.list}>
+                                {
+                                    emojiListToRender.map((item) => {
+                                        const changeCurrentEmoji = () => setCurrentEmoji(item);
+                                        const handleClick = () => {
+                                            closeModal();
+                                            setTimeout(() => {
+                                                addEmoji(item.code[0]);   
+                                            });
+                                        };
 
-                                    return (
-                                        <li className='contents' key={item.code[0]}>
-                                            <Button
-                                                className='h-10 w-10 flex rounded-lg
-                                                hover:bg-primary-100 focus-visible:bg-primary-100
-                                                transition-all duration-75'
-                                                isntStyled
-                                                onClick={handleClick}
-                                                onMouseEnter={changeCurrentEmoji}
-                                                onFocus={changeCurrentEmoji}
-                                            >
-                                                <Emoji 
-                                                    className='h-8 m-auto' 
-                                                    isSerialized 
-                                                    code={item.code[0]}
-                                                />
-                                            </Button>
-                                        </li>
-                                    );
-                                })
-                            }
-                        </ul>
+                                        return (
+                                            <li className='contents' key={item.code[0]}>
+                                                <Button
+                                                    className={styles.listItemButton}
+                                                    isntStyled
+                                                    onClick={handleClick}
+                                                    onMouseEnter={changeCurrentEmoji}
+                                                    onFocus={changeCurrentEmoji}
+                                                >
+                                                    <Emoji 
+                                                        className={styles.listItemEmoji}
+                                                        isSerialized 
+                                                        code={item.code[0]}
+                                                    />
+                                                </Button>
+                                            </li>
+                                        );
+                                    })
+                                }
+                            </ul>
                     
-                        <div className='h-12 flex items-center px-2 bg-primary-500'>
-                            <div className='overflow-hidden whitespace-nowrap text-ellipsis'>
-                                <Emoji 
-                                    className='mr-2 h-7'
-                                    isSerialized 
-                                    code={currentEmoji.code[0]}
-                                />
+                            <div className={styles.previewWrapper}>
+                                <div className={styles.previewInner}>
+                                    <Emoji 
+                                        className={styles.previewEmoji}
+                                        isSerialized 
+                                        code={currentEmoji.code[0]}
+                                    />
 
-                                <span className='font-bold'>
-                                    {currentEmoji.code.join(' ')}
-                                </span>
+                                    <span className={styles.previewText}>
+                                        {currentEmoji.code.join(' ')}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    </animated.div>
-                </ReactFocusLock>
+                        </animated.div>
+                    </ReactFocusLock>
+                </Conditional>
             </OverlayLayer>
         );
     });

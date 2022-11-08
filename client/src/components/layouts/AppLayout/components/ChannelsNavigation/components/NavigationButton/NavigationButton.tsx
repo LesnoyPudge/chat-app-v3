@@ -1,7 +1,6 @@
 import { Button } from '@components';
-import classNames from 'classnames';
+import { twClassNames } from '@utils';
 import { PropsWithChildren, FC } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -9,6 +8,7 @@ interface INavigationButton extends PropsWithChildren {
     className?: string;
     isActive?: boolean;
     theme: 'brand' | 'action';
+    tabIndex?: number;
     onLeftClick?: () => void;
 }
 
@@ -23,36 +23,46 @@ const themes = {
     },
 };
 
+const styles = {
+    section: 'flex w-full justify-center relative group',
+    bulletWrapper: `opacity-0  transition-all w-2 h-0 group-hover:opacity-100 
+    group-focus-within:opacity-100 bg-light absolute top-1/2 
+    left-0 -translate-y-1/2 -translate-x-1/2 rounded-r-[4px]
+    group-hover:h-5 group-focus-within:h-5`,
+    button: `w-12 h-12 flex justify-center items-center bg-primary-300 
+    rounded-full overflow-hidden transition-all group-hover:rounded-2xl 
+    group-focus-within:rounded-2xl`,
+};
+
 export const NavigationButton: FC<INavigationButton> = ({ 
     children, 
     className = '',
     isActive = false,
     theme,
+    tabIndex,
     onLeftClick,
 }) => {
     return (
-        <div className={twMerge(`flex w-full justify-center relative group ${className}`)}>
+        <div className={twClassNames(styles.section, { className })}>
             <div 
-                className={twMerge(classNames(
-                    'opacity-0  transition-all w-2 h-0 group-hover:opacity-100 group-focus-within:opacity-100 bg-light absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 rounded-r-[4px]',
-                    {
-                        'opacity-100 h-10': isActive,
-                        'group-hover:h-5 group-focus-within:h-5': !isActive,
-                    },
-                ))}
+                className={twClassNames(
+                    styles.bulletWrapper, 
+                    { 'opacity-100 h-10': isActive },
+                )}
             ></div>
 
             <Button
                 onLeftClick={onLeftClick}
                 isntStyled
-                className={twMerge(classNames(
-                    'w-12 h-12 flex justify-center items-center bg-primary-300 rounded-full overflow-hidden transition-all group-hover:rounded-2xl group-focus-within:rounded-2xl',
+                tabIndex={tabIndex}
+                className={twClassNames(
+                    styles.button,
                     {
                         'rounded-2xl': isActive,
                         [themes[theme].base]: true,
                         [themes[theme].active]: isActive,
                     },
-                ))}
+                )}
             >
                 {children}
             </Button>

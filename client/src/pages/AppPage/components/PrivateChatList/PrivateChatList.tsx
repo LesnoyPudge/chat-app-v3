@@ -263,15 +263,23 @@ const privateChats: IPrivateChats[] = [
     },
 ];
 
+const styles = {
+    section: 'flex flex-col overflow-hidden h-full',
+    heading: 'mx-3.5 mb-4 uppercase font-semibold text-xs text-normal',
+    wrapper: `w-full h-full overflow-y-scroll scrollbar-with-gutters 
+    scrollbar-primary scrollbar-auto-hidden`,
+    list: 'flex flex-col gap-[3px] w-full pt-1 pb-4',
+};
+
 export const PrivateChatList: FC = () => {
     return (
-        <div className='flex flex-col overflow-hidden h-full'>
-            <h2 className='mx-3.5 mb-4 uppercase font-semibold text-xs text-normal'>
+        <div className={styles.section}>
+            <h2 className={styles.heading}>
                 Личные сообщения
             </h2>
 
-            <div className='w-full h-full overflow-y-scroll scrollbar-with-gutters scrollbar-primary'>
-                <ul className='flex flex-col gap-[3px] w-full pt-1 pb-4'>
+            <div className={styles.wrapper}>
+                <ul className={styles.list}>
                     {privateChats.map((privateChat, index) => {
                         return (
                             <PrivateChatItem

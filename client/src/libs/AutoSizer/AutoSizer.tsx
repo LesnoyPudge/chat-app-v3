@@ -1,5 +1,6 @@
 import { createContext, FC, PropsWithChildren, ReactNode, useMemo } from 'react';
 import ReactAutoSizer, { SizeType, AutoSizerProps } from '@oyyds/react-auto-sizer';
+import { ChildrenOrFunction } from '@components';
 
 
 
@@ -19,11 +20,13 @@ export const AutoSizer: FC<AutoSizerType> = ({
         <ReactAutoSizer {...rest}>
             {({ height = 0, width = 0 }) => {
                 const contextValues: AutoSizerContextType = { height, width };
-                const content = children instanceof Function ? children(contextValues) : children;
 
                 return (
                     <AutoSizerContext.Provider value={contextValues}>
-                        {content}
+                        <ChildrenOrFunction
+                            childrenOrFunction={children}
+                            args={contextValues}
+                        />
                     </AutoSizerContext.Provider>
                 );
             }}

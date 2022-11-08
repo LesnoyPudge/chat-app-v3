@@ -8,10 +8,8 @@ export const Navigation: FC = () => {
     return (
         <TopBar className='px-2 items-center'>
             <Icon 
-                iconId='friend-icon' 
-                height={24} 
-                width={24}
-                className='fill-icon-300 mx-2'
+                iconId='friend-icon'
+                className='h-6 w-6 fill-icon-300 mx-2'
             /> 
     
             <h3 className='text-heading_m text-primary font-medium'>

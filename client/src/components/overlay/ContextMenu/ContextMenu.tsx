@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { IRefContext, OverlayLayer, RefContext } from '@components';
+import { Conditional, IRefContext, OverlayLayer, RefContext } from '@components';
 import { animated, useTransition } from '@react-spring/web';
 import ReactFocusLock from 'react-focus-lock';
 import { twMerge } from 'tailwind-merge';
@@ -182,23 +182,23 @@ export const ContextMenu: FC<IContextMenu> = ({
         };
     }, [handleKeyDown, isExist]);
 
-    const contextMenu = transition((style, item) => (
-        <OverlayLayer isRendered={item}>
-            <ReactFocusLock autoFocus={false} returnFocus>
-                <animated.div
-                    className={twMerge(classNames(baseClassName, className))}
-                    style={{ 
-                        opacity: style.opacity,
-                        left: menuPosition.x + offset,
-                        top: menuPosition.y,
-                    }}
-                    ref={contextMenuRef}
-                >
-                    {children({ unmount })}
-                </animated.div>
-            </ReactFocusLock>
+    return transition((style, item) => (
+        <OverlayLayer>
+            <Conditional isRendered={item}>
+                <ReactFocusLock autoFocus={false} returnFocus>
+                    <animated.div
+                        className={twMerge(classNames(baseClassName, className))}
+                        style={{ 
+                            opacity: style.opacity,
+                            left: menuPosition.x + offset,
+                            top: menuPosition.y,
+                        }}
+                        ref={contextMenuRef}
+                    >
+                        {children({ unmount })}
+                    </animated.div>
+                </ReactFocusLock>
+            </Conditional>
         </OverlayLayer>
     ));
-
-    return contextMenu;
 };

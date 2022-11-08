@@ -35,5 +35,27 @@
         &-with-gutters {
             scrollbar-gutter: stable both-edges;
         }
+
+        &-auto-hidden {
+            &:not(:hover, :focus, :focus-visible, :focus-within) {
+                scrollbar-color: transparent;
+
+                &::-webkit-scrollbar {
+                    @apply bg-transparent;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    @apply bg-transparent;
+                }
+            }
+        }
+    }
+
+    .focus-hidden {
+        outline: none;
+
+        &:focus-visible {
+            box-shadow: none;
+        }
     }
 }

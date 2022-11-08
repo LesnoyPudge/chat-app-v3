@@ -1,3 +1,5 @@
+import { Conditional } from '@components';
+import { twClassNames } from '@utils';
 import classNames from 'classnames';
 import { createContext, FC, ReactNode, useState } from 'react';
 
@@ -44,25 +46,25 @@ export const TabContexProvider: FC<ITabContexProviderProps> = ({
 
     return (
         <TabContex.Provider value={contextValues}>
-            {
-                children 
-                    ? children({ ...contextValues }) 
-                    : tabs.map(({ tab, identifier }) => {
-                        return (
-                            <div 
-                                key={identifier} 
-                                className={classNames(
-                                    'contents',
-                                    {
-                                        'hidden': currentTab.identifier !== identifier,
-                                    },
-                                )}
-                            >
-                                {tab}
-                            </div>
-                        );
-                    })
-            }
+            <Conditional isRendered={!!children}>
+                {children && children({ ...contextValues })} 
+            </Conditional>
+            
+            <Conditional isRendered={!children}>
+                {tabs.map(({ tab, identifier }) => {
+                    const isHidden = currentTab.identifier !== identifier;
+                    const className = twClassNames('contents', { 'hidden': isHidden });
+
+                    return (
+                        <div
+                            className={className}
+                            key={identifier} 
+                        >
+                            {tab}
+                        </div>
+                    );
+                })}
+            </Conditional>
         </TabContex.Provider>
     );
 };

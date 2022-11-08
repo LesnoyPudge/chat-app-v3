@@ -1,8 +1,7 @@
 import { ContextMenu, RefContextProvider, Tooltip } from '@components';
 import { useNavigator } from '@hooks';
-import classNames from 'classnames';
+import { twClassNames } from '@utils';
 import { FC } from 'react';
-import { twMerge } from 'tailwind-merge';
 import { NavigationButton } from '..';
 
 
@@ -15,10 +14,18 @@ interface TMPChannel {
 
 interface IChannelsNavigationItem {
     channel: TMPChannel;
+    tabIndex: number;
 }
+
+const styles = {
+    contentWrapper: 'px-[6px] w-full flex justify-center',
+    content: `font-bold text-ellipsis overflow-hidden 
+    group-hover:text-white group-focus-within:text-white`,
+};
 
 export const ChannelsNavigationItem: FC<IChannelsNavigationItem> = ({
     channel,
+    tabIndex,
 }) => {
     const { myLocationIs, navigateTo } = useNavigator();
     const isActive = myLocationIs.channel(channel.id);
@@ -26,36 +33,36 @@ export const ChannelsNavigationItem: FC<IChannelsNavigationItem> = ({
     const handleNavigate = () => navigateTo.room(channel.id, channel.rooms[0].id);
 
     return (
-        <RefContextProvider>
-            <li>
+        <li className='contents'>
+            <RefContextProvider>
                 <NavigationButton 
                     theme='brand' 
                     isActive={isActive}
+                    tabIndex={tabIndex}
                     onLeftClick={handleNavigate}
                 >
-                    <div className='px-[6px] w-full flex justify-center'>
+                    <div className={styles.contentWrapper}>
                         <span 
-                            className={twMerge(classNames(
-                                `font-bold text-ellipsis overflow-hidden 
-                                group-hover:text-white group-focus-within:text-white`,
+                            className={twClassNames(
+                                styles.content,
                                 { 'text-white': isActive },
-                            ))}
+                            )}
                         >
                             {formatedName}
                         </span>
                     </div>
                 </NavigationButton>
-            </li>
                                     
-            <Tooltip position='right'>
-                {channel.name}
-            </Tooltip>
+                <Tooltip position='right'>
+                    {channel.name}
+                </Tooltip>
 
-            <ContextMenu>
-                {() => (
-                    <>menu</>
-                )}
-            </ContextMenu>
-        </RefContextProvider>
+                <ContextMenu>
+                    {() => (
+                        <>menu</>
+                    )}
+                </ContextMenu>
+            </RefContextProvider>
+        </li>
     );
 };

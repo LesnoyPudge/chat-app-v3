@@ -1,9 +1,8 @@
-import classNames from 'classnames';
 import { FC } from 'react';
 import { SlateEditor, SlateContainer } from '@libs';
-import { twMerge } from 'tailwind-merge';
 import { EmojiPickerButton } from '..';
 import { Button, Icon } from '@components';
+import { twClassNames } from '@utils';
 
 
 
@@ -12,12 +11,16 @@ interface IMessageInputBar {
     placeholder?: string;
 }
 
-const baseWrapperClassName = `flex min-h-[44px] max-h-[50vh] mt-auto 
-mb-6 mx-4 rounded-lg bg-primary-100`;
-
-const editorClassName = `w-full px-2 h-full py-[11px]
-placeholder:text-placeholder min-h-[44px] max-h-[50vh] 
-overflow-y-auto overflow-x-hidden`;
+const styles = {
+    wrapper: `flex min-h-[44px] max-h-[50vh] mt-auto 
+    mb-6 mx-4 rounded-lg bg-primary-100`,
+    editor: `w-full px-2 h-full py-[11px]
+    placeholder:text-placeholder min-h-[44px] max-h-[50vh] 
+    overflow-y-auto overflow-x-hidden`,
+    button: `h-11 fill-icon-100 hover:fill-icon-200 
+    focus-visible:fill-icon-200`,
+    icon: 'h-6 w-6',
+};
 
 export const MessageInputBar: FC<IMessageInputBar> = ({
     className = '',
@@ -25,34 +28,28 @@ export const MessageInputBar: FC<IMessageInputBar> = ({
 }) => {
     return (
         <SlateContainer>
-            <div className={twMerge(classNames(baseWrapperClassName, className))}>
-                <Button 
-                    className='h-11 fill-icon-100 hover:fill-icon-200 
-                    focus-visible:fill-icon-200'
-                >
+            <div className={twClassNames(styles.wrapper, className)}>
+                <Button className={styles.button}>
                     <Icon
+                        className={styles.icon}
                         iconId='add-file-icon'
-                        height={24}
                     />
                 </Button>
 
                 <SlateEditor
-                    className={twMerge(editorClassName, 'scroll-py-4')}
+                    className={styles.editor}
                     placeholder={placeholder}
                 />
                 
-                <EmojiPickerButton
-                    className='h-11'
-                />
+                <EmojiPickerButton className='h-11'/>
 
                 <Button 
-                    className='h-11 fill-icon-100 hover:fill-icon-200 
-                    focus-visible:fill-icon-200'
+                    className={styles.button}
                     type='submit'
                 >
                     <Icon
+                        className={styles.icon}
                         iconId='send-message-icon'
-                        height={24}
                     />
                 </Button>
             </div>

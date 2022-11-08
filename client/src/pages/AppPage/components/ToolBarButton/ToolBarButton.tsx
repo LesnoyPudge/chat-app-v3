@@ -1,6 +1,6 @@
 import { Button, Icon, RefContextProvider, Tooltip } from '@components';
+import { twClassNames } from '@utils';
 import { FC, ReactNode } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -13,6 +13,13 @@ interface IToolBarButton {
     activeTooltipContent?: ReactNode;
     onClick: () => void;
 }
+
+const styles = {
+    button: `h-8 w-8 flex shrink-0 rounded group 
+    hover:bg-hover focus-visible:bg-hover`,
+    icon: `w-5 h-5 m-auto fill-icon-200 
+    group-hover:fill-icon-100 group-focus-visible:fill-icon-100`,
+};
 
 export const ToolBarButton: FC<IToolBarButton> = ({
     className = '',
@@ -29,15 +36,13 @@ export const ToolBarButton: FC<IToolBarButton> = ({
     return (
         <RefContextProvider>
             <Button 
-                className={twMerge(`h-8 w-8 flex shrink-0 rounded group hover:bg-hover focus-visible:bg-hover ${className}`)}
+                className={twClassNames(styles.button, className)}
                 isntStyled
                 onClick={onClick}
             >
                 <Icon
-                    className='m-auto fill-icon-200 group-hover:fill-icon-100 group-focus-visible:fill-icon-100'
+                    className={styles.icon}
                     iconId={currentIcon}
-                    height={20}
-                    width={20}
                 />
             </Button>
 

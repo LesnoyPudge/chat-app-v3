@@ -1,8 +1,8 @@
 import { PropsWithChildren, useEffect, useState , FC, useContext } from 'react';
 import { animated, useTransition, to } from '@react-spring/web';
-import { IRefContext, OverlayLayer, RefContext } from '@components';
+import { Conditional, IRefContext, OverlayLayer, RefContext } from '@components';
 import { twMerge } from 'tailwind-merge';
-import { fpsToMs, throttle } from '@utils';
+import { fpsToMs, throttle, twClassNames } from '@utils';
 
 
 
@@ -14,6 +14,12 @@ interface ITooltipProps extends PropsWithChildren {
     spacing?: number;
     animationOffset?: number;
 }
+
+const styles = {
+    wrapper: 'fixed pointer-events-none',
+    inner: `relative bg-primary-500 text-ellipsis text-normal font-bold 
+    py-[5px] px-2.5 rounded-md w-max max-w-[300px]`,
+};
 
 export const Tooltip: FC<ITooltipProps> = ({
     className = '',
@@ -53,53 +59,52 @@ export const Tooltip: FC<ITooltipProps> = ({
     return transition((style, item) => {
         if (!target.current) return null;
 
-        const rect = target.current.getBoundingClientRect();
+        const { top, left, width, height } = target.current.getBoundingClientRect();
         const positions = {
             top: {
                 translateX: '-50%',
                 translateY: to([style.animationOffset], (animationOffset) => `calc(-100% - ${animationOffset}px)`),
-                top: `${rect.top - spacing}px`,
-                left: `${rect.left + rect.width / 2}px`,
+                top: `${top - spacing}px`,
+                left: `${left + width / 2}px`,
             },
             right: {
                 translateX: to([style.animationOffset], (animationOffset) => `${animationOffset}px`),
                 translateY: '-50%',
-                top: `${rect.top + rect.height / 2}px`,
-                left: `${rect.left + rect.width + spacing}px`,
+                top: `${top + height / 2}px`,
+                left: `${left + width + spacing}px`,
             },
             bottom: {
                 translateX: '-50%',
                 translateY: to([style.animationOffset], (animationOffset) => `${animationOffset}px`),
-                top: `${rect.top + rect.height + spacing}px`,
-                left: `${rect.left + rect.width / 2}px`,
+                top: `${top + height + spacing}px`,
+                left: `${left + width / 2}px`,
             },
             left: {
                 translateX: to([style.animationOffset], (animationOffset) => `calc(-100% - ${animationOffset}px)`),
                 translateY: '-50%',
-                top: `${rect.top + rect.height / 2}px`,
-                left: `${rect.left - spacing}px`,
+                top: `${top + height / 2}px`,
+                left: `${left - spacing}px`,
             },
         };
 
         return (
-            <OverlayLayer isRendered={item}>
-                <animated.div
-                    className='fixed pointer-events-none'
-                    style={{ 
-                        opacity: style.opacity,
-                        translateX: positions[position].translateX,
-                        translateY: positions[position].translateY,
-                        left: positions[position].left,
-                        top: positions[position].top,
-                    }}
-                >
-                    <div 
-                        className={twMerge(`relative bg-primary-500 text-ellipsis text-normal font-bold 
-                        py-[5px] px-2.5 rounded-md w-max max-w-[300px] ${className}`)}
+            <OverlayLayer>
+                <Conditional isRendered={item}>
+                    <animated.div
+                        className={styles.wrapper}
+                        style={{ 
+                            opacity: style.opacity,
+                            translateX: positions[position].translateX,
+                            translateY: positions[position].translateY,
+                            left: positions[position].left,
+                            top: positions[position].top,
+                        }}
                     >
-                        {children}
-                    </div>
-                </animated.div>
+                        <div className={twClassNames(styles.inner, className)}>
+                            {children}
+                        </div>
+                    </animated.div>
+                </Conditional>
             </OverlayLayer>
         );
     });
