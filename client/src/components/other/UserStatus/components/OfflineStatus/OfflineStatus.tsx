@@ -1,5 +1,5 @@
+import { twClassNames } from '@utils';
 import { FC } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -7,12 +7,15 @@ interface IOfflineStatus {
     className?: string;
 }
 
+const balseClassName = 'h-full w-full fill-status-offline';
+
 export const OfflineStatus: FC<IOfflineStatus> = ({ className }) => {
     return (
-        <svg className={twMerge(`h-full w-full fill-status-offline ${className}`)}>
+        <svg className={twClassNames(balseClassName, className)}>
             <rect  
+                height='100%'
+                width='100%'
                 mask='url(#offline-status-mask)'
-                className='h-full w-full'
             ></rect>
         </svg>
     );

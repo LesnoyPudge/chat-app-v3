@@ -1,5 +1,4 @@
 export * from './Separator';
 export * from './UserAvatar';
 export * from './Time';
-export * from './Conditional';
-export * from './ChildrenOrFunction';
+export * from './UserStatus';

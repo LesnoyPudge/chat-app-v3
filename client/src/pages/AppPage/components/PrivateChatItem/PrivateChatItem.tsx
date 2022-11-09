@@ -1,8 +1,8 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { UserAvatar, RefContextProvider, Button, Icon, Tooltip } from '@components';
+import { UserAvatar, RefContextProvider, Button, Icon, Tooltip, WithMemo, MFC } from '@components';
 import { useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
-import React, { FC } from 'react';
+import React from 'react';
 
 
 
@@ -15,7 +15,8 @@ interface IPrivateChats {
 }
 
 interface IPrivateChatItem {
-    privateChat: IPrivateChats
+    privateChat: IPrivateChats;
+    tabIndex: number;
 }
 
 const styles = {
@@ -33,7 +34,10 @@ const styles = {
     iconId='cross-icon`,
 };
 
-export const PrivateChatItem: FC<IPrivateChatItem> = ({ privateChat }) => {
+export const PrivateChatItem: MFC<IPrivateChatItem> = WithMemo(({ 
+    privateChat,
+    tabIndex,
+}) => {
     const {
         id,
         avatar,
@@ -43,6 +47,8 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({ privateChat }) => {
     } = privateChat;
 
     const { navigateTo, myLocationIs } = useNavigator();
+    const isActive = myLocationIs.privateChat(id);
+
     const handleNavigate = () => navigateTo.privateChat(id);
     const handleHideChat = () => console.log('chat hidden');
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -51,7 +57,6 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({ privateChat }) => {
             handleNavigate();
         }
     };
-    const isActive = myLocationIs.privateChat(id);
 
     return (
         <li 
@@ -59,7 +64,7 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({ privateChat }) => {
                 styles.listItem, 
                 { 'bg-hover' : isActive },
             )}
-            tabIndex={0}
+            tabIndex={tabIndex}
             onClick={handleNavigate}
             onKeyDown={handleKeyDown}
         >
@@ -87,6 +92,7 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({ privateChat }) => {
                         { 'opacity-100': isActive },
                     )}
                     isntStyled
+                    tabIndex={tabIndex}
                     onClick={handleHideChat}
                 >
                     <Icon
@@ -101,4 +107,4 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({ privateChat }) => {
             </RefContextProvider>
         </li>
     );
-};
+}, 'PrivateChatItem');

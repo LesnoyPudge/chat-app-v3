@@ -8,8 +8,8 @@ type GetIndexType = (index: number) => number;
 type HandleKeyDownType = (e: React.KeyboardEvent) => void;
 
 interface IListItemLifeCycle {
-    add: () => void; 
-    remove: () => void;
+    onMount: () => void; 
+    onUnmount: () => void;
 }
 
 export interface IWrapperProps {
@@ -20,7 +20,6 @@ export interface IWrapperProps {
 }
 
 export interface IFocusableListContext {
-    currentFocus: number | null;
     wrapperProps: IWrapperProps;
     listItemLifeCycle: IListItemLifeCycle;
     getTabIndex: GetIndexType;
@@ -31,11 +30,12 @@ export const FocusableListContext = createContext<IFocusableListContext | undefi
 export const FocusableListContextProvider: FC<PropsWithChildrenOrFunction<IFocusableListContext>> = ({ children }) => {
     const listLength = useRef(-1);
     const [currentFocus, setCurrentFocus] = useState<number | null>(null);
+    
     const blurTimeoutRef = useRef(0);
 
-    const listItemLifeCycle = {
-        add: () => listLength.current++,
-        remove: () => listLength.current--,
+    const listItemLifeCycle: IListItemLifeCycle = {
+        onMount: () => listLength.current++,
+        onUnmount: () => listLength.current--,
     };
 
     const handleFocus = () => {
@@ -54,27 +54,31 @@ export const FocusableListContextProvider: FC<PropsWithChildrenOrFunction<IFocus
     const handleKeyDown: HandleKeyDownType = (e) => {
         if (e.code === 'ArrowUp') {
             e.preventDefault();
-
-            const emptyList = listLength.current === -1;
-            const isNull = currentFocus === null;
-            const shouldBeNull = isNull || emptyList;
-            const shouldGoToLast = currentFocus === 0;
-            const newValue = shouldBeNull ? null : shouldGoToLast ? listLength.current : currentFocus - 1;
-
-            setCurrentFocus(newValue);
+            
+            setCurrentFocus((prevFocus) => {
+                const emptyList = listLength.current === -1;
+                const isNull = prevFocus === null;
+                const shouldBeNull = isNull || emptyList;
+                const shouldGoToLast = prevFocus === 0;
+                const newValue = shouldBeNull ? null : shouldGoToLast ? listLength.current : prevFocus - 1;
+                
+                return newValue;
+            });
         }
 
         if (e.code === 'ArrowDown') {
             e.preventDefault();
 
-            const emptyList = listLength.current === -1;
-            const isNull = currentFocus === null;
-            const lastItem = !isNull && currentFocus >= listLength.current;
-            const shouldBeNull = emptyList;
-            const shouldBeZero = (isNull && !emptyList) || (!emptyList && lastItem);
-            const newValue = shouldBeNull ? null : shouldBeZero ? 0 : currentFocus! + 1;
-
-            setCurrentFocus(newValue);
+            setCurrentFocus((prevFocus) => {
+                const emptyList = listLength.current === -1;
+                const isNull = prevFocus === null;
+                const lastItem = !isNull && prevFocus >= listLength.current;
+                const shouldBeNull = emptyList;
+                const shouldBeZero = (isNull && !emptyList) || (!emptyList && lastItem);
+                const newValue = shouldBeNull ? null : shouldBeZero ? 0 : prevFocus! + 1;
+                
+                return newValue;
+            });
         }
     };
 
@@ -86,7 +90,6 @@ export const FocusableListContextProvider: FC<PropsWithChildrenOrFunction<IFocus
     };
 
     const contextValues: IFocusableListContext = {
-        currentFocus,
         wrapperProps,
         getTabIndex,
         listItemLifeCycle,

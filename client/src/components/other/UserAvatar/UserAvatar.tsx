@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { AfkStatus, DndStatus, OfflineStatus, OnlineStatus } from './components';
-import { Conditional, RefContextProvider, Tooltip } from '@components';
+import { Conditional, RefContextProvider, Tooltip, UserStatus } from '@components';
 import AutoSizer from '@oyyds/react-auto-sizer';
 import { twClassNames } from '@utils';
 
@@ -15,28 +14,12 @@ interface IUserAvatar {
     extraStatus?: ExtraStatusType;
 }
 
-const classes = 'absolute bottom-0 right-0 w-1/3 h-1/3';
-const statuses = {
-    online: {
-        elem: <OnlineStatus className={classes}/>,
-        title: 'В сети',
-    },
-    offline: {
-        elem: <OfflineStatus className={classes}/>,
-        title: 'Не в сети',
-    },
-    afk: {
-        elem: <AfkStatus className={classes}/>,
-        title: 'Неактивен',
-    },
-    dnd: {
-        elem: <DndStatus className={classes}/>,
-        title: 'Не беспокоить',
-    },
-    invisible: {
-        elem: <OfflineStatus className={classes}/>,
-        title: 'Не в сети',
-    },
+const statusTitles = {
+    default: 'В сети',
+    offline: 'Не в сети',
+    invisible: 'Не в сети',
+    afk: 'Неактивен',
+    dnd: 'Не беспокоить',
 };
 
 export const UserAvatar: FC<IUserAvatar> = ({
@@ -47,8 +30,8 @@ export const UserAvatar: FC<IUserAvatar> = ({
     extraStatus = 'default',
 }) => {
     const showStatus = !!status;
-    const isDefault = extraStatus === 'default' || status === 'offline';
-    const currentStatus = isDefault ? statuses[status] : statuses[extraStatus];
+    const isOffline = status === 'offline';
+    const statusTitle = isOffline ? statusTitles[status] : statusTitles[extraStatus];
 
     const imageElement = <img 
         src={avatar} 
@@ -75,10 +58,14 @@ export const UserAvatar: FC<IUserAvatar> = ({
                                 {imageElement}
 
                                 <RefContextProvider>
-                                    {currentStatus.elem}
+                                    <UserStatus 
+                                        className='absolute bottom-0 right-0 w-1/3 h-1/3'
+                                        status={status} 
+                                        extraStatus={extraStatus}
+                                    />
     
                                     <Tooltip position='top'>
-                                        {currentStatus.title}
+                                        {statusTitle}
                                     </Tooltip>
                                 </RefContextProvider>
                             </foreignObject>

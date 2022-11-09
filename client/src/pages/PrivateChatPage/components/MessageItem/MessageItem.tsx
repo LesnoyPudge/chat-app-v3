@@ -1,6 +1,5 @@
 import { IMessage } from '@backendTypes';
-import { Conditional, Time, UserAvatar } from '@components';
-import { FC } from 'react';
+import { Conditional, MFC, Time, UserAvatar, WithMemo } from '@components';
 
 
 
@@ -9,7 +8,7 @@ interface IMessageItem {
     isHeadless?: boolean;
 }
 
-export const MessageItem: FC<IMessageItem> = ({ 
+export const MessageItem: MFC<IMessageItem> = WithMemo(({ 
     message,
     isHeadless = false,
 }) => {
@@ -69,4 +68,4 @@ export const MessageItem: FC<IMessageItem> = ({
             </div>
         </li>
     );
-};
+});

@@ -1,4 +1,5 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
+import { FocusableListItem, FocusableListWrapper } from '@components';
 import { FC } from 'react';
 import { PrivateChatItem } from '..';
 
@@ -14,7 +15,7 @@ interface IPrivateChats {
 
 const privateChats: IPrivateChats[] = [
     {
-        id: '1',
+        id: '1' + Math.random().toString(),
         username: 'friend 1 qweqweqweqweqweqweqweqweqweqweqweqweqweqwwew',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -22,7 +23,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '2',
+        id: '2' + Math.random().toString(),
         username: 'friend 2',
         avatar: 'https://i.pravatar.cc/52',
         status: 'offline',
@@ -30,7 +31,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '3',
+        id: '3' + Math.random().toString(),
         username: 'friend 3',
         avatar: 'https://i.pravatar.cc/53',
         status: 'online',
@@ -38,14 +39,14 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '4',
+        id: '4' + Math.random().toString(),
         username: 'friend 4',
         avatar: 'https://i.pravatar.cc/54',
         status: 'online',
         extraStatus: 'dnd',
     },
     {
-        id: '1',
+        id: '1' + Math.random().toString(),
         username: 'friend 1',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -53,7 +54,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '2',
+        id: '2' + Math.random().toString(),
         username: 'friend 2',
         avatar: 'https://i.pravatar.cc/52',
         status: 'offline',
@@ -61,7 +62,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '3',
+        id: '3' + Math.random().toString(),
         username: 'friend 3',
         avatar: 'https://i.pravatar.cc/53',
         status: 'online',
@@ -69,14 +70,14 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '4',
+        id: '4' + Math.random().toString(),
         username: 'friend 4',
         avatar: 'https://i.pravatar.cc/54',
         status: 'online',
         extraStatus: 'dnd',
     },
     {
-        id: '1',
+        id: '1' + Math.random().toString(),
         username: 'friend 1',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -84,7 +85,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '2',
+        id: '2' + Math.random().toString(),
         username: 'friend 2',
         avatar: 'https://i.pravatar.cc/52',
         status: 'offline',
@@ -92,7 +93,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '3',
+        id: '3' + Math.random().toString(),
         username: 'friend 3',
         avatar: 'https://i.pravatar.cc/53',
         status: 'online',
@@ -100,14 +101,14 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '4',
+        id: '4' + Math.random().toString(),
         username: 'friend 4',
         avatar: 'https://i.pravatar.cc/54',
         status: 'online',
         extraStatus: 'dnd',
     },
     {
-        id: '1',
+        id: '1' + Math.random().toString(),
         username: 'friend 1',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -115,7 +116,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '2',
+        id: '2' + Math.random().toString(),
         username: 'friend 2',
         avatar: 'https://i.pravatar.cc/52',
         status: 'offline',
@@ -123,7 +124,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '3',
+        id: '3' + Math.random().toString(),
         username: 'friend 3',
         avatar: 'https://i.pravatar.cc/53',
         status: 'online',
@@ -131,14 +132,14 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '4',
+        id: '4' + Math.random().toString(),
         username: 'friend 4',
         avatar: 'https://i.pravatar.cc/54',
         status: 'online',
         extraStatus: 'dnd',
     },
     {
-        id: '1',
+        id: '1' + Math.random().toString(),
         username: 'friend 1',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -146,7 +147,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '2',
+        id: '2' + Math.random().toString(),
         username: 'friend 2',
         avatar: 'https://i.pravatar.cc/52',
         status: 'offline',
@@ -154,7 +155,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '3',
+        id: '3' + Math.random().toString(),
         username: 'friend 3',
         avatar: 'https://i.pravatar.cc/53',
         status: 'online',
@@ -162,14 +163,14 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '4',
+        id: '4' + Math.random().toString(),
         username: 'friend 4',
         avatar: 'https://i.pravatar.cc/54',
         status: 'online',
         extraStatus: 'dnd',
     },
     {
-        id: '1',
+        id: '1' + Math.random().toString(),
         username: 'friend 1',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -177,7 +178,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '2',
+        id: '2' + Math.random().toString(),
         username: 'friend 2',
         avatar: 'https://i.pravatar.cc/52',
         status: 'offline',
@@ -185,7 +186,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '3',
+        id: '3' + Math.random().toString(),
         username: 'friend 3',
         avatar: 'https://i.pravatar.cc/53',
         status: 'online',
@@ -193,14 +194,14 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '4',
+        id: '4' + Math.random().toString(),
         username: 'friend 4',
         avatar: 'https://i.pravatar.cc/54',
         status: 'online',
         extraStatus: 'dnd',
     },
     {
-        id: '1',
+        id: '1' + Math.random().toString(),
         username: 'friend 1',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -208,7 +209,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '2',
+        id: '2' + Math.random().toString(),
         username: 'friend 2',
         avatar: 'https://i.pravatar.cc/52',
         status: 'offline',
@@ -216,7 +217,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '3',
+        id: '3' + Math.random().toString(),
         username: 'friend 3',
         avatar: 'https://i.pravatar.cc/53',
         status: 'online',
@@ -224,14 +225,14 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '4',
+        id: '4' + Math.random().toString(),
         username: 'friend 4',
         avatar: 'https://i.pravatar.cc/54',
         status: 'online',
         extraStatus: 'dnd',
     },
     {
-        id: '1',
+        id: '1' + Math.random().toString(),
         username: 'friend 1',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
@@ -239,7 +240,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '2',
+        id: '2' + Math.random().toString(),
         username: 'friend 2',
         avatar: 'https://i.pravatar.cc/52',
         status: 'offline',
@@ -247,7 +248,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '3',
+        id: '3' + Math.random().toString(),
         username: 'friend 3',
         avatar: 'https://i.pravatar.cc/53',
         status: 'online',
@@ -255,7 +256,7 @@ const privateChats: IPrivateChats[] = [
     },
 
     {
-        id: '4',
+        id: '4' + Math.random().toString(),
         username: 'friend 4',
         avatar: 'https://i.pravatar.cc/54',
         status: 'online',
@@ -278,18 +279,25 @@ export const PrivateChatList: FC = () => {
                 Личные сообщения
             </h2>
 
-            <div className={styles.wrapper}>
+            <FocusableListWrapper className={styles.wrapper}>
                 <ul className={styles.list}>
                     {privateChats.map((privateChat, index) => {
                         return (
-                            <PrivateChatItem
-                                privateChat={privateChat}
-                                key={index}
-                            />
+                            <FocusableListItem 
+                                index={index}
+                                key={privateChat.id}
+                            >
+                                {({ tabIndex }) => (
+                                    <PrivateChatItem 
+                                        privateChat={privateChat}
+                                        tabIndex={tabIndex}
+                                    />
+                                )}
+                            </FocusableListItem>
                         );
                     })}
                 </ul>
-            </div>
+            </FocusableListWrapper>
         </div>
     );
 };

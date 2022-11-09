@@ -1,5 +1,5 @@
+import { twClassNames } from '@utils';
 import { FC } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -7,11 +7,14 @@ interface IAfkStatus {
     className?: string;
 }
 
+const balseClassName = 'h-full w-full fill-status-afk';
+
 export const AfkStatus: FC<IAfkStatus> = ({ className }) => {
     return (
-        <svg className={twMerge(`h-full w-full ${className}`)}>
+        <svg className={twClassNames(balseClassName, className)}>
             <rect 
-                className='h-full w-full fill-status-afk' 
+                height='100%'
+                width='100%'
                 mask='url(#afk-status-mask)'
             ></rect>
         </svg>

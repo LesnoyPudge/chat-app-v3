@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 
 
 
@@ -9,7 +9,7 @@ export type PropsWithChildrenOrFunction<ARGS = any> = {
 }
 
 interface IChildrenOrFunction {
-    childrenOrFunction: ChildrenOrFunction
+    childrenOrFunction: ChildrenOrFunction;
     args: any;
 }
 
@@ -17,9 +17,11 @@ export const ChildrenOrFunction: FC<IChildrenOrFunction> = ({
     childrenOrFunction,
     args,
 }) => {
-    const children = childrenOrFunction instanceof Function 
-        ? childrenOrFunction(args) 
-        : childrenOrFunction;
+    const children = useMemo(() => (
+        childrenOrFunction instanceof Function 
+            ? childrenOrFunction(args) 
+            : childrenOrFunction
+    ), [args, childrenOrFunction]);
     
     return <>{children}</>;
 };

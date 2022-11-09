@@ -62,7 +62,7 @@ const privateChats: IPrivateChat[] = [
 
 export const PrivateChatPage: FC = () => {
     const { params } = useNavigator();
-    const friend = privateChats.filter(item => item.id === params.privateChatId)[0].friend;
+    const friend = privateChats.filter(item => item.id === params.privateChatId)[0]?.friend || privateChats[0];
     const placeholder = `Отправте сообщение для ${friend.username}`;
 
     return (

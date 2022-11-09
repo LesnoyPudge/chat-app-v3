@@ -3,7 +3,7 @@ import { FC, PropsWithChildren } from 'react';
 
 
 interface IConditional extends PropsWithChildren {
-    isRendered?: boolean;
+    isRendered: boolean;
 }
 
 export const Conditional: FC<IConditional> = ({

@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { MoveFocusInside } from 'react-focus-lock';
 import { FocusableListContext, IFocusableListContext, PropsWithChildrenOrFunction, ChildrenOrFunction } from '@components';
 
@@ -12,21 +12,21 @@ export const FocusableListItem: FC<IFocusableListItem> = ({
     index,
     children,
 }) => {
-    const { currentFocus, listItemLifeCycle } = useContext(FocusableListContext) as IFocusableListContext;
-    const tabIndex = currentFocus === index ? 0 : -1;
-    const isAutoFocusDisabled = currentFocus !== index;
+    const { listItemLifeCycle, getTabIndex } = useContext(FocusableListContext) as IFocusableListContext;
+    const tabIndex = getTabIndex(index);
+    const isAutoFocusDisabled = tabIndex === -1;
 
     useEffect(() => {
-        listItemLifeCycle.add();
+        listItemLifeCycle.onMount();
 
         return () => {
-            listItemLifeCycle.remove();
+            listItemLifeCycle.onUnmount();
         };
     }, [listItemLifeCycle]);
 
-    return (
+    return useMemo(() => (
         <MoveFocusInside disabled={isAutoFocusDisabled}>
             <ChildrenOrFunction childrenOrFunction={children} args={{ tabIndex }}/>
         </MoveFocusInside>
-    );
+    ), [children, isAutoFocusDisabled, tabIndex]);
 };
