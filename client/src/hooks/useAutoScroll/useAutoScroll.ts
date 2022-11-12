@@ -1,69 +1,61 @@
-import { RefObject, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import { useIsFirstRender } from '@hooks';
-import { fpsToMs, throttle } from '@utils';
+import { useCallback, useEffect, useRef } from 'react';
+import { useIsFirstRender, useResizeObserver } from '@hooks';
+import { useInView } from 'react-intersection-observer';
 
 
-
-type ScrollbarRef = RefObject<HTMLDivElement | null>;
 
 interface IOptions {
     startFromBottom?: boolean;
-    autoScrollThreshold?: number;
     autoScrollDependency?: React.DependencyList;
 }
 
+type SetRefType = (node: HTMLElement | null) => void;
+
+interface IReturn {
+    setScrollbarRef: SetRefType;
+    setAutoScrollTriggerRef: SetRefType;
+}
+
+type UseAutoScroll = (options?: IOptions) => IReturn;
+
 const defaultOptions: Required<IOptions> = {
     startFromBottom: false,
-    autoScrollThreshold: 1,
     autoScrollDependency: [],
 };
 
-export const useAutoScroll = (scrollbarRef: ScrollbarRef, options?: IOptions) => {
+export const useAutoScroll: UseAutoScroll = (options) => {
+    const isFirstRender = useIsFirstRender();
+    const scrollbarRef = useRef<HTMLElement | null>(null);
+    const [setAutoScrollTriggerRef, isAutoScroll] = useInView({ threshold: 0 });
     const {
         startFromBottom,
-        autoScrollThreshold,
         autoScrollDependency,
     } = Object.assign(defaultOptions, options);
 
-    const isAutoScrollRef = useRef(startFromBottom);
-    const isFirstRender = useIsFirstRender();
+    const setScrollbarRef: SetRefType = (node) => {
+        scrollbarRef.current = node;
+    };
 
     const scrollToBottom = useCallback(() => {
         if (!scrollbarRef.current) return;
         scrollbarRef.current.scrollTop = scrollbarRef.current.scrollHeight;
-    }, [scrollbarRef]);
+    }, []);
+
+    const autoScroll = useCallback(() => {
+        if (isAutoScroll) scrollToBottom();
+    }, [isAutoScroll, scrollToBottom]);
+
+    useResizeObserver(scrollbarRef.current, autoScroll);
 
     useEffect(() => {
         if (isFirstRender && startFromBottom) scrollToBottom();
     }, [startFromBottom, isFirstRender, scrollToBottom]);
 
-    const handleScroll = useCallback(() => {
-        if (!scrollbarRef.current) return;
-    
-        const scrollbar = scrollbarRef.current;
-        const { 
-            scrollTop = 0, 
-            scrollHeight = 0, 
-            clientHeight = 0,
-        } = scrollbar;
-        const currentScrollPos = scrollTop / (scrollHeight - clientHeight);
-        const isFullyScrolled = currentScrollPos >= autoScrollThreshold;
-        const isSameHeight = clientHeight === scrollHeight;
-        const shouldEnableAutoScroll = isFullyScrolled || isSameHeight;
-        const shouldDisableAutoScroll = !isFullyScrolled && !isSameHeight;
-
-        if (shouldEnableAutoScroll) isAutoScrollRef.current = true;
-        if (shouldDisableAutoScroll) isAutoScrollRef.current = false;
-    }, [autoScrollThreshold, scrollbarRef]);
-
-    useLayoutEffect(() => {
-        if (isAutoScrollRef.current) scrollToBottom();
-        
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, autoScrollDependency);
+    useEffect(() => autoScroll(), autoScrollDependency);
 
     return {
-        handleScroll,
-        scrollToBottom,
+        setScrollbarRef,
+        setAutoScrollTriggerRef,
     };
 };

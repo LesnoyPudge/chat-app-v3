@@ -82,14 +82,14 @@ export const TextInput: FC<ITextInputProps> = ({
                             <Conditional isRendered={typeState === 'text'}>
                                 <Icon 
                                     iconId='password-eye-on'
-                                    className='h-[30px] fill-icon-100 group-hover:fill-icon-200'
+                                    className='h-[30px] fill-icon-200 group-hover:fill-icon-300'
                                 />
                             </Conditional>
                         
                             <Conditional isRendered={typeState === 'password'}>
                                 <Icon 
                                     iconId='password-eye-off'
-                                    className='h-[30px] fill-icon-100 group-hover:fill-icon-200'
+                                    className='h-[30px] fill-icon-200 group-hover:fill-icon-300'
                                 />
                             </Conditional>
                         </Button>

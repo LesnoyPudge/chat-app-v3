@@ -29,8 +29,8 @@ const styles = {
     hideChatButton: `ml-auto flex shrink-0 h-7 w-7 opacity-0
     group-hover:opacity-100 group-focus-visible:opacity-100 
     group-focus-within:opacity-100 group-1`,
-    hideChatButtonIcon: `h-5 w-5 m-auto fill-icon-200 group-1-hover:fill-icon-100
-    group-1-focus-visible:fill-icon-100 transition-none'
+    hideChatButtonIcon: `h-5 w-5 m-auto fill-icon-300 group-1-hover:fill-icon-200
+    group-1-focus-visible:fill-icon-200 transition-none'
     iconId='cross-icon`,
 };
 

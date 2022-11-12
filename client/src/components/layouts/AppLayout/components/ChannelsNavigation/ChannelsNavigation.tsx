@@ -11,7 +11,7 @@ const styles = {
     focusableListWrapper: `overflow-y-scroll scrollbar-with-gutter 
     scrollbar-hidden`,
     list: 'flex flex-col h-fit gap-2 py-1',
-    homePageButtonIcon: `w-7 h-7 fill-icon-100 m-auto group-hover:fill-white 
+    homePageButtonIcon: `w-7 h-7 fill-icon-200 m-auto group-hover:fill-white 
     group-focus-within:fill-white`,
     addChannelButtonIcon: `w-7 h-7 m-auto fill-green group-hover:fill-white 
     group-focus-within:fill-white`,

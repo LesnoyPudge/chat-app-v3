@@ -10,8 +10,8 @@ import { PrivateChatList, UserToolBar } from './components';
 const styles = {
     button: `flex w-full items-center px-3 h-full
     hover:bg-hover focus-visible:bg-hover group`,
-    icon: `w-6 h-6 mr-3 fill-icon-200 group-hover:fill-icon-100 
-    group-focus-visible:fill-icon-100 transition-none`,
+    icon: `w-6 h-6 mr-3 fill-icon-300 group-hover:fill-icon-200 
+    group-focus-visible:fill-icon-200 transition-none`,
 };
 
 export const AppPage: FC = () => {
@@ -34,7 +34,7 @@ export const AppPage: FC = () => {
                         <Icon
                             className={twClassNames(
                                 styles.icon, 
-                                { 'fill-icon-100': isActive },
+                                { 'fill-icon-200': isActive },
                             )}
                             iconId='friend-icon'
                         />

@@ -56,12 +56,11 @@ export const FocusableListContextProvider: FC<PropsWithChildrenOrFunction<IFocus
             e.preventDefault();
             
             setCurrentFocus((prevFocus) => {
-                const emptyList = listLength.current === -1;
+                const shouldBeNull = listLength.current === -1;
                 const isNull = prevFocus === null;
-                const shouldBeNull = isNull || emptyList;
-                const shouldGoToLast = prevFocus === 0;
-                const newValue = shouldBeNull ? null : shouldGoToLast ? listLength.current : prevFocus - 1;
-                
+                const shouldBeLast = isNull || prevFocus === 0;
+                const newValue = shouldBeNull ? null : shouldBeLast ? listLength.current : prevFocus - 1;
+
                 return newValue;
             });
         }

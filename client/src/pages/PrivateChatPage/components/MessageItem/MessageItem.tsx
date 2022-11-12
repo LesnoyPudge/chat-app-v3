@@ -6,11 +6,13 @@ import { Conditional, MFC, Time, UserAvatar, WithMemo } from '@components';
 interface IMessageItem {
     message: IMessage;
     isHeadless?: boolean;
+    tabIndex: number;
 }
 
 export const MessageItem: MFC<IMessageItem> = WithMemo(({ 
     message,
     isHeadless = false,
+    tabIndex,
 }) => {
     return (
         <li 
@@ -18,6 +20,7 @@ export const MessageItem: MFC<IMessageItem> = WithMemo(({
             focus-visible:bg-message focus-within:bg-message
             flex group'
             key={message.id}
+            tabIndex={tabIndex}
         >
             <div className='w-[72px] flex justify-center shrink-0'>
                 <Conditional isRendered={isHeadless}>

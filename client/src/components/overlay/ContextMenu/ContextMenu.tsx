@@ -100,7 +100,8 @@ export const ContextMenu: FC<IContextMenu> = ({
 
     const handleKeyDown = useCallback((e: React.KeyboardEvent | KeyboardEvent) => {
         if (!isExist) return;
-        if (e.code === 'Escape') unmount(e);
+        if (e.code !== 'Escape') return;
+        unmount(e);
     }, [isExist, unmount]);
 
     useEffect(() => {
@@ -124,22 +125,22 @@ export const ContextMenu: FC<IContextMenu> = ({
             mount(e);
         };
 
-        const onEnter = (e: KeyboardEvent) => {
+        const onKeyDown = (e: KeyboardEvent) => {
             if (!handleLeftClick) return;
-            if (e.code !== 'Enter') return;
+            if (e.code !== 'Enter' && e.code !== 'Space') return;
             mount(e);
         };
 
         target.addEventListener('click', onLeftClick);
         target.addEventListener('contextmenu', onRightClick);
         target.addEventListener('auxclick', onMiddleClick);
-        target.addEventListener('keydown', onEnter);
+        target.addEventListener('keydown', onKeyDown);
         
         return () => {
             target.removeEventListener('click', onLeftClick);
             target.removeEventListener('contextmenu', onRightClick);
             target.removeEventListener('auxclick', onMiddleClick);
-            target.removeEventListener('keydown', onEnter);
+            target.removeEventListener('keydown', onKeyDown);
         };
     }, [container, handleKeyDown, handleLeftClick, handleMiddleClick, handleRightClick, mount]);
 

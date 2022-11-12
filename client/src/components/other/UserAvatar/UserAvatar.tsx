@@ -26,7 +26,7 @@ export const UserAvatar: FC<IUserAvatar> = ({
     className = '',
     avatar,
     username,
-    status = 'offline',
+    status,
     extraStatus = 'default',
 }) => {
     const showStatus = !!status;
@@ -60,7 +60,7 @@ export const UserAvatar: FC<IUserAvatar> = ({
                                 <RefContextProvider>
                                     <UserStatus 
                                         className='absolute bottom-0 right-0 w-1/3 h-1/3'
-                                        status={status} 
+                                        status={status!} 
                                         extraStatus={extraStatus}
                                     />
     

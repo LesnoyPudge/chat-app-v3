@@ -34,8 +34,8 @@ export const ActionButton: FC<IActionButton> = ({
                 <Icon
                     iconId={iconId}
                     className={twMerge(`h-5 w-5 m-auto fill-icon-300 
-                    group-2-hover:fill-icon-100
-                    group-2-focus-visible:fill-icon-100 ${iconClassName}`)}
+                    group-2-hover:fill-icon-200
+                    group-2-focus-visible:fill-icon-200 ${iconClassName}`)}
                 />
             </Button>
 

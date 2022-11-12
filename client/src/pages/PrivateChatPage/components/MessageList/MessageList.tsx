@@ -1,8 +1,9 @@
 import { IMessage } from '@backendTypes';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { MessageItem } from '..';
-import { fpsToMs, getRandomNumber, throttle } from '@utils';
+import { getRandomNumber } from '@utils';
 import { useAutoScroll } from '@hooks';
+import { FocusableListContextProvider, FocusableListItem } from '@components';
 
 
 
@@ -24,22 +25,17 @@ const getMessages = ((size = 20) => {
 });
 
 export const MessageList: FC = () => {
-    const scrollbarRef = useRef<HTMLDivElement | null>(null);
     const [messages, setMessages] = useState(getMessages(0));
-    const { handleScroll } = useAutoScroll(
-        scrollbarRef, 
-        { 
-            startFromBottom: true,
-            autoScrollThreshold: 1,
-            autoScrollDependency: [messages],
-        },
-    );
+    const { setAutoScrollTriggerRef, setScrollbarRef } = useAutoScroll({ 
+        startFromBottom: true,
+        autoScrollDependency: [messages],
+    });
 
-    const onScroll = throttle(handleScroll, fpsToMs(60));
-
+    const [autoAdd, setAutoAdd] = useState(false);
     const intervalRef = useRef(0);
     const interval = 2000;
     useEffect(() => {
+        if (!autoAdd) return;
         intervalRef.current = setInterval(() => {
             setMessages(prev => [...prev, ...getMessages(1)]);
         }, interval);
@@ -47,29 +43,58 @@ export const MessageList: FC = () => {
         return () => {
             clearInterval(intervalRef.current);
         };
-    }, []);
+    }, [autoAdd]);
 
     const messageList = useMemo(() => (
-        messages.map((message) => {
+        messages.map((message, index) => {
             return (
-                <MessageItem 
-                    message={message}
-                    key={message.id}
-                    isHeadless={!!parseInt(message.user)}
-                />
+                <FocusableListItem index={index} key={message.id}>
+                    {({ tabIndex }) => (
+                        <MessageItem 
+                            message={message}
+                            isHeadless={!!parseInt(message.user)}
+                            tabIndex={tabIndex}
+                        />
+                    )}
+                </FocusableListItem>
             );
         })
     ), [messages]);
 
     return (
-        <div 
-            className='h-full w-full overflow-y-scroll scrollbar-with-gutter scrollbar-primary' 
-            ref={scrollbarRef}
-            onScroll={onScroll}
-        >
-            <ol className='flex flex-col justify-end min-h-full overflow-hidden'>
-                {messageList}
-            </ol>
-        </div>
+        <FocusableListContextProvider>
+            {({ wrapperProps }) => (
+                <>
+                    <div className='flex gap-8 justify-center'>
+                        <button 
+                            onClick={() => setMessages(prev => [...prev, ...getMessages(1)])}
+                        >
+                            add
+                        </button>
+                        <button
+                            onClick={() => setAutoAdd(prev => !prev)}
+                        >
+                            toggle autoAdd: <span>{`${autoAdd}`}</span>
+                        </button>
+                    </div>
+
+                    <div 
+                        className='h-full w-full overflow-y-scroll 
+                        scrollbar-with-gutter scrollbar-primary' 
+                        ref={setScrollbarRef}
+                        {...wrapperProps}
+                    >
+                        <ol 
+                            className='flex flex-col justify-end 
+                            min-h-full overflow-hidden'
+                        >
+                            {messageList}
+                        </ol>
+                        
+                        <div ref={setAutoScrollTriggerRef}></div>
+                    </div>
+                </>
+            )}
+        </FocusableListContextProvider>
     );
 };

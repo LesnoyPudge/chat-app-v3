@@ -15,9 +15,9 @@ interface ISearchBar {
 
 const baseClassName = `bg-primary-500 rounded-md w-full text-normal 
 flex flex-shrink-0`;
-const iconClassName = `h-2/3 aspect-square m-auto fill-icon-200 
-group-hover:fill-icon-100 group-active:fill-icon-100
-group-focus-visible:fill-icon-100`;
+const iconClassName = `h-2/3 aspect-square m-auto fill-icon-300 
+group-hover:fill-icon-200 group-active:fill-icon-200
+group-focus-visible:fill-icon-200`;
 
 export const SearchBar: FC<ISearchBar> = ({
     className = '',

@@ -7,7 +7,7 @@ interface IOfflineStatus {
     className?: string;
 }
 
-const balseClassName = 'h-full w-full fill-status-offline';
+const balseClassName = 'h-full w-full fill-status-offline shrink-0';
 
 export const OfflineStatus: FC<IOfflineStatus> = ({ className }) => {
     return (

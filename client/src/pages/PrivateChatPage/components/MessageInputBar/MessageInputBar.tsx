@@ -17,8 +17,8 @@ const styles = {
     editor: `w-full px-2 h-full py-[11px]
     placeholder:text-placeholder min-h-[44px] max-h-[50vh] 
     overflow-y-auto overflow-x-hidden`,
-    button: `h-11 fill-icon-100 hover:fill-icon-200 
-    focus-visible:fill-icon-200`,
+    button: `h-11 fill-icon-200 hover:fill-icon-300 
+    focus-visible:fill-icon-300`,
     icon: 'h-6 w-6',
 };
 

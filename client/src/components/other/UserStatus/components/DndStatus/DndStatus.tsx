@@ -7,7 +7,7 @@ interface IDndStatus {
     className?: string;
 }
 
-const balseClassName = 'h-full w-full fill-status-dnd';
+const balseClassName = 'h-full w-full fill-status-dnd shrink-0';
 
 export const DndStatus: FC<IDndStatus> = ({ className }) => {
     return (

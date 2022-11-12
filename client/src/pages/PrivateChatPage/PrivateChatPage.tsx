@@ -1,8 +1,7 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { TopBar } from '@components';
 import { useNavigator } from '@hooks';
 import { FC } from 'react';
-import { MessageInputBar, MessageList } from './components';
+import { MessageInputBar, MessageList, PrivateChatHeader } from './components';
 
 
 
@@ -62,14 +61,12 @@ const privateChats: IPrivateChat[] = [
 
 export const PrivateChatPage: FC = () => {
     const { params } = useNavigator();
-    const friend = privateChats.filter(item => item.id === params.privateChatId)[0]?.friend || privateChats[0];
+    const friend = privateChats.filter(item => item.id === params.privateChatId)[0]?.friend || privateChats[0].friend;
     const placeholder = `Отправте сообщение для ${friend.username}`;
 
     return (
         <>
-            <TopBar>
-                {friend.username}
-            </TopBar>
+            <PrivateChatHeader/>
 
             <MessageList/>
 

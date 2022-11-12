@@ -17,8 +17,8 @@ interface IToolBarButton {
 const styles = {
     button: `h-8 w-8 flex shrink-0 rounded group 
     hover:bg-hover focus-visible:bg-hover`,
-    icon: `w-5 h-5 m-auto fill-icon-200 
-    group-hover:fill-icon-100 group-focus-visible:fill-icon-100`,
+    icon: `w-5 h-5 m-auto fill-icon-300 
+    group-hover:fill-icon-200 group-focus-visible:fill-icon-200`,
 };
 
 export const ToolBarButton: FC<IToolBarButton> = ({

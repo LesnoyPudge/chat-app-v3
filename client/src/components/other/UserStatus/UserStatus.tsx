@@ -10,7 +10,6 @@ interface IUserStatus {
     extraStatus?: ExtraStatusType;
 }
 
-// eslint-disable-next-line react/display-name
 export const UserStatus: FC<IUserStatus> = ({
     className = '',
     status,
@@ -23,8 +22,7 @@ export const UserStatus: FC<IUserStatus> = ({
         invisible: <OfflineStatus className={className}/>,
     };
 
-    const isOffline = status === 'offline';
-    const statusToShow = isOffline 
+    const statusToShow = status === 'offline' 
         ? <OfflineStatus className={className}/> 
         : onlineStatuses[extraStatus];
     
