@@ -6,7 +6,6 @@ export * from './socket';
 export * from './setTitle';
 export * from './debounce';
 export * from './throttle';
-export * from './customBlur';
 export * from './copyToClipboard';
 export * from './random';
 export * from './fpsToMs';
