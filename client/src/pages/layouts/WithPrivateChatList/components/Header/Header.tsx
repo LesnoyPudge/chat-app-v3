@@ -17,7 +17,7 @@ export const Header: FC = () => {
     const isActive = myLocationIs.app;
 
     return (
-        <TopBar className='mb-6'>
+        <TopBar>
             <Button
                 className={twClassNames(
                     styles.button, 

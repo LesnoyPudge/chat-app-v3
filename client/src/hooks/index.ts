@@ -12,3 +12,4 @@ export * from './useIsFirstRender';
 export * from './useWindowSize';
 export * from './useAutoScroll';
 export * from './useResizeObserver';
+export * from './useConditional';

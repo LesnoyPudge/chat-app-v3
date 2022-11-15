@@ -1,6 +1,6 @@
 import { Button, ContextMenu, RefContextProvider, Tooltip, UserAvatar } from '@components';
-import { useThrottle, useToggle } from '@hooks';
-import { copyToClipboard } from '@utils';
+import { useConditional, useThrottle, useToggle } from '@hooks';
+import { copyToClipboard, twClassNames } from '@utils';
 import { FC } from 'react';
 import { ToolBarButton } from './components';
 
@@ -8,10 +8,16 @@ import { ToolBarButton } from './components';
 
 export const UserToolBar: FC = () => {
     const { throttle, isThrottling } = useThrottle();
+    const [isVoiceMuted, toggleVoice] = useToggle();
+    const [isSoundMuted, toggleSound] = useToggle();
+    const [copyUsernameTooltipText] = useConditional(
+        'Cкопировано!', 
+        'Нажмите, чтобы скопировать', 
+        isThrottling,
+    );
+
     const username = 'myName';
     const handleCopy = throttle(() => copyToClipboard(username), 2000);
-    const micValue = useToggle();
-    const headValue = useToggle();
 
     return (
         <div className='flex shrink-0 mt-auto items-center h-[52px] py-0 px-2 bg-primary-400'>
@@ -37,8 +43,11 @@ export const UserToolBar: FC = () => {
                             {username}
                         </Button>
 
-                        <Tooltip position='top' className={isThrottling ? 'bg-green text-white' : ''}>
-                            { isThrottling ? 'Cкопировано!' : 'Нажмите, чтобы скопировать'}
+                        <Tooltip 
+                            className={twClassNames({ 'bg-green text-white': isThrottling })}
+                            position='top'
+                        >
+                            {copyUsernameTooltipText}
                         </Tooltip>
                     </RefContextProvider>
                 </div>
@@ -61,21 +70,21 @@ export const UserToolBar: FC = () => {
             </RefContextProvider>
             
             <ToolBarButton
-                isActive={micValue.state}
+                isActive={isVoiceMuted}
                 defaultIconId='microphone'
                 activeIconId='microphone-muted'
                 defaultTooltipContent='Откл. микрофон'
                 activeTooltipContent= 'Вкл. микрофон'
-                onClick={micValue.toggle}
+                onClick={toggleVoice}
             />
 
             <ToolBarButton
-                isActive={headValue.state}
+                isActive={isSoundMuted}
                 defaultIconId='headphone'
                 activeIconId='headphone-muted'
                 defaultTooltipContent='Откл. звук'
                 activeTooltipContent= 'Вкл. звук'
-                onClick={headValue.toggle}
+                onClick={toggleSound}
             />
 
             <ToolBarButton

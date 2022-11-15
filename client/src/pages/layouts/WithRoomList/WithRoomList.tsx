@@ -1,14 +1,15 @@
 import { FC } from 'react';
 import { SplitedPageLayout } from '../components';
+import { Header, RoomList } from './components';
 
 
 
 export const WithRoomList: FC = () => {
     return (
         <SplitedPageLayout>
-            <>channel name</>
+            <Header/>
 
-            <>room list</>
+            <RoomList/>
         </SplitedPageLayout>
     );
 };

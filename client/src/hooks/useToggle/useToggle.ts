@@ -2,16 +2,21 @@ import { useState } from 'react';
 
 
 
-export const useToggle = (initialState = false) => {
+type UseToggleType = (initialState?: boolean, secondState?: boolean) => [
+    state: boolean, 
+    toggle: () => void,
+    set: (nextState: boolean) => void,
+];
+
+export const useToggle: UseToggleType = (initialState = false) => {
     const [state, setState] = useState(initialState);
 
-    const toggle = (nextState?: boolean) => {
-        if (nextState) return setState(nextState);
-        setState(prev => !prev);
-    };
+    const toggle = () => setState(prev => !prev);
+    const set = (nextState: boolean) => setState(nextState);
 
-    return {
+    return [
         state,
         toggle,
-    };
+        set,    
+    ];
 };
