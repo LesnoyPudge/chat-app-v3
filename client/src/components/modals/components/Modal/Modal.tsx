@@ -16,14 +16,16 @@ const styles = {
     backdrop: 'fixed -z-[1] top-0 left-0 w-screen h-screen bg-black opacity-70',
 };
 
+const defaultAnimationProps = {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    config: { duration: 100 },
+};
+
 export const Modal: FC<IModal> = ({
     withoutBackdrop = false,
-    animationProps = {
-        from: { opacity: 0 },
-        enter: { opacity: 1 },
-        leave: { opacity: 0 },
-        config: { duration: 100 },
-    },
+    animationProps = defaultAnimationProps,
     children,
 }) => {
     const { isOpen, closeModal } = useContext(ModalContext) as IModalContext;
