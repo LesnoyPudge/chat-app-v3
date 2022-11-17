@@ -1,1 +1,1 @@
-export * from './RootRouter';
+export { RootRouter as default } from './RootRouter';

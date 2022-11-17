@@ -1,3 +1,4 @@
+import { Conditional } from '@components';
 import { FC, ReactNode } from 'react';
 import { RenderElementAttributes } from '../../types';
 
@@ -21,25 +22,25 @@ export const Link: FC<LinkPropsType> = ({
     children,
     attributes,
 }) => {
-    const Serialized = () => (
-        <a
-            className='text-link underline'
-            href={url}
-            target='_blank' 
-            rel='noreferrer' 
-            {...attributes}
-        >
-            {children}
-        </a>
+    return (
+        <>
+            <Conditional isRendered={!!isSerialized}>
+                <a
+                    className='text-link underline'
+                    href={url}
+                    rel='noopener noreferrer' 
+                    target='_blank'
+                    {...attributes}
+                >
+                    {children}
+                </a>
+            </Conditional>
+        
+            <Conditional isRendered={!isSerialized}>
+                <span className='text-link'>
+                    {children}
+                </span>
+            </Conditional>
+        </>
     );
-
-    const Unserialized = () => (
-        <span className='text-link' data-fake-url={url}>
-            {children}
-        </span>
-    );
-
-    const content = isSerialized ? Serialized() : Unserialized();
-
-    return content;
 };

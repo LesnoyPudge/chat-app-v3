@@ -1,5 +1,6 @@
 import { ChildrenOrFunction } from '@components';
-import { createContext, FC, ReactNode, useCallback, useMemo, useState } from 'react';
+import { useToggle } from '@hooks';
+import { createContext, FC, ReactNode, useMemo } from 'react';
 
 
 
@@ -17,18 +18,14 @@ interface IModalContextProvider {
 export const ModalContext = createContext<IModalContext | undefined>(undefined);
 
 export const ModalContextProvider: FC<IModalContextProvider> = ({ children }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const openModal = useCallback(() => setIsOpen(true), []);
-    const closeModal = useCallback(() => setIsOpen(false), []);
-    const toggleModal = useCallback(() => setIsOpen(prev => !prev), []);
+    const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false);
 
     const contextValues: IModalContext = useMemo(() => ({
         isOpen,
-        openModal,
-        closeModal,
-        toggleModal,
-    }), [closeModal, isOpen, openModal, toggleModal]);
+        openModal: () => setIsOpen(true),
+        closeModal: () => setIsOpen(false),
+        toggleModal: toggleIsOpen,
+    }), [isOpen, setIsOpen, toggleIsOpen]);
 
     return (
         <ModalContext.Provider value={contextValues}>

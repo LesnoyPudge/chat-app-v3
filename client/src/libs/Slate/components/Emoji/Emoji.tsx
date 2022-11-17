@@ -1,3 +1,4 @@
+import { Conditional } from '@components';
 import classNames from 'classnames';
 import { FC, ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -85,16 +86,15 @@ export const Emoji: FC<EmojiPropsType> = ({
         >
             {children}
             
-            {
-                currentEmoji &&
+            <Conditional isRendered={!!currentEmoji}>
                 <img
                     className='inline-block w-full h-auto'
                     contentEditable={false}
                     draggable={false}
-                    src={`/src/assets/emoji/${currentEmoji.filename}.svg`}
-                    alt={currentEmoji.label}
+                    src={`/src/assets/emoji/${currentEmoji!.filename}.svg`}
+                    alt={currentEmoji!.label}
                 />
-            }
+            </Conditional>
         </span>
     );
 };

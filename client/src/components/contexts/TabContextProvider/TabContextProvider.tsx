@@ -31,7 +31,7 @@ export const TabContexProvider: FC<ITabContexProviderProps> = ({
 }) => {
     const getTabByIdentifier = (identifier: string) => tabs.find((tab) => tab.identifier === identifier) || tabs[0];
     
-    const [currentTab, setCurrentTabIdentifier] = useState(getTabByIdentifier(initialTabIdentifier));
+    const [currentTab, setCurrentTabIdentifier] = useState(() => getTabByIdentifier(initialTabIdentifier));
 
     const changeTab = (nextTabIdentifier: string) => {
         if (nextTabIdentifier === currentTab.identifier) return;

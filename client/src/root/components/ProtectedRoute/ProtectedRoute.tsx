@@ -1,13 +1,20 @@
 import { Conditional } from '@components';
-import { FC } from 'react';
+import { FC, PropsWithChildren, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 
 
-export const ProtectedRoute: FC = () => {
+export const ProtectedRoute: FC<PropsWithChildren> = ({ children }) => {
+    const isAuthorized = true;
+    
+    useEffect(() => {
+        console.log('protectedRoute', isAuthorized);
+    }, [isAuthorized]);
+    
     return (
-        <Conditional isRendered={true}>
-            <Outlet/>
+        <Conditional isRendered={isAuthorized}>
+            {/* <Outlet/> */}
+            {children}
         </Conditional>
     );
 };

@@ -34,6 +34,11 @@ module.exports = {
                     offline: 'var(--status-offline)',
                     dnd: 'var(--status-dnd)',
                 },
+                icon: {
+                    100: 'var(--icon-100)',
+                    200: 'var(--icon-200)',
+                    300: 'var(--icon-300)',
+                },
             },
               
             textColor: {
@@ -45,6 +50,7 @@ module.exports = {
                 error: 'var(--color-font-error)',
                 required: 'var(--color-font-required)',
                 placeholder: 'var(--color-font-placeholder)',
+                room: 'var(--color-font-rooms)',
             },
 
             backgroundColor: {
@@ -77,14 +83,6 @@ module.exports = {
                 heading_l: ['20px', '24px'],
                 heading_m: ['17px', '22px'],
                 heading_s: ['12px', '16px'],
-            },
-
-            fill: {
-                icon: {
-                    100: 'var(--icon-100)',
-                    200: 'var(--icon-200)',
-                    300: 'var(--icon-300)',
-                },
             },
 
             boxShadow: {

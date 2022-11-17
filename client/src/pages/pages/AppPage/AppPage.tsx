@@ -95,21 +95,22 @@ export const AppPage: FC = () => {
         return friends.filter((friend) => friend.status === 'online' && friend.extraStatus !== 'invisible');
     }, [friends]);
 
+    const tabsByIdentifier = {
+        OnlineFriends: <FriendList friends={onlyOnlineFriends} filterValue={filterValue}/>,
+        AllFriends: <FriendList friends={friends} filterValue={filterValue}/>,
+        IncomingRequests: <FriendRequestList filterValue={filterValue}/>,
+        Blocked: <BlockedList filterValue={filterValue}/>,
+    };
+
     return (
         <TabContexProvider tabs={tabs}>
             {({ currentTab }) => {
-                const tabsByIdentifier = {
-                    OnlineFriends: <FriendList friends={onlyOnlineFriends} filterValue={filterValue}/>,
-                    AllFriends: <FriendList friends={friends} filterValue={filterValue}/>,
-                    IncomingRequests: <FriendRequestList filterValue={filterValue}/>,
-                    Blocked: <BlockedList filterValue={filterValue}/>,
-                };
                 const currentIdentifier = currentTab.identifier as IdentifiersType;
                 const tabToShow = tabsByIdentifier[currentIdentifier];
 
                 return (
                     <>
-                        <Navigation/>
+                        {/* <Navigation/> */}
 
                         <div className='flex flex-col h-full items-start py-4 px-[30px]'>
                             <SearchBar

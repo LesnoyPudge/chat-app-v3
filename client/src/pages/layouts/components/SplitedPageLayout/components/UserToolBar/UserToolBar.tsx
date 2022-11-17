@@ -1,4 +1,4 @@
-import { Button, ContextMenu, RefContextProvider, Tooltip, UserAvatar } from '@components';
+import { AppSettingsModal, Button, ContextMenu, ModalContextProvider, RefContextProvider, Tooltip, UserAvatar } from '@components';
 import { useConditional, useThrottle, useToggle } from '@hooks';
 import { copyToClipboard, twClassNames } from '@utils';
 import { FC } from 'react';
@@ -87,11 +87,19 @@ export const UserToolBar: FC = () => {
                 onClick={toggleSound}
             />
 
-            <ToolBarButton
-                defaultIconId='settings-gear'
-                defaultTooltipContent='Настройки пользователя'
-                onClick={() => console.log('open modal settings')}
-            />
+            <ModalContextProvider>
+                {({ openModal }) => (
+                    <>
+                        <AppSettingsModal/>
+                    
+                        <ToolBarButton
+                            defaultIconId='settings-gear'
+                            defaultTooltipContent='Настройки'
+                            onClick={openModal}
+                        />
+                    </>
+                )}
+            </ModalContextProvider>
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import { Conditional, OverlayLayer } from '@components';
+import { Conditional, Link, OverlayLayer } from '@components';
 import { createContext, FC, PropsWithChildren, useState } from 'react';
 
 
@@ -32,22 +32,19 @@ export const Loader: FC<PropsWithChildren> = ({ children }) => {
                                 <p>Проблемы с подключением? Сообщите нам!</p>
 
                                 <div className='mt-2'>
-                                    <a 
-                                        href='https://twitter.com/discord' 
-                                        rel='noopener noreferrer' 
-                                        target='_blank'
+                                    <Link
+                                        className=''
+                                        href='https://twitter.com/discord'
                                     >
-                                        <span>Напишите нам в Твиттере</span>
-                                    </a>
+                                        <>Напишите нам в Твиттере</>
+                                    </Link>
 
-                                    <a
-                                        className='ml-5'
-                                        href='https://discordstatus.com' 
-                                        rel='noopener noreferrer' 
-                                        target='_blank'
+                                    <Link
+                                        className=''
+                                        href='https://discordstatus.com'
                                     >
-                                        <span>Состояние сервера</span>
-                                    </a>
+                                        <>Состояние сервера</>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

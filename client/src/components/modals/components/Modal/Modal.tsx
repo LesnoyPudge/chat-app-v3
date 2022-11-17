@@ -2,18 +2,21 @@ import { FC, PropsWithChildren, useContext, useEffect } from 'react';
 import { animated, useTransition, UseTransitionProps } from '@react-spring/web';
 import ReactFocusLock from 'react-focus-lock';
 import { Conditional, IModalContext, ModalContext, OverlayLayer } from '@components';
+import { twClassNames } from '@utils';
 
 
 
 interface IModal extends PropsWithChildren {
+    className?: string;
     withoutBackdrop?: boolean;
     animationProps?: UseTransitionProps;
 }
 
 const styles = {
-    wrapper: `flex items-center justify-center fixed w-screen 
-    h-screen top-0 left-0 p-5 md:p-0 pointer-events-auto overflow-hidden`,
-    backdrop: 'fixed -z-[1] top-0 left-0 w-screen h-screen bg-black opacity-70',
+    wrapper: `relative isolate grid place-items-center w-screen 
+    h-screen p-5 md:p-0 overflow-hidden`,
+    backdrop: `absolute -z-[1] top-0 left-0 w-screen 
+    h-screen bg-black opacity-70 pointer-events-auto`,
 };
 
 const defaultAnimationProps = {
@@ -24,6 +27,7 @@ const defaultAnimationProps = {
 };
 
 export const Modal: FC<IModal> = ({
+    className = '',
     withoutBackdrop = false,
     animationProps = defaultAnimationProps,
     children,
@@ -33,7 +37,7 @@ export const Modal: FC<IModal> = ({
 
     useEffect(() => {
         if (!isOpen) return;
-        const handleEscape = (e: KeyboardEvent) => (e.code === 'Escape') && closeModal();
+        const handleEscape = (e: KeyboardEvent) => e.code === 'Escape' && closeModal();
         
         document.addEventListener('keydown', handleEscape);
 
@@ -43,11 +47,11 @@ export const Modal: FC<IModal> = ({
     }, [closeModal, isOpen]);
 
     return transition((style, item) => (
-        <OverlayLayer>
-            <Conditional isRendered={item}>
+        <Conditional isRendered={item}>
+            <OverlayLayer>
                 <ReactFocusLock autoFocus={false} returnFocus>
                     <animated.div
-                        className={styles.wrapper}
+                        className={twClassNames(styles.wrapper, className)}
                         style={style}
                         role='dialog'
                     >
@@ -60,10 +64,12 @@ export const Modal: FC<IModal> = ({
                             ></div>
                         </Conditional>
                         
-                        {children}
+                        <div className='pointer-events-auto'>
+                            {children}
+                        </div>
                     </animated.div>
                 </ReactFocusLock>
-            </Conditional>
-        </OverlayLayer>
+            </OverlayLayer>
+        </Conditional>
     ));
 };

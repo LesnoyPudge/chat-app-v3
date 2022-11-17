@@ -1,22 +1,26 @@
-import { FC } from 'react';
+import { FC, lazy, Suspense } from 'react';
 import { ErrorBoundary, Loader, Masks } from './components';
-import { RootRouter } from './router';
 import './styles/main.scss';
-import { usePageVisibility, usePreventDefault, useThemeSwitcher } from './hooks';
+import { useAuthorization, usePageVisibility, usePreventDefault, useThemeSwitcher } from './hooks';
 
 
+
+const RootRouter = lazy(() => import('./router'));
 
 export const Root: FC = () => {
     usePageVisibility();
     useThemeSwitcher();
     usePreventDefault();
+    useAuthorization();
 
     return (
         <ErrorBoundary>
             <Masks/>
 
             <Loader>
-                <RootRouter/>
+                <Suspense>
+                    <RootRouter/>
+                </Suspense>
             </Loader>
         </ErrorBoundary>
     );
