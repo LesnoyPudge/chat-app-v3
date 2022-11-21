@@ -6,3 +6,4 @@ export * from './TopBar';
 export * from './MessageInputBar';
 export * from './MessageList';
 export * from './Link';
+export * from './MessageItem';

@@ -1,27 +1,26 @@
-import { FC, useRef, ReactElement, useCallback, useMemo } from 'react';
+import { tryParseJSONObject } from '@utils';
+import { FC, useRef, ReactElement, useCallback } from 'react';
 import { Descendant, Text } from 'slate';
 import { Emoji, Link, Paragraph } from './components';
 
 
 
 interface ISerializedNode {
-    nodes?: Descendant[];
+    nodes?: string;
 }
 
-export const SerializedSlateContent: FC<ISerializedNode> = ({ 
-    nodes = [{ text: '' }], 
-}) => {
+export const SerializedSlateContent: FC<ISerializedNode> = ({ nodes = '' }) => {
     const keyRef = useRef(0);
 
-    const key = () => {
-        const current = keyRef.current;
-        keyRef.current++;
-        return current;
-    };
-
     const serialize = useCallback((nodes: Descendant[]): ReactElement[] => {
+        const key = () => {
+            const current = keyRef.current;
+            keyRef.current++;
+            return current;
+        };
+
         return nodes.map((node) => {
-            if (Text.isText(node)) return <span>{node.text}</span>;
+            if (Text.isText(node)) return <span key={key()}>{node.text}</span>;
         
             const serialized = node.children.map((childrenNode) => serialize([childrenNode]));
             
@@ -41,7 +40,9 @@ export const SerializedSlateContent: FC<ISerializedNode> = ({
         });
     }, []);
 
-    const value = useMemo(() => serialize(nodes), [nodes, serialize]);
+    const validNodes = tryParseJSONObject(nodes);
+
+    const value = validNodes ? serialize(validNodes as Descendant[]) : nodes;
     
     return (
         <>{value}</>

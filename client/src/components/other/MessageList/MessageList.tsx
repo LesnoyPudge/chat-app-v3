@@ -2,8 +2,7 @@ import { IMessage } from '@backendTypes';
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { getRandomNumber } from '@utils';
 import { useAutoScroll } from '@hooks';
-import { FocusableListContextProvider, FocusableListItem } from '@components';
-import { MessageItem } from './components';
+import { FocusableListContextProvider, FocusableListItem, MessageItem } from '@components';
 
 
 
@@ -47,16 +46,23 @@ export const MessageList: FC = () => {
 
     const messageList = useMemo(() => (
         messages.map((message, index) => {
+            const tmpHead = !!parseInt(message.user);
+            const isFirst = index === 0;
             return (
-                <FocusableListItem index={index} key={message.id}>
-                    {({ tabIndex }) => (
-                        <MessageItem 
-                            message={message}
-                            isHeadless={!!parseInt(message.user)}
-                            tabIndex={tabIndex}
-                        />
-                    )}
-                </FocusableListItem>
+                <li key={message.id}>
+                    <FocusableListItem index={index}>
+                        {({ tabIndex }) => (
+                        
+                            <MessageItem 
+                                message={message}
+                                isHeadless={tmpHead}
+                                isFirst={isFirst}
+                                tabIndex={tabIndex}
+                            />
+                        
+                        )}
+                    </FocusableListItem>
+                </li>
             );
         })
     ), [messages]);

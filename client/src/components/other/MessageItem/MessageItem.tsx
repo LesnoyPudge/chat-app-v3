@@ -1,5 +1,7 @@
 import { IMessage } from '@backendTypes';
 import { Conditional, Time, UserAvatar } from '@components';
+import { SerializedSlateContent } from '@libs';
+import { twClassNames } from '@utils';
 import { FC } from 'react';
 
 
@@ -7,19 +9,23 @@ import { FC } from 'react';
 interface IMessageItem {
     message: IMessage;
     isHeadless?: boolean;
-    tabIndex: number;
+    isFirst?: boolean;
+    tabIndex?: number;
 }
 
 export const MessageItem: FC<IMessageItem> = ({ 
     message,
     isHeadless = false,
-    tabIndex,
+    isFirst = false,
+    tabIndex = 0,
 }) => {
+    const withMargin = !isHeadless && !isFirst;
+    
     return (
-        <li 
-            className='hover:bg-message 
+        <div 
+            className={twClassNames(`hover:bg-message 
             focus-visible:bg-message focus-within:bg-message
-            flex group'
+            flex group`, { 'mt-4': withMargin })}
             key={message.id}
             tabIndex={tabIndex}
         >
@@ -55,7 +61,7 @@ export const MessageItem: FC<IMessageItem> = ({
                 </Conditional>
 
                 <div>
-                    {message.content}
+                    <SerializedSlateContent nodes={message.content}/>
                 </div>
 
                 <Conditional isRendered={!!message.atttachments.length}>
@@ -70,6 +76,6 @@ export const MessageItem: FC<IMessageItem> = ({
                     </ul>
                 </Conditional>
             </div>
-        </li>
+        </div>
     );
 };

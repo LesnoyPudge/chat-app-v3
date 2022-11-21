@@ -1,4 +1,4 @@
-import { BaseEditor, ExtendedType } from 'slate';
+import { BaseEditor } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { ReactEditor, RenderElementProps } from 'slate-react';
 import { EmojiCodeType } from './components';

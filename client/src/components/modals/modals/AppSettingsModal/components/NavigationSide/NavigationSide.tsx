@@ -1,6 +1,6 @@
-import { Button, Icon, Link, Separator } from '@components';
+import { Button, Icon, ITabContext, Link, Separator, TabContex } from '@components';
 import { twClassNames } from '@utils';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 
 
 
@@ -22,6 +22,8 @@ const styles = {
 };
 
 export const NavigationSide: FC = () => {
+    const { changeTab } = useContext(TabContex) as ITabContext;
+
     return (
         <div className={styles.wrapper}>
             <div className={styles.inner}>
@@ -37,6 +39,7 @@ export const NavigationSide: FC = () => {
                                     <Button 
                                         className={styles.item}
                                         isntStyled
+                                        onClick={() => changeTab('ProfileTab')}
                                     >
                                         <>Моя учётная запись</>
                                     </Button>
@@ -56,6 +59,7 @@ export const NavigationSide: FC = () => {
                                     <Button 
                                         className={styles.item}
                                         isntStyled
+                                        onClick={() => changeTab('AppearanceTab')}
                                     >
                                         <>Внешний вид</>
                                     </Button>
@@ -69,6 +73,7 @@ export const NavigationSide: FC = () => {
                             <Button 
                                 className={twClassNames(styles.item, styles.logoutButton)}
                                 isntStyled
+                                onClick={() => console.log('click on logout button')}
                             >
                                 <span>Выйти</span>
 

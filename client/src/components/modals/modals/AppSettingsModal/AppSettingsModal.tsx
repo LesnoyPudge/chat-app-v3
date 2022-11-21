@@ -3,6 +3,7 @@ import { Modal } from '../../components';
 import { UseTransitionProps } from '@react-spring/web';
 import { ContentSide, NavigationSide } from './components';
 import { ITab, TabContexProvider } from '@components';
+import { AppearanceTab, ProfileTab } from './tabs';
 
 
 
@@ -23,12 +24,12 @@ const animationProps: UseTransitionProps = {
 
 const tabs: ITab[] = [
     {
-        identifier: '1',
-        tab: 'wow',
+        identifier: 'ProfileTab',
+        tab: <ProfileTab/>,
     },
     {
-        identifier: '2',
-        tab: 'amazing',
+        identifier: 'AppearanceTab',
+        tab: <AppearanceTab/>,
     },
 ];
 
