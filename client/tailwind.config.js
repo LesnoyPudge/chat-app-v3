@@ -75,6 +75,7 @@ module.exports = {
                 light: 'var(--color-bg-light)',
 
                 message: 'var(--color-bg-message)',
+                'slider-track': 'var(--color-bg-slider-track)',
             },
 
             fontSize: {

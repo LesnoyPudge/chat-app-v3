@@ -58,4 +58,86 @@
             box-shadow: none;
         }
     }
+
+    .slider-input {
+        @apply grid h-16 items-center;
+
+        --track-size: 8px;
+        --handle-width: 10px;
+        --handle-height: 24px;
+        --marker-size: 24px;
+        --horizontal-spacing: 10px;
+
+        .noUi-target {
+            @apply bg-slider-track border-none shadow-none rounded-none;
+        }
+
+        .noUi-horizontal {
+            height: var(--track-size);
+        }
+
+        .noUi-horizontal {
+            .noUi-handle {
+                width: var(--handle-width);
+                height: var(--handle-height);
+                top: calc(0px - (var(--handle-height) - var(--track-size)) / 2);
+                right: calc(0px - var(--handle-width) / 2);
+            }
+        }
+
+        .noUi-marker-normal {
+            @apply hidden;
+        }
+
+        .noUi-connect {
+            @apply bg-secondary-100;
+        }
+
+        .noUi-connects {
+            @apply rounded-md;
+            width: calc(100% + var(--horizontal-spacing) * 2);
+            left: calc(0px - var(--horizontal-spacing));
+        }
+
+        .noUi-marker-large {
+            @apply bg-slider-track;
+        }
+
+        .noUi-marker-horizontal.noUi-marker-large {
+            @apply top-0;
+            height: var(--marker-size);
+        }
+
+        .noUi-handle {
+            @apply cursor-ew-resize;
+
+            &::before,
+            &::after {
+                @apply hidden;
+            }
+        }
+
+        .noUi-value {
+            @apply text-muted text-xs font-bold;
+        }
+
+        .noUi-value-horizontal {
+            @apply cursor-pointer -top-1;
+            transform: translate(-50%, -100%);
+        }
+
+        .noUi-pips-horizontal {
+            @apply p-0 w-auto;
+            top: calc(0px - (var(--marker-size) - var(--track-size)) / 2);
+            height: var(--marker-size);
+            left: var(--horizontal-spacing);
+            right: var(--horizontal-spacing);
+        }
+
+        .noUi-base {
+            @apply w-auto absolute;
+            left: var(--horizontal-spacing);
+            right: var(--horizontal-spacing);
+        }
+    }
 }

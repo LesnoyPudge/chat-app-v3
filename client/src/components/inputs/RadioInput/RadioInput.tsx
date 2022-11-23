@@ -15,9 +15,9 @@ const styles = {
         hover:text-primary bg-primary-300 hover:bg-primary-100`,
         active: 'text-primary bg-primary-100',
     },
-    indicatorWrapper: 'grid place-items-center w-6 h-6 rounded-full border-2 border-current',
+    indicatorWrapper: 'flex shrink-0 w-6 h-6 rounded-full border-2 border-current',
     indicatorInner: {
-        base: 'w-3 h-3 rounded-full bg-current',
+        base: 'm-auto w-3 h-3 rounded-full bg-current',
         notActive: 'scale-0',
     },
     description: 'font-medium ml-3.5',

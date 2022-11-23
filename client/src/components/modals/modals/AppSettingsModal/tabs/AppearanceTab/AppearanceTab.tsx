@@ -71,16 +71,8 @@ export const AppearanceTab: FC = () => {
 
                 <SliderInput 
                     name='messageGroupSpacing'
-                    start={0}
-                    range={{
-                        min: [12, 12],
-                        '16.6667%': [14, 14],
-                        '25%': [15, 15],
-                        '33.3333%': [16, 16],
-                        '50%': [18, 18],
-                        '66.6667%': [20, 20],
-                        max: [24, 24],
-                    }}
+                    start={14}
+                    range={[12, 14, 15, 16, 18, 20]}
                 />
             </SettingsGroup>
 
@@ -91,14 +83,8 @@ export const AppearanceTab: FC = () => {
 
                 <SliderInput 
                     name='messageGroupSpacing'
-                    start={0}
-                    range={{
-                        min: [0, 0],
-                        '16.6667%': [4, 4],
-                        '33.3333%': [8, 8],
-                        '66.6667%': [16, 16],
-                        max: [24, 24],
-                    }}
+                    start={4}
+                    range={[0, 4, 8, 16, 24]}
                 />
             </SettingsGroup>
         </Section>
