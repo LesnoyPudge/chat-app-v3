@@ -7,7 +7,7 @@ import { FC } from 'react';
 
 const baseCN = 'text-xs uppercase mb-2 text-secondary';
 
-export const SettingsGroupName: FC<PropsWithChildrenAndClassName> = ({
+export const SettingsGroupTitle: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {

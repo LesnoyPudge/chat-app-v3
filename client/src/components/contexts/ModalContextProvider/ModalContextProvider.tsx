@@ -1,4 +1,4 @@
-import { ChildrenOrFunction } from '@components';
+import { ChildrenAsNodeOrFunction } from '@components';
 import { useToggle } from '@hooks';
 import { createContext, FC, ReactNode, useMemo } from 'react';
 
@@ -29,10 +29,9 @@ export const ModalContextProvider: FC<IModalContextProvider> = ({ children }) =>
 
     return (
         <ModalContext.Provider value={contextValues}>
-            <ChildrenOrFunction 
-                childrenOrFunction={children} 
-                args={contextValues}
-            />
+            <ChildrenAsNodeOrFunction args={contextValues}>
+                {children}
+            </ChildrenAsNodeOrFunction>
         </ModalContext.Provider>
     );
 };

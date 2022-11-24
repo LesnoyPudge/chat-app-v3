@@ -20,6 +20,9 @@ const animationProps: UseTransitionProps = {
         opacity: 0,
         scale: 1.2,
     },
+    config: {
+        duration: 200,
+    },
 };
 
 const tabs: ITab[] = [

@@ -1,10 +1,11 @@
-import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo } from 'react';
 import { MoveFocusInside } from 'react-focus-lock';
-import { FocusableListContext, IFocusableListContext, PropsWithChildrenOrFunction, ChildrenOrFunction } from '@components';
+import { FocusableListContext, IFocusableListContext, ChildrenAsNodeOrFunction } from '@components';
+import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
 
 
-interface IFocusableListItem extends PropsWithChildrenOrFunction<{tabIndex: number}> {
+interface IFocusableListItem extends PropsWithChildrenAsNodeOrFunction<{tabIndex: number}> {
     index: number;
 }
 
@@ -26,7 +27,11 @@ export const FocusableListItem: FC<IFocusableListItem> = ({
 
     return useMemo(() => (
         <MoveFocusInside disabled={isAutoFocusDisabled}>
-            <ChildrenOrFunction childrenOrFunction={children} args={{ tabIndex }}/>
+            <ChildrenAsNodeOrFunction
+                args={{ tabIndex }}
+            >
+                {children}
+            </ChildrenAsNodeOrFunction>
         </MoveFocusInside>
     ), [children, isAutoFocusDisabled, tabIndex]);
 };

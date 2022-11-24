@@ -11,3 +11,4 @@ export * from './random';
 export * from './fpsToMs';
 export * from './twClassNames';
 export * from './tryParseJSONObject';
+export * from './getHTML';

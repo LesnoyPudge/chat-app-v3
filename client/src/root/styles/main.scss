@@ -96,6 +96,10 @@
         // background-color: rgba($color: limegreen, $alpha: 0.05)!important;
     }
 
+    img[alt] {
+        text-indent: -9999px;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         html:focus-within {
             scroll-behavior: auto;

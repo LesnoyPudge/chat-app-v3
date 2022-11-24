@@ -1,6 +1,6 @@
 import { RadioInput, Separator, SliderInput } from '@components';
 import { FC } from 'react';
-import { Section, SectionTitle, SettingsGroup, SettingsGroupName } from '../components';
+import { Section, SectionTitle, SettingsGroup, SettingsGroupTitle } from '../components';
 import { ChatExample } from './components';
 
 
@@ -15,9 +15,9 @@ export const AppearanceTab: FC = () => {
             <ChatExample/>
 
             <SettingsGroup className='mt-8'>
-                <SettingsGroupName>
+                <SettingsGroupTitle>
                     <>Тема</>
-                </SettingsGroupName>
+                </SettingsGroupTitle>
                 
                 <div className='grid gap-2'>
                     <RadioInput
@@ -40,12 +40,12 @@ export const AppearanceTab: FC = () => {
                 </div>
             </SettingsGroup>
 
-            <Separator spacing={15}/>
+            <Separator spacing={40}/>
 
             <SettingsGroup>
-                <SettingsGroupName>
+                <SettingsGroupTitle>
                     <>Отображение сообщений</>
-                </SettingsGroupName>
+                </SettingsGroupTitle>
 
                 <div className='grid gap-2'>
                     <RadioInput
@@ -62,27 +62,27 @@ export const AppearanceTab: FC = () => {
                 </div>
             </SettingsGroup>
 
-            <Separator spacing={15}/>
+            <Separator spacing={40}/>
 
             <SettingsGroup>
-                <SettingsGroupName>
+                <SettingsGroupTitle>
                     <>Масштабирование текста в чате</>
-                </SettingsGroupName>
+                </SettingsGroupTitle>
 
                 <SliderInput 
-                    name='messageGroupSpacing'
+                    name='message-font-size'
                     start={14}
                     range={[12, 14, 15, 16, 18, 20]}
                 />
             </SettingsGroup>
 
             <SettingsGroup className='mt-5'>
-                <SettingsGroupName>
+                <SettingsGroupTitle>
                     <>Расстояние между группами сообщений</>
-                </SettingsGroupName>
+                </SettingsGroupTitle>
 
                 <SliderInput 
-                    name='messageGroupSpacing'
+                    name='message-group-gap'
                     start={4}
                     range={[0, 4, 8, 16, 24]}
                 />

@@ -29,15 +29,12 @@ export const SliderInput: FC<ISliderInput> = ({
     }, [state]);
 
     return (
-        <>
-            <div>state: {state}</div>
-            <NoUiSlider
-                className={className}
-                range={range}
-                start={state}
-                onUpdate={setState}
-                format={format}
-            />
-        </>
+        <NoUiSlider
+            className={className}
+            range={range}
+            start={state}
+            onUpdate={setState}
+            format={format}
+        />
     );
 };

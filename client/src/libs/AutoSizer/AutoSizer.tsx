@@ -1,44 +1,22 @@
-import { createContext, FC, PropsWithChildren, ReactNode, useMemo } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import ReactAutoSizer, { SizeType, AutoSizerProps } from '@oyyds/react-auto-sizer';
-import { ChildrenOrFunction, Conditional, PropsWithChildrenOrFunction } from '@components';
+import { PropsWithChildrenAsFunction } from '@types';
 
 
 
-type AutoSizerType = Omit<AutoSizerProps, keyof PropsWithChildren> & PropsWithChildrenOrFunction & {
-    withContext?: boolean;
-}
-
-export type AutoSizerContextType = SizeType;
-
-export const AutoSizerContext = createContext<AutoSizerContextType | undefined>(undefined);
+type AutoSizerType = 
+    Omit<AutoSizerProps, keyof PropsWithChildren> 
+    & PropsWithChildrenAsFunction<Required<SizeType>>;
 
 export const AutoSizer: FC<AutoSizerType> = ({
-    withContext = false,
     children,
     ...rest
 }) => {
     return (
         <ReactAutoSizer {...rest}>
             {({ height = 0, width = 0 }) => {
-                const contextValues: AutoSizerContextType = { height, width };
-                const childrenOrFunction = <ChildrenOrFunction
-                    childrenOrFunction={children}
-                    args={contextValues}
-                />;
-
-                return (
-                    <>
-                        <Conditional isRendered={withContext}>
-                            <AutoSizerContext.Provider value={contextValues}>
-                                {childrenOrFunction}
-                            </AutoSizerContext.Provider>
-                        </Conditional>
-
-                        <Conditional isRendered={!withContext}>
-                            {childrenOrFunction}
-                        </Conditional>
-                    </>
-                );
+                const contextValues: Required<SizeType> = { height, width };
+                return children(contextValues);
             }}
         </ReactAutoSizer>
     );

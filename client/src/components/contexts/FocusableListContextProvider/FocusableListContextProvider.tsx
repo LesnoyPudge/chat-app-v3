@@ -1,4 +1,5 @@
-import { ChildrenOrFunction, PropsWithChildrenOrFunction } from '@components';
+import { ChildrenAsNodeOrFunction } from '@components';
+import { PropsWithChildrenAsNodeOrFunction } from '@types';
 import React, { createContext, FC, useRef, useState } from 'react';
 
 
@@ -27,7 +28,8 @@ export interface IFocusableListContext {
 
 export const FocusableListContext = createContext<IFocusableListContext | undefined>(undefined);
 
-export const FocusableListContextProvider: FC<PropsWithChildrenOrFunction<IFocusableListContext>> = ({ children }) => {
+export const FocusableListContextProvider: FC<PropsWithChildrenAsNodeOrFunction<IFocusableListContext>> 
+= ({ children }) => {
     const listLength = useRef(-1);
     const [currentFocus, setCurrentFocus] = useState<number | null>(null);
     
@@ -96,7 +98,9 @@ export const FocusableListContextProvider: FC<PropsWithChildrenOrFunction<IFocus
 
     return (
         <FocusableListContext.Provider value={contextValues}>
-            <ChildrenOrFunction childrenOrFunction={children} args={contextValues}/>
+            <ChildrenAsNodeOrFunction args={contextValues}>
+                {children}
+            </ChildrenAsNodeOrFunction>
         </FocusableListContext.Provider>
     );
 };

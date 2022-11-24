@@ -1,8 +1,8 @@
-import { FC, PropsWithChildren, useContext, useEffect } from 'react';
+import { FC, PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import { animated, useTransition, UseTransitionProps } from '@react-spring/web';
 import ReactFocusLock from 'react-focus-lock';
 import { Conditional, IModalContext, ModalContext, OverlayLayer } from '@components';
-import { twClassNames } from '@utils';
+import { getHTML, twClassNames } from '@utils';
 
 
 
@@ -13,7 +13,8 @@ interface IModal extends PropsWithChildren {
 }
 
 const styles = {
-    wrapper: `relative isolate grid place-items-center w-screen 
+    wrapper: 'fixed top-0 left-0 w-screen h-screen pointer-events-none',
+    inner: `relative isolate grid place-items-center w-screen 
     h-screen p-5 md:p-0 overflow-hidden`,
     backdrop: `absolute -z-[1] top-0 left-0 w-screen 
     h-screen bg-black opacity-70 pointer-events-auto`,
@@ -34,41 +35,52 @@ export const Modal: FC<IModal> = ({
 }) => {
     const { isOpen, closeModal } = useContext(ModalContext) as IModalContext;
     const transition = useTransition(isOpen, animationProps);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        if (!isOpen) return;
-        const handleEscape = (e: KeyboardEvent) => e.code === 'Escape' && closeModal();
-        
+        const handleEscape = (e: KeyboardEvent) => {
+            if (!wrapperRef.current) return;
+            if (e.code !== 'Escape') return;
+            if (getHTML().overlayLayer.lastElementChild !== wrapperRef.current) return;
+
+            closeModal();
+        };
+
         document.addEventListener('keydown', handleEscape);
 
         return () => {
             document.removeEventListener('keydown', handleEscape);
         };
-    }, [closeModal, isOpen]);
+    }, [closeModal]);
 
     return transition((style, item) => (
         <Conditional isRendered={item}>
             <OverlayLayer>
-                <ReactFocusLock autoFocus={false} returnFocus>
-                    <animated.div
-                        className={twClassNames(styles.wrapper, className)}
-                        style={style}
-                        role='dialog'
-                    >
-                        <Conditional isRendered={!withoutBackdrop}>
-                            <div 
-                                className={styles.backdrop}
-                                onClick={closeModal}
-                                onContextMenu={closeModal}
-                                onAuxClick={closeModal}
-                            ></div>
-                        </Conditional>
+                <div 
+                    className={styles.wrapper}
+                    ref={wrapperRef}
+                >
+                    <ReactFocusLock returnFocus>
+                        <animated.div
+                            className={twClassNames(styles.inner, className)}
+                            style={style}
+                            role='dialog'
+                        >
+                            <Conditional isRendered={!withoutBackdrop}>
+                                <div 
+                                    className={styles.backdrop}
+                                    onClick={closeModal}
+                                    onContextMenu={closeModal}
+                                    onAuxClick={closeModal}
+                                ></div>
+                            </Conditional>
                         
-                        <div className='pointer-events-auto'>
-                            {children}
-                        </div>
-                    </animated.div>
-                </ReactFocusLock>
+                            <div className='pointer-events-auto'>
+                                {children}
+                            </div>
+                        </animated.div>
+                    </ReactFocusLock>
+                </div>
             </OverlayLayer>
         </Conditional>
     ));
