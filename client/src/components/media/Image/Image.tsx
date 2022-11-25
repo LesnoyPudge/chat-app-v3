@@ -1,5 +1,6 @@
 import { Conditional } from '@components';
 import { Placeholder } from '@libs';
+import { twClassNames } from '@utils';
 import { FC, ReactNode, useEffect, useState } from 'react';
 import { JSImage } from './JSImage';
 
@@ -27,6 +28,10 @@ const states = {
         error: true,
         loading: false,
     },
+};
+
+const styles = {
+    image: 'w-full h-full object-cover',
 };
 
 export const Image: FC<IImage> = ({
@@ -63,7 +68,7 @@ export const Image: FC<IImage> = ({
         <div className={wrapperClassName}>
             <Conditional isRendered={showImage}>
                 <img 
-                    className={imageClassName}
+                    className={twClassNames(styles.image, imageClassName)}
                     alt={alt}
                     src={src}
                 />

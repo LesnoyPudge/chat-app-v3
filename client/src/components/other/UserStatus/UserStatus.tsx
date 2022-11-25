@@ -1,11 +1,11 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
+import { PropsWithClassName } from '@types';
 import { FC } from 'react';
 import { AfkStatus, DndStatus, OfflineStatus, OnlineStatus } from './components';
 
 
 
-interface IUserStatus {
-    className?: string;
+interface IUserStatus extends PropsWithClassName {
     status: StatusType;
     extraStatus?: ExtraStatusType;
 }

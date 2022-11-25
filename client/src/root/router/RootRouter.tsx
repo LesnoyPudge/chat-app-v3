@@ -51,12 +51,12 @@ export const RootRouter: FC = () => {
                                 element={<Navigate to={'app'} replace/>}
                             />
                         </Route>
-
+                        
                         <Route path='invitation/:invitationLink' element={<>invitation page</>}/>
                     </Route>
                 </Route>
 
-                <Route path='account-activation/:activationLink' element={<>activation page</>}/>
+                {/* <Route path='account-activation/:activationLink' element={<>activation page</>}/> */}
             
                 <Route path='*' element={<Navigate to={'/app'} replace />}/>
             </Routes>
