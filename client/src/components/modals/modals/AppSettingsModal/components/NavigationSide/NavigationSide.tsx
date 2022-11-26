@@ -17,8 +17,9 @@ const styles = {
     rounded-md hover:bg-hover hover:text-primary text-start`,
     logoutButton: 'hover:fill-icon-100 flex justify-between items-center',
     logoutIcon: 'h-4 w-4 fill-icon-200',
-    socialWrapper: 'flex gap-3 mt-2',
-    socialIcon: 'h-5 w-5 fill-icon-200 hover:fill-icon-100',
+    socialWrapper: 'flex gap-1.5 mt-2 px-2.5',
+    socialIconWrapper: 'fill-icon-200 hover:fill-icon-100',
+    socialIcon: 'h-5 w-5 m-1',
 };
 
 export const NavigationSide: FC = () => {
@@ -88,21 +89,30 @@ export const NavigationSide: FC = () => {
                     </ul>
 
                     <div className={styles.socialWrapper}>
-                        <Link href='https://twitter.com/discord'>
+                        <Link 
+                            className={styles.socialIconWrapper}
+                            href='https://twitter.com/discord'
+                        >
                             <Icon 
                                 className={styles.socialIcon}
                                 iconId='twitter-icon'
                             />
                         </Link>
 
-                        <Link href='https://www.facebook.com/discord'>
+                        <Link
+                            className={styles.socialIconWrapper}
+                            href='https://www.facebook.com/discord'
+                        >
                             <Icon
                                 className={styles.socialIcon}
                                 iconId='facebook-icon'
                             />
                         </Link>
 
-                        <Link href='https://www.instagram.com/discord/'>
+                        <Link
+                            className={styles.socialIconWrapper}
+                            href='https://www.instagram.com/discord/'
+                        >
                             <Icon 
                                 className={styles.socialIcon}
                                 iconId='instagram-icon'

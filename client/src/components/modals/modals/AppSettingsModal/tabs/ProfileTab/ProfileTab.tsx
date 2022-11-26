@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { AddFriendModal, Button, ModalContextProvider, Separator } from '@components';
+import { Button, DeleteAccountModal, ModalContextProvider, Separator } from '@components';
 import { Section, SectionTitle, SettingsDescription, SettingsGroup, SettingsGroupTitle } from '../components';
 import { ProfileManager } from './components';
 
@@ -28,7 +28,7 @@ export const ProfileTab: FC = () => {
                 <ModalContextProvider>
                     {({ openModal }) => (
                         <>
-                            <AddFriendModal/>
+                            <DeleteAccountModal/>
 
                             <Button
                                 className='bg-rose-600 hover:bg-rose-800 

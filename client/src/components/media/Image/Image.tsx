@@ -1,5 +1,4 @@
 import { Conditional } from '@components';
-import { Placeholder } from '@libs';
 import { twClassNames } from '@utils';
 import { FC, ReactNode, useEffect, useState } from 'react';
 import { JSImage } from './JSImage';
@@ -31,6 +30,7 @@ const states = {
 };
 
 const styles = {
+    wrapper: 'overflow-hidden',
     image: 'w-full h-full object-cover',
 };
 
@@ -62,10 +62,10 @@ export const Image: FC<IImage> = ({
 
     const showImage = !imageState.loading && (!imageState.error || !fallback);
     const showFallback = !imageState.loading && imageState.error && !!fallback;
-    const showPlaceholder = imageState.loading;
+    const showPlaceholder = imageState.loading && !!placeholder;
 
     return (
-        <div className={wrapperClassName}>
+        <div className={twClassNames(styles.wrapper, wrapperClassName)}>
             <Conditional isRendered={showImage}>
                 <img 
                     className={twClassNames(styles.image, imageClassName)}
@@ -75,13 +75,7 @@ export const Image: FC<IImage> = ({
             </Conditional>
 
             <Conditional isRendered={showPlaceholder}>
-                <Conditional isRendered={!!placeholder}>
-                    {placeholder}
-                </Conditional>
-
-                <Conditional isRendered={!placeholder}>
-                    <Placeholder/>
-                </Conditional>
+                {placeholder}
             </Conditional>
 
             <Conditional isRendered={showFallback}>
