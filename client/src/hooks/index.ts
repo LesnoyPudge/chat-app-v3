@@ -14,4 +14,4 @@ export * from './useAutoScroll';
 export * from './useResizeObserver';
 export * from './useConditional';
 export * from './useIsMounted';
-export * from './useFileLoader';
+export * from './useFiles';

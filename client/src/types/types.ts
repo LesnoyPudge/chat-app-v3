@@ -19,3 +19,11 @@ export type PropsWithChildrenAsNodeOrFunction<ARGS = any> = {
 export type PropsWithChildrenAsFunction<ARGS = any> = {
     children: ChildrenAsFunction<ARGS>;
 }
+
+export interface EncodedFile {
+    name: string;
+    size: number;
+    type: string;
+    lastModified: number;
+    base64: string;
+}

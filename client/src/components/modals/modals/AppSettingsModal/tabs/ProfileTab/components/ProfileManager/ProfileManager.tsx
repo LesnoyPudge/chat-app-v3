@@ -1,5 +1,5 @@
 import { Button, Image, UserStatus } from '@components';
-import { useFileLoader } from '@hooks';
+import { useFiles } from '@hooks';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
@@ -12,7 +12,7 @@ const styles = {};
 export const ProfileManager: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { open, onChange } = useFileLoader();
+    const { open, onChange } = useFiles({ multiple: true });
 
     onChange((files) => {
         console.log(files);
@@ -53,13 +53,10 @@ export const ProfileManager: FC<PropsWithClassName> = ({
                         <div className='rounded-full w-[94px] 
                     aspect-square p-[7px] absolute bottom-0
                     bg-primary-500 '>
-                            <div 
+                            <Button
                                 className='relative w-full h-full rounded-full cursor-pointer group'
-                                tabIndex={0}
+                                isntStyled
                                 onClick={open}
-                                onKeyDown={(e) => 
-                                    (e.code === 'Enter' || e.code === 'Space') && open()
-                                }
                             >
                                 <Image
                                     wrapperClassName='w-full h-full rounded-full'
@@ -71,7 +68,9 @@ export const ProfileManager: FC<PropsWithClassName> = ({
                                 h-full opacity-0 group-hover:opacity-100 
                                 group-focus-visible:opacity-100 bg-sky-500 
                                 top-0 left-0 rounded-full'>
-                                    <span className='text-xxs font-bold uppercase w-min text-center'>Изменить аватар</span>
+                                    <span className='text-xxs font-bold uppercase w-min text-center'>
+                                        <>Изменить аватар</>
+                                    </span>
                                 </div>
 
                                 <div className='absolute w-7 h-7 p-1.5 -bottom-1 -right-1 
@@ -82,7 +81,7 @@ export const ProfileManager: FC<PropsWithClassName> = ({
                                         extraStatus='default'
                                     />
                                 </div>
-                            </div>
+                            </Button>
                         </div>
                     
                         <span className='ml-[104px] text-xl text-primary font-medium'>
