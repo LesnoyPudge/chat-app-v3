@@ -1,13 +1,16 @@
-import { Button, Image, UserStatus } from '@components';
+import { Button, Icon, Image, RefContextProvider, Tooltip, UserStatus } from '@components';
 import { useFiles } from '@hooks';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
 import { SettingsGroup, SettingsGroupTitle } from '../../../components';
+import { Banner } from './components';
 
 
 
-const styles = {};
+const styles = {
+    wrapper: 'flex flex-col',
+};
 
 export const ProfileManager: FC<PropsWithClassName> = ({
     className = '',
@@ -20,33 +23,8 @@ export const ProfileManager: FC<PropsWithClassName> = ({
 
     return (
         <SettingsGroup>
-            <div>
-                <div 
-                    className='bg-rose-700 h-[100px] w-full rounded-t-lg
-                overflow-hidden group'
-                    tabIndex={0}
-                >
-                    <div className='flex justify-end items-center w-full h-full 
-                bg-sky-900 opacity-0 group-hover:opacity-100
-                group-focus-visible:opacity-100 group-focus-within:opacity-100 
-                pl-[120px] pr-4'>
-                        <div className='flex flex-col'>
-                            <SettingsGroupTitle>
-                                <>Цвет баннера</>
-                            </SettingsGroupTitle>
-
-                            <div className='flex gap-2'>
-                                <Button variant='brand'>
-                                    <>Автоматический</>
-                                </Button>
-
-                                <Button>
-                                    <>Пользовательский</>
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div className={twClassNames(styles.wrapper, className)}>
+                <Banner/>
 
                 <div className='flex flex-col px-4 pb-4 bg-primary-500 rounded-b-lg'>
                     <div className='flex mb-4 pt-4 h-[72px] relative'>

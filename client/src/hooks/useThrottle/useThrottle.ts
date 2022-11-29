@@ -5,10 +5,10 @@ import { useCallback, useRef, useState } from 'react';
 export const useThrottle = () => {
     const throttleRef = useRef(false);
     const calledDuringThrottleRef = useRef(false);
-    const lastArgsRef = useRef<unknown[] | null>(null);
+    const lastArgsRef = useRef<never[] | null>(null);
     const [isThrottling, setIsThrottling] = useState(throttleRef.current);
 
-    const throttle = useCallback(<F extends (...args: unknown[]) => unknown>(callback: F, delay = 200) => {
+    const throttle = useCallback(<F extends (...args: never[]) => void>(callback: F, delay = 200) => {
         const timeoutFunc = () => {
             if (!calledDuringThrottleRef.current) {
                 throttleRef.current = false;

@@ -56,7 +56,7 @@ export const Tooltip: FC<ITooltipProps> = ({
         };
     }, [container]);
 
-    return transition((style, item) => {
+    return transition((style, isRendered) => {
         if (!target.current) return null;
 
         const { top, left, width, height } = target.current.getBoundingClientRect();
@@ -89,7 +89,7 @@ export const Tooltip: FC<ITooltipProps> = ({
 
         return (
             <OverlayLayer>
-                <Conditional isRendered={item}>
+                <Conditional isRendered={isRendered}>
                     <animated.div
                         className={styles.wrapper}
                         style={{ 

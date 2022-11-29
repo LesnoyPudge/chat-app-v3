@@ -140,4 +140,14 @@
             right: var(--horizontal-spacing);
         }
     }
+
+    .color-picker {
+        .react-colorful {
+            &__saturation {
+                width: 220px;
+                height: 150px;
+                cursor: crosshair;
+            }
+        }
+    }
 }

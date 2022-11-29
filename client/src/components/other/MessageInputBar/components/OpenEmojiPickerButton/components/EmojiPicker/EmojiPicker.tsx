@@ -86,7 +86,7 @@ export const EmojiPicker: FC = () => {
         };
     }, [closeModal, isOpen]);
 
-    return transition((style, item) => {
+    return transition((style, isRendered) => {
         if (!target.current) return null;
         const rect = target.current.getBoundingClientRect();
         const wrapperStyle = {
@@ -98,7 +98,7 @@ export const EmojiPicker: FC = () => {
 
         return (
             <OverlayLayer>
-                <Conditional isRendered={item}>
+                <Conditional isRendered={isRendered}>
                     <ReactFocusLock autoFocus={false} returnFocus disabled={!isOpen}>
                         <animated.div 
                             className={styles.wrapper}

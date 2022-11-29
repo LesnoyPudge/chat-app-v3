@@ -183,9 +183,9 @@ export const ContextMenu: FC<IContextMenu> = ({
         };
     }, [handleKeyDown, isExist]);
 
-    return transition((style, item) => (
+    return transition((style, isRendered) => (
         <OverlayLayer>
-            <Conditional isRendered={item}>
+            <Conditional isRendered={isRendered}>
                 <ReactFocusLock autoFocus={false} returnFocus>
                     <animated.div
                         className={twMerge(classNames(baseClassName, className))}

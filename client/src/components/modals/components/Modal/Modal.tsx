@@ -53,8 +53,8 @@ export const Modal: FC<IModal> = ({
         };
     }, [closeModal]);
 
-    return transition((style, item) => (
-        <Conditional isRendered={item}>
+    return transition((style, isRendered) => (
+        <Conditional isRendered={isRendered}>
             <OverlayLayer>
                 <div 
                     className={styles.wrapper}
