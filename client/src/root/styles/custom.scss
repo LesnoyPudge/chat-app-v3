@@ -143,10 +143,30 @@
 
     .color-picker {
         .react-colorful {
+            width: 100%;
+
             &__saturation {
-                width: 220px;
-                height: 150px;
-                cursor: crosshair;
+                @apply rounded-sm cursor-crosshair mb-2 w-[220px] h-[150px];
+
+                &-pointer {
+                    @apply w-2 h-2;
+                }
+            }
+
+            &__hue {
+                @apply rounded-sm h-2;
+
+                &-pointer {
+                    @apply w-2 h-4 rounded-md border-none bg-white cursor-ew-resize;
+
+                    .react-colorful__pointer-fill {
+                        @apply hidden;
+                    }
+                }
+            }
+
+            &__last-control {
+                @apply rounded-none;
             }
         }
     }

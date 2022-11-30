@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Conditional, IRefContext, OverlayLayer, RefContext } from '@components';
+import { Conditional, IRefContext, OverlayPortal, RefContext } from '@components';
 import { animated, useTransition } from '@react-spring/web';
 import ReactFocusLock from 'react-focus-lock';
 import { twMerge } from 'tailwind-merge';
@@ -184,7 +184,7 @@ export const ContextMenu: FC<IContextMenu> = ({
     }, [handleKeyDown, isExist]);
 
     return transition((style, isRendered) => (
-        <OverlayLayer>
+        <OverlayPortal>
             <Conditional isRendered={isRendered}>
                 <ReactFocusLock autoFocus={false} returnFocus>
                     <animated.div
@@ -200,6 +200,6 @@ export const ContextMenu: FC<IContextMenu> = ({
                     </animated.div>
                 </ReactFocusLock>
             </Conditional>
-        </OverlayLayer>
+        </OverlayPortal>
     ));
 };

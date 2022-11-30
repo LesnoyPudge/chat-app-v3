@@ -1,4 +1,4 @@
-import { Button, Conditional, IModalContext, IRefContext, ModalContext, OverlayLayer, RefContext, SearchBar } from '@components';
+import { Button, Conditional, IModalContext, IRefContext, ModalContext, OverlayPortal, RefContext, SearchBar } from '@components';
 import { Emoji, emojiList, useAddEmoji } from '@libs';
 import { animated, useTransition } from '@react-spring/web';
 import { fpsToMs, throttle } from '@utils';
@@ -97,7 +97,7 @@ export const EmojiPicker: FC = () => {
         };
 
         return (
-            <OverlayLayer>
+            <OverlayPortal>
                 <Conditional isRendered={isRendered}>
                     <ReactFocusLock autoFocus={false} returnFocus disabled={!isOpen}>
                         <animated.div 
@@ -161,7 +161,7 @@ export const EmojiPicker: FC = () => {
                         </animated.div>
                     </ReactFocusLock>
                 </Conditional>
-            </OverlayLayer>
+            </OverlayPortal>
         );
     });
 };

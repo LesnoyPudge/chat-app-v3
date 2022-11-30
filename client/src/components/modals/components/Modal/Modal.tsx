@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import { animated, useTransition, UseTransitionProps } from '@react-spring/web';
 import ReactFocusLock from 'react-focus-lock';
-import { Conditional, IModalContext, ModalContext, OverlayLayer } from '@components';
+import { Conditional, IModalContext, ModalContext, OverlayPortal } from '@components';
 import { getHTML, twClassNames } from '@utils';
 
 
@@ -33,7 +33,7 @@ export const Modal: FC<IModal> = ({
     animationProps = defaultAnimationProps,
     children,
 }) => {
-    const { isOpen, closeModal } = useContext(ModalContext) as IModalContext;
+    const { isOpen, closeModal, isEscapeBlocked } = useContext(ModalContext) as IModalContext;
     const transition = useTransition(isOpen, animationProps);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -41,7 +41,7 @@ export const Modal: FC<IModal> = ({
         const handleEscape = (e: KeyboardEvent) => {
             if (!wrapperRef.current) return;
             if (e.code !== 'Escape') return;
-            if (getHTML().overlayLayer.lastElementChild !== wrapperRef.current) return;
+            if (isEscapeBlocked) return;
 
             closeModal();
         };
@@ -51,11 +51,11 @@ export const Modal: FC<IModal> = ({
         return () => {
             document.removeEventListener('keydown', handleEscape);
         };
-    }, [closeModal]);
+    }, [closeModal, isEscapeBlocked]);
 
     return transition((style, isRendered) => (
         <Conditional isRendered={isRendered}>
-            <OverlayLayer>
+            <OverlayPortal>
                 <div 
                     className={styles.wrapper}
                     ref={wrapperRef}
@@ -81,7 +81,7 @@ export const Modal: FC<IModal> = ({
                         </animated.div>
                     </ReactFocusLock>
                 </div>
-            </OverlayLayer>
+            </OverlayPortal>
         </Conditional>
     ));
 };

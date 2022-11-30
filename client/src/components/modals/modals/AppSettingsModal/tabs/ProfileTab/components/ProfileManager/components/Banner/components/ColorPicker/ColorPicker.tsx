@@ -14,7 +14,7 @@ interface IColorPicker {
 
 const styles = {
     colorPicker: `flex flex-col p-4 gap-4 shrink-0 
-    bg-primary-400 color-picker`,
+    bg-primary-200 color-picker`,
     presetsWrapper: 'flex gap-1 justify-between',
     presetButton: 'w-8 h-8 rounded-md overflow-hidden',
     presetColor: 'w-full h-full',
@@ -29,11 +29,15 @@ export const ColorPicker: FC<IColorPicker> = ({
     const { target } = useContext(RefContext) as IRefContext;
     const { throttle } = useThrottle();
 
+    const position = {
+        top: target.current?.getBoundingClientRect().top || 0, 
+        left: target.current?.getBoundingClientRect().left || 0,
+    };
+
     const animationProps = {
-        from: { opacity: 0 },
-        enter: { opacity: 1 },
-        leave: { opacity: 0 },
-        config: { duration: 75 },
+        from: { opacity: 0, transform: 'translateX(-20px)', ...position },
+        enter: { opacity: 1, transform: 'translateX(0px)', ...position },
+        leave: { opacity: 0, transform: 'translateX(-20px)', ...position },
     };
 
     const handleChange = throttle(onChange, fpsToMs(60));

@@ -1,4 +1,4 @@
-import { Conditional, Link, OverlayLayer } from '@components';
+import { Conditional, Link, OverlayPortal } from '@components';
 import { createContext, FC, PropsWithChildren, useState } from 'react';
 
 
@@ -21,7 +21,7 @@ export const Loader: FC<PropsWithChildren> = ({ children }) => {
             {children}
 
             <Conditional isRendered={isLoading}>
-                <OverlayLayer>
+                <OverlayPortal>
                     <div className='grid place-items-center w-full h-full bg-primary-300 pointer-events-auto'>
                         <div className='h-full flex flex-col text-center'>
                             <div className='mt-auto'>
@@ -49,7 +49,7 @@ export const Loader: FC<PropsWithChildren> = ({ children }) => {
                             </div>
                         </div>
                     </div>
-                </OverlayLayer>
+                </OverlayPortal>
             </Conditional>
         </LoadingContext.Provider> 
     );

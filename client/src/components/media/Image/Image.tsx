@@ -12,6 +12,7 @@ interface IImage {
     alt?: string;
     placeholder?: ReactNode;
     fallback?: ReactNode;
+    asBackground?: boolean;
 }
 
 const states = {
@@ -39,8 +40,9 @@ export const Image: FC<IImage> = ({
     imageClassName = '',
     src = 'https://picsum.photos/400',
     alt,
-    placeholder,
-    fallback,
+    placeholder = <div className='bg-yellow-400 w-full h-full'>placeholder</div>,
+    fallback = <div className='bg-rose-700 w-full h-full'>error</div>,
+    asBackground = false,
 }) => {
     const [imageState, setImageState] = useState(states.initial);
 
@@ -61,17 +63,26 @@ export const Image: FC<IImage> = ({
     }, [src]);
 
     const showImage = !imageState.loading && (!imageState.error || !fallback);
-    const showFallback = !imageState.loading && imageState.error && !!fallback;
-    const showPlaceholder = imageState.loading && !!placeholder;
+    const showFallback = !imageState.loading && imageState.error;
+    const showPlaceholder = imageState.loading;
 
     return (
         <div className={twClassNames(styles.wrapper, wrapperClassName)}>
             <Conditional isRendered={showImage}>
-                <img 
-                    className={twClassNames(styles.image, imageClassName)}
-                    alt={alt}
-                    src={src}
-                />
+                <Conditional isRendered={!asBackground}>
+                    <img 
+                        className={twClassNames(styles.image, imageClassName)}
+                        alt={alt}
+                        src={src}
+                    />
+                </Conditional>
+
+                <Conditional isRendered={asBackground}>
+                    <div 
+                        className={twClassNames(styles.image, imageClassName)}
+                        style={{ backgroundImage: `url(${src})` }}
+                    ></div>
+                </Conditional>
             </Conditional>
 
             <Conditional isRendered={showPlaceholder}>

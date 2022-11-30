@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState , FC, useContext } from 'react';
 import { animated, useTransition, to } from '@react-spring/web';
-import { Conditional, IRefContext, OverlayLayer, RefContext } from '@components';
+import { Conditional, IRefContext, OverlayPortal, RefContext } from '@components';
 import { twMerge } from 'tailwind-merge';
 import { fpsToMs, throttle, twClassNames } from '@utils';
 
@@ -88,7 +88,7 @@ export const Tooltip: FC<ITooltipProps> = ({
         };
 
         return (
-            <OverlayLayer>
+            <OverlayPortal>
                 <Conditional isRendered={isRendered}>
                     <animated.div
                         className={styles.wrapper}
@@ -105,7 +105,7 @@ export const Tooltip: FC<ITooltipProps> = ({
                         </div>
                     </animated.div>
                 </Conditional>
-            </OverlayLayer>
+            </OverlayPortal>
         );
     });
 };
