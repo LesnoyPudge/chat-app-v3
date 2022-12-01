@@ -43,7 +43,7 @@ export const Modal: FC<IModal> = ({
             if (e.code !== 'Escape') return;
             if (isEscapeBlocked) return;
 
-            closeModal();
+            // closeModal();
         };
 
         document.addEventListener('keydown', handleEscape);

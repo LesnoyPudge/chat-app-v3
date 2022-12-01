@@ -30,12 +30,12 @@ export const OverlayItem: FC<IOverlayItem> = ({
             if (!wrapperRef.current) return;
             if (e.code !== 'Escape') return;
             if (!blockable) return close();
-            
+
             const wrapper = wrapperRef.current;
             const overlayItems = [...getHTML().overlay.childNodes] as HTMLDivElement[];
-            const filtredItems = overlayItems.filter(node => node !== wrapper || node.dataset.blocking !== 'true');
+            const filtredItems = overlayItems.filter(node => node === wrapper || node.dataset.blocking === 'true');
             const isBlocked = wrapper !== filtredItems[filtredItems.length - 1];
-    
+
             if (!isBlocked) return close();
         };
 

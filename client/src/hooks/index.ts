@@ -15,3 +15,5 @@ export * from './useResizeObserver';
 export * from './useConditional';
 export * from './useIsMounted';
 export * from './useFiles';
+export * from './useRelativePosition';
+export * from './useMousePosition';

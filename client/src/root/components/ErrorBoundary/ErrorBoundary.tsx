@@ -4,6 +4,7 @@ import errorBgImage from '@assets/error-boundary-bg.svg';
 import errorImage from '@assets/error-boundary-image.svg';
 import { Button } from '@components';
 import { useIsMounted } from '@hooks';
+import { secondsToMs } from '@utils';
 
 
 
@@ -29,7 +30,7 @@ export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
         setTimeout(() => {
             if (!isMounted()) return;
             isCrushedRef.current = false;
-        }, 50);
+        }, secondsToMs(30));
 
         cb();
     };
