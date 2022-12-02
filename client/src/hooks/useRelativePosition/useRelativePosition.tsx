@@ -9,6 +9,8 @@ interface TargetRect {
     bottom: number; 
     left: number; 
     right: number;
+    width: number;
+    height: number;
 }
 
 interface WrapperRect {
@@ -16,37 +18,49 @@ interface WrapperRect {
     height: number;
 }
 
+type Aligment = 'top' | 'bottom' | 'left' | 'right';
+
+interface GetRelativePositionReturn {
+    top: number;
+    left: number;
+    aligment: Aligment;
+}
+
 type GetRelativePosition = (args: {
     boundsSize?: number;
     spacing?: number;
     swapableAligment?: boolean;
-    preferredAligment: 'top' | 'bottom' | 'left' | 'right';
+    preferredAligment: Aligment;
     targetRect: TargetRect;
     wrapperRect: WrapperRect;
-}) => {
-    top: number;
-    left: number;
-}
+    centered?: boolean;
+}) => GetRelativePositionReturn;
 
 interface UseRelativePositionArgs {
-    preferredAligment: 'top' | 'bottom' | 'left' | 'right';
+    preferredAligment: Aligment;
     targetRefOrRect: RefObject<HTMLElement> | TargetRect;
     wrapperRefOrRect: RefObject<HTMLElement> | WrapperRect;
     swapableAligment?: boolean;
     boundsSize?: number;
     spacing?: number;
+    centered?: boolean;
 }
 
 export const useRelativePosition = ({
     preferredAligment,
     targetRefOrRect,
     wrapperRefOrRect,
-    swapableAligment = false,
+    swapableAligment,
     boundsSize,
     spacing,
+    centered,
 }: UseRelativePositionArgs) => {
-    const [position, setPosition] = useState({ top: boundsSize, left: boundsSize });
     const windowSize = useWindowSize();
+    const [position, setPosition] = useState<GetRelativePositionReturn>({ 
+        top: boundsSize || 0, 
+        left: boundsSize || 0, 
+        aligment: preferredAligment, 
+    });
 
     const getRelativePosition: GetRelativePosition = useCallback(({
         boundsSize = 0,
@@ -55,51 +69,91 @@ export const useRelativePosition = ({
         preferredAligment,
         targetRect,
         wrapperRect,
+        centered = false,
     }) => {
+        const centering = {
+            vertical: (
+                centered 
+                    ? (wrapperRect.height - targetRect.height) / 2 
+                    : 0
+            ),
+            horizontal: (
+                centered 
+                    ? (wrapperRect.width - targetRect.width) / 2 
+                    : 0
+            ),
+        };
+
         const bounds = {
             top: boundsSize,
-            bottom: window.innerHeight - boundsSize,
+            bottom: window.innerHeight - boundsSize - wrapperRect.height,
             left: boundsSize,
-            right: window.innerWidth - boundsSize,
+            right: window.innerWidth - boundsSize - wrapperRect.width,
+        };
+
+        const unboundedPositions = {
+            top: {
+                top: targetRect.top - wrapperRect.height - spacing,
+                left: targetRect.left - centering.horizontal,
+            },
+            bottom: {
+                top: targetRect.bottom + spacing,
+                left: targetRect.left - centering.horizontal,
+            },
+            left: {
+                top: targetRect.top - centering.vertical,
+                left: targetRect.left - wrapperRect.width - spacing,
+            },
+            right: {
+                top: targetRect.top - centering.vertical,
+                left: targetRect.right + spacing,
+            },
+        };
+
+        const positionsInBounds = () => {
+            const { top, bottom, left, right } = unboundedPositions;
+
+            return {
+                top: {
+                    top: Math.max(bounds.top, Math.min(bounds.bottom, top.top)),
+                    left: Math.max(bounds.left, Math.min(bounds.right, top.left)),
+                },
+                bottom: {
+                    top: Math.max(bounds.top, Math.min(bounds.bottom, bottom.top)),
+                    left: Math.max(bounds.left, Math.min(bounds.right, bottom.left)),
+                },
+                left: {
+                    top: Math.max(bounds.top, Math.min(bounds.bottom, left.top)),
+                    left: Math.max(bounds.left, Math.min(bounds.right, left.left)),
+                },
+                right: {
+                    top: Math.max(bounds.top, Math.min(bounds.bottom, right.top)),
+                    left: Math.max(bounds.left, Math.min(bounds.right, right.left)),
+                },
+            };
         };
 
         const getAvailableAligments = () => {
             return {
-                top: (targetRect.top - bounds.top - spacing) >= wrapperRect.height,
-                bottom: (bounds.bottom - targetRect.bottom - spacing) >= wrapperRect.height,
-                left: (targetRect.left - bounds.left - spacing) >= wrapperRect.width,
-                right: (bounds.right - targetRect.right - spacing) >= wrapperRect.width,
+                top: unboundedPositions.top.top > bounds.top,
+                bottom: unboundedPositions.bottom.top < bounds.bottom,
+                left: unboundedPositions.left.left > bounds.left,
+                right: unboundedPositions.right.left < bounds.right,
             };
         };
 
-        const getPositions = () => {
-            return {
-                top: {
-                    top: Math.max(bounds.top, Math.min(bounds.bottom - wrapperRect.height, targetRect.top - wrapperRect.height - spacing)),
-                    left: Math.min(bounds.right - wrapperRect.width, Math.max(bounds.left, targetRect.left)),
-                },
-                bottom: {
-                    top: Math.max(bounds.top, Math.min(bounds.bottom - wrapperRect.height, targetRect.bottom + spacing)),
-                    left: Math.min(bounds.right - wrapperRect.width, Math.max(bounds.left, targetRect.left)),
-                },
-                left: {
-                    top: Math.max(bounds.top, Math.min(bounds.bottom - wrapperRect.height, targetRect.top)),
-                    left: Math.min(bounds.right - wrapperRect.width, Math.max(bounds.left, targetRect.left - wrapperRect.width - spacing)),
-                },
-                right: {
-                    top: Math.max(bounds.top, Math.min(bounds.bottom - wrapperRect.height, targetRect.top)),
-                    left: Math.min(bounds.right - wrapperRect.width, Math.max(bounds.left, targetRect.right + spacing)),
-                },
-            };
+        const positions = positionsInBounds();
+        
+        const defaultResult: GetRelativePositionReturn = {
+            ...positions[preferredAligment],
+            aligment: preferredAligment,
         };
 
-        const positions = getPositions();
-
-        if (!swapableAligment) return positions[preferredAligment];
+        if (!swapableAligment) return defaultResult;
 
         const availableAligments = getAvailableAligments();
 
-        if (availableAligments[preferredAligment]) return positions[preferredAligment];
+        if (availableAligments[preferredAligment]) return defaultResult;
 
         const noSpaceAvailable = (
             !availableAligments.top && 
@@ -108,32 +162,49 @@ export const useRelativePosition = ({
             !availableAligments.right
         );
 
-        if (noSpaceAvailable) return positions[preferredAligment];
+        if (noSpaceAvailable) return defaultResult;
+
+        const topResult: GetRelativePositionReturn = {
+            aligment: 'top',
+            ...positions.top,
+        };
+        const bottomResult: GetRelativePositionReturn = {
+            aligment: 'bottom',
+            ...positions.bottom,
+        };
+        const leftResult: GetRelativePositionReturn = {
+            aligment: 'left',
+            ...positions.left,
+        };
+        const rightResult: GetRelativePositionReturn = {
+            aligment: 'right',
+            ...positions.right,
+        };
         
         const alternativeAlignmentOptions = {
             top: (
-                (availableAligments.bottom && positions.bottom) || 
-                (availableAligments.left && positions.left) || 
-                (availableAligments.right && positions.right) || 
-                positions[preferredAligment]
+                (availableAligments.bottom && bottomResult) || 
+                (availableAligments.left && leftResult) || 
+                (availableAligments.right && rightResult) || 
+                topResult
             ),
             bottom: (
-                (availableAligments.top && positions.top) ||
-                (availableAligments.left && positions.left) || 
-                (availableAligments.right && positions.right) || 
-                positions[preferredAligment]
+                (availableAligments.top && topResult) ||
+                (availableAligments.left && leftResult) || 
+                (availableAligments.right && rightResult) || 
+                bottomResult
             ),
             left: (
-                (availableAligments.right && positions.right) ||
-                (availableAligments.top && positions.top) || 
-                (availableAligments.bottom && positions.bottom) || 
-                positions[preferredAligment]
+                (availableAligments.right && rightResult) ||
+                (availableAligments.top && topResult) || 
+                (availableAligments.bottom && bottomResult) || 
+                leftResult
             ),
             right: (
-                (availableAligments.left && positions.left) ||
-                (availableAligments.top && positions.top) || 
-                (availableAligments.bottom && positions.bottom) || 
-                positions[preferredAligment]
+                (availableAligments.left && leftResult) ||
+                (availableAligments.top && topResult) || 
+                (availableAligments.bottom && bottomResult) || 
+                rightResult
             ),
         };
 
@@ -141,6 +212,8 @@ export const useRelativePosition = ({
     }, []);
 
     useEffect(() => {
+        if (!targetRefOrRect) return;
+        if (!wrapperRefOrRect) return;
         if (isRef(targetRefOrRect) && !targetRefOrRect.current) return;
         if (isRef(wrapperRefOrRect) && !wrapperRefOrRect.current) return;
         
@@ -154,7 +227,7 @@ export const useRelativePosition = ({
                 ? wrapperRefOrRect.current!.getBoundingClientRect() 
                 : wrapperRefOrRect
         );
-
+        
         const newPosition = getRelativePosition({
             preferredAligment,
             targetRect,
@@ -162,6 +235,7 @@ export const useRelativePosition = ({
             boundsSize,
             spacing,
             swapableAligment,
+            centered,
         });
 
         setPosition(newPosition);
@@ -170,6 +244,7 @@ export const useRelativePosition = ({
         preferredAligment, spacing, 
         swapableAligment, targetRefOrRect, 
         wrapperRefOrRect, windowSize,
+        centered,
     ]);
 
     return position;

@@ -18,14 +18,14 @@ export const RefContextProviderV2: FC<RefContextProvider> = ({
     providedRef,
     children, 
 }) => {
-    const [isRefExist, setIsRefExist] = useState(!!providedRef);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
-    const targetRef = useRef<HTMLElement | null>(null);
+    const [targetRef, setTargetRef] = useState(useRef<HTMLElement | null>(null));
 
     useEffect(() => {
         if (!wrapperRef.current || !wrapperRef.current.nextElementSibling) return;
-        targetRef.current = wrapperRef.current.nextElementSibling as HTMLElement;
-        setIsRefExist(true);
+
+        const wrapper = wrapperRef.current.nextElementSibling as HTMLElement;
+        setTargetRef({ current: wrapper });
     }, []);
     
     const contextValues: RefContextV2 = {
@@ -34,7 +34,7 @@ export const RefContextProviderV2: FC<RefContextProvider> = ({
 
     return (
         <>
-            <Conditional isRendered={!isRefExist}>
+            <Conditional isRendered={!targetRef.current && !providedRef}>
                 <div className='hidden' ref={wrapperRef}></div>
             </Conditional>
 

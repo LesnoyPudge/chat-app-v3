@@ -4,21 +4,21 @@ import { useLayoutEffect, useState } from 'react';
 
 
 
-export const useWindowSize = (throttleDuration = fpsToMs(60)) => {
+export const useWindowSize = (throttleMS = fpsToMs(60)) => {
     const { throttle } = useThrottle();
     const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
     useLayoutEffect(() => {
         const updateSize = throttle(() => {
             setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-        }, throttleDuration);
+        }, throttleMS);
 
         window.addEventListener('resize', updateSize);
         
         return () => {
             window.removeEventListener('resize', updateSize);
         };
-    }, [throttle, throttleDuration]);
+    }, [throttle, throttleMS]);
 
     return windowSize;
 };

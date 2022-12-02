@@ -55,7 +55,11 @@
         outline: none;
 
         &:focus-visible {
-            box-shadow: none;
+            outline: none;
+        }
+
+        &:focus-within {
+            outline: none;
         }
     }
 
@@ -169,5 +173,9 @@
                 @apply rounded-none;
             }
         }
+    }
+
+    .overlay-item-wrapper {
+        @apply pointer-events-none fixed top-0 left-0 right-0 bottom-0;
     }
 }

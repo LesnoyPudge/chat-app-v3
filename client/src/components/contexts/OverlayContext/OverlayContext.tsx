@@ -1,14 +1,14 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import { createContext, FC, useMemo } from 'react';
+import { createContext, FC, useCallback, useMemo, useRef } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
-import { useToggle } from '@hooks';
+import { useThrottle, useToggle } from '@hooks';
 
 
 
 export interface IOverlayContext {
     isExist: boolean;
     open: () => void;
-    close: () => void;
+    close: (withClick?: boolean) => void;
     toggle: () => void;
 }
 
@@ -18,13 +18,28 @@ export const OverlayContext = createContext<IOverlayContext | undefined>(undefin
 
 export const OverlayContextProvider: OverlayContextProviderType = ({ children }) => {
     const [isExist, toggle, setIsExist] = useToggle(false);
+    const { isThrottling, throttle } = useThrottle();
+
+
+    const handleClose = useCallback((withClick?: boolean) => {
+        if (withClick) return throttle(() => setIsExist(false))();
+        setIsExist(false);
+    }, [setIsExist, throttle]);
+
+    const handleOpen = useCallback(() => {
+        if (!isThrottling) setIsExist(true);
+    }, [isThrottling, setIsExist]);
+
+    const handleToggle = useCallback(() => {
+        if (!isThrottling) toggle();
+    }, [isThrottling, toggle]);
 
     const contextValues: IOverlayContext = useMemo(() => ({
         isExist,
-        open: () => setIsExist(true),
-        close: () => setIsExist(false),
-        toggle,
-    }), [isExist, setIsExist, toggle]);
+        open: handleOpen,
+        close: handleClose,
+        toggle: handleToggle,
+    }), [handleClose, handleOpen, handleToggle, isExist]);
     
     return (
         <>

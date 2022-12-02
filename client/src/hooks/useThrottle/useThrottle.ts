@@ -1,3 +1,4 @@
+import { fpsToMs } from '@utils';
 import { useCallback, useRef, useState } from 'react';
 
 
@@ -8,7 +9,10 @@ export const useThrottle = () => {
     const lastArgsRef = useRef<never[] | null>(null);
     const [isThrottling, setIsThrottling] = useState(throttleRef.current);
 
-    const throttle = useCallback(<F extends (...args: never[]) => void>(callback: F, delay = 200) => {
+    const throttle = useCallback(<F extends (...args: never[]) => void>(
+        callback: F, 
+        delayMS = fpsToMs(60),
+    ) => {
         const timeoutFunc = () => {
             if (!calledDuringThrottleRef.current) {
                 throttleRef.current = false;
@@ -20,7 +24,7 @@ export const useThrottle = () => {
             callback(...lastArgsRef.current || []);
             calledDuringThrottleRef.current = false;
             lastArgsRef.current = null;
-            setTimeout(timeoutFunc, delay);
+            setTimeout(timeoutFunc, delayMS);
         };
         
         return (...args: Parameters<F>): void => {
@@ -33,7 +37,7 @@ export const useThrottle = () => {
             throttleRef.current = true;
             setIsThrottling(true);
             callback(...args);
-            setTimeout(timeoutFunc, delay);
+            setTimeout(timeoutFunc, delayMS);
         };
     }, []);
 

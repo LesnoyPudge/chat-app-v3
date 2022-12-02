@@ -7,6 +7,8 @@ import { CSSProperties, FC, PropsWithChildren, RefObject, useContext, useEffect,
 import { RefContextProviderV2, RefContextV2 } from 'src/components/contexts/RefContextProviderV2/RefContextProviderV2';
 import { EscapeBlock } from 'src/components/modals/components';
 import { OverlayItem } from 'src/components/overlay/OverlayItem/OverlayItem';
+import { TooltipV2 } from 'src/components/overlay/TooltipV2';
+import { useEventListener } from 'usehooks-ts';
 import { ColorPicker } from './components';
 
 
@@ -94,7 +96,13 @@ const SomeOverlayWindow: FC = () => {
     });
 
     return transition((style, isRendered) => (
-        <OverlayItem isRendered={isRendered} blockable blocking closeOnEscape>
+        <OverlayItem 
+            isRendered={isRendered} 
+            blockable 
+            blocking 
+            closeOnEscape 
+            closeOnClickOutside
+        >
             <RelativelyPositioned
                 preferredAligment='top'
                 targetRefOrRect={targetRef}
@@ -106,9 +114,27 @@ const SomeOverlayWindow: FC = () => {
                         <OverlayContextProvider>
                             {({ toggle, isExist }) => (
                                 <>
-                                    <button onClick={toggle}>and there is another</button>
+                                    <RefContextProviderV2>
+                                        <button 
+                                            className='bg-sky-500'
+                                            onClick={toggle}
+                                        >
+                                            <>and there is another</>
+                                        </button>
 
-                                    <OverlayItem isRendered={isExist} blockable blocking closeOnEscape focused>
+                                        <TooltipV2 preferredAligment='top'>
+                                            <>this button will open second modal</>
+                                        </TooltipV2>
+                                    </RefContextProviderV2>
+                                    
+
+                                    <OverlayItem 
+                                        isRendered={isExist} 
+                                        blockable 
+                                        blocking 
+                                        closeOnEscape 
+                                        closeOnClickOutside
+                                    >
                                         <div className='bg-emerald-400'>second amazing modal!</div>
                                     </OverlayItem>
                                 </>
