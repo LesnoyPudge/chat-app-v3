@@ -4,7 +4,7 @@ import { ChildrenAsNodeOrFunction, Conditional } from '@components';
 
 
 
-interface RefContextProvider extends PropsWithChildrenAsNodeOrFunction {
+interface RefContextProvider extends PropsWithChildrenAsNodeOrFunction<RefContextV2> {
     providedRef?: RefObject<HTMLElement>;
 }
 

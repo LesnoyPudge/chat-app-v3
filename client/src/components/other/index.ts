@@ -9,3 +9,4 @@ export * from './Link';
 export * from './MessageItem';
 export * from './RelativelyPositioned';
 export * from './ModalWrapper';
+export * from './AnimatedTransition';

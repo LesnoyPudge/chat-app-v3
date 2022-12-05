@@ -1,84 +1,67 @@
-import { Button, IRefContext, RefContext } from '@components';
-import { FC, useContext } from 'react';
-import { Modal } from 'src/components/modals/components';
+import { Button } from '@components';
+import { FC } from 'react';
 import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { useThrottle } from '@hooks';
-import { fpsToMs } from '@utils';
+import { fpsToMs, twClassNames } from '@utils';
+import { PropsWithClassName } from '@types';
 
 
 
-interface IColorPicker {
+interface ColorPicker extends PropsWithClassName {
     color: string;
     onChange: (color: string) => void;
 }
 
 const styles = {
     colorPicker: `flex flex-col p-4 gap-4 shrink-0 
-    bg-primary-200 color-picker`,
+    bg-primary-200 rounded-md shadow-elevation-high color-picker`,
     presetsWrapper: 'flex gap-1 justify-between',
     presetButton: 'w-8 h-8 rounded-md overflow-hidden',
     presetColor: 'w-full h-full',
 };
 
-const defaultColors = ['#190709', '#5b0da9', '#0da9a9', '#5ba90d'];
+const defaultColors = ['#e3722c', '#5b0da9', '#0da9a9', '#5ba90d'];
 
-export const ColorPicker: FC<IColorPicker> = ({
+export const ColorPicker: FC<ColorPicker> = ({
+    className = '',
     color,
     onChange,
 }) => {
-    const { target } = useContext(RefContext) as IRefContext;
     const { throttle } = useThrottle();
-
-    const position = {
-        top: target.current?.getBoundingClientRect().top || 0, 
-        left: target.current?.getBoundingClientRect().left || 0,
-    };
-
-    const animationProps = {
-        from: { opacity: 0, transform: 'translateX(-20px)', ...position },
-        enter: { opacity: 1, transform: 'translateX(0px)', ...position },
-        leave: { opacity: 0, transform: 'translateX(-20px)', ...position },
-    };
-
     const handleChange = throttle(onChange, fpsToMs(60));
 
     const avatarColor = '#a90d0e';
     const colorsPresets = [avatarColor, ...defaultColors];
 
     return (
-        <Modal
-            animationProps={animationProps} 
-            withoutBackdrop
-        >
-            <div className={styles.colorPicker}>
-                <HexColorPicker 
-                    color={color} 
-                    onChange={handleChange}
-                />
+        <div className={twClassNames(styles.colorPicker, className)}>
+            <HexColorPicker 
+                color={color} 
+                onChange={handleChange}
+            />
 
-                <HexColorInput 
-                    color={color}
-                    prefix='#' 
-                    prefixed
-                    onChange={handleChange} 
-                />
+            <HexColorInput 
+                color={color}
+                prefix='#' 
+                prefixed
+                onChange={handleChange} 
+            />
 
-                <div className={styles.presetsWrapper}>
-                    {colorsPresets.map((color, index) => (
-                        <Button 
-                            className={styles.presetButton}
-                            isntStyled 
-                            onClick={() => onChange(color)}   
-                            key={index}
-                        >
-                            <div 
-                                className={styles.presetColor}
-                                style={{ backgroundColor: color }}
-                            ></div>
-                        </Button>
-                    ))}
-                </div>
+            <div className={styles.presetsWrapper}>
+                {colorsPresets.map((color, index) => (
+                    <Button 
+                        className={styles.presetButton}
+                        isntStyled 
+                        onClick={() => onChange(color)}   
+                        key={index}
+                    >
+                        <div 
+                            className={styles.presetColor}
+                            style={{ backgroundColor: color }}
+                        ></div>
+                    </Button>
+                ))}
             </div>
-        </Modal>
+        </div>
     );
 };

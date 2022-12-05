@@ -16,6 +16,14 @@ module.exports = {
         require('tailwindcss-scoped-groups')({
             groups: ['1', '2', '3', '4', '5'],
         }),
+        /** @type {import('tailwindcss/types/config').PluginCreator} */
+        ({ addUtilities }) => {
+            addUtilities({
+                '.elevation-low': {
+                    boxShadow: 'var(--elevation-low)',
+                },
+            });
+        },
     ],
 
     theme: {
@@ -88,8 +96,10 @@ module.exports = {
             },
 
             boxShadow: {
-                top_bar: 'var(--shadow-top-bar)',
-                emoji_picker: 'var(--shadow-emoji-picker)',
+                'elevation-stroke': 'var(--elevation-stroke)',
+                'elevation-low': 'var(--elevation-low)',
+                'elevation-medium': 'var(--elevation-medium)',
+                'elevation-high': 'var(--elevation-high)',
             },
 
             borderColor: {

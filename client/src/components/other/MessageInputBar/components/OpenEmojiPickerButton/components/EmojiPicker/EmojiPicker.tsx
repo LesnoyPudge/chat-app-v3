@@ -10,7 +10,7 @@ import ReactFocusLock from 'react-focus-lock';
 const styles = {
     wrapper: `bg-primary-400 pointer-events-auto flex flex-col 
     max-h-[40vh] w-[min(300px,100%)] rounded-md p-3 ml-auto
-    shadow-emoji_picker absolute`,
+    shadow-elevation-high absolute`,
     searchBar: 'h-[30px]',
     list: `my-3 py-2 pl-2 grid grid-cols-5 gap-3 
     overflow-auto custom-scrollbar-variant-primary`,

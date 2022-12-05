@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useEffect, useState } from 'react';
+import { RefObject, useCallback, useLayoutEffect, useState } from 'react';
 import { useWindowSize } from '@hooks';
 import { isRef } from '@utils';
 
@@ -211,7 +211,7 @@ export const useRelativePosition = ({
         return alternativeAlignmentOptions[preferredAligment];
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!targetRefOrRect) return;
         if (!wrapperRefOrRect) return;
         if (isRef(targetRefOrRect) && !targetRefOrRect.current) return;

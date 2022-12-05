@@ -1,15 +1,16 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import { createContext, FC, useCallback, useMemo, useRef } from 'react';
+import { createContext, FC, useCallback, useMemo } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
 import { useThrottle, useToggle } from '@hooks';
+import { fpsToMs } from '@utils';
 
 
 
 export interface IOverlayContext {
-    isExist: boolean;
-    open: () => void;
-    close: (withClick?: boolean) => void;
-    toggle: () => void;
+    isOverlayExist: boolean;
+    openOverlay: () => void;
+    closeOverlay: () => void;
+    toggleOverlay: () => void;
 }
 
 type OverlayContextProviderType = FC<PropsWithChildrenAsNodeOrFunction<IOverlayContext>>;
@@ -17,37 +18,34 @@ type OverlayContextProviderType = FC<PropsWithChildrenAsNodeOrFunction<IOverlayC
 export const OverlayContext = createContext<IOverlayContext | undefined>(undefined);
 
 export const OverlayContextProvider: OverlayContextProviderType = ({ children }) => {
-    const [isExist, toggle, setIsExist] = useToggle(false);
+    const [isOverlayExist, toggle, setIsOverlayExist] = useToggle(false);
     const { isThrottling, throttle } = useThrottle();
 
-
-    const handleClose = useCallback((withClick?: boolean) => {
-        if (withClick) return throttle(() => setIsExist(false))();
-        setIsExist(false);
-    }, [setIsExist, throttle]);
+    const handleClose = useCallback(() => {
+        if (!isOverlayExist) return;
+        throttle(() => setIsOverlayExist(false), fpsToMs(60))();
+    }, [isOverlayExist, setIsOverlayExist, throttle]);
 
     const handleOpen = useCallback(() => {
-        if (!isThrottling) setIsExist(true);
-    }, [isThrottling, setIsExist]);
+        if (!isThrottling) setIsOverlayExist(true);
+    }, [isThrottling, setIsOverlayExist]);
 
     const handleToggle = useCallback(() => {
         if (!isThrottling) toggle();
     }, [isThrottling, toggle]);
 
     const contextValues: IOverlayContext = useMemo(() => ({
-        isExist,
-        open: handleOpen,
-        close: handleClose,
-        toggle: handleToggle,
-    }), [handleClose, handleOpen, handleToggle, isExist]);
+        isOverlayExist,
+        openOverlay: handleOpen,
+        closeOverlay: handleClose,
+        toggleOverlay: handleToggle,
+    }), [handleClose, handleOpen, handleToggle, isOverlayExist]);
     
     return (
-        <>
-            <OverlayContext.Provider value={contextValues}>
-                <ChildrenAsNodeOrFunction args={contextValues}>
-                    {children}
-                </ChildrenAsNodeOrFunction>
-            </OverlayContext.Provider>
-        </>
+        <OverlayContext.Provider value={contextValues}>
+            <ChildrenAsNodeOrFunction args={contextValues}>
+                {children}
+            </ChildrenAsNodeOrFunction>
+        </OverlayContext.Provider>
     );
 };

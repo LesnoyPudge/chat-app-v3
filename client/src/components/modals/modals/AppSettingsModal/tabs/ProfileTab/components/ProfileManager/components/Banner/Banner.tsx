@@ -1,14 +1,6 @@
-import { Button, ChildrenAsNodeOrFunction, Conditional, Icon, IModalContext, IOverlayContext, IRefContext, ModalContext, ModalContextProvider, OverlayContext, OverlayContextProvider, OverlayPortal, RefContext, RefContextProvider, RelativelyPositioned, Tooltip } from '@components';
-import { useMousePosition, useRelativePosition, useThrottle, useWindowSize } from '@hooks';
-import { animated, useTransition } from '@react-spring/web';
-import { PropsWithChildrenAsFunction, PropsWithChildrenAsNodeOrFunction } from '@types';
-import { fpsToMs, twClassNames } from '@utils';
-import { CSSProperties, FC, PropsWithChildren, RefObject, useContext, useEffect, useRef, useState } from 'react';
-import { RefContextProviderV2, RefContextV2 } from 'src/components/contexts/RefContextProviderV2/RefContextProviderV2';
-import { EscapeBlock } from 'src/components/modals/components';
-import { OverlayItem } from 'src/components/overlay/OverlayItem/OverlayItem';
-import { TooltipV2 } from 'src/components/overlay/TooltipV2';
-import { useEventListener } from 'usehooks-ts';
+import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, TooltipV2, AnimatedTransition, RefContextProviderV2 } from '@components';
+import { animated, UseTransitionProps } from '@react-spring/web';
+import { FC, useState } from 'react';
 import { ColorPicker } from './components';
 
 
@@ -24,38 +16,28 @@ const styles = {
     bannerIcon: 'w-4 h-4 m-auto transition-none',
 };
 
+const colorPickerTransitionOptions: UseTransitionProps = {
+    from: { opacity: 0, translateX: '-10px' },
+    enter: { opacity: 1, translateX: '0px' },
+    leave: { opacity: 0, translateX: '-10px' },
+};
+
 export const Banner: FC = () => {
-    const { updateEscapeBlock } = useContext(ModalContext) as IModalContext;
     const [bannerColor, setBannerColor] = useState('#ffffff');
 
     return (
         <div className={styles.banner} style={{ backgroundColor: bannerColor }}>
             <OverlayContextProvider>
-                {({ toggle }) => (
+                {({ isOverlayExist, openOverlay }) => (
                     <RefContextProviderV2>
-                        <button className='bg-rose-700' onClick={toggle}>
-                            <>wow amazing</>
-                        </button>
-
-                        <SomeOverlayWindow/>
-                    </RefContextProviderV2>
-                )}
-            </OverlayContextProvider>
-
-            <ModalContextProvider>
-                {({ toggleModal, isOpen }) => {
-                    return (
-                        <EscapeBlock isOpen={isOpen} update={updateEscapeBlock}>
-                            <RefContextProvider>
+                        {({ targetRef }) => (
+                            <>
                                 <Button
-                                    className={twClassNames(
-                                        styles.bannerButton.base, 
-                                        {
-                                            [styles.bannerButton.active]: isOpen,
-                                        },
-                                    )}
+                                    className={styles.bannerButton.base}
+                                    activeClassName={styles.bannerButton.active}
+                                    isActive={isOverlayExist}
                                     isntStyled
-                                    onClick={toggleModal}
+                                    onClick={openOverlay}
                                 >
                                     <Icon
                                         className={styles.bannerIcon}
@@ -63,87 +45,42 @@ export const Banner: FC = () => {
                                     />
                                 </Button>
 
-                                <ColorPicker
-                                    color={bannerColor}
-                                    onChange={setBannerColor}
-                                />
+                                <AnimatedTransition 
+                                    isExist={isOverlayExist} 
+                                    transitionOptions={colorPickerTransitionOptions}
+                                >
+                                    {({ style, isAnimatedExist }) => (
+                                        <OverlayItem 
+                                            isRendered={isAnimatedExist}
+                                            closeOnClickOutside
+                                            closeOnEscape
+                                            focused
+                                            blocking
+                                        >
+                                            <animated.div style={style}>
+                                                <RelativelyPositioned 
+                                                    preferredAligment='left'
+                                                    spacing={10}
+                                                    targetRefOrRect={targetRef}
+                                                >
+                                                    <ColorPicker
+                                                        color={bannerColor}
+                                                        onChange={setBannerColor}
+                                                    />
+                                                </RelativelyPositioned>
+                                            </animated.div>
+                                        </OverlayItem>
+                                    )}
+                                </AnimatedTransition>
 
-                                <Tooltip position='top'>
+                                <TooltipV2 preferredAligment='top'>
                                     <>Изменить цвет баннера</>
-                                </Tooltip>
-                            </RefContextProvider>
-                        </EscapeBlock>
-                    );
-                }}
-            </ModalContextProvider>
+                                </TooltipV2>
+                            </>
+                        )}
+                    </RefContextProviderV2>
+                )}
+            </OverlayContextProvider>
         </div>
     );
-};
-
-const SomeOverlayWindow: FC = () => {
-    const { targetRef } = useContext(RefContextV2) as RefContextV2;
-    const { isExist } = useContext(OverlayContext) as IOverlayContext;
-    const transition = useTransition(isExist, {
-        from: {
-            opacity: 0,
-        },
-        enter: {
-            opacity: 1,
-        },
-        leave: {
-            opacity: 0,
-        },
-    });
-
-    return transition((style, isRendered) => (
-        <OverlayItem 
-            isRendered={isRendered} 
-            blockable 
-            blocking 
-            closeOnEscape 
-            closeOnClickOutside
-        >
-            <RelativelyPositioned
-                preferredAligment='top'
-                targetRefOrRect={targetRef}
-            >
-                <animated.div style={style} className='bg-rose-800'>
-                    <div>
-                        <span>cool modal</span>
-                        
-                        <OverlayContextProvider>
-                            {({ toggle, isExist }) => (
-                                <>
-                                    <RefContextProviderV2>
-                                        <button 
-                                            className='bg-sky-500'
-                                            onClick={toggle}
-                                        >
-                                            <>and there is another</>
-                                        </button>
-
-                                        <TooltipV2 preferredAligment='top'>
-                                            <>this button will open second modal</>
-                                        </TooltipV2>
-                                    </RefContextProviderV2>
-                                    
-
-                                    <OverlayItem 
-                                        isRendered={isExist} 
-                                        blockable 
-                                        blocking 
-                                        closeOnEscape 
-                                        closeOnClickOutside
-                                    >
-                                        <div className='bg-emerald-400'>second amazing modal!</div>
-                                    </OverlayItem>
-                                </>
-                            )}
-                        </OverlayContextProvider>
-
-                    </div>
-                </animated.div>
-            </RelativelyPositioned>
-        </OverlayItem>
-    ));
 };

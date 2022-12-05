@@ -18,7 +18,7 @@ export const Header: FC = () => {
     const handleClick = () => setInCall(prev => !prev);
     
     return (
-        <div className={twClassNames('flex flex-col w-full', { 'bg-primary-500 shadow-top_bar': inCall })}>
+        <div className={twClassNames('flex flex-col w-full', { 'bg-primary-500 shadow-elevation-low': inCall })}>
             <TopBar className={twClassNames('px-4', { 'shadow-none': inCall })}>
                 <span 
                     className='font-bold text-ellipsis

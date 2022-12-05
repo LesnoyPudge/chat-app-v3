@@ -1,5 +1,6 @@
+import { ChildrenAsNodeOrFunction } from '@components';
 import { useRelativePosition } from '@hooks';
-import { PropsWithChildrenAndClassName } from '@types';
+import { PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC, RefObject, useRef } from 'react';
 
@@ -14,13 +15,17 @@ interface TargetRect {
     height: number;
 }
 
-interface RelativelyPositioned extends PropsWithChildrenAndClassName {
-    preferredAligment: 'top' | 'bottom' | 'left' | 'right';
+type Aligment = 'top' | 'bottom' | 'left' | 'right';
+
+interface RelativelyPositioned extends 
+PropsWithClassName, 
+PropsWithChildrenAsNodeOrFunction<{aligment: Aligment}> {
+    preferredAligment: Aligment;
     targetRefOrRect: RefObject<HTMLElement> | TargetRect;
     boundsSize?: number;
     spacing?: number;
     swapableAligment?: boolean;
-    alligmentStyles?: {
+    alligmentClassNames?: {
         top?: string;
         bottom?: string;
         left?: string;
@@ -29,7 +34,7 @@ interface RelativelyPositioned extends PropsWithChildrenAndClassName {
     centered?: boolean;
 }
 
-const defaultAligmentStyles = {
+const defaultAlligmentClassNames = {
     top: '',
     bottom: '',
     left: '',
@@ -40,11 +45,11 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     className = '',
     preferredAligment,
     targetRefOrRect,
-    boundsSize,
-    spacing,
-    swapableAligment,
-    alligmentStyles = defaultAligmentStyles,
-    centered,
+    boundsSize = 20,
+    spacing = 20,
+    swapableAligment = false,
+    alligmentClassNames = defaultAlligmentClassNames,
+    centered = false,
     children,
 }) => {
     const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -57,14 +62,16 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
         swapableAligment,
         centered,
     });
-
+    
     return (
         <div 
-            className={twClassNames('fixed', alligmentStyles[aligment], className)}
+            className={twClassNames('fixed', alligmentClassNames[aligment], className)}
             style={{ top, left }}
             ref={wrapperRef}
         >
-            {children}
+            <ChildrenAsNodeOrFunction args={{ aligment }}>
+                {children}
+            </ChildrenAsNodeOrFunction>
         </div>
     );
 };

@@ -12,6 +12,7 @@ interface IOverlayItem extends PropsWithChildren {
     closeOnEscape?: boolean;
     closeOnClickOutside?: boolean;
     isRendered?: boolean;
+    focused?: boolean;
 }
 
 export const OverlayItem: FC<IOverlayItem> = ({
@@ -20,9 +21,10 @@ export const OverlayItem: FC<IOverlayItem> = ({
     closeOnEscape = false,
     closeOnClickOutside = false,
     isRendered = true,
+    focused = false,
     children,
 }) => {
-    const { close, isExist } = useContext(OverlayContext) as IOverlayContext;
+    const { closeOverlay } = useContext(OverlayContext) as IOverlayContext;
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -30,12 +32,12 @@ export const OverlayItem: FC<IOverlayItem> = ({
         if (!wrapperRef.current) return;
         if (!e.target) return;
         if (e.code !== 'Escape') return;
-        if (!blockable) return close();
+        if (!blockable) return closeOverlay();
  
         const target = e.target as HTMLElement;
         const wrapper = wrapperRef.current;
 
-        if (wrapper === target || wrapper.contains(target)) return close();
+        if (wrapper === target || wrapper.contains(target)) return closeOverlay();
     };
 
     const onClick = () => {
@@ -47,7 +49,7 @@ export const OverlayItem: FC<IOverlayItem> = ({
         const filtredItems = overlayItems.filter(node => node === wrapper || node.dataset.blocking === 'true');
         const isBlocked = wrapper !== filtredItems[filtredItems.length - 1];
 
-        if (!isBlocked) return close(isExist);
+        if (!isBlocked) return closeOverlay();
     };
 
     useOnClickOutside(wrapperRef, onClick, 'mouseup');
@@ -63,9 +65,9 @@ export const OverlayItem: FC<IOverlayItem> = ({
                 >
                     <ReactFocusLock returnFocus>
                         <div className='pointer-events-auto focus-hidden' tabIndex={0}>
-                            {/* <MoveFocusInside> */}
-                            {children}
-                            {/* </MoveFocusInside> */}
+                            <MoveFocusInside disabled={!focused}>
+                                {children}
+                            </MoveFocusInside>
                         </div>
                     </ReactFocusLock>
                 </div>
