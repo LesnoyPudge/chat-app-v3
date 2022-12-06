@@ -1,13 +1,12 @@
 import { FC } from 'react';
-import { Modal } from '../../components';
 import { UseTransitionProps } from '@react-spring/web';
 import { ContentSide, NavigationSide } from './components';
-import { ITab, TabContexProvider } from '@components';
+import { ITab, ModalWindow, TabContexProvider } from '@components';
 import { AppearanceTab, ProfileTab } from './tabs';
 
 
 
-const animationProps: UseTransitionProps = {
+const transitionOptions: UseTransitionProps = {
     from: {
         opacity: 0,
         scale: 1.2,
@@ -38,11 +37,7 @@ const tabs: ITab[] = [
 
 export const AppSettingsModal: FC = () => {
     return (
-        <Modal 
-            className='p-0'
-            withoutBackdrop
-            animationProps={animationProps}
-        >
+        <ModalWindow transitionOptions={transitionOptions}>
             <TabContexProvider tabs={tabs}>
                 {({ currentTab }) => (
                     <div className='flex h-screen w-screen bg-primary-200'>
@@ -54,6 +49,6 @@ export const AppSettingsModal: FC = () => {
                     </div>
                 )}
             </TabContexProvider>
-        </Modal>
+        </ModalWindow>
     );
 };

@@ -1,6 +1,5 @@
-import classNames from 'classnames';
+import { twClassNames } from '@utils';
 import { CSSProperties, FC } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -24,14 +23,6 @@ export const Separator: FC<ISeparator> = ({
     height = 10,
     orientation = 'horizontal',
 }) => {
-    const separatorCN = twMerge(classNames(
-        'shrink-0 bg-primary-100', 
-        {
-            [orientations[orientation]]: true,
-            [className]: !!className,
-        },
-    ));
-
     const style = {
         '--spacing': `${spacing}px`,
         '--thikness': `${thikness}px`,
@@ -40,7 +31,13 @@ export const Separator: FC<ISeparator> = ({
     
     return (
         <div 
-            className={separatorCN}
+            className={twClassNames(
+                'shrink-0 bg-primary-100', 
+                {
+                    [orientations[orientation]]: true,
+                    [className]: !!className,
+                },
+            )}
             style={style}
         ></div>
     );

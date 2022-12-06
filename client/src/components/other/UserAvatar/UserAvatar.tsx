@@ -73,7 +73,7 @@ export const UserAvatar: FC<IUserAvatar> = ({
                                         extraStatus={extraStatus}
                                     />
     
-                                    <Tooltip position='top'>
+                                    <Tooltip preferredAligment='top'>
                                         {statusTitle}
                                     </Tooltip>
                                 </RefContextProvider>

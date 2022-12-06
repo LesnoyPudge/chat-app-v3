@@ -1,7 +1,6 @@
 import { Button, Icon } from '@components';
-import classNames from 'classnames';
+import { conditional, twClassNames } from '@utils';
 import { FC, useRef } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -13,11 +12,15 @@ interface ISearchBar {
     onReset: () => void;
 }
 
-const baseClassName = `bg-primary-500 rounded-md w-full text-normal 
-flex flex-shrink-0`;
-const iconClassName = `h-2/3 aspect-square m-auto fill-icon-300 
-group-hover:fill-icon-200 group-active:fill-icon-200
-group-focus-visible:fill-icon-200`;
+const styles = {
+    wrapper: `bg-primary-500 rounded-md w-full text-normal 
+    flex flex-shrink-0`,
+    input: 'py-1 px-2 w-full',
+    button: 'h-full aspect-square flex shrink-0 group',
+    icon: `h-2/3 aspect-square m-auto fill-icon-300 
+    group-hover:fill-icon-200 group-active:fill-icon-200
+    group-focus-visible:fill-icon-200`,
+};
 
 export const SearchBar: FC<ISearchBar> = ({
     className = '',
@@ -28,16 +31,17 @@ export const SearchBar: FC<ISearchBar> = ({
 }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
     
-    const focusOnSearch = () => inputRef.current && inputRef.current.focus();
     const handleClick = () => {
         if (value) return onReset();
-        return focusOnSearch();
+        inputRef.current && inputRef.current.focus();
     };
 
+    const iconId = conditional('cross-icon', 'search-icon', !!value);
+
     return (
-        <div className={twMerge(classNames(baseClassName, className))}>
+        <div className={twClassNames(styles.wrapper, className)}>
             <input
-                className='py-1 px-2 w-full'
+                className={styles.input}
                 type='text' 
                 placeholder={placeholder}
                 value={value}
@@ -47,22 +51,14 @@ export const SearchBar: FC<ISearchBar> = ({
 
             {
                 <Button
-                    className='h-full aspect-square flex shrink-0 group'
+                    className={styles.button}
                     isntStyled
                     onClick={handleClick}
                 >
-                    {
-                        value 
-                            ? <Icon
-                                iconId='cross-icon'
-                                className={iconClassName}
-                            />
-
-                            : <Icon
-                                iconId='search-icon'
-                                className={iconClassName}
-                            />
-                    }
+                    <Icon
+                        iconId={iconId}
+                        className={styles.icon}
+                    />
                 </Button>
             }
         </div>

@@ -1,12 +1,14 @@
+import { ModalWindow } from '@components';
 import { FC } from 'react';
-import { Modal } from '../../components';
 
 
 
 export const DeleteAccountModal: FC = () => {
     return (
-        <Modal>
-            <>delete account modal</>
-        </Modal>
+        <ModalWindow
+            withBackdrop
+        >
+            <div>delete account modal</div>
+        </ModalWindow>
     );
 };

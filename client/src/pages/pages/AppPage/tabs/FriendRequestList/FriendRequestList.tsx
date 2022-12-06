@@ -1,6 +1,7 @@
 import { FC, useMemo } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { ActionButton, List, ListHeading, ListItem } from '../components';
+import { Conditional } from '@components';
 
 
 
@@ -78,33 +79,32 @@ export const FriendRequestList: FC<IFriendRequestList> = ({ filterValue }) => {
                                 status={status}
                                 extraStatus={extraStatus}
                                 extraInfo={extraInfo}
-                                actionButtons={cond
-                                    ? <ActionButton 
-                                        buttonClassName='ml-auto'
-                                        iconClassName='group-2-hover:fill-red
-                                        group-2-focus-visible:fill-red'
-                                        iconId='cross-icon' 
-                                        tooltipContent='Отменить'
-                                        onClick={handleUnblock}
-                                    />
-                                    : <>
-                                        <ActionButton 
-                                            buttonClassName='ml-auto'
-                                            iconClassName='group-2-hover:fill-green
-                                            group-2-focus-visible:fill-green'
-                                            iconId='check-icon' 
-                                            tooltipContent='Принять'
-                                            onClick={handleUnblock}
-                                        />
+                                actionButtons={
+                                    <>
+                                        <Conditional isRendered={cond}>
+                                            <ActionButton 
+                                                buttonClassName='hover:fill-red focus-visible:fill-red'
+                                                iconId='cross-icon' 
+                                                tooltipContent='Отменить'
+                                                onClick={handleUnblock}
+                                            />
+                                        </Conditional>
 
-                                        <ActionButton 
-                                            buttonClassName='ml-2'
-                                            iconClassName='group-2-hover:fill-red
-                                            group-2-focus-visible:fill-red'
-                                            iconId='cross-icon' 
-                                            tooltipContent='Отклонить'
-                                            onClick={handleUnblock}
-                                        />
+                                        <Conditional isRendered={!cond}>
+                                            <ActionButton 
+                                                buttonClassName='hover:fill-green focus-visible:fill-green'
+                                                iconId='check-icon' 
+                                                tooltipContent='Принять'
+                                                onClick={handleUnblock}
+                                            />
+
+                                            <ActionButton 
+                                                buttonClassName='hover:fill-red focus-visible:fill-red'
+                                                iconId='cross-icon' 
+                                                tooltipContent='Отклонить'
+                                                onClick={handleUnblock}
+                                            />
+                                        </Conditional>
                                     </>
                                 }
                             />

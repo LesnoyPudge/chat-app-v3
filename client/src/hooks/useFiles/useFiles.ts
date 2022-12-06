@@ -1,5 +1,5 @@
 import { EncodedFile } from '@types';
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 
 
@@ -8,32 +8,25 @@ type UseFilesArgs = {
     multiple?: boolean;
 };
 
-type OnChange = (cb: (files: EncodedFile[] | null) => void) => void;
-
 type UseFiles = (options: UseFilesArgs) => {
-    open: () => void;
-    onChange: OnChange;
+    openFileLoader: () => void;
+    files: EncodedFile[] | null;
 }
 
 export const useFiles: UseFiles = ({ accept = '', multiple = false }) => {
-    const fileInputRef = useRef(document.createElement('input'));
+    const [files, setFiles] = useState<EncodedFile[] | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    fileInputRef.current.type = 'file';
-    fileInputRef.current.accept = accept;
-    fileInputRef.current.multiple = multiple;
-
-    const onChange: OnChange = (cb) => fileInputRef.current.onchange = async() => {
-        if (!fileInputRef.current.files) {
-            cb(null);
-            return;
-        }
-
-        const files = await encodeFiles(Object.values(fileInputRef.current.files));
-
-        cb(files);
+    const toBase64 = async(file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result?.toString() || '');
+            reader.onerror = () => resolve('');
+        });
     };
 
-    const encodeFiles = async(files: File[]) => {
+    const encodeFiles = useCallback(async(files: File[]) => {
         return await Promise.all(files.map(async(file): Promise<EncodedFile> => {
             const base64 = await toBase64(file);
         
@@ -45,23 +38,32 @@ export const useFiles: UseFiles = ({ accept = '', multiple = false }) => {
                 base64,
             };
         }));
-    };
+    }, []);
 
-    const toBase64 = async(file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result?.toString() || '');
-            reader.onerror = () => resolve('');
-        });
-    };
+    useEffect(() => {
+        fileInputRef.current = document.createElement('input');
 
-    const open = () => {
-        fileInputRef.current.click();
+        const fileInput = fileInputRef.current;
+
+        fileInput.type = 'file';
+        fileInput.accept = accept;
+        fileInput.multiple = multiple;
+
+        fileInput.onchange = async() => {
+            if (!fileInput.files) return;
+
+            const files = await encodeFiles(Object.values(fileInput.files));
+            setFiles(files);
+        };
+
+    }, [accept, encodeFiles, multiple]);
+
+    const openFileLoader = () => {
+        fileInputRef.current && fileInputRef.current.click();
     };
 
     return {
-        onChange,
-        open,
+        files,
+        openFileLoader,
     };
 };

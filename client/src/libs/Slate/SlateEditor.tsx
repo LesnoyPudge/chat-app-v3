@@ -1,8 +1,7 @@
-import classNames from 'classnames';
+import { twClassNames } from '@utils';
 import { FC, useEffect } from 'react';
 import { Editable, ReactEditor, useSlateStatic } from 'slate-react';
 import { EditableProps, RenderElementProps } from 'slate-react/dist/components/editable';
-import { twMerge } from 'tailwind-merge';
 import { Emoji, Link, Paragraph } from './components';
 
 
@@ -12,8 +11,6 @@ interface ISlateEditor {
     placeholder?: string;
     rest?: Omit<EditableProps, keyof ISlateEditor>;
 }
-
-const baseClassName = 'w-full break-all h-fit';
 
 const renderElement = ({ attributes, children, element }: RenderElementProps) => {
     switch (element.type) {
@@ -55,7 +52,7 @@ export const SlateEditor: FC<ISlateEditor> = ({
     return (
         <Editable
             autoFocus={false}
-            className={twMerge(classNames(baseClassName, className))}
+            className={twClassNames('w-full break-all h-fit', className)}
             onKeyDown={onKeyDown}
             placeholder={placeholder}
             renderElement={renderElement}

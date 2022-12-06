@@ -1,6 +1,7 @@
 import { RefObject, useCallback, useLayoutEffect, useState } from 'react';
 import { useWindowSize } from '@hooks';
 import { isRef } from '@utils';
+import { Aligment } from '@types';
 
 
 
@@ -17,8 +18,6 @@ interface WrapperRect {
     width: number;
     height: number;
 }
-
-type Aligment = 'top' | 'bottom' | 'left' | 'right';
 
 interface GetRelativePositionReturn {
     top: number;
@@ -38,12 +37,13 @@ type GetRelativePosition = (args: {
 
 interface UseRelativePositionArgs {
     preferredAligment: Aligment;
-    targetRefOrRect: RefObject<HTMLElement> | TargetRect;
-    wrapperRefOrRect: RefObject<HTMLElement> | WrapperRect;
+    targetRefOrRect?: RefObject<HTMLElement> | TargetRect;
+    wrapperRefOrRect?: RefObject<HTMLElement> | WrapperRect;
     swapableAligment?: boolean;
     boundsSize?: number;
     spacing?: number;
     centered?: boolean;
+    dependencyList?: unknown[]
 }
 
 export const useRelativePosition = ({
@@ -54,6 +54,7 @@ export const useRelativePosition = ({
     boundsSize,
     spacing,
     centered,
+    dependencyList = [],
 }: UseRelativePositionArgs) => {
     const windowSize = useWindowSize();
     const [position, setPosition] = useState<GetRelativePositionReturn>({ 
@@ -240,11 +241,11 @@ export const useRelativePosition = ({
 
         setPosition(newPosition);
     }, [
-        boundsSize, getRelativePosition, 
-        preferredAligment, spacing, 
-        swapableAligment, targetRefOrRect, 
-        wrapperRefOrRect, windowSize,
-        centered,
+        boundsSize, centered, getRelativePosition, 
+        preferredAligment, spacing, swapableAligment, 
+        targetRefOrRect, wrapperRefOrRect, windowSize,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        ...dependencyList,
     ]);
 
     return position;

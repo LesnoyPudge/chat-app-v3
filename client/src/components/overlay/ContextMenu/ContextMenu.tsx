@@ -1,205 +1,129 @@
-import React, { FC, useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Conditional, IRefContext, OverlayPortal, RefContext } from '@components';
-import { animated, useTransition } from '@react-spring/web';
-import ReactFocusLock from 'react-focus-lock';
-import { twMerge } from 'tailwind-merge';
-import classNames from 'classnames';
+import { FC, useContext, useState } from 'react';
+import { AnimatedTransition, OverlayContext, OverlayItem, RefContext, RelativelyPositioned } from '@components';
+import { animated, UseTransitionProps } from '@react-spring/web';
+import { Aligment, PropsWithChildrenAndClassName } from '@types';
+import { twClassNames } from '@utils';
+import { useEventListener } from 'usehooks-ts';
 
 
 
-type UnmountType = (e?: Event | React.UIEvent) => void;
 
-interface ContextMenuChildrenProps {
-    unmount: UnmountType;
+type TargetRect = Omit<DOMRect, 'x' | 'y' | 'toJSON'>
+
+interface ContextMenu extends PropsWithChildrenAndClassName {
+    preferredAligment: Aligment;
+    openOnLeftClick?: boolean;
+    openOnRightClick?: boolean;
 }
 
-interface IContextMenu {
-    className?: string;
-    offset?: number;
-    handleRightClick?: boolean;
-    handleLeftClick?: boolean;
-    handleMiddleClick?: boolean;
-    children: (args: ContextMenuChildrenProps) => JSX.Element;
-}
+const transitionOptions: UseTransitionProps = {
+    from: { opacity: 0, scale: 0.95 },
+    enter: { opacity: 1, scale: 1 },
+    leave: { opacity: 0, scale: 0.95 },
+};
 
-const baseClassName = 'fixed pointer-events-auto bg-primary-500 rounded text-normal p-5';
+const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-normal p-5';
 
-export const ContextMenu: FC<IContextMenu> = ({ 
+export const ContextMenu: FC<ContextMenu> = ({
     className = '',
-    offset = 15,
-    handleRightClick = true,
-    handleLeftClick = false,
-    handleMiddleClick = false,
+    preferredAligment,
+    openOnLeftClick = false,
+    openOnRightClick = false,
     children,
 }) => {
-    const { container, target } = useContext(RefContext) as IRefContext;
-    const [isExist, setIsExist] = useState(false);
-    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-    const contextMenuRef = useRef<HTMLDivElement | null>(null);
-    const transition = useTransition(isExist, {
-        from: { opacity: 0 },
-        enter: { opacity: 1 },
-        leave: { opacity: 0 },
-        config: { duration: 100 },
-    });
+    const { targetRef } = useContext(RefContext) as RefContext;
+    const { isOverlayExist, closingThrottle, openOverlay } = useContext(OverlayContext) as OverlayContext;
+    const [targetRect, setTargetRect] = useState<TargetRect>();
 
-    const setPositionInBounds = useCallback(({ clickPosX, clickPosY }: {clickPosX: number, clickPosY: number}) => {
-        if (!contextMenuRef.current) return;
-        if (!target.current) return;
+    const setCursorRect = (e: MouseEvent) => {
+        const cursorSize = 1;
         
-        const menu = contextMenuRef.current;
-        const targetElem = target.current;
-        const spacing = 20;
-        const withKeyboard = clickPosX === -1 || clickPosY === -1;
-        const bounds = {
-            top: spacing,
-            right: window.innerWidth - menu.clientWidth - spacing,
-            bottom: window.innerHeight - menu.clientHeight - spacing,
-            left: spacing,
+        const rect: TargetRect = {
+            top: e.clientY,
+            bottom: e.clientY + cursorSize,
+            left: e.clientX,
+            right: e.clientX + cursorSize,
+            width: cursorSize,
+            height: cursorSize,
         };
 
-        if (withKeyboard) {
-            const targetCenter = {
-                x: targetElem.offsetLeft + (targetElem.clientHeight / 2),
-                y: targetElem.offsetTop + (targetElem.clientWidth / 2),
-            };
-            
-            const position = {
-                x: Math.max(bounds.left, Math.min(targetCenter.x, bounds.right)),
-                y: Math.max(bounds.top, Math.min(targetCenter.y, bounds.bottom)),
-            };
+        setTargetRect(rect);
+        openOverlay();
+    };
 
-            return setMenuPosition(position);
+    const setElementRect = () => {
+        if (!targetRef.current) return;
+        
+        setTargetRect(targetRef.current.getBoundingClientRect());
+        openOverlay();
+    };
+
+    const handleLeftClick = (e: MouseEvent | KeyboardEvent) => {
+        if (closingThrottle) return;
+        if (!openOnLeftClick) return;
+        
+        const withMouse = e instanceof MouseEvent;
+        const withKeyboard = e instanceof KeyboardEvent;
+        const spaceOrEnter = withKeyboard && e.code !== 'Enter' && e.code !== 'Space';
+
+        if (withMouse) {
+            e.preventDefault();
+            setCursorRect(e);
         }
 
-        if (!withKeyboard) {
-            const position = {
-                x: Math.max(bounds.left, Math.min(clickPosX, bounds.right)),
-                y: Math.max(bounds.top, Math.min(clickPosY, bounds.bottom)),
-            };
-
-            return setMenuPosition(position);
+        if (spaceOrEnter) {
+            e.preventDefault();
+            setElementRect();
         }
-    }, [target]);
+    };
 
-    const mount = useCallback((e: MouseEvent | KeyboardEvent) => {
+    const handleRightClick = (e: MouseEvent) => {
+        if (closingThrottle) return;
+        if (!openOnRightClick) return;
+
         e.preventDefault();
-        // e.stopPropagation();
-        if (isExist && e instanceof MouseEvent) return setPositionInBounds({ clickPosX: e.clientX, clickPosY: e.clientY });
 
-        if (e instanceof MouseEvent) setMenuPosition({ x: e.clientX, y: e.clientY });
-        if (e instanceof KeyboardEvent) setMenuPosition({ x: -1, y: -1 });
+        const withKeyboard = e.button === -1;
+        const withMouse = e.button === 2;
 
-        setIsExist(true);
-    }, [isExist, setPositionInBounds]);
+        if (withKeyboard) setElementRect();
+        if (withMouse) setCursorRect(e);
+    };
 
-    const unmount: UnmountType = useCallback((e) => {
-        e && e.preventDefault();
-        if (isExist) setIsExist(false);
-    }, [isExist]);
+    useEventListener('click', handleLeftClick, targetRef);
+    useEventListener('keydown', handleLeftClick, targetRef);
+    useEventListener('contextmenu', handleRightClick, targetRef);
 
-    const handleKeyDown = useCallback((e: React.KeyboardEvent | KeyboardEvent) => {
-        if (!isExist) return;
-        if (e.code !== 'Escape') return;
-        unmount(e);
-    }, [isExist, unmount]);
-
-    useEffect(() => {
-        if (!container.current) return;
-        const target = container.current;
-
-        const onRightClick = (e: MouseEvent) => {
-            if (!handleRightClick) return;
-            mount(e);
-        };
-    
-        const onLeftClick = (e: MouseEvent) => {
-            if (e.button !== 0) return;
-            if (!handleLeftClick) return;
-            mount(e);
-        };
-    
-        const onMiddleClick = (e: MouseEvent) => {
-            if (e.button !== 1) return;
-            if (!handleMiddleClick) return;
-            mount(e);
-        };
-
-        const onKeyDown = (e: KeyboardEvent) => {
-            if (!handleLeftClick) return;
-            if (e.code !== 'Enter' && e.code !== 'Space') return;
-            mount(e);
-        };
-
-        target.addEventListener('click', onLeftClick);
-        target.addEventListener('contextmenu', onRightClick);
-        target.addEventListener('auxclick', onMiddleClick);
-        target.addEventListener('keydown', onKeyDown);
-        
-        return () => {
-            target.removeEventListener('click', onLeftClick);
-            target.removeEventListener('contextmenu', onRightClick);
-            target.removeEventListener('auxclick', onMiddleClick);
-            target.removeEventListener('keydown', onKeyDown);
-        };
-    }, [container, handleKeyDown, handleLeftClick, handleMiddleClick, handleRightClick, mount]);
-
-    useEffect(() => {
-        if (isExist) return setPositionInBounds({ clickPosX: menuPosition.x, clickPosY: menuPosition.y });
-    }, [isExist, menuPosition.x, menuPosition.y, setPositionInBounds]);
-
-    useEffect(() => {
-        if (!isExist) return;
-        if (!contextMenuRef.current) return;
-        if (!container.current) return;
-
-        const menu = contextMenuRef.current;
-        const containerElem = container.current;
-
-        const handleUnmount = (e: MouseEvent) => {
-            if (!e.target) return;
-            const target = e.target as HTMLElement;
-
-            if (containerElem === target || containerElem.contains(target)) return mount(e);
-            if (menu !== target && !menu.contains(target)) return unmount();
-        };
-
-        document.addEventListener('click', handleUnmount);
-        document.addEventListener('auxclick', handleUnmount);
-        document.addEventListener('contextmenu', handleUnmount);
-
-        return () => {
-            document.removeEventListener('click', handleUnmount);
-            document.removeEventListener('auxclick', handleUnmount);
-            document.removeEventListener('contextmenu', handleUnmount);
-        };
-    }, [container, isExist, mount, unmount]);
-
-    useEffect(() => {
-        if (!isExist) return;
-        document.addEventListener('keydown', handleKeyDown);
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [handleKeyDown, isExist]);
-
-    return transition((style, isRendered) => (
-        <OverlayPortal>
-            <Conditional isRendered={isRendered}>
-                <ReactFocusLock autoFocus={false} returnFocus>
-                    <animated.div
-                        className={twMerge(classNames(baseClassName, className))}
-                        style={{ 
-                            opacity: style.opacity,
-                            left: menuPosition.x + offset,
-                            top: menuPosition.y,
-                        }}
-                        ref={contextMenuRef}
+    return (
+        <AnimatedTransition 
+            isExist={isOverlayExist}
+            transitionOptions={transitionOptions}
+        >
+            {({ isAnimatedExist, style }) => (
+                <OverlayItem 
+                    isRendered={isAnimatedExist}
+                    blockable
+                    blocking
+                    closeOnClickOutside
+                    closeOnEscape
+                    focused
+                >
+                    <RelativelyPositioned
+                        preferredAligment={preferredAligment}
+                        targetRefOrRect={targetRect}
+                        spacing={15}
+                        boundsSize={20}
+                        swapableAligment
                     >
-                        {children({ unmount })}
-                    </animated.div>
-                </ReactFocusLock>
-            </Conditional>
-        </OverlayPortal>
-    ));
+                        <animated.div 
+                            className={twClassNames(baseClassName, className)}
+                            style={style}
+                        >
+                            {children}
+                        </animated.div>
+                    </RelativelyPositioned>
+                </OverlayItem>
+            )}
+        </AnimatedTransition>
+    );
 };

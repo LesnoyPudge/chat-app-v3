@@ -1,8 +1,7 @@
 import { useField } from 'formik';
 import { FC, useId, useState } from 'react';
 import { Button, Conditional, Icon } from '@components';
-import { twMerge } from 'tailwind-merge';
-import { twClassNames } from '@utils';
+import { conditional, twClassNames } from '@utils';
 
 
 
@@ -17,6 +16,20 @@ interface ITextInputProps {
     isRequired?: boolean;
 }
 
+const styles = {
+    wrapper: 'flex flex-col gap-2 w-full',
+    label: {
+        base: 'text-xs w-full text-secondary',
+        error: 'text-error',
+    },
+    labelText: 'uppercase',
+    required: 'ml-1 mr-1 text-required',
+    inputWrapper: 'bg-primary-500 w-full rounded flex',
+    input: 'w-full p-2 text-normal',
+    typeToggleButton: 'px-2 fill-icon-200 hover:fill-icon-300',
+    typeToggleIcon: 'h-[30px]',
+};
+
 export const TextInput: FC<ITextInputProps> = ({ 
     className = '', 
     name,
@@ -30,28 +43,30 @@ export const TextInput: FC<ITextInputProps> = ({
     const [field, meta] = useField(name);
     const [typeState, setTypeState] = useState(type);
     const id = useId();
-    const isError = !!(meta.error && meta.touched);
-    
+
     const handleTypeToggle = () => {
         setTypeState(prev => prev === 'password' ? 'text' : 'password');
     };
     
+    const isError = !!(meta.error && meta.touched);
+    const iconId = conditional('password-eye-on', 'password-eye-off', typeState === 'password');
+
     return (
         <>
-            <div className={twMerge(`flex flex-col gap-2 w-full ${className}`)}>
+            <div className={twClassNames(styles.wrapper, className)}>
                 <label 
                     htmlFor={id} 
                     className={twClassNames(
-                        'text-xs w-full text-secondary',
-                        { 'text-error': isError },
+                        styles.label.base, 
+                        { [styles.label.error]: isError },
                     )}
                 >
-                    <span className='uppercase'>
+                    <span className={styles.labelText}>
                         {label}
                     </span>
                     
                     <Conditional isRendered={isRequired}>
-                        <span className='ml-1 mr-1 text-required'>
+                        <span className={styles.required}>
                             *
                         </span>
                     </Conditional>
@@ -61,11 +76,11 @@ export const TextInput: FC<ITextInputProps> = ({
                     </Conditional>
                 </label>
 
-                <div className='bg-primary-500 w-full rounded flex'>
+                <div className={styles.inputWrapper}>
                     <input 
                         {...field}
                         id={id}
-                        className='w-full p-2 text-normal'
+                        className={styles.input}
                         type={typeState} 
                         placeholder={placeholder}
                         maxLength={maxLength}
@@ -77,21 +92,12 @@ export const TextInput: FC<ITextInputProps> = ({
                     <Conditional isRendered={type === 'password'}>
                         <Button
                             onClick={handleTypeToggle}
-                            className='px-2 group'
+                            className={styles.typeToggleButton}
                         >
-                            <Conditional isRendered={typeState === 'text'}>
-                                <Icon 
-                                    iconId='password-eye-on'
-                                    className='h-[30px] fill-icon-200 group-hover:fill-icon-300'
-                                />
-                            </Conditional>
-                        
-                            <Conditional isRendered={typeState === 'password'}>
-                                <Icon 
-                                    iconId='password-eye-off'
-                                    className='h-[30px] fill-icon-200 group-hover:fill-icon-300'
-                                />
-                            </Conditional>
+                            <Icon 
+                                iconId={iconId}
+                                className={styles.typeToggleIcon}
+                            />
                         </Button>
                     </Conditional>
                 </div>

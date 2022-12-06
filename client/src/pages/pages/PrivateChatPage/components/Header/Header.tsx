@@ -45,7 +45,7 @@ export const Header: FC = () => {
                         />
                     </Button>
 
-                    <Tooltip position='bottom'>
+                    <Tooltip preferredAligment='bottom'>
                         <>Начать голосовой звонок</>
                     </Tooltip>
                 </RefContextProvider>

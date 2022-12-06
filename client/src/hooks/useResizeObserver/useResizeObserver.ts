@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 
 
@@ -8,7 +8,7 @@ type UseResizeObserver = (
 ) => void;
 
 export const useResizeObserver: UseResizeObserver = (element, callback) => {
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!element) return;
 
         const resizeObserver = new ResizeObserver(callback);

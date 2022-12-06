@@ -1,6 +1,5 @@
-import classNames from 'classnames';
+import { twClassNames } from '@utils';
 import { FC, PropsWithChildren, useEffect, useRef } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -24,9 +23,12 @@ export interface IButtonProps extends PropsWithChildren {
 }
 
 const buttonClasses = {
-    base: 'text-center rounded underline-offset-4 decoration-1 decoration-current py-1 px-3 transition-all duration-100',
+    base: `text-center rounded underline-offset-4 decoration-1 
+    decoration-current py-1 px-3 transition-all duration-100`,
     brand: {
-        base: 'text-white font-semibold bg-secondary-100 hover:bg-secondary-200 focus-visible:bg-secondary-200 active:bg-secondary-300',
+        base: `text-white font-semibold bg-secondary-100 
+        hover:bg-secondary-200 focus-visible:bg-secondary-200 
+        active:bg-secondary-300`,
         active: 'bg-secondary-300',
     },
     link: {
@@ -34,7 +36,9 @@ const buttonClasses = {
         active: 'underline',
     },
     lite: {
-        base: 'text-primary hover:underline hover:text-secondary focus-visible:underline focus-visible:text-secondary active:bg-secondary-300 active:text-secondary',
+        base: `text-primary hover:underline hover:text-secondary 
+        focus-visible:underline focus-visible:text-secondary 
+        active:bg-secondary-300 active:text-secondary`,
         active: 'bg-secondary-300 text-secondary',
     },
 };
@@ -59,13 +63,13 @@ export const Button: FC<IButtonProps> = ({
     onFocus,
 }) => {
     const ref = useRef<HTMLButtonElement | null>(null);
-    const buttonCN = twMerge(classNames({
+    const buttonCN = twClassNames({
         [buttonClasses.base]: !isntStyled,
         [buttonClasses[variant || 'brand'].base]: !!variant,
         [buttonClasses[variant || 'brand'].active]: !!variant && isActive,
         [className]: !!className,
         [activeClassName]: !!activeClassName && isActive,
-    }));
+    });
 
     useEffect(() => {
         if (!ref.current) return;

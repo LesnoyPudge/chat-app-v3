@@ -1,7 +1,6 @@
 import { Conditional } from '@components';
-import classNames from 'classnames';
+import { twClassNames } from '@utils';
 import { FC, ReactNode } from 'react';
-import { twMerge } from 'tailwind-merge';
 import { RenderElementAttributes } from '../../types';
 
 
@@ -80,7 +79,7 @@ export const Emoji: FC<EmojiPropsType> = ({
 
     return (
         <span
-            className={twMerge(classNames('inline-block h-6 aspect-square mx-0.5', className))}
+            className={twClassNames('inline-block h-6 aspect-square mx-0.5', className)}
             contentEditable={false}
             {...attributes}
         >

@@ -1,6 +1,6 @@
 import { ChildrenAsNodeOrFunction } from '@components';
 import { useRelativePosition } from '@hooks';
-import { PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
+import { Aligment, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC, RefObject, useRef } from 'react';
 
@@ -15,13 +15,11 @@ interface TargetRect {
     height: number;
 }
 
-type Aligment = 'top' | 'bottom' | 'left' | 'right';
-
 interface RelativelyPositioned extends 
 PropsWithClassName, 
 PropsWithChildrenAsNodeOrFunction<{aligment: Aligment}> {
     preferredAligment: Aligment;
-    targetRefOrRect: RefObject<HTMLElement> | TargetRect;
+    targetRefOrRect?: RefObject<HTMLElement> | TargetRect;
     boundsSize?: number;
     spacing?: number;
     swapableAligment?: boolean;
@@ -32,6 +30,7 @@ PropsWithChildrenAsNodeOrFunction<{aligment: Aligment}> {
         right?: string;
     };
     centered?: boolean;
+    dependencyList?: unknown[];
 }
 
 const defaultAlligmentClassNames = {
@@ -50,6 +49,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     swapableAligment = false,
     alligmentClassNames = defaultAlligmentClassNames,
     centered = false,
+    dependencyList,
     children,
 }) => {
     const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -61,6 +61,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
         spacing,
         swapableAligment,
         centered,
+        dependencyList,
     });
     
     return (

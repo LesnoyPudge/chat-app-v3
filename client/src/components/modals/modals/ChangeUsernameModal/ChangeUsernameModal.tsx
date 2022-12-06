@@ -1,12 +1,12 @@
+import { ModalWindow } from '@components';
 import { FC } from 'react';
-import { Modal } from '../../components';
 
 
 
 export const ChangeUsernameModal: FC = () => {
     return (
-        <Modal>
+        <ModalWindow>
             <>ChangeUsernameModal</>
-        </Modal>
+        </ModalWindow>
     );
 };

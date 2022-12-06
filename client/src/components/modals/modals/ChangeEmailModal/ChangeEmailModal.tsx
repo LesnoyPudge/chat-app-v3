@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { Modal } from '../../components';
+import { ModalWindow } from '@components';
 
 
 
 export const ChangeEmailModal: FC = () => {
     return (
-        <Modal>
+        <ModalWindow>
             <>ChangeEmailModal</>
-        </Modal>
+        </ModalWindow>
     );
 };

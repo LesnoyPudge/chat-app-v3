@@ -27,3 +27,5 @@ export interface EncodedFile {
     lastModified: number;
     base64: string;
 }
+
+export type Aligment = 'top' | 'bottom' | 'left' | 'right';

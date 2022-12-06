@@ -4,17 +4,17 @@ import { ChildrenAsNodeOrFunction, Conditional } from '@components';
 
 
 
-interface RefContextProvider extends PropsWithChildrenAsNodeOrFunction<RefContextV2> {
+interface RefContextProvider extends PropsWithChildrenAsNodeOrFunction<RefContext> {
     providedRef?: RefObject<HTMLElement>;
 }
 
-export interface RefContextV2 {
+export interface RefContext {
     targetRef: RefObject<HTMLElement>;
 }
 
-export const RefContextV2 = createContext<RefContextV2 | undefined>(undefined);
+export const RefContext = createContext<RefContext | undefined>(undefined);
 
-export const RefContextProviderV2: FC<RefContextProvider> = ({
+export const RefContextProvider: FC<RefContextProvider> = ({
     providedRef,
     children, 
 }) => {
@@ -28,7 +28,7 @@ export const RefContextProviderV2: FC<RefContextProvider> = ({
         setTargetRef({ current: wrapper });
     }, []);
     
-    const contextValues: RefContextV2 = {
+    const contextValues: RefContext = {
         targetRef: providedRef ? providedRef : targetRef,
     };
 
@@ -38,11 +38,11 @@ export const RefContextProviderV2: FC<RefContextProvider> = ({
                 <div className='hidden' ref={wrapperRef}></div>
             </Conditional>
 
-            <RefContextV2.Provider value={contextValues}>
+            <RefContext.Provider value={contextValues}>
                 <ChildrenAsNodeOrFunction args={contextValues}>
                     {children}
                 </ChildrenAsNodeOrFunction>
-            </RefContextV2.Provider>
+            </RefContext.Provider>
         </>
     );
 };

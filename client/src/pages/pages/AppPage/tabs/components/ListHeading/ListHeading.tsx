@@ -1,5 +1,5 @@
+import { twClassNames } from '@utils';
 import { FC, PropsWithChildren } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -9,6 +9,8 @@ interface IListHeading extends PropsWithChildren {
     filtredListlength: number
 }
 
+const baseClassName = 'uppercase text-sm text-secondary flex gap-2 mb-3';
+
 export const ListHeading: FC<IListHeading> = ({
     className = '', 
     children,
@@ -16,7 +18,7 @@ export const ListHeading: FC<IListHeading> = ({
     filtredListlength,
 }) => {
     return (
-        <h3 className={twMerge(`uppercase text-sm text-secondary flex gap-2 mb-3 ${className}`)}>
+        <h3 className={twClassNames(baseClassName, className)}>
             <span>{children}</span>
 
             {isFiltred && <span>Показано — {filtredListlength}</span>}

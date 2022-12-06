@@ -6,16 +6,17 @@ import { fpsToMs } from '@utils';
 
 
 
-export interface IOverlayContext {
+export interface OverlayContext {
     isOverlayExist: boolean;
+    closingThrottle: boolean;
     openOverlay: () => void;
     closeOverlay: () => void;
     toggleOverlay: () => void;
 }
 
-type OverlayContextProviderType = FC<PropsWithChildrenAsNodeOrFunction<IOverlayContext>>;
+type OverlayContextProviderType = FC<PropsWithChildrenAsNodeOrFunction<OverlayContext>>;
 
-export const OverlayContext = createContext<IOverlayContext | undefined>(undefined);
+export const OverlayContext = createContext<OverlayContext | undefined>(undefined);
 
 export const OverlayContextProvider: OverlayContextProviderType = ({ children }) => {
     const [isOverlayExist, toggle, setIsOverlayExist] = useToggle(false);
@@ -34,12 +35,13 @@ export const OverlayContextProvider: OverlayContextProviderType = ({ children })
         if (!isThrottling) toggle();
     }, [isThrottling, toggle]);
 
-    const contextValues: IOverlayContext = useMemo(() => ({
+    const contextValues: OverlayContext = useMemo(() => ({
         isOverlayExist,
+        closingThrottle: isThrottling,
         openOverlay: handleOpen,
         closeOverlay: handleClose,
         toggleOverlay: handleToggle,
-    }), [handleClose, handleOpen, handleToggle, isOverlayExist]);
+    }), [handleClose, handleOpen, handleToggle, isOverlayExist, isThrottling]);
     
     return (
         <OverlayContext.Provider value={contextValues}>

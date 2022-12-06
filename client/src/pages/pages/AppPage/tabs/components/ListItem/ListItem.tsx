@@ -50,7 +50,9 @@ export const ListItem: FC<IListItem> = ({
                     }
                 </div>
 
-                {actionButtons}
+                <div className='ml-auto flex'>
+                    {actionButtons}
+                </div>
             </li>
         </>
     );

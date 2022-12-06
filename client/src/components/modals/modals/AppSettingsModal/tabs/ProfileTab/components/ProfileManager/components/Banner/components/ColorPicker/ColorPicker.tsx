@@ -13,7 +13,7 @@ interface ColorPicker extends PropsWithClassName {
 }
 
 const styles = {
-    colorPicker: `flex flex-col p-4 gap-4 shrink-0 
+    colorPicker: `flex flex-col p-4 gap-4 shrink-0 pointer-events-auto
     bg-primary-200 rounded-md shadow-elevation-high color-picker`,
     presetsWrapper: 'flex gap-1 justify-between',
     presetButton: 'w-8 h-8 rounded-md overflow-hidden',

@@ -1,18 +1,17 @@
-import { ModalContext, IModalContext } from '@components';
+import { ModalWindow, OverlayContext } from '@components';
 import { FC, useContext } from 'react';
-import { Modal } from '../../components/Modal';
 
 
 
 export const AddFriendModal: FC = () => {
-    const { closeModal } = useContext(ModalContext) as IModalContext;
+    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
 
     return (
-        <Modal>
+        <ModalWindow>
             <div className='bg-primary-500 p-4'>
                 <div>add friend modal</div>
-                <button onClick={closeModal}>close</button>
+                <button onClick={closeOverlay}>close</button>
             </div>
-        </Modal>
+        </ModalWindow>
     );
 };

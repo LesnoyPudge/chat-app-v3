@@ -1,4 +1,4 @@
-import { Conditional, IOverlayContext, OverlayContext, OverlayPortal } from '@components';
+import { Conditional, OverlayContext, OverlayPortal } from '@components';
 import { getHTML } from '@utils';
 import { FC, PropsWithChildren, useContext, useRef } from 'react';
 import ReactFocusLock, { MoveFocusInside } from 'react-focus-lock';
@@ -24,7 +24,7 @@ export const OverlayItem: FC<IOverlayItem> = ({
     focused = false,
     children,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as IOverlayContext;
+    const { closeOverlay, isOverlayExist } = useContext(OverlayContext) as OverlayContext;
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -63,8 +63,11 @@ export const OverlayItem: FC<IOverlayItem> = ({
                     data-blocking={blocking}
                     ref={wrapperRef}
                 >
-                    <ReactFocusLock returnFocus>
-                        <div className='pointer-events-auto focus-hidden' tabIndex={0}>
+                    <ReactFocusLock returnFocus disabled={!isOverlayExist || !focused}>
+                        <div
+                            className={'focus-hidden'} 
+                            tabIndex={focused ? 0 : -1}
+                        >
                             <MoveFocusInside disabled={!focused}>
                                 {children}
                             </MoveFocusInside>

@@ -1,6 +1,6 @@
 import { Button, Conditional, Icon, TopBar } from '@components';
-import { useConditional, useNavigator, useToggle } from '@hooks';
-import { twClassNames } from '@utils';
+import { useNavigator, useToggle } from '@hooks';
+import { conditional, twClassNames } from '@utils';
 import { FC } from 'react';
 
 
@@ -13,8 +13,8 @@ const styles = {
 export const Header: FC = () => {
     const { params } = useNavigator();
     const [isOpen, toggleIsOpen] = useToggle();
-    const [iconId] = useConditional('cross-icon', 'dropdown-arrow-icon', isOpen);
 
+    const iconId = conditional('cross-icon', 'dropdown-arrow-icon', isOpen);
     const channelLabel = `Канал ${params.channelId} ${params.roomId}`;
     
     return (

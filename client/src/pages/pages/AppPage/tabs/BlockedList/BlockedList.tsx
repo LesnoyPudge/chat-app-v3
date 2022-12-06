@@ -30,7 +30,6 @@ const usersMock: IUserPreview[] = [
 export const BlockedList: FC<IBlockedList> = ({ filterValue }) => {
     const users = useMemo(() => usersMock, []) as IUserPreview[];
     
-
     const filtredUsers = useMemo(() => {
         return filterValue 
             ? users.filter((user) => user.username.match(filterValue)) 

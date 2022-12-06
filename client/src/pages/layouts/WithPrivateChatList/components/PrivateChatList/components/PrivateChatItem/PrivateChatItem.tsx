@@ -101,7 +101,7 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({
                     />
                 </Button>
 
-                <Tooltip position='right' spacing={16}>
+                <Tooltip preferredAligment='right' spacing={16}>
                     <>Срыть</>
                 </Tooltip>
             </RefContextProvider>

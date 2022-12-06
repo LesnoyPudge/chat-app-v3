@@ -1,6 +1,6 @@
+import { twClassNames } from '@utils';
 import { lightFormat, toDate } from 'date-fns';
 import { FC } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 
 
@@ -26,7 +26,7 @@ export const Time: FC<ITime> = ({
 
     return (
         <time
-            className={twMerge(className)}
+            className={twClassNames(className)}
             dateTime={dateTime}
         >
             {content}

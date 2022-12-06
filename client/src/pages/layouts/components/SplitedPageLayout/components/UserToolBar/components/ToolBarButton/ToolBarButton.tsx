@@ -46,7 +46,7 @@ export const ToolBarButton: FC<IToolBarButton> = ({
                 />
             </Button>
 
-            <Tooltip position='top'>
+            <Tooltip preferredAligment='top'>
                 {currentTooltipContent}
             </Tooltip>
         </RefContextProvider>

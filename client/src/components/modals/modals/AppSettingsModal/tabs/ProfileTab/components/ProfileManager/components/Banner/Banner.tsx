@@ -1,4 +1,4 @@
-import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, TooltipV2, AnimatedTransition, RefContextProviderV2 } from '@components';
+import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, Tooltip, AnimatedTransition, RefContextProvider } from '@components';
 import { animated, UseTransitionProps } from '@react-spring/web';
 import { FC, useState } from 'react';
 import { ColorPicker } from './components';
@@ -29,7 +29,7 @@ export const Banner: FC = () => {
         <div className={styles.banner} style={{ backgroundColor: bannerColor }}>
             <OverlayContextProvider>
                 {({ isOverlayExist, openOverlay }) => (
-                    <RefContextProviderV2>
+                    <RefContextProvider>
                         {({ targetRef }) => (
                             <>
                                 <Button
@@ -73,12 +73,12 @@ export const Banner: FC = () => {
                                     )}
                                 </AnimatedTransition>
 
-                                <TooltipV2 preferredAligment='top'>
+                                <Tooltip preferredAligment='top'>
                                     <>Изменить цвет баннера</>
-                                </TooltipV2>
+                                </Tooltip>
                             </>
                         )}
-                    </RefContextProviderV2>
+                    </RefContextProvider>
                 )}
             </OverlayContextProvider>
         </div>

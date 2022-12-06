@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren, useContext } from 'react';
-import { ModalContext, Button, Icon, IModalContext } from '@components';
+import { Button, Icon, OverlayContext } from '@components';
 
 
 
@@ -19,7 +19,7 @@ const styles = {
 };
 
 export const ContentSide: FC<PropsWithChildren> = ({ children }) => {
-    const { closeModal } = useContext(ModalContext) as IModalContext;
+    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
 
     return (
         <div className={styles.wrapper}>
@@ -33,7 +33,7 @@ export const ContentSide: FC<PropsWithChildren> = ({ children }) => {
                         <Button
                             className={styles.button}
                             isntStyled
-                            onClick={closeModal}
+                            onClick={closeOverlay}
                         >
                             <Icon
                                 className={styles.icon}
