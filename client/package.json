@@ -29,6 +29,7 @@
         "@reduxjs/toolkit": "^1.8.3",
         "classnames": "^2.3.1",
         "date-fns": "^2.29.3",
+        "eslint-plugin-jsx-a11y": "^6.6.1",
         "formik": "^2.2.9",
         "js-cookie": "^3.0.1",
         "nouislider": "^15.6.1",

@@ -1,3 +1,4 @@
+import { Button } from '@components';
 import { twClassNames } from '@utils';
 import { FC, useState } from 'react';
 
@@ -36,13 +37,27 @@ export const RadioInput: FC<IRadioInput> = ({
     };
 
     return (
-        <label 
-            className={twClassNames(
-                styles.wrapper.base, 
-                { [styles.wrapper.active]: isActive },
-            )}
-            tabIndex={0}
-        >
+        <>
+            <Button
+                className={twClassNames(
+                    styles.wrapper.base, 
+                    { [styles.wrapper.active]: isActive },
+                )}
+            >
+                <div className={styles.indicatorWrapper}>
+                    <div 
+                        className={twClassNames(
+                            styles.indicatorInner.base, 
+                            { [styles.indicatorInner.notActive]: !isActive },
+                        )}
+                    ></div>
+                </div>
+
+                <div className={styles.description}>
+                    {description}
+                </div>
+            </Button>
+            
             <input 
                 name={name}
                 value={value}
@@ -51,19 +66,38 @@ export const RadioInput: FC<IRadioInput> = ({
                 tabIndex={-1}
                 onChange={handleChange}
             />
+        </>
+        
+    // <label 
+    //     className={twClassNames(
+    //         styles.wrapper.base, 
+    //         { [styles.wrapper.active]: isActive },
+    //     )}
+    //     tabIndex={0}
+    // >
+            
+    //     <input 
+    //         name={name}
+    //         value={value}
+    //         type='radio' 
+    //         checked={isActive}
+    //         tabIndex={-1}
+    //         onChange={handleChange}
+    //     />
+           
 
-            <div className={styles.indicatorWrapper}>
-                <div 
-                    className={twClassNames(
-                        styles.indicatorInner.base, 
-                        { [styles.indicatorInner.notActive]: !isActive },
-                    )}
-                ></div>
-            </div>
+    //     <div className={styles.indicatorWrapper}>
+    //         <div 
+    //             className={twClassNames(
+    //                 styles.indicatorInner.base, 
+    //                 { [styles.indicatorInner.notActive]: !isActive },
+    //             )}
+    //         ></div>
+    //     </div>
 
-            <div className={styles.description}>
-                {description}
-            </div>
-        </label>
+    //     <div className={styles.description}>
+    //         {description}
+    //     </div>
+    // </label>
     );
 };

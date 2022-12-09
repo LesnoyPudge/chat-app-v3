@@ -1,18 +1,16 @@
 import { Conditional } from '@components';
+import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
-import { FC, ReactNode, useEffect, useState } from 'react';
+import { FC, ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { JSImage } from './JSImage';
 
 
 
-interface IImage {
-    wrapperClassName?: string;
-    imageClassName?: string;
+interface Image extends PropsWithClassName {
     src?: string;
     alt?: string;
     placeholder?: ReactNode;
     fallback?: ReactNode;
-    asBackground?: boolean;
 }
 
 const states = {
@@ -30,27 +28,23 @@ const states = {
     },
 };
 
-const styles = {
-    wrapper: 'overflow-hidden',
-    image: 'w-full h-full object-cover',
-};
+const baseClassName = 'w-full object-cover';
 
-export const Image: FC<IImage> = ({
-    wrapperClassName = '',
-    imageClassName = '',
+export const Image: FC<Image> = ({
+    className = '',
     src = 'https://picsum.photos/400',
-    alt,
-    placeholder = <div className='bg-yellow-400 w-full h-full'>placeholder</div>,
-    fallback = <div className='bg-rose-700 w-full h-full'>error</div>,
-    asBackground = false,
+    alt = '',
+    placeholder,
+    fallback,
 }) => {
+    const imageRef = useRef(new JSImage());
     const [imageState, setImageState] = useState(states.initial);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const handleLoad = () => setImageState(states.success);
         const handleError = () => setImageState(states.failure);
 
-        const image = new JSImage();
+        const image = imageRef.current;
         image.src = src;
         
         image.addEventListener('load', handleLoad);
@@ -62,27 +56,18 @@ export const Image: FC<IImage> = ({
         };
     }, [src]);
 
-    const showImage = !imageState.loading && (!imageState.error || !fallback);
-    const showFallback = !imageState.loading && imageState.error;
-    const showPlaceholder = imageState.loading;
+    const showImage = (!imageState.loading && !imageState.error) || !!placeholder;
+    const showPlaceholder = imageState.loading && !!placeholder;
+    const showFallback = !imageState.loading && imageState.error && !!fallback;
 
     return (
-        <div className={twClassNames(styles.wrapper, wrapperClassName)}>
+        <>
             <Conditional isRendered={showImage}>
-                <Conditional isRendered={!asBackground}>
-                    <img 
-                        className={twClassNames(styles.image, imageClassName)}
-                        alt={alt}
-                        src={src}
-                    />
-                </Conditional>
-
-                <Conditional isRendered={asBackground}>
-                    <div 
-                        className={twClassNames(styles.image, imageClassName)}
-                        style={{ backgroundImage: `url(${src})` }}
-                    ></div>
-                </Conditional>
+                <img 
+                    className={twClassNames(baseClassName, className)}
+                    src={src} 
+                    alt={alt}
+                />
             </Conditional>
 
             <Conditional isRendered={showPlaceholder}>
@@ -92,6 +77,6 @@ export const Image: FC<IImage> = ({
             <Conditional isRendered={showFallback}>
                 {fallback}
             </Conditional>
-        </div>
+        </>
     );
 };

@@ -32,8 +32,7 @@ export const ContentSide: FC<PropsWithChildren> = ({ children }) => {
                     <div className={styles.buttonWrapper}>
                         <Button
                             className={styles.button}
-                            isntStyled
-                            onClick={closeOverlay}
+                            onLeftClick={closeOverlay}
                         >
                             <Icon
                                 className={styles.icon}

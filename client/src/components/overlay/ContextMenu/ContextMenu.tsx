@@ -64,7 +64,7 @@ export const ContextMenu: FC<ContextMenu> = ({
         
         const withMouse = e instanceof MouseEvent;
         const withKeyboard = e instanceof KeyboardEvent;
-        const spaceOrEnter = withKeyboard && e.code !== 'Enter' && e.code !== 'Space';
+        const spaceOrEnter = withKeyboard && (e.code === 'Enter' || e.code === 'Space');
 
         if (withMouse) {
             e.preventDefault();
@@ -118,6 +118,7 @@ export const ContextMenu: FC<ContextMenu> = ({
                         <animated.div 
                             className={twClassNames(baseClassName, className)}
                             style={style}
+                            role='menu'
                         >
                             {children}
                         </animated.div>

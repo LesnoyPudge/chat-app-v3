@@ -39,8 +39,7 @@ export const NavigationSide: FC = () => {
                                 <li>
                                     <Button 
                                         className={styles.item}
-                                        isntStyled
-                                        onClick={() => changeTab('ProfileTab')}
+                                        onLeftClick={() => changeTab('ProfileTab')}
                                     >
                                         <>Моя учётная запись</>
                                     </Button>
@@ -59,8 +58,7 @@ export const NavigationSide: FC = () => {
                                 <li>
                                     <Button 
                                         className={styles.item}
-                                        isntStyled
-                                        onClick={() => changeTab('AppearanceTab')}
+                                        onLeftClick={() => changeTab('AppearanceTab')}
                                     >
                                         <>Внешний вид</>
                                     </Button>
@@ -73,8 +71,7 @@ export const NavigationSide: FC = () => {
                         <li className={styles.group}>
                             <Button 
                                 className={twClassNames(styles.item, styles.logoutButton)}
-                                isntStyled
-                                onClick={() => console.log('click on logout button')}
+                                onLeftClick={() => console.log('click on logout button')}
                             >
                                 <span>Выйти</span>
 

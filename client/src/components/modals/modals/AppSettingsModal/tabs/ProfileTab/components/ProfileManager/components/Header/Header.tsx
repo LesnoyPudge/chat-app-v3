@@ -38,8 +38,7 @@ export const Header: FC = () => {
                 <div className={styles.avatarInner}>
                     <Button
                         className={styles.avatarButton}
-                        isntStyled
-                        onClick={openFileLoader}
+                        onLeftClick={openFileLoader}
                     >
                         <div className={styles.avatarOverlay}>
                             <span className={styles.avatarOverlayText}>
@@ -48,7 +47,7 @@ export const Header: FC = () => {
                         </div>
 
                         <Image
-                            imageClassName={styles.avatar}
+                            className={styles.avatar}
                             src='https://i.pravatar.cc/52'
                             alt='my avatar'
                         />

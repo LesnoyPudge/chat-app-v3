@@ -51,7 +51,6 @@ export const SlateEditor: FC<ISlateEditor> = ({
 
     return (
         <Editable
-            autoFocus={false}
             className={twClassNames('w-full break-all h-fit', className)}
             onKeyDown={onKeyDown}
             placeholder={placeholder}

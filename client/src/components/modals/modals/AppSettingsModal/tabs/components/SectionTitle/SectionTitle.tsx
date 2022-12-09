@@ -5,7 +5,7 @@ import { FC } from 'react';
 
 
 
-const baseCN = 'text-primary text-xl mb-5';
+const baseCN = 'text-primary font-semibold text-heading-l';
 
 export const SectionTitle: FC<PropsWithChildrenAndClassName> = ({
     className = '',

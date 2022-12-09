@@ -53,10 +53,6 @@ export const withEmoji = (editor: CustomEditor) => {
                     },
                 },
                 split: true,
-                // match: (node, path) => {
-                //     const parent = Text.isText(node) && Editor.parent(editor, path);
-                //     return parent && Element.isElement(parent[0]) && parent[0].type === 'paragraph';
-                // },
             },
         );
 

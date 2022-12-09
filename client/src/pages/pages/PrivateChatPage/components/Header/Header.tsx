@@ -34,10 +34,8 @@ export const Header: FC = () => {
 
                 <RefContextProvider>
                     <Button 
-                        className='ml-auto fill-icon-200 
-                            hover:fill-icon-100'
-                        isntStyled
-                        onClick={handleClick}
+                        className='ml-auto fill-icon-200 hover:fill-icon-100'
+                        onLeftClick={handleClick}
                     >
                         <Icon
                             className='w-6 h-6'
@@ -64,16 +62,22 @@ export const Header: FC = () => {
                     />
 
                     <div className='flex gap-4 h-[56px] shrink-0'>
-                        <Button variant='brand' className='rounded-full'>
-                                wow
+                        <Button 
+                            className='rounded-full'
+                        >
+                            wow
                         </Button>
 
-                        <Button variant='brand' className='rounded-full'>
-                                amazing
+                        <Button 
+                            className='rounded-full'
+                        >
+                            amazing
                         </Button>
 
-                        <Button variant='brand' className='rounded-full'>
-                                cool
+                        <Button 
+                            className='rounded-full'
+                        >
+                            cool
                         </Button>
                     </div>
                 </div>

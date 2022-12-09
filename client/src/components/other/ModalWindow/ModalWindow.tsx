@@ -1,6 +1,6 @@
 import { animated, UseTransitionProps } from '@react-spring/web';
 import { FC, PropsWithChildren, useContext } from 'react';
-import { AnimatedTransition, Conditional, OverlayContext, OverlayItem } from '@components';
+import { AnimatedTransition, Button, Conditional, OverlayContext, OverlayItem } from '@components';
 import { twClassNames } from '@utils';
 
 
@@ -19,8 +19,8 @@ const defaultTransitionOptions: UseTransitionProps = {
 const styles = {
     wrapper: `grid place-items-center fixed w-screen 
     h-screen pointer-events-none`,
-    backdrop: `fixed top-0 left-0 w-screen 
-    h-screen bg-black opacity-70 -z-10 scale-[999]`,
+    backdrop: `fixed top-0 left-0 w-screen h-screen bg-black 
+    focus-hidden opacity-70 -z-10 scale-[999]`,
 };
 
 export const ModalWindow: FC<ModalWindow> = ({
@@ -49,20 +49,20 @@ export const ModalWindow: FC<ModalWindow> = ({
                         style={style}
                     >
                         <Conditional isRendered={withBackdrop}>
-                            <div 
+                            <Button
                                 className={twClassNames(styles.backdrop,
                                     { 'pointer-events-auto': isOverlayExist },
                                 )}
-                                onClick={closeOverlay}
-                                onContextMenu={closeOverlay}
-                                onAuxClick={closeOverlay}
-                            ></div>
+                                onAnyClick={closeOverlay}
+                                label='Закрыть диалог'
+                            ></Button>
                         </Conditional>
                         
                         <div 
                             className={twClassNames({ 
                                 'pointer-events-auto': isOverlayExist, 
                             })}
+                            role='dialog'
                         >
                             {children}
                         </div>

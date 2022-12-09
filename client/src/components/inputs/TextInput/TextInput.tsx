@@ -91,7 +91,7 @@ export const TextInput: FC<ITextInputProps> = ({
 
                     <Conditional isRendered={type === 'password'}>
                         <Button
-                            onClick={handleTypeToggle}
+                            onLeftClick={handleTypeToggle}
                             className={styles.typeToggleButton}
                         >
                             <Icon 

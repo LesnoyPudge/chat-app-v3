@@ -66,8 +66,7 @@ export const EmojiPicker: FC<PropsWithClassName> = ({
                                 <li key={emojiCode}>
                                     <Button
                                         className={styles.emojiListButton}
-                                        isntStyled
-                                        onClick={handleClick}
+                                        onLeftClick={handleClick}
                                         onMouseEnter={changeCurrentEmoji}
                                         onFocus={changeCurrentEmoji}
                                     >

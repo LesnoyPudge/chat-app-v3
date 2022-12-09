@@ -52,8 +52,7 @@ export const SearchBar: FC<ISearchBar> = ({
             {
                 <Button
                     className={styles.button}
-                    isntStyled
-                    onClick={handleClick}
+                    onLeftClick={handleClick}
                 >
                     <Icon
                         iconId={iconId}

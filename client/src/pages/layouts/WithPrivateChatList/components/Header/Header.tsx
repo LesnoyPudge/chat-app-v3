@@ -23,9 +23,8 @@ export const Header: FC = () => {
                     styles.button, 
                     { 'bg-hover': isActive },
                 )}
-                isntStyled
                 isActive={isActive}
-                onClick={navigateTo.app}
+                onLeftClick={navigateTo.app}
             >
                 <Icon
                     className={twClassNames(

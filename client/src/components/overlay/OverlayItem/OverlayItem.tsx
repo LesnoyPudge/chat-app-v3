@@ -63,15 +63,11 @@ export const OverlayItem: FC<IOverlayItem> = ({
                     data-blocking={blocking}
                     ref={wrapperRef}
                 >
-                    <ReactFocusLock returnFocus disabled={!isOverlayExist || !focused}>
-                        <div
-                            className={'focus-hidden'} 
-                            tabIndex={focused ? 0 : -1}
-                        >
-                            <MoveFocusInside disabled={!focused}>
-                                {children}
-                            </MoveFocusInside>
-                        </div>
+                    <ReactFocusLock 
+                        returnFocus 
+                        disabled={!isOverlayExist || !focused}
+                    >
+                        {children}
                     </ReactFocusLock>
                 </div>
             </OverlayPortal>

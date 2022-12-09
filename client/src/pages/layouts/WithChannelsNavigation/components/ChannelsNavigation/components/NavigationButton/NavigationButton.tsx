@@ -59,7 +59,6 @@ export const NavigationButton: FC<INavigationButton> = ({
 
             <Button
                 onLeftClick={onLeftClick}
-                isntStyled
                 tabIndex={tabIndex}
                 className={twClassNames(
                     styles.button, themes[theme].base,

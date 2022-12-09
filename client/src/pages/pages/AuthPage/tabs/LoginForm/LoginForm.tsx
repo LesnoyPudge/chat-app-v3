@@ -16,7 +16,7 @@ export const LoginForm: FC = () => {
             {() => (
                 <Form>
                     <div className='flex flex-col items-center'>
-                        <h3 className='text-heading_xl text-primary font-semibold mb-2'>
+                        <h3 className='text-heading-xl text-primary font-semibold mb-2'>
                             С возвращением
                         </h3>
 
@@ -42,9 +42,9 @@ export const LoginForm: FC = () => {
                         />
 
                         <Button 
-                            type='submit' 
-                            variant='brand' 
                             className='w-full fw-600 h-11 mb-2'
+                            type='submit' 
+                            stylingPreset='brand' 
                         >
                             Вход
                         </Button>
@@ -54,7 +54,10 @@ export const LoginForm: FC = () => {
                                 Нужна учётная запись?
                             </span>
 
-                            <Button variant='link' onClick={toRegistrationForm}>
+                            <Button 
+                                stylingPreset='link' 
+                                onLeftClick={toRegistrationForm}
+                            >
                                 Зарегистрироваться
                             </Button>
                         </div>

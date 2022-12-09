@@ -1,4 +1,4 @@
-import { Conditional } from '@components';
+import { Conditional, Image } from '@components';
 import { twClassNames } from '@utils';
 import { FC, ReactNode } from 'react';
 import { RenderElementAttributes } from '../../types';
@@ -67,7 +67,7 @@ export const emojiList: IEmojiItem[] = [
 ];
 
 export const uniqueEmojiCodeList = emojiList.map((item) => item.code[0]);
-
+// SlateEmoji
 export const Emoji: FC<EmojiPropsType> = ({ 
     className = '',
     code,
@@ -86,10 +86,8 @@ export const Emoji: FC<EmojiPropsType> = ({
             {children}
             
             <Conditional isRendered={!!currentEmoji}>
-                <img
+                <Image
                     className='inline-block w-full h-auto'
-                    contentEditable={false}
-                    draggable={false}
                     src={`/src/assets/emoji/${currentEmoji!.filename}.svg`}
                     alt={currentEmoji!.label}
                 />

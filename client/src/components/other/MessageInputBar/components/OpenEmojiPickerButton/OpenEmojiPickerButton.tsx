@@ -32,7 +32,7 @@ export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
                         <>
                             <Button
                                 className={twClassNames(styles.button, className)}
-                                onClick={openOverlay} 
+                                onLeftClick={openOverlay} 
                                 onMouseEnter={changeEmojiCode}
                             >
                                 <Emoji

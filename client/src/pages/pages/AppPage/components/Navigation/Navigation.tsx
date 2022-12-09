@@ -12,7 +12,7 @@ export const Navigation: FC = () => {
                 className='h-6 w-6 fill-icon-300 mx-2'
             /> 
     
-            <h3 className='text-heading_m text-primary font-medium'>
+            <h3 className='text-heading-m text-primary font-medium'>
                 Друзья
             </h3>
 
@@ -49,7 +49,10 @@ export const Navigation: FC = () => {
             <OverlayContextProvider>
                 {({ openOverlay }) => (
                     <>
-                        <Button variant='brand' onClick={openOverlay}>
+                        <Button 
+                            stylingPreset='brand' 
+                            onLeftClick={openOverlay}
+                        >
                             <>Добавить в друзья</>
                         </Button>
 

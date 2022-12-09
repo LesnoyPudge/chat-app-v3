@@ -16,20 +16,12 @@ module.exports = {
         require('tailwindcss-scoped-groups')({
             groups: ['1', '2', '3', '4', '5'],
         }),
-        /** @type {import('tailwindcss/types/config').PluginCreator} */
-        ({ addUtilities }) => {
-            addUtilities({
-                '.elevation-low': {
-                    boxShadow: 'var(--elevation-low)',
-                },
-            });
-        },
     ],
 
     theme: {
         extend: {
             fontFamily: {
-                'sans': ['Arial', 'Helvetica', ...defaultTheme.fontFamily.sans],
+                'sans': [ 'Inter', 'Arial', 'Helvetica', ...defaultTheme.fontFamily.sans],
             },
 
             colors: {
@@ -87,11 +79,11 @@ module.exports = {
             },
 
             fontSize: {
-                heading_xxl: ['34px', '40px'],
-                heading_xl: ['25px', '30px'],
-                heading_l: ['20px', '24px'],
-                heading_m: ['17px', '22px'],
-                heading_s: ['12px', '16px'],
+                'heading-xxl': ['34px', '40px'],
+                'heading-xl': ['25px', '30px'],
+                'heading-l': ['20px', '24px'],
+                'heading-m': ['17px', '22px'],
+                'heading-s': ['12px', '16px'],
                 xxs: ['10px', '12px'],
             },
 

@@ -23,7 +23,6 @@ export const Content: FC = () => {
     
                 <Button 
                     className='h-8 my-auto'
-                    variant='brand'
                 >
                     <>Изменить</>
                 </Button>

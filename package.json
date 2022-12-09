@@ -27,7 +27,7 @@
         "project:reinstall": "npm run project:uninstall && npm run project:install",
         "project:start": "concurrently --kill-others \"npm run client:start\" \"npm run server:start\"",
         "project:build": "npm run client:build && npm run server:build",
-        "project:lint": "eslint .",
+        "project:lint": "eslint . --quiet",
         "project:lintFix": "eslint . --fix",
         "project:runTest": "npm run server:runTest",
         "//3": "",

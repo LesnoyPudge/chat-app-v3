@@ -1,114 +1,97 @@
-import { AppSettingsModal, Button, ContextMenu, OverlayContextProvider, RefContextProvider, Tooltip, UserAvatar } from '@components';
-import { useThrottle, useToggle } from '@hooks';
-import { conditional, copyToClipboard, twClassNames } from '@utils';
+import { AppSettingsModal, Button, Icon, OverlayContextProvider, RefContextProvider, Tooltip } from '@components';
+import { useToggle } from '@hooks';
+import { conditional } from '@utils';
 import { FC } from 'react';
-import { ToolBarButton } from './components';
+import { UserInfo } from './components';
 
 
 
 const styles = {
     wrapper: 'flex shrink-0 mt-auto items-center h-[52px] py-0 px-2 bg-primary-400',
-    userInfo: `px-1 py-0.5 rounded-md mr-1 flex items-center min-w-0 w-full
-    cursor-pointer hover:bg-hover focus-visible:bg-hover focus-within:bg-hover`,
-    avatar: 'h-8 w-8',
-    username: `text-primary font-semibold text-sm ml-2 overflow-hidden text-ellipsis 
-    whitespace-nowrap rounded`,
+    button: `h-8 w-8 flex shrink-0 rounded hover:bg-hover focus-visible:bg-hover
+    fill-icon-300 hover:fill-icon-200 focus-visible:fill-icon-200`,
+    icon: 'w-5 h-5 m-auto',
 };
 
 export const UserToolBar: FC = () => {
-    const { throttle, isThrottling } = useThrottle();
     const [isVoiceMuted, toggleVoice] = useToggle();
     const [isSoundMuted, toggleSound] = useToggle();
 
-    const username = 'myName';
-    const handleCopy = throttle(() => copyToClipboard(username), 2000);
+    const voiceIconId = conditional('microphone-muted', 'microphone', isVoiceMuted);
+    const soundIconId = conditional('headphone-muted', 'headphone', isSoundMuted);
 
-    const copyUsernameTooltipText = conditional(
-        'Cкопировано!', 
-        'Нажмите, чтобы скопировать', 
-        isThrottling,
-    );
+    const voiceTooltip = conditional('Вкл. микрофон', 'Откл. микрофон', isVoiceMuted);
+    const soundTooltip = conditional('Вкл. звук', 'Откл. звук', isSoundMuted);
 
     return (
         <div className={styles.wrapper}>
-            <OverlayContextProvider>
-                {({ openOverlay, closeOverlay }) => (
-                    <>
-                        <RefContextProvider>
-                            <div 
-                                className={styles.userInfo} 
-                                tabIndex={0}
-                                onContextMenu={openOverlay}
-                            >
-                                <UserAvatar
-                                    className={styles.avatar}
-                                    avatar='https://i.pravatar.cc/52'
-                                    status='online'
-                                />
+            <UserInfo/>
 
-                                <RefContextProvider>
-                                    <Button
-                                        className={styles.username}
-                                        isntStyled
-                                        onClick={handleCopy}
-                                    >
-                                        {username}
-                                    </Button>
+            <RefContextProvider>
+                <Button 
+                    className={styles.button}
+                    onLeftClick={toggleVoice}
+                    label='Переключить состояние микрофона'
+                    pressed={isVoiceMuted}
+                >
+                    <Icon
+                        className={styles.icon}
+                        iconId={voiceIconId}
+                    />
+                </Button>
 
-                                    <Tooltip 
-                                        className={twClassNames({ 'bg-green text-white': isThrottling })}
-                                        preferredAligment='top'
-                                        dependencyList={[isThrottling]}
-                                    >
-                                        {copyUsernameTooltipText}
-                                    </Tooltip>
-                                </RefContextProvider>
-                            </div>
+                <Tooltip 
+                    preferredAligment='top'
+                    dependencyList={[isVoiceMuted]}
+                >
+                    {voiceTooltip}
+                </Tooltip>
+            </RefContextProvider>
 
-                            <ContextMenu preferredAligment='top'>
-                                <div className='flex flex-col'>
-                                    <button onClick={closeOverlay}>change status</button>
-                                    <button 
-                                        onClick={() => {
-                                            handleCopy();
-                                            closeOverlay();
-                                        }}
-                                    >
-                                        <>copy username</>
-                                    </button>
-                                </div>
-                            </ContextMenu>
-                        </RefContextProvider>
-                    </>
-                )}
-            </OverlayContextProvider>
-            
-            <ToolBarButton
-                isActive={isVoiceMuted}
-                defaultIconId='microphone'
-                activeIconId='microphone-muted'
-                defaultTooltipContent='Откл. микрофон'
-                activeTooltipContent= 'Вкл. микрофон'
-                onClick={toggleVoice}
-            />
+            <RefContextProvider>
+                <Button 
+                    className={styles.button}
+                    onLeftClick={toggleSound}
+                    label='Переключить состояние звука'
+                    pressed={isSoundMuted}
+                >
+                    <Icon
+                        className={styles.icon}
+                        iconId={soundIconId}
+                    />
+                </Button>
 
-            <ToolBarButton
-                isActive={isSoundMuted}
-                defaultIconId='headphone'
-                activeIconId='headphone-muted'
-                defaultTooltipContent='Откл. звук'
-                activeTooltipContent= 'Вкл. звук'
-                onClick={toggleSound}
-            />
+                <Tooltip 
+                    preferredAligment='top'
+                    dependencyList={[isSoundMuted]}
+                >
+                    {soundTooltip}
+                </Tooltip>
+            </RefContextProvider>
 
             <OverlayContextProvider>
                 {({ openOverlay }) => (
                     <>
-                        <ToolBarButton
-                            defaultIconId='settings-gear'
-                            defaultTooltipContent='Настройки'
-                            onClick={openOverlay}
-                        />
+                        <RefContextProvider>
+                            <Button 
+                                className={styles.button}
+                                onLeftClick={openOverlay}
+                                label='Открыть настройки'
+                                hasPopup='dialog'
+                            >
+                                <Icon
+                                    className={styles.icon}
+                                    iconId='settings-gear'
+                                />
+                            </Button>
+
+                            <Tooltip 
+                                preferredAligment='top'
+                                dependencyList={[isSoundMuted]}
+                            >
+                                <>Настройки</>
+                            </Tooltip>
+                        </RefContextProvider>
 
                         <AppSettingsModal/>
                     </>

@@ -51,8 +51,7 @@ export const ColorPicker: FC<ColorPicker> = ({
                 {colorsPresets.map((color, index) => (
                     <Button 
                         className={styles.presetButton}
-                        isntStyled 
-                        onClick={() => onChange(color)}   
+                        onLeftClick={() => onChange(color)}   
                         key={index}
                     >
                         <div 

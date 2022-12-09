@@ -20,18 +20,26 @@ interface IPrivateChatItem {
 }
 
 const styles = {
-    listItem: `flex shrink-0 mx-0.5 pl-2 pr-1 h-[42px] items-center 
-    rounded-md cursor-pointer hover:bg-hover focus-visible:bg-hover 
-    focus-within:bg-hover group`,
-    username: `ml-3 font-medium text-muted overflow-hidden
-    text-ellipsis whitespace-nowrap group-hover:text-normal 
-    group-focus-visible:text-normal group-focus-within:text-normal`,
-    hideChatButton: `ml-auto flex shrink-0 h-7 w-7 opacity-0
-    group-hover:opacity-100 group-focus-visible:opacity-100 
-    group-focus-within:opacity-100 group-1`,
-    hideChatButtonIcon: `h-5 w-5 m-auto fill-icon-300 group-1-hover:fill-icon-200
-    group-1-focus-visible:fill-icon-200 transition-none'
-    iconId='cross-icon`,
+    wrapper: 'relative group',
+    userInfo: {
+        base: `flex items-center w-full h-[42px] p-1 pl-2 pr-10
+        group-hover:bg-hover group-focus-within:bg-hover`,
+        active: 'bg-hover',
+    },
+    avatar: 'h-8 w-8',
+    username: {
+        base: `ml-3 font-medium overflow-hidden text-ellipsis 
+        whitespace-nowrap text-muted group-hover:text-normal 
+        group-focus-within:text-normal`,
+        active: 'text-normal',
+    },
+    hideChatButton: {
+        base: `flex absolute top-1/2 -translate-y-1/2 right-2 
+        shrink-0 h-7 w-7 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100
+        fill-icon-300 hover:fill-icon-100 focus-visible:fill-icon-100`,
+        active: 'opacity-100',
+    },
+    hideChatIcon: 'h-5 w-5 m-auto transition-none',
 };
 
 export const PrivateChatItem: FC<IPrivateChatItem> = ({ 
@@ -51,52 +59,48 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({
 
     const handleNavigate = () => navigateTo.privateChat(id);
     const handleHideChat = () => console.log('chat hidden');
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.code === 'Enter' || e.code === 'Space') {
-            e.preventDefault();
-            handleNavigate();
-        }
-    };
 
     return (
-        <li 
-            className={twClassNames(
-                styles.listItem, 
-                { 'bg-hover' : isActive },
-            )}
-            tabIndex={tabIndex}
-            onClick={handleNavigate}
-            onKeyDown={handleKeyDown}
-        >
-            <UserAvatar
-                className='h-8 w-8'
-                avatar={avatar}
-                username={username}
-                status={status}
-                extraStatus={extraStatus}
-            />
-
-            <span 
+        <li className={styles.wrapper}>
+            <Button 
                 className={twClassNames(
-                    styles.username,
-                    { 'text-normal': isActive },
+                    styles.userInfo.base,
+                    { [styles.userInfo.active]: isActive },
                 )}
+                onLeftClick={handleNavigate}
+                label={`Перейти к личным сообщениям с ${username}`}
+                tabIndex={tabIndex}
             >
-                {username}
-            </span>
+                <UserAvatar
+                    className={styles.avatar}
+                    avatar={avatar}
+                    username={username}
+                    status={status}
+                    extraStatus={extraStatus}
+                />
+
+                <span 
+                    className={twClassNames(
+                        styles.username.base,
+                        { [styles.username.active]: isActive },
+                    )}
+                >
+                    {username}
+                </span>
+            </Button>
 
             <RefContextProvider>
                 <Button
                     className={twClassNames(
-                        styles.hideChatButton,
-                        { 'opacity-100': isActive },
+                        styles.hideChatButton.base,
+                        { [styles.hideChatButton.active]: isActive },
                     )}
-                    isntStyled
                     tabIndex={tabIndex}
-                    onClick={handleHideChat}
+                    onLeftClick={handleHideChat}
+                    label={`Скрыть личные сообщения с ${username}`}
                 >
                     <Icon
-                        className={styles.hideChatButtonIcon}
+                        className={styles.hideChatIcon}
                         iconId='cross-icon'
                     />
                 </Button>

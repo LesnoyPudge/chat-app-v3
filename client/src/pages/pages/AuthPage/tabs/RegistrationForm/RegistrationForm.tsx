@@ -16,7 +16,7 @@ export const RegistrationForm: FC = () => {
             {() => (
                 <Form>
                     <div className='flex flex-col items-center'>
-                        <h3 className='text-heading_xl text-primary font-bold mb-5'>
+                        <h3 className='text-heading-xl text-primary font-bold mb-5'>
                             Создать учётную запись
                         </h3>
 
@@ -45,17 +45,18 @@ export const RegistrationForm: FC = () => {
                         />
 
                         <Button 
-                            type='submit' 
-                            variant='brand' 
                             className='w-full font-bold h-11 mb-2'
+                            type='submit' 
+                            stylingPreset='brand' 
+                            onLeftClick={() => console.log('register')}
                         >
                             Зарегистрироваться
                         </Button>
 
                         <Button 
-                            variant='link' 
                             className='self-start'
-                            onClick={toLoginForm}
+                            stylingPreset='link' 
+                            onLeftClick={toLoginForm}
                         >
                             Уже зарегистрированы?
                         </Button>

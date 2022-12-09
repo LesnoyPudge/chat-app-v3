@@ -14,7 +14,7 @@ export const ProfileTab: FC = () => {
 
             <ProfileManager/>
 
-            <Separator spacing={40}/>
+            <Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/><Separator spacing={40}/>
 
             <SettingsGroup>
                 <SettingsGroupTitle className='mb-2'>
@@ -33,8 +33,7 @@ export const ProfileTab: FC = () => {
                                 focus-visible:bg-rose-800 h-8 flex shrink-0 
                                 justify-center items-center px-4 rounded
                                 text-white text-sm transition-all font-medium'
-                                isntStyled
-                                onClick={openOverlay}
+                                onLeftClick={openOverlay}
                             >
                                 <>Удалить учётную запись</>
                             </Button>

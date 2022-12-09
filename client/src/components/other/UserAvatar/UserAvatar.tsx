@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { Conditional, RefContextProvider, Tooltip, UserStatus } from '@components';
+import { Conditional, RefContextProvider, Tooltip, UserStatus, Image } from '@components';
 import AutoSizer from '@oyyds/react-auto-sizer';
 import { twClassNames } from '@utils';
 import { PropsWithClassName } from '@types';
@@ -42,10 +42,10 @@ export const UserAvatar: FC<IUserAvatar> = ({
     const statusTitle = isOffline ? statusTitles[status] : statusTitles[extraStatus];
     const alt = `${username}\`s avatar`;
 
-    const avatarElement = <img 
-        src={avatar} 
-        alt={alt}
+    const avatarElement = <Image
         className={styles.avatar}
+        src={avatar}
+        alt={alt}
     />;
 
     return (

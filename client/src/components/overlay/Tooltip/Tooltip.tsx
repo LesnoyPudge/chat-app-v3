@@ -103,6 +103,7 @@ export const Tooltip: FC<Tooltip> = ({
                                         <animated.div 
                                             className={twClassNames(baseClassName, className)}
                                             style={styleWithOffset}
+                                            role='tooltip'
                                         >
                                             {children}
                                         </animated.div>

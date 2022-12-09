@@ -2,7 +2,7 @@ import { createContext, FC, PropsWithChildren, useContext, useEffect, useRef } f
 import { ErrorBoundary as ReactErrorBoundary, FallbackProps } from 'react-error-boundary';
 import errorBgImage from '@assets/error-boundary-bg.svg';
 import errorImage from '@assets/error-boundary-image.svg';
-import { Button } from '@components';
+import { Button, Image } from '@components';
 import { useIsMounted } from '@hooks';
 import { secondsToMs } from '@utils';
 
@@ -60,18 +60,18 @@ const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
 
     return (
         <div className='h-screen w-screen isolate bg-primary-300 text-normal flex'>
-            <img 
-                className='custom-image-bg-fullscreen'
+            <Image
+                className='image-bg-fullscreen'
                 src={errorBgImage}
             />
 
             <div className='flex flex-col m-auto items-center text-center'>
-                <img
+                <Image
                     className='mb-5' 
                     src={errorImage}
                 />
 
-                <p className='text-heading_l text-primary mb-3 font-semibold'>
+                <p className='text-heading-l text-primary mb-3 font-semibold'>
                     Как-то неловко получается
                 </p>
 
@@ -83,8 +83,8 @@ const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
 
                 <Button
                     className='font-semibold h-11'
-                    variant='brand'
-                    onClick={handleClick}
+                    stylingPreset='brand'
+                    onLeftClick={handleClick}
                 >
                     Перезагрузить
                 </Button>

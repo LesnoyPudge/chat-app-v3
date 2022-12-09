@@ -20,7 +20,7 @@ export const ProfileManager: FC<PropsWithClassName> = ({
         <SettingsGroup>
             <div className={twClassNames(styles.wrapper, className)}>
                 <Banner/>
-
+                
                 <div className={styles.userInfo}>
                     <Header/>
 

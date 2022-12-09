@@ -1,5 +1,6 @@
 import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, Tooltip, AnimatedTransition, RefContextProvider } from '@components';
 import { animated, UseTransitionProps } from '@react-spring/web';
+import { twClassNames } from '@utils';
 import { FC, useState } from 'react';
 import { ColorPicker } from './components';
 
@@ -33,11 +34,12 @@ export const Banner: FC = () => {
                         {({ targetRef }) => (
                             <>
                                 <Button
-                                    className={styles.bannerButton.base}
-                                    activeClassName={styles.bannerButton.active}
+                                    className={twClassNames(
+                                        styles.bannerButton.base,
+                                        { [styles.bannerButton.active]: isOverlayExist },
+                                    )}
                                     isActive={isOverlayExist}
-                                    isntStyled
-                                    onClick={openOverlay}
+                                    onLeftClick={openOverlay}
                                 >
                                     <Icon
                                         className={styles.bannerIcon}

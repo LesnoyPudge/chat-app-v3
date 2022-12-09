@@ -1,6 +1,6 @@
 import { FC, useContext, useRef } from 'react';
 import AuthPageBGSrc from '@assets/auth-page-bg.jpg';
-import { ITabContext, TabContex, TabContexProvider } from '@components';
+import { Image, ITabContext, TabContex, TabContexProvider } from '@components';
 import { LoginForm, RegistrationForm } from './tabs';
 import { animated, useTransition } from '@react-spring/web';
 import classNames from 'classnames';
@@ -12,7 +12,10 @@ export const AuthPage: FC = () => {
     
     return (
         <div className='flex h-screen isolate'>
-            <img src={AuthPageBGSrc} className='custom-image-bg-fullscreen'/>
+            <Image
+                className='image-bg-fullscreen'
+                src={AuthPageBGSrc}
+            />
 
             <div className='p-8 rounded bg-primary-200 m-auto w-[480px]'>
                 <TabContexProvider 

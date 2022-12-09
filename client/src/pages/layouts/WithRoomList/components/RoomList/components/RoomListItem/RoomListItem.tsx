@@ -34,39 +34,26 @@ export const RoomListItem: FC<IRoomListItem> = ({
     
     const navigateToRoom = () => navigateTo.room(channelId, room.id);
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.code !== 'Enter' && e.code !== 'Space') return;
-        navigateToRoom();
-    };
-
     const iconId = conditional('voice-room-icon', 'text-room-icon', room.type === 'voice');
     const isActive = myLocationIs.room(channelId, room.id);
 
     return (
-        <li 
-            className={twClassNames(
-                styles.item.base, 
-                { [styles.item.active]: isActive },
-            )}
-            tabIndex={tabIndex}
-            onClick={navigateToRoom}
-            onKeyDown={handleKeyDown}
-        >
-            <Icon
-                className='h-5 w-5 fill-icon-300' 
-                iconId={iconId}
-            />
-
-            <span className='ml-1.5'>
-                {room.name}
-            </span>
-
+        <li>
             <Button
-                className='ml-auto'
-                isntStyled
-                tabIndex={tabIndex}
+                className={twClassNames(
+                    styles.item.base, 
+                    { [styles.item.active]: isActive },
+                )}
+                onLeftClick={navigateToRoom}
             >
-                <>action</>
+                <Icon
+                    className='h-5 w-5 fill-icon-300' 
+                    iconId={iconId}
+                />
+
+                <span className='ml-1.5'>
+                    {room.name}
+                </span>
             </Button>
         </li>
     );

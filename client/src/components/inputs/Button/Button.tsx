@@ -1,29 +1,30 @@
+import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
-import { FC, PropsWithChildren, useEffect, useRef } from 'react';
+import React, { FC } from 'react';
 
 
 
-export interface IButtonProps extends PropsWithChildren {
-    className?: string;
-    activeClassName?: string;
-    isntStyled?: boolean;
-    variant?: 'brand' | 'link' | 'lite';
+interface Button extends PropsWithChildrenAndClassName {
+    stylingPreset?: 'brand' | 'link' | 'lite' | 'neutral',
     type?: 'button' | 'submit' | 'reset';
-    isLoading?: boolean;
     isActive?: boolean;
     isDisabled?: boolean;
+    isLoading?: boolean;
     tabIndex?: number;
-    onClick?: (e?: MouseEvent) => void;
-    onLeftClick?: (e?: MouseEvent) => void;
-    onMiddleClick?: (e?: MouseEvent) => void;
-    onRightClick?: (e?: MouseEvent) => void;
-    onMouseEnter?: (e?: MouseEvent) => void;
-    onMouseLeave?: (e?: MouseEvent) => void;
-    onFocus?: (e?: FocusEvent) => void;
+    label?: string;
+    pressed?: boolean;
+    expanded?: boolean;
+    hasPopup?: 'dialog' | 'menu';
+    onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
+    onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
+    onMiddleClick?: (e?: React.MouseEvent) => void;
+    onRightClick?: (e?: React.MouseEvent) => void;
+    onMouseEnter?: (e?: React.MouseEvent) => void;
+    onFocus?: (e?: React.FocusEvent) => void;
 }
 
-const buttonClasses = {
-    base: `text-center rounded underline-offset-4 decoration-1 
+const styles = {
+    base: `text-center rounded underline-offset-4 decoration-2 
     decoration-current py-1 px-3 transition-all duration-100`,
     brand: {
         base: `text-white font-semibold bg-secondary-100 
@@ -36,139 +37,101 @@ const buttonClasses = {
         active: 'underline',
     },
     lite: {
-        base: `text-primary hover:underline hover:text-secondary 
-        focus-visible:underline focus-visible:text-secondary 
-        active:bg-secondary-300 active:text-secondary`,
-        active: 'bg-secondary-300 text-secondary',
+        base: 'text-primary hover:underline focus-visible:underline',
+        active: 'underline',
+    },
+    neutral: {
+        base: '',
+        active: '',
     },
 };
 
-export const Button: FC<IButtonProps> = ({
-    children,
+export const Button: FC<Button> = ({
     className = '',
-    activeClassName = '',
-    isntStyled = false,
-    variant,
+    stylingPreset,
     type = 'button',
-    isLoading = false,
     isActive = false,
     isDisabled = false,
+    isLoading = false,
     tabIndex = 0,
-    onClick,
+    label,
+    pressed,
+    expanded,
+    hasPopup,
+    onAnyClick,
     onLeftClick,
     onMiddleClick,
     onRightClick,
     onMouseEnter,
-    onMouseLeave,
     onFocus,
+    children,
 }) => {
-    const ref = useRef<HTMLButtonElement | null>(null);
-    const buttonCN = twClassNames({
-        [buttonClasses.base]: !isntStyled,
-        [buttonClasses[variant || 'brand'].base]: !!variant,
-        [buttonClasses[variant || 'brand'].active]: !!variant && isActive,
-        [className]: !!className,
-        [activeClassName]: !!activeClassName && isActive,
-    });
+    const handleLeftClickWithKeyboard = (e: React.KeyboardEvent) => {
+        if (e.code !== 'Enter' && e.code !== 'Space') return;
 
-    useEffect(() => {
-        if (!ref.current) return;
-        const button = ref.current;
+        handleLeftClick(e);
+    };
 
-        const handleLeftClick = (e: MouseEvent) => {
-            if (e.button !== 0) return;
-            if (!onClick && !onLeftClick) return;
-            if (isDisabled || isLoading) return;
-            e.stopPropagation();
-            e.preventDefault();
-            
-            onLeftClick && onLeftClick(e);
-            (!onLeftClick && onClick) && onClick(e);
-        };
-    
-        const handleMiddleClick = (e: MouseEvent) => {
-            if (e.button !== 1) return;
-            if (!onClick && !onMiddleClick) return;
-            if (isDisabled || isLoading) return;
-            e.stopPropagation();
-            e.preventDefault();
-    
-            onMiddleClick && onMiddleClick(e);
-            (!onMiddleClick && onClick) && onClick(e);
-        };
-    
-        const handleRightClick = (e: MouseEvent) => {
-            // if (e.button !== 2) return;
-            if (!onClick && !onRightClick) return;
-            if (isDisabled || isLoading) return;
-            e.stopPropagation();
-            e.preventDefault();
-    
-            onRightClick && onRightClick(e);
-            (!onRightClick && onClick) && onClick(e);
-        };
-    
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.code !== 'Enter' && e.code !== 'Space') return;
-            if (!onClick && !onLeftClick) return;
-            if (isDisabled || isLoading) return;
-            e.stopPropagation();
-            e.preventDefault();
-            
-            onLeftClick && onLeftClick();
-            (!onLeftClick && onClick) && onClick();
-        };
+    const handleLeftClick = (e: React.MouseEvent | React.KeyboardEvent) => {
+        if (!onAnyClick && !onLeftClick) return;
 
-        const handleMouseEnter = (e: MouseEvent) => {
-            // e.stopPropagation();
-            // e.preventDefault();
-            onMouseEnter && onMouseEnter(e);
-        };
-    
-        const handleMouseLeave = (e: MouseEvent) => {
-            // e.stopPropagation();
-            // e.preventDefault();
-            onMouseLeave && onMouseLeave(e);
-        };
+        e.preventDefault();
 
-        const handleFocus = (e: FocusEvent) => {
-            onFocus && onFocus(e);
-        };
+        if (onLeftClick) return onLeftClick(e);
+        if (onAnyClick) return onAnyClick(e);
+    };
 
-        button.addEventListener('click', handleLeftClick);
-        button.addEventListener('auxclick', handleMiddleClick);
-        button.addEventListener('contextmenu', handleRightClick);
-        button.addEventListener('keydown', handleKeyDown);
-        button.addEventListener('mouseenter', handleMouseEnter);
-        button.addEventListener('mouseleave', handleMouseLeave);
-        button.addEventListener('focusin', handleFocus);
+    const handleRightClick = (e: React.MouseEvent) => {
+        if (!onAnyClick && !onRightClick) return;
 
-        return () => {
-            button.removeEventListener('click', handleLeftClick);
-            button.removeEventListener('auxclick', handleMiddleClick);
-            button.removeEventListener('contextmenu', handleRightClick);
-            button.removeEventListener('keydown', handleKeyDown);
-            button.removeEventListener('mouseenter', handleMouseEnter);
-            button.removeEventListener('mouseleave', handleMouseLeave);
-            button.removeEventListener('focusin', handleFocus);
-        };
-    }, [isDisabled, isLoading, onClick, onMouseLeave, onMouseEnter, 
-        onLeftClick, onMiddleClick, onRightClick, onFocus],
-    );
+        e.preventDefault();
+
+        if (onRightClick) return onRightClick(e);
+        if (onAnyClick) return onAnyClick(e);
+    };
+
+    const handleMiddleClick = (e: React.MouseEvent) => {
+        if (!onAnyClick && !onMiddleClick) return;
+        if (e.button !== 1) return;
+
+        e.preventDefault();
+
+        if (onMiddleClick) return onMiddleClick(e);
+        if (onAnyClick) return onAnyClick(e);
+    };
+
+    const middleClickFix = (e: React.MouseEvent) => {
+        if (!onAnyClick && !onMiddleClick) return;
+        if (e.button !== 1) return;
+
+        e.preventDefault();
+    };
 
     return (
         <button
-            className={buttonCN}
+            className={twClassNames({
+                [styles.base]: !!stylingPreset,
+                [stylingPreset ? styles[stylingPreset].base : '']: !!stylingPreset,
+                [stylingPreset ? styles[stylingPreset].active : '']: !!stylingPreset && isActive,
+                [className]: !!className,
+            })}
             type={type}
-            disabled={isDisabled || isLoading}
+            data-active={isActive}
+            data-disabled={isDisabled}
+            data-loading={isLoading}
+            disabled={isDisabled}
             tabIndex={tabIndex}
-            ref={ref}
-            // onClick={onLeftClick}
-            // onAuxClick={onMiddleClick}
-            // onContextMenu={onRightClick}
-            // onMouseEnter={onMouseEnter}
-            // onMouseLeave={onMouseLeave}
-            // onFocus={onFocus}
+            aria-label={label}
+            aria-pressed={pressed}
+            aria-expanded={expanded}
+            aria-haspopup={hasPopup}
+            onKeyDown={handleLeftClickWithKeyboard}
+            onClick={handleLeftClick}
+            onContextMenu={handleRightClick}
+            onAuxClick={handleMiddleClick}
+            onFocus={onFocus}
+            onMouseEnter={onMouseEnter}
+            onMouseDown={middleClickFix}
         >
             {children}
         </button>

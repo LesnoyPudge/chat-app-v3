@@ -32,8 +32,7 @@ export const ActionButton: FC<IActionButton> = ({
         <RefContextProvider>
             <Button 
                 className={twClassNames(styles.button, buttonClassName)}
-                isntStyled
-                onClick={onClick}
+                onLeftClick={onClick}
             >
                 <Icon
                     iconId={iconId}
