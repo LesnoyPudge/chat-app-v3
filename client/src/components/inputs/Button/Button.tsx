@@ -17,7 +17,7 @@ interface Button extends PropsWithChildrenAndClassName {
     hasPopup?: 'dialog' | 'menu';
     onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
-    onMiddleClick?: (e?: React.MouseEvent) => void;
+    // onMiddleClick?: (e?: React.MouseEvent) => void;
     onRightClick?: (e?: React.MouseEvent) => void;
     onMouseEnter?: (e?: React.MouseEvent) => void;
     onFocus?: (e?: React.FocusEvent) => void;
@@ -60,7 +60,7 @@ export const Button: FC<Button> = ({
     hasPopup,
     onAnyClick,
     onLeftClick,
-    onMiddleClick,
+    // onMiddleClick,
     onRightClick,
     onMouseEnter,
     onFocus,
@@ -90,22 +90,22 @@ export const Button: FC<Button> = ({
         if (onAnyClick) return onAnyClick(e);
     };
 
-    const handleMiddleClick = (e: React.MouseEvent) => {
-        if (!onAnyClick && !onMiddleClick) return;
-        if (e.button !== 1) return;
+    // const handleMiddleClick = (e: React.MouseEvent) => {
+    //     if (!onAnyClick && !onMiddleClick) return;
+    //     if (e.button !== 1) return;
 
-        e.preventDefault();
+    //     e.preventDefault();
 
-        if (onMiddleClick) return onMiddleClick(e);
-        if (onAnyClick) return onAnyClick(e);
-    };
+    //     if (onMiddleClick) return onMiddleClick(e);
+    //     if (onAnyClick) return onAnyClick(e);
+    // };
 
-    const middleClickFix = (e: React.MouseEvent) => {
-        if (!onAnyClick && !onMiddleClick) return;
-        if (e.button !== 1) return;
+    // const middleClickFix = (e: React.MouseEvent) => {
+    //     if (!onAnyClick && !onMiddleClick) return;
+    //     if (e.button !== 1) return;
 
-        e.preventDefault();
-    };
+    //     e.preventDefault();
+    // };
 
     return (
         <button
@@ -128,10 +128,10 @@ export const Button: FC<Button> = ({
             onKeyDown={handleLeftClickWithKeyboard}
             onClick={handleLeftClick}
             onContextMenu={handleRightClick}
-            onAuxClick={handleMiddleClick}
+            // onAuxClick={handleMiddleClick}
             onFocus={onFocus}
             onMouseEnter={onMouseEnter}
-            onMouseDown={middleClickFix}
+            // onMouseDown={middleClickFix}
         >
             {children}
         </button>

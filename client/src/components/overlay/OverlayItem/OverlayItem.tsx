@@ -1,12 +1,12 @@
-import { Conditional, OverlayContext, OverlayPortal } from '@components';
+import { Conditional, FocusHolder, OverlayContext, OverlayPortal } from '@components';
 import { getHTML } from '@utils';
 import { FC, PropsWithChildren, useContext, useRef } from 'react';
-import ReactFocusLock, { MoveFocusInside } from 'react-focus-lock';
+import ReactFocusLock from 'react-focus-lock';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 
 
-interface IOverlayItem extends PropsWithChildren {
+interface OverlayItem extends PropsWithChildren {
     blockable?: boolean;
     blocking?: boolean;
     closeOnEscape?: boolean;
@@ -15,7 +15,7 @@ interface IOverlayItem extends PropsWithChildren {
     focused?: boolean;
 }
 
-export const OverlayItem: FC<IOverlayItem> = ({
+export const OverlayItem: FC<OverlayItem> = ({
     blockable = false,
     blocking = false,
     closeOnEscape = false,
@@ -27,29 +27,26 @@ export const OverlayItem: FC<IOverlayItem> = ({
     const { closeOverlay, isOverlayExist } = useContext(OverlayContext) as OverlayContext;
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
+    const isBlocked = () => {
+        const wrapper = wrapperRef.current;
+        const overlayItems = [...getHTML().overlay.childNodes] as HTMLDivElement[];
+        const filtredItems = overlayItems.filter(node => node === wrapper || node.dataset.blocking === 'true');
+        return wrapper !== filtredItems[filtredItems.length - 1];
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
         if (!closeOnEscape) return;
         if (!wrapperRef.current) return;
         if (!e.target) return;
         if (e.code !== 'Escape') return;
         if (!blockable) return closeOverlay();
- 
-        const target = e.target as HTMLElement;
-        const wrapper = wrapperRef.current;
-
-        if (wrapper === target || wrapper.contains(target)) return closeOverlay();
+        if (!isBlocked()) return closeOverlay();
     };
 
     const onClick = () => {
         if (!wrapperRef.current) return;
         if (!closeOnClickOutside) return;
-
-        const wrapper = wrapperRef.current;
-        const overlayItems = [...getHTML().overlay.childNodes] as HTMLDivElement[];
-        const filtredItems = overlayItems.filter(node => node === wrapper || node.dataset.blocking === 'true');
-        const isBlocked = wrapper !== filtredItems[filtredItems.length - 1];
-
-        if (!isBlocked) return closeOverlay();
+        if (!isBlocked()) return closeOverlay();
     };
 
     useOnClickOutside(wrapperRef, onClick, 'mouseup');
@@ -64,10 +61,12 @@ export const OverlayItem: FC<IOverlayItem> = ({
                     ref={wrapperRef}
                 >
                     <ReactFocusLock 
-                        returnFocus 
+                        returnFocus
                         disabled={!isOverlayExist || !focused}
                     >
-                        {children}
+                        <FocusHolder>
+                            {children}
+                        </FocusHolder>
                     </ReactFocusLock>
                 </div>
             </OverlayPortal>

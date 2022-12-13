@@ -1,4 +1,4 @@
-import { Button, Icon, Separator, AddFriendModal, TopBar, OverlayContextProvider } from '@components';
+import { Button, Icon, Separator, AddFriendModal, TopBar, RefContextProvider } from '@components';
 import { FC } from 'react';
 import { TabNavigationButton } from './components';
 
@@ -46,20 +46,17 @@ export const Navigation: FC = () => {
 
             <Separator spacing={16} orientation='vertical' height={24}/>
 
-            <OverlayContextProvider>
-                {({ openOverlay }) => (
-                    <>
-                        <Button 
-                            stylingPreset='brand' 
-                            onLeftClick={openOverlay}
-                        >
-                            <>Добавить в друзья</>
-                        </Button>
+            <RefContextProvider>
+                <Button 
+                    stylingPreset='brand'
+                    hasPopup='dialog'
+                    label='Добавить друзей'
+                >
+                    <>Добавить в друзья</>
+                </Button>
 
-                        <AddFriendModal/>
-                    </>
-                )}
-            </OverlayContextProvider>
+                <AddFriendModal/>
+            </RefContextProvider>
         </TopBar>
     );
 };

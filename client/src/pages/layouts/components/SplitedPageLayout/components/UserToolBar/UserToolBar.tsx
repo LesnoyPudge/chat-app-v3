@@ -1,4 +1,4 @@
-import { AppSettingsModal, Button, Icon, OverlayContextProvider, RefContextProvider, Tooltip } from '@components';
+import { AppSettingsModal, Button, Icon, RefContextProvider, Tooltip } from '@components';
 import { useToggle } from '@hooks';
 import { conditional } from '@utils';
 import { FC } from 'react';
@@ -69,34 +69,27 @@ export const UserToolBar: FC = () => {
                 </Tooltip>
             </RefContextProvider>
 
-            <OverlayContextProvider>
-                {({ openOverlay }) => (
-                    <>
-                        <RefContextProvider>
-                            <Button 
-                                className={styles.button}
-                                onLeftClick={openOverlay}
-                                label='Открыть настройки'
-                                hasPopup='dialog'
-                            >
-                                <Icon
-                                    className={styles.icon}
-                                    iconId='settings-gear'
-                                />
-                            </Button>
+            <RefContextProvider>
+                <Button 
+                    className={styles.button}
+                    label='Открыть настройки'
+                    hasPopup='dialog'
+                >
+                    <Icon
+                        className={styles.icon}
+                        iconId='settings-gear'
+                    />
+                </Button>
 
-                            <Tooltip 
-                                preferredAligment='top'
-                                dependencyList={[isSoundMuted]}
-                            >
-                                <>Настройки</>
-                            </Tooltip>
-                        </RefContextProvider>
+                <Tooltip 
+                    preferredAligment='top'
+                    dependencyList={[isSoundMuted]}
+                >
+                    <>Настройки</>
+                </Tooltip>
 
-                        <AppSettingsModal/>
-                    </>
-                )}
-            </OverlayContextProvider>
+                <AppSettingsModal/>
+            </RefContextProvider>
         </div>
     );
 };

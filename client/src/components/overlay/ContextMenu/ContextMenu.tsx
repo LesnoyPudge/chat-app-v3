@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from 'react';
-import { AnimatedTransition, OverlayContext, OverlayItem, RefContext, RelativelyPositioned } from '@components';
+import { AnimatedTransition, ChildrenAsNodeOrFunction, OverlayContext, OverlayContextProvider, OverlayItem, RefContext, RelativelyPositioned } from '@components';
 import { animated, UseTransitionProps } from '@react-spring/web';
-import { Aligment, PropsWithChildrenAndClassName } from '@types';
+import { Aligment, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { useEventListener } from 'usehooks-ts';
 
@@ -10,10 +10,10 @@ import { useEventListener } from 'usehooks-ts';
 
 type TargetRect = Omit<DOMRect, 'x' | 'y' | 'toJSON'>
 
-interface ContextMenu extends PropsWithChildrenAndClassName {
+interface ContextMenu extends 
+PropsWithClassName,
+PropsWithChildrenAsNodeOrFunction<OverlayContext> {
     preferredAligment: Aligment;
-    openOnLeftClick?: boolean;
-    openOnRightClick?: boolean;
 }
 
 const transitionOptions: UseTransitionProps = {
@@ -24,79 +24,51 @@ const transitionOptions: UseTransitionProps = {
 
 const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-normal p-5';
 
-export const ContextMenu: FC<ContextMenu> = ({
+const ContextMenuInner: FC<ContextMenu> = ({
     className = '',
     preferredAligment,
-    openOnLeftClick = false,
-    openOnRightClick = false,
     children,
 }) => {
+    const contextValues = useContext(OverlayContext) as OverlayContext;
     const { targetRef } = useContext(RefContext) as RefContext;
-    const { isOverlayExist, closingThrottle, openOverlay } = useContext(OverlayContext) as OverlayContext;
     const [targetRect, setTargetRect] = useState<TargetRect>();
 
-    const setCursorRect = (e: MouseEvent) => {
-        const cursorSize = 1;
+    const handleContextMenu = (e: MouseEvent) => {
+        const { closingThrottle, openOverlay } = contextValues;
         
-        const rect: TargetRect = {
-            top: e.clientY,
-            bottom: e.clientY + cursorSize,
-            left: e.clientX,
-            right: e.clientX + cursorSize,
-            width: cursorSize,
-            height: cursorSize,
-        };
-
-        setTargetRect(rect);
-        openOverlay();
-    };
-
-    const setElementRect = () => {
-        if (!targetRef.current) return;
-        
-        setTargetRect(targetRef.current.getBoundingClientRect());
-        openOverlay();
-    };
-
-    const handleLeftClick = (e: MouseEvent | KeyboardEvent) => {
         if (closingThrottle) return;
-        if (!openOnLeftClick) return;
-        
-        const withMouse = e instanceof MouseEvent;
-        const withKeyboard = e instanceof KeyboardEvent;
-        const spaceOrEnter = withKeyboard && (e.code === 'Enter' || e.code === 'Space');
 
+        const withMouse = e.button !== -1;
+        const withKeyboard = !withMouse;
+    
         if (withMouse) {
-            e.preventDefault();
-            setCursorRect(e);
+            const cursorSize = 1;
+    
+            const rect: TargetRect = {
+                top: e.clientY,
+                bottom: e.clientY + cursorSize,
+                left: e.clientX,
+                right: e.clientX + cursorSize,
+                width: cursorSize,
+                height: cursorSize,
+            };
+
+            setTargetRect(rect);
         }
 
-        if (spaceOrEnter) {
-            e.preventDefault();
-            setElementRect();
+        if (withKeyboard) {
+            const target = e.currentTarget as HTMLElement;
+            setTargetRect(target.getBoundingClientRect());
         }
+
+        openOverlay();
     };
 
-    const handleRightClick = (e: MouseEvent) => {
-        if (closingThrottle) return;
-        if (!openOnRightClick) return;
-
-        e.preventDefault();
-
-        const withKeyboard = e.button === -1;
-        const withMouse = e.button === 2;
-
-        if (withKeyboard) setElementRect();
-        if (withMouse) setCursorRect(e);
-    };
-
-    useEventListener('click', handleLeftClick, targetRef);
-    useEventListener('keydown', handleLeftClick, targetRef);
-    useEventListener('contextmenu', handleRightClick, targetRef);
+    useEventListener('contextmenu', handleContextMenu, targetRef);
 
     return (
         <AnimatedTransition 
-            isExist={isOverlayExist}
+            isExist={contextValues.isOverlayExist}
             transitionOptions={transitionOptions}
         >
             {({ isAnimatedExist, style }) => (
@@ -120,11 +92,21 @@ export const ContextMenu: FC<ContextMenu> = ({
                             style={style}
                             role='menu'
                         >
-                            {children}
+                            <ChildrenAsNodeOrFunction args={contextValues}>
+                                {children}
+                            </ChildrenAsNodeOrFunction>
                         </animated.div>
                     </RelativelyPositioned>
                 </OverlayItem>
             )}
         </AnimatedTransition>
+    );
+};
+
+export const ContextMenu: FC<ContextMenu> = (props) => {
+    return (
+        <OverlayContextProvider>
+            <ContextMenuInner {...props}/>
+        </OverlayContextProvider>
     );
 };

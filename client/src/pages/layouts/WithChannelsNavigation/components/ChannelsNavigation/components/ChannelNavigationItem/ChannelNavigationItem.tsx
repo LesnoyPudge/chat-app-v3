@@ -1,4 +1,4 @@
-import { ContextMenu, OverlayContextProvider, RefContextProvider, Tooltip } from '@components';
+import { ContextMenu, RefContextProvider, Tooltip } from '@components';
 import { useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
@@ -33,36 +33,34 @@ export const ChannelsNavigationItem: FC<IChannelsNavigationItem> = ({
     const handleNavigate = () => navigateTo.room(channel.id, channel.rooms[0].id);
 
     return (
-        <li className='contents'>
-            <OverlayContextProvider>
-                <RefContextProvider>
-                    <NavigationButton 
-                        theme='brand' 
-                        isActive={isActive}
-                        tabIndex={tabIndex}
-                        onLeftClick={handleNavigate}
-                    >
-                        <div className={styles.contentWrapper}>
-                            <span 
-                                className={twClassNames(
-                                    styles.content,
-                                    { 'text-white': isActive },
-                                )}
-                            >
-                                {formatedName}
-                            </span>
-                        </div>
-                    </NavigationButton>
+        <li>
+            <RefContextProvider>
+                <NavigationButton 
+                    theme='brand' 
+                    isActive={isActive}
+                    tabIndex={tabIndex}
+                    onLeftClick={handleNavigate}
+                >
+                    <div className={styles.contentWrapper}>
+                        <span 
+                            className={twClassNames(
+                                styles.content,
+                                { 'text-white': isActive },
+                            )}
+                        >
+                            {formatedName}
+                        </span>
+                    </div>
+                </NavigationButton>
                                         
-                    <Tooltip preferredAligment='right'>
-                        {channel.name}
-                    </Tooltip>
+                <Tooltip preferredAligment='right'>
+                    {channel.name}
+                </Tooltip>
     
-                    <ContextMenu preferredAligment='right'>
-                        <>menu</>
-                    </ContextMenu>
-                </RefContextProvider>
-            </OverlayContextProvider>
+                <ContextMenu preferredAligment='right'>
+                    <>menu</>
+                </ContextMenu>
+            </RefContextProvider>
         </li>
     );
 };

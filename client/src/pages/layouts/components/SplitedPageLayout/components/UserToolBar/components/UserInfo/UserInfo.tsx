@@ -1,4 +1,4 @@
-import { Button, ContextMenu, OverlayContextProvider, RefContextProvider, Tooltip, UserAvatar } from '@components';
+import { Button, ContextMenu, RefContextProvider, Tooltip, UserAvatar } from '@components';
 import { useThrottle } from '@hooks';
 import { conditional, copyToClipboard, twClassNames } from '@utils';
 import { FC } from 'react';
@@ -6,12 +6,11 @@ import { FC } from 'react';
 
 
 const styles = {
-    userInfoWrapper: 'relative w-full pr-1 group',
-    userInfo: `px-1 py-0.5 rounded-md mr-1 flex items-center min-w-0 w-full
-    cursor-pointer group-hover:bg-hover group-focus-visible:bg-hover group-focus-within:bg-hover`,
+    userInfo: `w-full mr-1 px-1 py-0.5 rounded-md flex items-center 
+    hover:bg-hover focus-visible:bg-hover focus-within:bg-hover`,
     avatar: 'h-8 w-8',
-    username: `text-primary font-semibold text-sm overflow-hidden text-ellipsis 
-    whitespace-nowrap rounded absolute top-1/2 -translate-y-1/2 left-0 ml-11`,
+    username: `ml-2 text-primary font-semibold text-sm overflow-hidden text-ellipsis 
+    whitespace-nowrap`,
     tooltipActive: 'bg-green text-white',
 };
 
@@ -28,61 +27,49 @@ export const UserInfo: FC = () => {
     );
     
     return (
-        <div className={styles.userInfoWrapper}>
-            <OverlayContextProvider>
-                {({ closeOverlay, isOverlayExist }) => (
-                    <RefContextProvider>
+        <RefContextProvider>
+            <div className={styles.userInfo} tabIndex={0}>
+                <UserAvatar
+                    className={styles.avatar}
+                    avatar='https://i.pravatar.cc/52'
+                    status='online'
+                />
+
+                <RefContextProvider>
+                    <Button
+                        className={styles.username}
+                        onLeftClick={handleCopy}
+                        label='Скопировать имя'
+                    >
+                        {username}
+                    </Button>
+
+                    <Tooltip 
+                        className={twClassNames({ [styles.tooltipActive]: isThrottling })}
+                        preferredAligment='top'
+                        dependencyList={[isThrottling]}
+                    >
+                        {copyUsernameTooltipText}
+                    </Tooltip>
+                </RefContextProvider>
+            </div>
+
+            <ContextMenu preferredAligment='top'>
+                {({ closeOverlay }) => (
+                    <div className='flex flex-col'>
+                        <Button onLeftClick={closeOverlay}>change status</Button>
+
                         <Button 
-                            className={styles.userInfo}
-                            hasPopup='menu'
-                            expanded={isOverlayExist}
-                            label='Открыть контекстное меню'
+                            onLeftClick={() => {
+                                handleCopy();
+                                closeOverlay();
+                            }}
                         >
-                            <UserAvatar
-                                className={styles.avatar}
-                                avatar='https://i.pravatar.cc/52'
-                                status='online'
-                            />
+                            <>copy username</>
                         </Button>
-
-                        <ContextMenu 
-                            preferredAligment='top'
-                            openOnLeftClick
-                            openOnRightClick
-                        >
-                            <div className='flex flex-col'>
-                                <button onClick={closeOverlay}>change status</button>
-                                <button 
-                                    onClick={() => {
-                                        handleCopy();
-                                        closeOverlay();
-                                    }}
-                                >
-                                    <>copy username</>
-                                </button>
-                            </div>
-                        </ContextMenu>
-                    </RefContextProvider>
+                    </div>
                 )}
-            </OverlayContextProvider>
-            
-            <RefContextProvider>
-                <Button
-                    className={styles.username}
-                    onLeftClick={handleCopy}
-                    label='Скопировать имя'
-                >
-                    {username}
-                </Button>
-
-                <Tooltip 
-                    className={twClassNames({ [styles.tooltipActive]: isThrottling })}
-                    preferredAligment='top'
-                    dependencyList={[isThrottling]}
-                >
-                    {copyUsernameTooltipText}
-                </Tooltip>
-            </RefContextProvider> 
-        </div>
+            </ContextMenu>
+        </RefContextProvider>
     );
 };

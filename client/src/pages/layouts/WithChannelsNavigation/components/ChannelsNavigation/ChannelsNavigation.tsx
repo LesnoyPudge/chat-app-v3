@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { Icon, Separator, Tooltip, ContextMenu, RefContextProvider, Conditional, FocusableListItem, FocusableListWrapper, OverlayContextProvider } from '@components';
+import { Icon, Separator, Tooltip, ContextMenu, RefContextProvider, Conditional, FocusableListItem, FocusableListWrapper } from '@components';
 import { NavigationButton, ChannelsNavigationItem } from './components';
 import { useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -54,36 +54,31 @@ export const ChannelsNavigation: FC = () => {
 
     return (
         <div className={styles.section}>
-            <OverlayContextProvider>
-                <RefContextProvider>
-                    <NavigationButton 
-                        theme='brand' 
-                        isActive={isAppOrPrivateChatPage}
-                        onLeftClick={() => {
-                            navigateTo.app();
-                        }}
-                    >
-                        <Icon 
-                            iconId='discord-logo'
-                            className={twClassNames(
-                                styles.homePageButtonIcon,
-                                { 'fill-white': isAppOrPrivateChatPage },
-                            )}
-                        />
-                    </NavigationButton>
+            <RefContextProvider>
+                <NavigationButton 
+                    theme='brand' 
+                    isActive={isAppOrPrivateChatPage}
+                    onLeftClick={() => {
+                        navigateTo.app();
+                    }}
+                >
+                    <Icon 
+                        iconId='discord-logo'
+                        className={twClassNames(
+                            styles.homePageButtonIcon,
+                            { 'fill-white': isAppOrPrivateChatPage },
+                        )}
+                    />
+                </NavigationButton>
     
-                    <Tooltip preferredAligment='right'>
-                        <>Главная страница</>
-                    </Tooltip>
+                <Tooltip preferredAligment='right'>
+                    <>Главная страница</>
+                </Tooltip>
     
-                    <ContextMenu 
-                        preferredAligment='right'
-                        openOnRightClick
-                    >
-                        <>menu</>
-                    </ContextMenu>
-                </RefContextProvider>
-            </OverlayContextProvider>
+                <ContextMenu preferredAligment='right'>
+                    <>menu</>
+                </ContextMenu>
+            </RefContextProvider>
                 
             <Separator className='w-1/2'/>
 
@@ -95,30 +90,25 @@ export const ChannelsNavigation: FC = () => {
                 </FocusableListWrapper>
             </Conditional>
 
-            <OverlayContextProvider>
-                <RefContextProvider>
-                    <NavigationButton 
-                        theme='action'
-                        onLeftClick={() => console.log('open add channel modal')}
-                    >
-                        <Icon 
-                            className={styles.addChannelButtonIcon}
-                            iconId='add-channel-navigation-icon'
-                        />
-                    </NavigationButton>
+            <RefContextProvider>
+                <NavigationButton 
+                    theme='action'
+                    onLeftClick={() => console.log('open add channel modal')}
+                >
+                    <Icon 
+                        className={styles.addChannelButtonIcon}
+                        iconId='add-channel-navigation-icon'
+                    />
+                </NavigationButton>
 
-                    <Tooltip preferredAligment='right'>
-                        <>Добавить канал</>
-                    </Tooltip>
+                <Tooltip preferredAligment='right'>
+                    <>Добавить канал</>
+                </Tooltip>
 
-                    <ContextMenu 
-                        preferredAligment='right'
-                        openOnRightClick
-                    >
-                        <>menu</>
-                    </ContextMenu>
-                </RefContextProvider>
-            </OverlayContextProvider>
+                <ContextMenu preferredAligment='right'>
+                    <>menu</>
+                </ContextMenu>
+            </RefContextProvider>
         </div>
     );
 };

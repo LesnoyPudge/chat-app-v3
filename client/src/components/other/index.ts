@@ -10,3 +10,4 @@ export * from './MessageItem';
 export * from './RelativelyPositioned';
 export * from './ModalWindow';
 export * from './AnimatedTransition';
+export * from './FocusHolder';

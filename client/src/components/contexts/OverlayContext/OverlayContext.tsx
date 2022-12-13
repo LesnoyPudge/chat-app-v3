@@ -1,5 +1,5 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import { createContext, FC, useCallback, useMemo } from 'react';
+import React, { createContext, FC, useCallback, useMemo } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
 import { useThrottle, useToggle } from '@hooks';
 import { fpsToMs } from '@utils';
@@ -24,15 +24,19 @@ export const OverlayContextProvider: OverlayContextProviderType = ({ children })
 
     const handleClose = useCallback(() => {
         if (!isOverlayExist) return;
-        throttle(() => setIsOverlayExist(false), fpsToMs(60))();
+        throttle(() => {
+            setIsOverlayExist(false);
+        }, fpsToMs(60))();
     }, [isOverlayExist, setIsOverlayExist, throttle]);
 
     const handleOpen = useCallback(() => {
-        if (!isThrottling) setIsOverlayExist(true);
+        if (isThrottling) return;
+        setIsOverlayExist(true);
     }, [isThrottling, setIsOverlayExist]);
 
     const handleToggle = useCallback(() => {
-        if (!isThrottling) toggle();
+        if (isThrottling) return;
+        toggle();
     }, [isThrottling, toggle]);
 
     const contextValues: OverlayContext = useMemo(() => ({

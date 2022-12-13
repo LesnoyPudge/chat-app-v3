@@ -1,7 +1,8 @@
 import { animated, UseTransitionProps } from '@react-spring/web';
 import { FC, PropsWithChildren, useContext } from 'react';
-import { AnimatedTransition, Button, Conditional, OverlayContext, OverlayItem } from '@components';
+import { AnimatedTransition, Button, Conditional, OverlayContext, OverlayContextProvider, OverlayItem, RefContext } from '@components';
 import { twClassNames } from '@utils';
+import { useEventListener } from 'usehooks-ts';
 
 
 
@@ -23,12 +24,20 @@ const styles = {
     focus-hidden opacity-70 -z-10 scale-[999]`,
 };
 
-export const ModalWindow: FC<ModalWindow> = ({
+const ModalWindowInner: FC<ModalWindow> = ({
     withBackdrop = false,
     transitionOptions = defaultTransitionOptions,
     children,
 }) => {
-    const { closeOverlay, isOverlayExist } = useContext(OverlayContext) as OverlayContext;
+    const { openOverlay, closeOverlay, isOverlayExist } = useContext(OverlayContext) as OverlayContext;
+    const { targetRef } = useContext(RefContext) as RefContext;
+
+    const handleOpen = () => {
+        if (!targetRef.current) return;
+        openOverlay();
+    };
+
+    useEventListener('click', handleOpen, targetRef);
 
     return (
         <AnimatedTransition 
@@ -70,5 +79,13 @@ export const ModalWindow: FC<ModalWindow> = ({
                 </OverlayItem>
             )}   
         </AnimatedTransition>
+    );
+};
+
+export const ModalWindow: FC<ModalWindow> = (props) => {
+    return (
+        <OverlayContextProvider>
+            <ModalWindowInner {...props}/>
+        </OverlayContextProvider>
     );
 };
