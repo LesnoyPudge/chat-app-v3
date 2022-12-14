@@ -1,5 +1,4 @@
-import { AnimatedTransition, Button, OverlayContextProvider, OverlayItem, RefContextProvider, RelativelyPositioned } from '@components';
-import { Emoji, uniqueEmojiCodeList } from '@libs';
+import { AnimatedTransition, Button, Emoji, OverlayContextProvider, OverlayItem, RefContextProvider, RelativelyPositioned, uniqueEmojiCodeList } from '@components';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { getOneOf, twClassNames } from '@utils';
@@ -10,11 +9,11 @@ import { EmojiPicker } from './components';
 
 
 const styles = {
-    button: 'group',
+    button: 'flex shrink-0 h-11 w-8 mx-1 group',
     emoji: {
-        base: `m-auto transition-all grayscale group-hover:grayscale-0 group-hover:scale-[1.14]
-        group-focus-visible:grayscale-0 group-focus-visible:scale-[1.14]`,
-        active: 'grayscale-0 scale-[1.14]',
+        base: `m-auto w-6 transition-all grayscale group-hover:grayscale-0 group-hover:w-8
+        group-focus-visible:grayscale-0 group-focus-visible:w-8`,
+        active: 'grayscale-0 w-8',
     },
 };
 
@@ -28,44 +27,48 @@ export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
         <OverlayContextProvider>
             {({ openOverlay, isOverlayExist }) => (
                 <RefContextProvider>
-                    {({ targetRef }) => (
-                        <>
-                            <Button
-                                className={twClassNames(styles.button, className)}
-                                onLeftClick={openOverlay} 
-                                onMouseEnter={changeEmojiCode}
-                            >
-                                <Emoji
-                                    className={twClassNames(
-                                        styles.emoji.base, 
-                                        { [styles.emoji.active]: isOverlayExist },
-                                    )}
-                                    code={emojiCode}
-                                    isSerialized
-                                />
-                            </Button>
+                    {({ targetRef }) => {
+                        const handleEmojiChange = () => !isOverlayExist && changeEmojiCode();
+
+                        return (
+                            <>
+                                <Button
+                                    className={twClassNames(styles.button, className, 'border-rose-600 border-2')}
+                                    onLeftClick={openOverlay} 
+                                    onMouseEnter={handleEmojiChange}
+                                    onFocus={handleEmojiChange}
+                                >
+                                    <Emoji
+                                        className={twClassNames(
+                                            styles.emoji.base, 
+                                            { [styles.emoji.active]: isOverlayExist },
+                                        )}
+                                        code={emojiCode}
+                                    />
+                                </Button>
             
-                            <AnimatedTransition isExist={isOverlayExist}>
-                                {({ style, isAnimatedExist }) => (
-                                    <OverlayItem 
-                                        isRendered={isAnimatedExist}
-                                        closeOnClickOutside
-                                        closeOnEscape
-                                        focused
-                                    >
-                                        <animated.div style={style}>
-                                            <RelativelyPositioned 
-                                                preferredAligment='top' 
-                                                targetRefOrRect={targetRef}
-                                            >
-                                                <EmojiPicker/>
-                                            </RelativelyPositioned>
-                                        </animated.div>
-                                    </OverlayItem>
-                                )}
-                            </AnimatedTransition>
-                        </>
-                    )}
+                                <AnimatedTransition isExist={isOverlayExist}>
+                                    {({ style, isAnimatedExist }) => (
+                                        <OverlayItem 
+                                            isRendered={isAnimatedExist}
+                                            closeOnClickOutside
+                                            closeOnEscape
+                                            focused
+                                        >
+                                            <animated.div style={style}>
+                                                <RelativelyPositioned 
+                                                    preferredAligment='top' 
+                                                    targetRefOrRect={targetRef}
+                                                >
+                                                    <EmojiPicker/>
+                                                </RelativelyPositioned>
+                                            </animated.div>
+                                        </OverlayItem>
+                                    )}
+                                </AnimatedTransition>
+                            </>
+                        );
+                    }}
                 </RefContextProvider>
             )}
         </OverlayContextProvider>

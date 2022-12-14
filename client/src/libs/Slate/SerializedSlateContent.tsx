@@ -1,38 +1,42 @@
+import { Emoji, Link } from '@components';
 import { tryParseJSONObject } from '@utils';
 import { FC, useRef, ReactElement, useCallback } from 'react';
 import { Descendant, Text } from 'slate';
-import { Emoji, Link, Paragraph } from './components';
 
 
 
-interface ISerializedNode {
+interface SerializedSlateContent {
     nodes?: string;
 }
 
-export const SerializedSlateContent: FC<ISerializedNode> = ({ nodes = '' }) => {
+export const SerializedSlateContent: FC<SerializedSlateContent> = ({ 
+    nodes = '', 
+}) => {
     const keyRef = useRef(0);
 
     const serialize = useCallback((nodes: Descendant[]): ReactElement[] => {
-        const key = () => {
+        const getKey = () => {
             const current = keyRef.current;
             keyRef.current++;
             return current;
         };
 
         return nodes.map((node) => {
-            if (Text.isText(node)) return <span key={key()}>{node.text}</span>;
+            const key = getKey();
+
+            if (Text.isText(node)) return <span key={key}>{node.text}</span>;
         
             const serialized = node.children.map((childrenNode) => serialize([childrenNode]));
             
             switch (node.type) {
             case 'paragraph':
-                return <Paragraph isSerialized key={key()}>{serialized}</Paragraph>;
+                return <p key={key}>{serialized}</p>;
 
             case 'emoji':
-                return <Emoji isSerialized code={node.code} key={key()}/>;
+                return <Emoji code={node.code} key={key}/>;
 
             case 'link': 
-                return <Link isSerialized url={node.url} key={key()}>{node.url}</Link>;
+                return <Link href={node.url} key={key}>{node.url}</Link>;
 
             default:
                 return <>{serialized}</>;

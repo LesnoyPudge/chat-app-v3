@@ -14,7 +14,7 @@ interface ISearchBar {
 
 const styles = {
     wrapper: `bg-primary-500 rounded-md w-full text-normal 
-    flex flex-shrink-0`,
+    flex shrink-0`,
     input: 'py-1 px-2 w-full',
     button: 'h-full aspect-square flex shrink-0 group',
     icon: `h-2/3 aspect-square m-auto fill-icon-300 

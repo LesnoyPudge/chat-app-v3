@@ -57,7 +57,7 @@ export const OverlayItem: FC<OverlayItem> = ({
             <OverlayPortal>
                 <div 
                     className='overlay-item-wrapper'
-                    data-blocking={blocking}
+                    data-blocking={blocking && isOverlayExist}
                     ref={wrapperRef}
                 >
                     <ReactFocusLock 

@@ -1,3 +1,3 @@
-export * from './Emoji';
-export * from './Paragraph';
-export * from './Link';
+export * from './SlateEmoji';
+export * from './SlateParagraph';
+export * from './SlateLink';

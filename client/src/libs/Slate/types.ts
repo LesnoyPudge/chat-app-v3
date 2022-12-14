@@ -1,7 +1,7 @@
+import { EmojiCode } from '@components';
 import { BaseEditor } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { ReactEditor, RenderElementProps } from 'slate-react';
-import { EmojiCodeType } from './components';
 
 
 
@@ -14,7 +14,7 @@ export type ParagraphElement = {
 
 export type EmojiElement = {
     type: 'emoji';
-    code: EmojiCodeType;
+    code: EmojiCode;
     children: [{text: ''}];
 }
 

@@ -67,6 +67,7 @@ export const Image: FC<Image> = ({
                     className={twClassNames(baseClassName, className)}
                     src={src} 
                     alt={alt}
+                    draggable={false}
                 />
             </Conditional>
 

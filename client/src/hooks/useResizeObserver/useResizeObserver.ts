@@ -19,5 +19,5 @@ export const useResizeObserver: UseResizeObserver = (element, callback) => {
             resizeObserver.unobserve(element);
             resizeObserver.disconnect();
         };
-    }, [callback, element]);
+    }, [element, callback]);
 };

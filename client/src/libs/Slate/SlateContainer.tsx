@@ -1,5 +1,4 @@
-import { log } from '@utils';
-import { FC, PropsWithChildren, useEffect, useMemo } from 'react';
+import { FC, PropsWithChildren, useLayoutEffect, useMemo } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { Descendant, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
@@ -8,7 +7,7 @@ import { withEmoji, withLink } from './plugins';
 
 
 
-interface ISlateContainer extends PropsWithChildren {
+interface SlateContainer extends PropsWithChildren {
     value?: Descendant[];
     onChange?: ((value: Descendant[]) => void) | undefined;
 }
@@ -30,7 +29,7 @@ const plugins = () => {
     return editor;
 };
 
-export const SlateContainer: FC<ISlateContainer> = ({ 
+export const SlateContainer: FC<SlateContainer> = ({ 
     children,
     value = initialValue,
     onChange,
@@ -38,10 +37,7 @@ export const SlateContainer: FC<ISlateContainer> = ({
     const editor = useMemo(plugins, []);
 
     return (
-        <ErrorBoundary 
-            FallbackComponent={ErrorReset} 
-            onError={(error, stack) => log('slate error', error, stack.componentStack)}
-        >
+        <ErrorBoundary FallbackComponent={ErrorReset}>
             <Slate 
                 editor={editor} 
                 value={value}
@@ -54,7 +50,7 @@ export const SlateContainer: FC<ISlateContainer> = ({
 };
 
 const ErrorReset: FC<FallbackProps> = ({ resetErrorBoundary }) => {
-    useEffect(() => {
+    useLayoutEffect(() => {
         resetErrorBoundary();
     }, [resetErrorBoundary]);
 

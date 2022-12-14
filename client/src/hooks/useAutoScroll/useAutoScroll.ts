@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import { useIsFirstRender, useResizeObserver } from '@hooks';
 import { useInView } from 'react-intersection-observer';
 
@@ -6,7 +6,7 @@ import { useInView } from 'react-intersection-observer';
 
 interface IOptions {
     startFromBottom?: boolean;
-    autoScrollDependency?: React.DependencyList;
+    autoScrollDependency?: unknown[];
 }
 
 type SetRefType = (node: HTMLElement | null) => void;
@@ -47,12 +47,12 @@ export const useAutoScroll: UseAutoScroll = (options) => {
 
     useResizeObserver(scrollbarRef.current, autoScroll);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (isFirstRender && startFromBottom) scrollToBottom();
     }, [startFromBottom, isFirstRender, scrollToBottom]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => autoScroll(), autoScrollDependency);
+    useLayoutEffect(() => autoScroll(), [...autoScrollDependency]);
 
     return {
         setScrollbarRef,

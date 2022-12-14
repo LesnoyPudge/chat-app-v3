@@ -16,7 +16,7 @@ export const RefContext = createContext<RefContext | undefined>(undefined);
 
 export const RefContextProvider: FC<RefContextProvider> = ({
     providedRef,
-    children, 
+    children,
 }) => {
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const [targetRef, setTargetRef] = useState(useRef<HTMLElement | null>(null));
@@ -35,7 +35,7 @@ export const RefContextProvider: FC<RefContextProvider> = ({
     return (
         <>
             <Conditional isRendered={!targetRef.current && !providedRef}>
-                <div className='hidden' ref={wrapperRef}></div>
+                <span className='hidden' ref={wrapperRef}></span>
             </Conditional>
 
             <RefContext.Provider value={contextValues}>
