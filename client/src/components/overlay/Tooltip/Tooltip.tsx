@@ -32,7 +32,7 @@ const transitionOptions: UseTransitionProps = {
     },
 };
 
-const baseClassName = `bg-primary-500 text-ellipsis text-normal font-bold 
+const baseClassName = `bg-primary-500 text-normal font-bold 
 py-[5px] px-2.5 rounded-md w-max max-w-[300px] shadow-elevation-low`;
 
 export const Tooltip: FC<Tooltip> = ({

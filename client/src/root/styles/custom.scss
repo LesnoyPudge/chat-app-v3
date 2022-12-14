@@ -94,7 +94,7 @@
         }
 
         .noUi-connect {
-            @apply bg-secondary-100;
+            @apply bg-brand;
         }
 
         .noUi-connects {
@@ -177,5 +177,9 @@
 
     .overlay-item-wrapper {
         @apply pointer-events-none fixed top-0 left-0 right-0 bottom-0;
+    }
+
+    .truncated {
+        @apply text-ellipsis overflow-hidden whitespace-nowrap min-w-0;
     }
 }

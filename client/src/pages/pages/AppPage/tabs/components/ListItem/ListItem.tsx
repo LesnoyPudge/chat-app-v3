@@ -1,10 +1,10 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { Separator, UserAvatar } from '@components';
+import { Conditional, Separator, UserAvatar } from '@components';
 import { FC, ReactNode } from 'react';
 
 
 
-interface IListItem {
+interface ListItem {
     avatar: string;
     username: string;
     status?: StatusType;
@@ -13,7 +13,7 @@ interface IListItem {
     extraInfo?: string;
 }
 
-export const ListItem: FC<IListItem> = ({
+export const ListItem: FC<ListItem> = ({
     avatar,
     extraStatus,
     status,
@@ -25,10 +25,8 @@ export const ListItem: FC<IListItem> = ({
         <>
             <Separator spacing={4} thikness={2}/>
             
-            <li 
-                className='flex items-center py-2 px-2.5 rounded-lg
-                hover:bg-hover focus-within:bg-hover group-1'
-            >
+            <li className='flex items-center py-2 px-2.5 rounded-lg
+                hover:bg-hover focus-within:bg-hover group-1'>
                 <UserAvatar
                     className='mr-3 h-8 w-8'
                     avatar={avatar} 
@@ -38,16 +36,15 @@ export const ListItem: FC<IListItem> = ({
                 />
 
                 <div className='mr-5 flex flex-col overflow-hidden'>
-                    <span className='font-semibold text-primary overflow-hidden text-ellipsis whitespace-nowrap'>
+                    <span className='font-semibold text-primary truncated'>
                         {username}
                     </span>
 
-                    {
-                        extraInfo && 
-                        <span className='text-xs text-secondary overflow-hidden text-ellipsis whitespace-nowrap'>
+                    <Conditional isRendered={!!extraInfo}>
+                        <span className='text-xs text-secondary truncated'>
                             {extraInfo}
                         </span>
-                    }
+                    </Conditional>
                 </div>
 
                 <div className='ml-auto flex'>

@@ -1,12 +1,13 @@
 import { animated, UseTransitionProps } from '@react-spring/web';
 import { FC, PropsWithChildren, useContext } from 'react';
-import { AnimatedTransition, Button, Conditional, OverlayContext, OverlayContextProvider, OverlayItem, RefContext } from '@components';
+import { AnimatedTransition, Button, ChildrenAsNodeOrFunction, Conditional, OverlayContext, OverlayContextProvider, OverlayItem, RefContext } from '@components';
 import { twClassNames } from '@utils';
 import { useEventListener } from 'usehooks-ts';
+import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
 
 
-interface ModalWindow extends PropsWithChildren {
+interface ModalWindow extends PropsWithChildrenAsNodeOrFunction<OverlayContext> {
     withBackdrop?: boolean;
     transitionOptions?: UseTransitionProps;
 }
@@ -29,14 +30,15 @@ const ModalWindowInner: FC<ModalWindow> = ({
     transitionOptions = defaultTransitionOptions,
     children,
 }) => {
-    const { openOverlay, closeOverlay, isOverlayExist } = useContext(OverlayContext) as OverlayContext;
+    const overlayValues = useContext(OverlayContext) as OverlayContext;
+    const { openOverlay, closeOverlay, isOverlayExist } = overlayValues;
     const { targetRef } = useContext(RefContext) as RefContext;
 
-    const handleOpen = () => {
+    const handleOpen = () => {  
         if (!targetRef.current) return;
         openOverlay();
     };
-
+    
     useEventListener('click', handleOpen, targetRef);
 
     return (
@@ -73,7 +75,9 @@ const ModalWindowInner: FC<ModalWindow> = ({
                             })}
                             role='dialog'
                         >
-                            {children}
+                            <ChildrenAsNodeOrFunction args={overlayValues}>
+                                {children}
+                            </ChildrenAsNodeOrFunction>
                         </div>
                     </animated.div>
                 </OverlayItem>

@@ -20,10 +20,7 @@ export const Header: FC = () => {
     return (
         <div className={twClassNames('flex flex-col w-full', { 'bg-primary-500 shadow-elevation-low': inCall })}>
             <TopBar className={twClassNames('px-4', { 'shadow-none': inCall })}>
-                <span 
-                    className='font-bold text-ellipsis
-                        overflow-hidden whitespace-nowrap'
-                >
+                <span className='font-bold truncated'>
                     {friend.username}
                 </span>
 

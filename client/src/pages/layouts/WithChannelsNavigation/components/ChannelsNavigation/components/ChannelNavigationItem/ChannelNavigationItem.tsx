@@ -19,8 +19,11 @@ interface IChannelsNavigationItem {
 
 const styles = {
     contentWrapper: 'px-[6px] w-full flex justify-center',
-    content: `font-bold text-ellipsis overflow-hidden 
-    group-hover:text-white group-focus-within:text-white`,
+    content: {
+        base: `font-bold truncated group-hover:text-white 
+        group-focus-within:text-white`,
+        active: 'text-white',
+    },
 };
 
 export const ChannelsNavigationItem: FC<IChannelsNavigationItem> = ({
@@ -44,8 +47,8 @@ export const ChannelsNavigationItem: FC<IChannelsNavigationItem> = ({
                     <div className={styles.contentWrapper}>
                         <span 
                             className={twClassNames(
-                                styles.content,
-                                { 'text-white': isActive },
+                                styles.content.base,
+                                { [styles.content.active]: isActive },
                             )}
                         >
                             {formatedName}

@@ -110,7 +110,7 @@ export const AppPage: FC = () => {
 
                 return (
                     <>
-                        {/* <Navigation/> */}
+                        <Navigation/>
 
                         <div className='flex flex-col h-full items-start py-4 px-[30px]'>
                             <SearchBar

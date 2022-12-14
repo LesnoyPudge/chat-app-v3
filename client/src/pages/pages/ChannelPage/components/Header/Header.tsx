@@ -16,10 +16,7 @@ export const Header: FC = () => {
                 iconId='text-room-icon'
             />
 
-            <span 
-                className='ml-2 text-primary font-bold text-ellipsis
-                overflow-hidden whitespace-nowrap'
-            >
+            <span className='ml-2 text-primary font-bold truncated'>
                 {roomLabel}
             </span>
         </TopBar>

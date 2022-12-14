@@ -5,10 +5,6 @@
     --color-bg-primary-400: #292b2f;
     --color-bg-primary-500: #202225;
 
-    --color-bg-secondary-100: #5865f2;
-    --color-bg-secondary-200: #4752c4;
-    --color-bg-secondary-300: #3c45a5;
-
     --color-bg-hover: rgba(79, 84, 92, 0.4);
     --color-bg-active: rgba(79, 84, 92, 0.48);
     --color-bg-selected: rgba(79, 84, 92, 0.6);
@@ -16,6 +12,18 @@
     --color-bg-light: var(--color-font-primary);
     --color-bg-message: rgba(5, 5, 6, 0.07);
     --color-bg-slider-track: #4f545c;
+
+    --color-bg-brand: #5865f2;
+    --color-bg-brand-hover: #4752c4;
+    --color-bg-brand-active: #3c45a5;
+
+    --color-bg-danger: hsl(359, 66.7%, 54.1%);
+    --color-bg-danger-hover: hsl(359, 56%, 40%);
+    --color-bg-danger-active: hsl(359, 56.4%, 35.1%);
+
+    --color-bg-neutral: hsl(217, 8%, 34%);
+    --color-bg-neutral-hover: hsl(213, 5%, 42.9%);
+    --color-bg-neutral-active: hsl(218, 4.6%, 46.9%);
 
     --color-font-primary: #ffffff;
     --color-font-secondary: #b9bbbe;

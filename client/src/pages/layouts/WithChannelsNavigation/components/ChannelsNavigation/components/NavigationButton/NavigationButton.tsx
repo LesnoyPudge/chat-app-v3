@@ -14,8 +14,8 @@ interface INavigationButton extends PropsWithChildren {
 
 const themes = {
     brand: {
-        base: 'group-hover:bg-secondary-100 group-focus-within:bg-secondary-100',
-        active: 'bg-secondary-100 rounded-2xl',
+        base: 'group-hover:bg-brand group-focus-within:bg-brand',
+        active: 'bg-brand rounded-2xl',
     },
     action: {
         base: 'group-hover:bg-green group-focus-within:bg-green',

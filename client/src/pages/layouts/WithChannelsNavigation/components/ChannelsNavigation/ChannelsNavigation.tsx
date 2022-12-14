@@ -79,15 +79,17 @@ export const ChannelsNavigation: FC = () => {
                     <>menu</>
                 </ContextMenu>
             </RefContextProvider>
-                
-            <Separator className='w-1/2'/>
 
             <Conditional isRendered={!!channels.length}>
+                <Separator className='w-1/2'/ >
+
                 <FocusableListWrapper className={styles.focusableListWrapper}>
                     <ul className={styles.list}>
                         {channelsList}
                     </ul>
                 </FocusableListWrapper>
+
+                <Separator className='w-1/2'/>
             </Conditional>
 
             <RefContextProvider>

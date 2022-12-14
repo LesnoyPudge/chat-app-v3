@@ -23,7 +23,7 @@ module.exports = {
             fontFamily: {
                 'sans': [ 'Inter', 'Arial', 'Helvetica', ...defaultTheme.fontFamily.sans],
             },
-
+            
             colors: {
                 green: 'var(--green)',
                 white: 'var(--white)',
@@ -61,21 +61,25 @@ module.exports = {
                     400: 'var(--color-bg-primary-400)',
                     500: 'var(--color-bg-primary-500)',
                 },
-                
-                secondary: {
-                    100: 'var(--color-bg-secondary-100)',
-                    200: 'var(--color-bg-secondary-200)',
-                    300: 'var(--color-bg-secondary-300)',
-                },
 
                 hover: 'var(--color-bg-hover)',
                 active: 'var(--color-bg-active)',
                 selected: 'var(--color-bg-selected)',
-
                 light: 'var(--color-bg-light)',
-
                 message: 'var(--color-bg-message)',
                 'slider-track': 'var(--color-bg-slider-track)',
+
+                brand: 'var(--color-bg-brand)',
+                'brand-hover': 'var(--color-bg-brand-hover)',
+                'brand-active': 'var(--color-bg-brand-active)',
+
+                danger: 'var(--color-bg-danger)',
+                'danger-hover': 'var(--color-bg-danger-hover)',
+                'danger-active': 'var(--color-bg-danger-active)',
+
+                neutral: 'var(--color-bg-neutral)',
+                'neutral-hover': 'var(--color-bg-neutral-hover)',
+                'neutral-active': 'var(--color-bg-neutral-active)',
             },
 
             fontSize: {

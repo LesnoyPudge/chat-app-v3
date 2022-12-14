@@ -6,11 +6,10 @@ import { FC } from 'react';
 
 
 const styles = {
-    userInfo: `w-full mr-1 px-1 py-0.5 rounded-md flex items-center 
+    userInfo: `w-full min-w-0 mr-1 px-1 py-0.5 rounded-md flex items-center 
     hover:bg-hover focus-visible:bg-hover focus-within:bg-hover`,
     avatar: 'h-8 w-8',
-    username: `ml-2 text-primary font-semibold text-sm overflow-hidden text-ellipsis 
-    whitespace-nowrap`,
+    username: 'ml-2 text-primary font-semibold text-sm truncated',
     tooltipActive: 'bg-green text-white',
 };
 
@@ -39,9 +38,9 @@ export const UserInfo: FC = () => {
                     <Button
                         className={styles.username}
                         onLeftClick={handleCopy}
-                        label='Скопировать имя'
+                        label={`Скопировать ${username}`}
                     >
-                        {username}
+                        {username + ' sdfsfasdasddsadasdasd'}
                     </Button>
 
                     <Tooltip 

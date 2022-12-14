@@ -1,8 +1,7 @@
-import { Button } from '@components';
+import { HeadingLevel } from '@libs';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
-import { SettingsGroup } from '../../../components';
 import { Banner, Header, Content } from './components';
 
 
@@ -17,7 +16,7 @@ export const ProfileManager: FC<PropsWithClassName> = ({
     className = '',
 }) => {
     return (
-        <SettingsGroup>
+        <HeadingLevel>
             <div className={twClassNames(styles.wrapper, className)}>
                 <Banner/>
                 
@@ -27,6 +26,6 @@ export const ProfileManager: FC<PropsWithClassName> = ({
                     <Content/>
                 </div>
             </div>
-        </SettingsGroup>
+        </HeadingLevel>
     );
 };

@@ -14,8 +14,8 @@ const styles = {
 };
 
 export const UserToolBar: FC = () => {
-    const [isVoiceMuted, toggleVoice] = useToggle();
-    const [isSoundMuted, toggleSound] = useToggle();
+    const [isVoiceMuted, toggleVoice] = useToggle(false);
+    const [isSoundMuted, toggleSound] = useToggle(false);
 
     const voiceIconId = conditional('microphone-muted', 'microphone', isVoiceMuted);
     const soundIconId = conditional('headphone-muted', 'headphone', isSoundMuted);

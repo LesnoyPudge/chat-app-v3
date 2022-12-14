@@ -5,7 +5,7 @@ import React, { FC } from 'react';
 
 
 interface Button extends PropsWithChildrenAndClassName {
-    stylingPreset?: 'brand' | 'link' | 'lite' | 'neutral',
+    stylingPreset?: 'brand' | 'link' | 'lite' | 'brandNeutral' | 'brandDanger',
     type?: 'button' | 'submit' | 'reset';
     isActive?: boolean;
     isDisabled?: boolean;
@@ -17,32 +17,46 @@ interface Button extends PropsWithChildrenAndClassName {
     hasPopup?: 'dialog' | 'menu';
     onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
-    // onMiddleClick?: (e?: React.MouseEvent) => void;
+    onMiddleClick?: (e?: React.MouseEvent) => void;
     onRightClick?: (e?: React.MouseEvent) => void;
     onMouseEnter?: (e?: React.MouseEvent) => void;
     onFocus?: (e?: React.FocusEvent) => void;
 }
 
 const styles = {
-    base: `text-center rounded underline-offset-4 decoration-2 
+    base: `flex shrink-0 items-center min-w-[60px] min-h-[32px] w-fit 
+    text-sm text-center rounded-[3px] underline-offset-4 decoration-2 
     decoration-current py-1 px-3 transition-all duration-100`,
+
     brand: {
-        base: `text-white font-semibold bg-secondary-100 
-        hover:bg-secondary-200 focus-visible:bg-secondary-200 
-        active:bg-secondary-300`,
-        active: 'bg-secondary-300',
+        base: `text-white font-medium bg-brand 
+        hover:bg-brand-hover focus-visible:bg-brand-hover 
+        active:bg-brand-active`,
+        active: 'bg-brand-active',
     },
+
+    brandNeutral: {
+        base: `text-white font-medium bg-neutral 
+        hover:bg-neutral-hover focus-visible:bg-neutral-hover 
+        active:bg-neutral-active`,
+        active: 'bg-neutral-active',
+    },
+
+    brandDanger: {
+        base: `text-white font-medium bg-danger
+        hover:bg-danger-hover focus-visible:bg-danger-hover 
+        active:bg-danger-active`,
+        active: 'bg-danger-active',
+    },
+
     link: {
         base: 'p-0 text-link hover:underline focus-visible:underline',
         active: 'underline',
     },
+
     lite: {
         base: 'text-primary hover:underline focus-visible:underline',
         active: 'underline',
-    },
-    neutral: {
-        base: '',
-        active: '',
     },
 };
 
@@ -60,7 +74,7 @@ export const Button: FC<Button> = ({
     hasPopup,
     onAnyClick,
     onLeftClick,
-    // onMiddleClick,
+    onMiddleClick,
     onRightClick,
     onMouseEnter,
     onFocus,
@@ -90,23 +104,23 @@ export const Button: FC<Button> = ({
         if (onAnyClick) return onAnyClick(e);
     };
 
-    // const handleMiddleClick = (e: React.MouseEvent) => {
-    //     if (!onAnyClick && !onMiddleClick) return;
-    //     if (e.button !== 1) return;
+    const handleMiddleClick = (e: React.MouseEvent) => {
+        if (!onAnyClick && !onMiddleClick) return;
+        if (e.button !== 1) return;
 
-    //     e.preventDefault();
+        e.preventDefault();
 
-    //     if (onMiddleClick) return onMiddleClick(e);
-    //     if (onAnyClick) return onAnyClick(e);
-    // };
+        if (onMiddleClick) return onMiddleClick(e);
+        if (onAnyClick) return onAnyClick(e);
+    };
 
-    // const middleClickFix = (e: React.MouseEvent) => {
-    //     if (!onAnyClick && !onMiddleClick) return;
-    //     if (e.button !== 1) return;
+    const middleClickFix = (e: React.MouseEvent) => {
+        if (!onAnyClick && !onMiddleClick) return;
+        if (e.button !== 1) return;
 
-    //     e.preventDefault();
-    // };
-
+        e.preventDefault();
+    };
+    
     return (
         <button
             className={twClassNames({
@@ -128,10 +142,10 @@ export const Button: FC<Button> = ({
             onKeyDown={handleLeftClickWithKeyboard}
             onClick={handleLeftClick}
             onContextMenu={handleRightClick}
-            // onAuxClick={handleMiddleClick}
+            onAuxClick={handleMiddleClick}
             onFocus={onFocus}
             onMouseEnter={onMouseEnter}
-            // onMouseDown={middleClickFix}
+            onMouseDown={middleClickFix}
         >
             {children}
         </button>

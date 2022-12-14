@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 
 
-type UseToggleType = (initialState?: boolean, secondState?: boolean) => [
+type UseToggleType = (initialState?: boolean) => [
     state: boolean, 
     toggle: () => void,
     set: (nextState: boolean) => void,

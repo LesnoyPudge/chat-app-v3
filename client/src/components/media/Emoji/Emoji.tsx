@@ -58,7 +58,7 @@ export const emojiList: EmojiItem[] = [
 
 export const uniqueEmojiCodeList = emojiList.map((item) => item.code[0]);
 
-const baseClassName = 'flex shrink-0 object-contain';
+const baseClassName = 'inline-block w-6 h-6 shrink-0 object-contain';
 
 export const Emoji: FC<Emoji> = ({
     className = '',

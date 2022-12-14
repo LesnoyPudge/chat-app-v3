@@ -55,12 +55,14 @@ const messages: IMessage[] = messagesContent.map((content, index) => {
 
 const messagesWithHead = [0, 2, 4];
 
+const styles = {
+    wrapper: `flex flex-col justify-center h-[180px] 
+    overflow-hidden rounded-md bg-primary-300`,
+};
+
 export const ChatExample: FC = () => {
     return (
-        <div 
-            className='flex flex-col justify-center h-[180px] 
-            overflow-hidden rounded-md bg-primary-300'
-        >
+        <div className={styles.wrapper}>
             {messages.map((message, index) => (
                 <MessageItem 
                     message={message}

@@ -9,10 +9,11 @@ const styles = {
     inner: `flex h-full justify-end overflow-x-hidden 
     overflow-y-scroll scrollbar-primary `,
     nav: 'w-60 py-[60px] pl-5 pr-1.5 h-fit',
-    group: 'grid gap-0.5',
+    list: 'grid',
+    group: 'grid',
     subList: 'grid gap-0.5',
-    heading: `py-1.5 px-2.5 text-xs text-room font-medium uppercase 
-    cursor-default whitespace-nowrap text-ellipsis overflow-hidden`,
+    heading: `pb-1.5 px-2.5 text-xs text-room font-medium uppercase 
+    cursor-default truncated`,
     item: `w-full py-1.5 px-2.5 text-secondary font-medium 
     rounded-md hover:bg-hover hover:text-primary text-start`,
     logoutButton: 'hover:fill-icon-100 flex justify-between items-center',
@@ -29,9 +30,9 @@ export const NavigationSide: FC = () => {
         <div className={styles.wrapper}>
             <div className={styles.inner}>
                 <nav className={styles.nav}>
-                    <ul className='grid'>
+                    <ul className={styles.list}>
                         <li className={styles.group}>
-                            <span className={twClassNames(styles.heading, 'pt-0')}>
+                            <span className={styles.heading}>
                                 <>Настройки пользователя</>
                             </span>
 
@@ -46,7 +47,7 @@ export const NavigationSide: FC = () => {
                                 </li>
                             </ul>
 
-                            <Separator spacing={8}/>
+                            <Separator spacing={16}/>
                         </li>
 
                         <li className={styles.group}>
@@ -65,13 +66,14 @@ export const NavigationSide: FC = () => {
                                 </li>
                             </ul>
 
-                            <Separator spacing={8}/>
+                            <Separator spacing={16}/>
                         </li>
 
                         <li className={styles.group}>
                             <Button 
                                 className={twClassNames(styles.item, styles.logoutButton)}
                                 onLeftClick={() => console.log('click on logout button')}
+                                label='Выйти из аккаунта'
                             >
                                 <span>Выйти</span>
 
@@ -81,7 +83,7 @@ export const NavigationSide: FC = () => {
                                 />
                             </Button>
 
-                            <Separator spacing={8}/>
+                            <Separator spacing={16}/>
                         </li>
                     </ul>
 

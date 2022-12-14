@@ -22,15 +22,15 @@ interface IPrivateChatItem {
 const styles = {
     wrapper: 'relative group',
     userInfo: {
-        base: `flex items-center w-full h-[42px] p-1 pl-2 pr-10
-        group-hover:bg-hover group-focus-within:bg-hover`,
-        active: 'bg-hover',
+        base: `flex items-center w-full h-[42px] py-1 pl-2 pr-2
+        group-hover:bg-hover group-focus-within:bg-hover
+        group-hover:pr-10 group-focus-within:pr-10`,
+        active: 'bg-hover pr-10',
     },
     avatar: 'h-8 w-8',
     username: {
-        base: `ml-3 font-medium overflow-hidden text-ellipsis 
-        whitespace-nowrap text-muted group-hover:text-normal 
-        group-focus-within:text-normal`,
+        base: `ml-3 font-medium truncated text-muted 
+        group-hover:text-normal group-focus-within:text-normal`,
         active: 'text-normal',
     },
     hideChatButton: {

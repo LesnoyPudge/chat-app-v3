@@ -1,23 +1,15 @@
-import { FC, PropsWithChildren } from 'react';
-import ReactAutoSizer, { SizeType, AutoSizerProps } from '@oyyds/react-auto-sizer';
-import { PropsWithChildrenAsFunction } from '@types';
+import { FC } from 'react';
+import ReactAutoSizer, { AutoSizerProps } from '@oyyds/react-auto-sizer';
 
 
 
-type AutoSizerType = 
-    Omit<AutoSizerProps, keyof PropsWithChildren> 
-    & PropsWithChildrenAsFunction<Required<SizeType>>;
-
-export const AutoSizer: FC<AutoSizerType> = ({
+export const AutoSizer: FC<AutoSizerProps> = ({
     children,
     ...rest
 }) => {
     return (
         <ReactAutoSizer {...rest}>
-            {({ height = 0, width = 0 }) => {
-                const contextValues: Required<SizeType> = { height, width };
-                return children(contextValues);
-            }}
+            {({ height = 0, width = 0 }) => children({ height, width })}
         </ReactAutoSizer>
     );
 };

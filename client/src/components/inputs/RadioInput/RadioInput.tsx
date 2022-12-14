@@ -1,4 +1,5 @@
 import { Button } from '@components';
+import { useToggle } from '@hooks';
 import { twClassNames } from '@utils';
 import { FC, useState } from 'react';
 
@@ -29,75 +30,29 @@ export const RadioInput: FC<IRadioInput> = ({
     value,
     description,
 }) => {
-    const [isActive, setIsActive] = useState(false);
-
-    const handleChange = () => {
-        console.log('change');
-        setIsActive(prev => !prev);
-    };
+    const [isActive, toggleIsActive] = useToggle(false);
 
     return (
-        <>
-            <Button
-                className={twClassNames(
-                    styles.wrapper.base, 
-                    { [styles.wrapper.active]: isActive },
-                )}
-            >
-                <div className={styles.indicatorWrapper}>
-                    <div 
-                        className={twClassNames(
-                            styles.indicatorInner.base, 
-                            { [styles.indicatorInner.notActive]: !isActive },
-                        )}
-                    ></div>
-                </div>
+        <Button
+            className={twClassNames(
+                styles.wrapper.base, 
+                { [styles.wrapper.active]: isActive },
+            )}
+            onLeftClick={toggleIsActive}
+            label={`Выбрать значение ${value} поля ${name}`}
+        >
+            <div className={styles.indicatorWrapper}>
+                <div 
+                    className={twClassNames(
+                        styles.indicatorInner.base, 
+                        { [styles.indicatorInner.notActive]: !isActive },
+                    )}
+                ></div>
+            </div>
 
-                <div className={styles.description}>
-                    {description}
-                </div>
-            </Button>
-            
-            <input 
-                name={name}
-                value={value}
-                type='radio' 
-                checked={isActive}
-                tabIndex={-1}
-                onChange={handleChange}
-            />
-        </>
-        
-    // <label 
-    //     className={twClassNames(
-    //         styles.wrapper.base, 
-    //         { [styles.wrapper.active]: isActive },
-    //     )}
-    //     tabIndex={0}
-    // >
-            
-    //     <input 
-    //         name={name}
-    //         value={value}
-    //         type='radio' 
-    //         checked={isActive}
-    //         tabIndex={-1}
-    //         onChange={handleChange}
-    //     />
-           
-
-    //     <div className={styles.indicatorWrapper}>
-    //         <div 
-    //             className={twClassNames(
-    //                 styles.indicatorInner.base, 
-    //                 { [styles.indicatorInner.notActive]: !isActive },
-    //             )}
-    //         ></div>
-    //     </div>
-
-    //     <div className={styles.description}>
-    //         {description}
-    //     </div>
-    // </label>
+            <div className={styles.description}>
+                {description}
+            </div>
+        </Button>
     );
 };
