@@ -1,6 +1,6 @@
 import { FC, useContext, useRef } from 'react';
 import AuthPageBGSrc from '@assets/auth-page-bg.jpg';
-import { Image, ITabContext, TabContex, TabContexProvider } from '@components';
+import { Image, TabContext, TabContex, TabContexProvider } from '@components';
 import { LoginForm, RegistrationForm } from './tabs';
 import { animated, useTransition } from '@react-spring/web';
 import classNames from 'classnames';
@@ -61,7 +61,7 @@ export const AuthPage: FC = () => {
 };
 
 // const Tab: FC<{identifier: string}> = ({ identifier }) => {
-//     const { currentTab } = useContext(TabContex) as ITabContext;
+//     const { currentTab } = useContext(TabContex) as TabContext;
 //     const transitions = useTransition(identifier === currentTab.identifier, {
 //         from: { opacity: 0 },
 //         enter: { opacity: 1 },

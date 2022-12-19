@@ -1,4 +1,4 @@
-import { ITab, SearchBar, TabContexProvider } from '@components';
+import { Tab, SearchBar, TabContexProvider } from '@components';
 import { FC, useMemo, useState } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { Navigation } from './components';
@@ -8,7 +8,7 @@ import { FriendList, FriendRequestList, BlockedList } from './tabs';
 
 type IdentifiersType = 'OnlineFriends' | 'AllFriends' | 'IncomingRequests' | 'Blocked';
 
-const tabs: ITab[] = [
+const tabs: Tab[] = [
     { 
         identifier: 'OnlineFriends', 
         tab: '', 

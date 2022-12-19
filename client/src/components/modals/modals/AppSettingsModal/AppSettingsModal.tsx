@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { UseTransitionProps } from '@react-spring/web';
 import { ContentSide, NavigationSide } from './components';
-import { ITab, ModalWindow, TabContexProvider } from '@components';
+import { Tab, ModalWindow, TabContexProvider } from '@components';
 import { AppearanceTab, ProfileTab } from './tabs';
 
 
@@ -24,7 +24,7 @@ const transitionOptions: UseTransitionProps = {
     },
 };
 
-const tabs: ITab[] = [
+const tabs: Tab[] = [
     {
         identifier: 'ProfileTab',
         tab: <ProfileTab/>,

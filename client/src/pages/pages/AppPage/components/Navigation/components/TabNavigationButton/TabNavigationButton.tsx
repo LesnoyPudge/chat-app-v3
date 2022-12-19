@@ -1,11 +1,11 @@
-import { Button, ITabContext, TabContex } from '@components';
+import { Button, TabContext, TabContex } from '@components';
 import { twClassNames } from '@utils';
 import classNames from 'classnames';
 import { FC, PropsWithChildren, useContext } from 'react';
 
 
 
-interface ITabNavigationButton extends PropsWithChildren {
+interface TabNavigationButton extends PropsWithChildren {
     identifier: 'OnlineFriends' | 'AllFriends' | 'Blocked' | 'IncomingRequests';
 }
 
@@ -17,8 +17,8 @@ const styles = {
     focus-visible:bg-hover active:text-primary active:bg-active`,
 };
 
-export const TabNavigationButton: FC<ITabNavigationButton> = ({ children, identifier }) => {
-    const { changeTab, currentTab } = useContext(TabContex) as ITabContext;
+export const TabNavigationButton: FC<TabNavigationButton> = ({ children, identifier }) => {
+    const { changeTab, currentTab } = useContext(TabContex) as TabContext;
     const isActive = identifier === currentTab.identifier;
     const handleChangeTab = () => changeTab(identifier);
 

@@ -1,4 +1,4 @@
-import { Button, Icon, ITabContext, Link, Separator, TabContex } from '@components';
+import { Button, Icon, TabContext, Link, Separator, TabContex } from '@components';
 import { twClassNames } from '@utils';
 import { FC, useContext } from 'react';
 
@@ -12,7 +12,7 @@ const styles = {
     list: 'grid',
     group: 'grid',
     subList: 'grid gap-0.5',
-    heading: `pb-1.5 px-2.5 text-xs text-room font-medium uppercase 
+    heading: `pb-1.5 px-2.5 text-xs text-room font-bold uppercase 
     cursor-default truncated`,
     item: `w-full py-1.5 px-2.5 text-secondary font-medium 
     rounded-md hover:bg-hover hover:text-primary text-start`,
@@ -24,7 +24,7 @@ const styles = {
 };
 
 export const NavigationSide: FC = () => {
-    const { changeTab } = useContext(TabContex) as ITabContext;
+    const { changeTab } = useContext(TabContex) as TabContext;
 
     return (
         <div className={styles.wrapper}>

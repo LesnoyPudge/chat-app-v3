@@ -1,44 +1,42 @@
-import { Conditional } from '@components';
-import { twClassNames } from '@utils';
-import classNames from 'classnames';
+import { ChildrenAsNodeOrFunction } from '@components';
+import { PropsWithChildrenAsNodeOrFunction } from '@types';
 import { createContext, FC, ReactNode, useState } from 'react';
 
 
 
-export interface ITab {
+export interface Tab {
     tab: ReactNode;
     identifier: string;
 }
 
-interface ITabContexProviderProps {
-    children?: (args: ITabContext) => JSX.Element;
-    tabs: ITab[];
+interface TabContexProvider extends PropsWithChildrenAsNodeOrFunction<TabContext> {
+    tabs: Tab[];
     initialTabIdentifier?: string;
 }
 
-export interface ITabContext {
-    currentTab: ITab;
-    tabs: ITab[];
+export interface TabContext {
+    currentTab: Tab;
+    tabs: Tab[];
     changeTab: (nextTab: string) => void;
 }
 
-export const TabContex = createContext<ITabContext | undefined>(undefined);
+export const TabContex = createContext<TabContext | undefined>(undefined);
 
-export const TabContexProvider: FC<ITabContexProviderProps> = ({ 
+export const TabContexProvider: FC<TabContexProvider> = ({ 
     children, 
     tabs, 
     initialTabIdentifier = tabs[0].identifier, 
 }) => {
     const getTabByIdentifier = (identifier: string) => tabs.find((tab) => tab.identifier === identifier) || tabs[0];
     
-    const [currentTab, setCurrentTabIdentifier] = useState(() => getTabByIdentifier(initialTabIdentifier));
+    const [currentTab, setCurrentTab] = useState(() => getTabByIdentifier(initialTabIdentifier));
 
     const changeTab = (nextTabIdentifier: string) => {
         if (nextTabIdentifier === currentTab.identifier) return;
-        setCurrentTabIdentifier(getTabByIdentifier(nextTabIdentifier));
+        setCurrentTab(getTabByIdentifier(nextTabIdentifier));
     };
 
-    const contextValues: ITabContext = {
+    const contextValues: TabContext = {
         currentTab,
         tabs,
         changeTab,
@@ -46,25 +44,9 @@ export const TabContexProvider: FC<ITabContexProviderProps> = ({
 
     return (
         <TabContex.Provider value={contextValues}>
-            <Conditional isRendered={!!children}>
-                {children && children({ ...contextValues })} 
-            </Conditional>
-            
-            <Conditional isRendered={!children}>
-                {tabs.map(({ tab, identifier }) => {
-                    const isHidden = currentTab.identifier !== identifier;
-                    const className = twClassNames('contents', { 'hidden': isHidden });
-
-                    return (
-                        <div
-                            className={className}
-                            key={identifier} 
-                        >
-                            {tab}
-                        </div>
-                    );
-                })}
-            </Conditional>
+            <ChildrenAsNodeOrFunction args={contextValues}>
+                {children}
+            </ChildrenAsNodeOrFunction>
         </TabContex.Provider>
     );
 };

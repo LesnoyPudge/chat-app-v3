@@ -1,11 +1,10 @@
 import { FC, useContext } from 'react';
-import { Button, Image, OverlayContext } from '@components';
+import { Button, Image, TabContext, OverlayContext, TabContex } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalContainer } from '../../../../components';
 
 
 
 const styles = {
-    container: 'relative',
     image: `absolute top-0 left-1/2 -translate-x-1/2 
     -translate-y-1/2 h-[140px] w-[140px] object-contain`,
     header: 'pt-16',
@@ -16,15 +15,17 @@ const styles = {
 
 export const RequestCodeSlide: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { changeTab } = useContext(TabContex) as TabContext;
 
     const sendConfirmationCode = () => {
         console.log('send conf code');
+        changeTab('EnterCodeSlide');
     };
 
     const email = 'wow@mail.ru';
 
     return (
-        <ModalContainer className={styles.container}>
+        <ModalContainer className='relative'>
             <Image
                 className={styles.image}
                 src='src/assets/email-confirmation.png'

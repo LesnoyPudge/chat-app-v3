@@ -41,6 +41,7 @@ export const ColorPicker: FC<ColorPicker> = ({
             />
 
             <HexColorInput 
+                className='bg-primary-500 rounded p-2.5'
                 color={color}
                 prefix='#' 
                 prefixed

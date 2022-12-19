@@ -16,7 +16,7 @@ const styles = {
     wrapper: `bg-primary-500 rounded-md w-full text-normal 
     flex shrink-0`,
     input: 'py-1 px-2 w-full',
-    button: 'h-full aspect-square flex shrink-0 group',
+    button: 'aspect-square flex shrink-0 group',
     icon: `h-2/3 aspect-square m-auto fill-icon-300 
     group-hover:fill-icon-200 group-active:fill-icon-200
     group-focus-visible:fill-icon-200`,
@@ -37,6 +37,7 @@ export const SearchBar: FC<ISearchBar> = ({
     };
 
     const iconId = conditional('cross-icon', 'search-icon', !!value);
+    const buttonLabel = conditional('Очистить поиск', 'Перейти к поиску', !!value);
 
     return (
         <div className={twClassNames(styles.wrapper, className)}>
@@ -52,6 +53,7 @@ export const SearchBar: FC<ISearchBar> = ({
             {
                 <Button
                     className={styles.button}
+                    label={buttonLabel}
                     onLeftClick={handleClick}
                 >
                     <Icon
