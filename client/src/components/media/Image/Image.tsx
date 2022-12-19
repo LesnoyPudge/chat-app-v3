@@ -56,9 +56,13 @@ export const Image: FC<Image> = ({
         };
     }, [src]);
 
-    const showImage = (!imageState.loading && !imageState.error) || !!placeholder;
-    const showPlaceholder = imageState.loading && !!placeholder;
-    const showFallback = !imageState.loading && imageState.error && !!fallback;
+    const showImage = (
+        (!imageState.loading && !imageState.error) || 
+        (!placeholder && imageState.loading) || 
+        (!fallback && imageState.error)
+    );
+    const showPlaceholder = !showImage && imageState.loading && !!placeholder;
+    const showFallback = !showImage && !imageState.loading && imageState.error && !fallback;
 
     return (
         <>

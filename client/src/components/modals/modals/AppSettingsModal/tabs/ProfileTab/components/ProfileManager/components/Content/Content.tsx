@@ -1,4 +1,4 @@
-import { Button } from '@components';
+import { Button, ChangeEmailModal, ChangePasswordModal, ChangeUsernameModal, RefContextProvider } from '@components';
 import { useToggle } from '@hooks';
 import { Heading } from '@libs';
 import { conditional } from '@utils';
@@ -41,13 +41,17 @@ export const Content: FC = () => {
                     </div>
                 </div>
     
-                <Button
-                    stylingPreset='brandNeutral'
-                    label='Изменить имя'
-                    hasPopup='dialog'
-                >
-                    <>Изменить</>
-                </Button>
+                <RefContextProvider>
+                    <Button
+                        stylingPreset='brandNeutral'
+                        label='Изменить имя'
+                        hasPopup='dialog'
+                    >
+                        <>Изменить</>
+                    </Button>
+
+                    <ChangeUsernameModal/>
+                </RefContextProvider>
             </li>
 
             <li className={styles.row}>
@@ -70,14 +74,18 @@ export const Content: FC = () => {
                         </Button>
                     </div>
                 </div>
-    
-                <Button
-                    stylingPreset='brandNeutral'
-                    label='Изменить электронную почту'
-                    hasPopup='dialog'
-                >
-                    <>Изменить</>
-                </Button>
+
+                <RefContextProvider>
+                    <Button
+                        stylingPreset='brandNeutral'
+                        label='Изменить электронную почту'
+                        hasPopup='dialog'
+                    >
+                        <>Изменить</>
+                    </Button>
+
+                    <ChangeEmailModal/>
+                </RefContextProvider>
             </li>
 
             <li className={styles.row}>
@@ -93,13 +101,17 @@ export const Content: FC = () => {
                     </div>
                 </div>
     
-                <Button
-                    stylingPreset='brandNeutral'
-                    label='Изменить пароль'
-                    hasPopup='dialog'
-                >
-                    <>Изменить</>
-                </Button>
+                <RefContextProvider>
+                    <Button
+                        stylingPreset='brandNeutral'
+                        label='Изменить пароль'
+                        hasPopup='dialog'
+                    >
+                        <>Изменить</>
+                    </Button>
+
+                    <ChangePasswordModal/>
+                </RefContextProvider>
             </li>
         </ul>
     );

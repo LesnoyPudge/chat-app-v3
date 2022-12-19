@@ -6,6 +6,7 @@ import React, { FC } from 'react';
 
 interface Button extends PropsWithChildrenAndClassName {
     stylingPreset?: 'brand' | 'link' | 'lite' | 'brandNeutral' | 'brandDanger',
+    size?: 'small' | 'medium';
     type?: 'button' | 'submit' | 'reset';
     isActive?: boolean;
     isDisabled?: boolean;
@@ -24,7 +25,7 @@ interface Button extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    base: `flex shrink-0 items-center min-w-[60px] min-h-[32px] w-fit 
+    base: `flex shrink-0 items-center justify-center w-fit 
     text-sm text-center rounded-[3px] underline-offset-4 decoration-2 
     decoration-current py-1 px-3 transition-all duration-100`,
 
@@ -60,8 +61,14 @@ const styles = {
     },
 };
 
+const sizes = {
+    small: 'min-w-[60px] min-h-[32px]',
+    medium: 'min-w-[96px] min-h-[38px]',
+};
+
 export const Button: FC<Button> = ({
     className = '',
+    size,
     stylingPreset,
     type = 'button',
     isActive = false,
@@ -127,6 +134,7 @@ export const Button: FC<Button> = ({
                 [styles.base]: !!stylingPreset,
                 [stylingPreset ? styles[stylingPreset].base : '']: !!stylingPreset,
                 [stylingPreset ? styles[stylingPreset].active : '']: !!stylingPreset && isActive,
+                [size ? sizes[size] : '']: !!size,
                 [className]: !!className,
             })}
             type={type}

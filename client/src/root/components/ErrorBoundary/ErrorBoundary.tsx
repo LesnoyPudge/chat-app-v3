@@ -1,4 +1,4 @@
-import { createContext, FC, PropsWithChildren, useContext, useEffect, useRef } from 'react';
+import { createContext, FC, PropsWithChildren, useContext, useEffect, useLayoutEffect, useRef } from 'react';
 import { ErrorBoundary as ReactErrorBoundary, FallbackProps } from 'react-error-boundary';
 import errorBgImage from '@assets/error-boundary-bg.svg';
 import errorImage from '@assets/error-boundary-image.svg';
@@ -54,7 +54,7 @@ const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
     
     const handleClick = () => handleReset(resetErrorBoundary);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         onCrush();
     }, [onCrush]);
 

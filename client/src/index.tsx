@@ -5,8 +5,4 @@ import { getHTML } from '@utils';
 
 
 
-ReactDOM.createRoot(getHTML().root).render(
-    <StrictMode>
-        <Root/>,
-    </StrictMode>,
-);
+ReactDOM.createRoot(getHTML().root).render(<StrictMode><Root/></StrictMode>);

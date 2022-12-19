@@ -22,7 +22,7 @@ const styles = {
         base: 'text-xs w-full text-secondary',
         error: 'text-error',
     },
-    labelText: 'uppercase',
+    labelText: 'uppercase font-bold',
     required: 'ml-1 mr-1 text-required',
     inputWrapper: 'bg-primary-500 w-full rounded flex',
     input: 'w-full p-2 text-normal',
