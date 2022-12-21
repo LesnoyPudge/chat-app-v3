@@ -1,8 +1,8 @@
 import { FC, useContext, useState } from 'react';
 import { AnimatedTransition, ChildrenAsNodeOrFunction, OverlayContext, OverlayContextProvider, OverlayItem, RefContext, RelativelyPositioned } from '@components';
-import { animated, UseTransitionProps } from '@react-spring/web';
+import { animated } from '@react-spring/web';
 import { Aligment, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { twClassNames } from '@utils';
+import { getTransitionOptions, twClassNames } from '@utils';
 import { useEventListener } from 'usehooks-ts';
 
 
@@ -16,11 +16,7 @@ PropsWithChildrenAsNodeOrFunction<OverlayContext> {
     preferredAligment: Aligment;
 }
 
-const transitionOptions: UseTransitionProps = {
-    from: { opacity: 0, scale: 0.95 },
-    enter: { opacity: 1, scale: 1 },
-    leave: { opacity: 0, scale: 0.95 },
-};
+const transitionOptions = getTransitionOptions.defaultContextMenu();
 
 const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-normal p-5';
 

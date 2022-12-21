@@ -1,6 +1,6 @@
 import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, Tooltip, AnimatedTransition, RefContextProvider } from '@components';
-import { animated, UseTransitionProps } from '@react-spring/web';
-import { twClassNames } from '@utils';
+import { animated } from '@react-spring/web';
+import { getTransitionOptions, twClassNames } from '@utils';
 import { FC, useState } from 'react';
 import { ColorPicker } from './components';
 
@@ -17,11 +17,11 @@ const styles = {
     bannerIcon: 'w-4 h-4 m-auto transition-none',
 };
 
-const colorPickerTransitionOptions: UseTransitionProps = {
-    from: { opacity: 0, translateX: '-10px' },
-    enter: { opacity: 1, translateX: '0px' },
-    leave: { opacity: 0, translateX: '-10px' },
-};
+const colorPickerTransitionOptions = getTransitionOptions.withOpacity({
+    from: { translateX: '-10px' },
+    enter: { translateX: '0px' },
+    leave: { translateX: '-10px' },
+});
 
 export const Banner: FC = () => {
     const [bannerColor, setBannerColor] = useState('#ffffff');

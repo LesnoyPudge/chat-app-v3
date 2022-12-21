@@ -16,6 +16,7 @@ interface Button extends PropsWithChildrenAndClassName {
     pressed?: boolean;
     expanded?: boolean;
     hasPopup?: 'dialog' | 'menu';
+    role?: 'button' | 'menuitem',
     onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onMiddleClick?: (e?: React.MouseEvent) => void;
@@ -79,6 +80,7 @@ export const Button: FC<Button> = ({
     pressed,
     expanded,
     hasPopup,
+    role = 'button',
     onAnyClick,
     onLeftClick,
     onMiddleClick,
@@ -147,6 +149,7 @@ export const Button: FC<Button> = ({
             aria-pressed={pressed}
             aria-expanded={expanded}
             aria-haspopup={hasPopup}
+            role={role}
             onKeyDown={handleLeftClickWithKeyboard}
             onClick={handleLeftClick}
             onContextMenu={handleRightClick}

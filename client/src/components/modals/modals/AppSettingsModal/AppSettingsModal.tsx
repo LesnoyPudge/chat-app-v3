@@ -1,28 +1,12 @@
 import { FC } from 'react';
-import { UseTransitionProps } from '@react-spring/web';
 import { ContentSide, NavigationSide } from './components';
 import { Tab, ModalWindow, TabContexProvider } from '@components';
 import { AppearanceTab, ProfileTab } from './tabs';
+import { getTransitionOptions } from '@utils';
 
 
 
-const transitionOptions: UseTransitionProps = {
-    from: {
-        opacity: 0,
-        scale: 1.2,
-    },
-    enter: {
-        opacity: 1,
-        scale: 1,
-    },
-    leave: {
-        opacity: 0,
-        scale: 1.2,
-    },
-    config: {
-        duration: 200,
-    },
-};
+const transitionOptions = getTransitionOptions.fullScreenModal();
 
 const tabs: Tab[] = [
     {

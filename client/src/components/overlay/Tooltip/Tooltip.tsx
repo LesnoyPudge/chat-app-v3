@@ -1,9 +1,9 @@
 import { FC, useContext, useState } from 'react';
 import { OverlayPortal, Conditional, RelativelyPositioned, RefContext, AnimatedTransition } from '@components';
-import { animated, to, UseTransitionProps } from '@react-spring/web';
+import { animated, to } from '@react-spring/web';
 import { useEventListener } from 'usehooks-ts';
 import { Aligment, PropsWithChildrenAndClassName } from '@types';
-import { twClassNames } from '@utils';
+import { getTransitionOptions, twClassNames } from '@utils';
 
 
 
@@ -14,23 +14,20 @@ interface Tooltip extends PropsWithChildrenAndClassName {
     dependencyList?: unknown[];
 }
 
-const transitionOptions: UseTransitionProps = {
+const transitionOptions = getTransitionOptions.withOpacity({
     from: {
-        opacity: 0,
         offset: 15,
     },
     enter: {
-        opacity: 1,
         offset: 0,
     },
     leave: {
-        opacity: 0,
         offset: 15,
     },
     config: {
         duration: 150,
     },
-};
+});
 
 const baseClassName = `bg-primary-500 text-normal font-bold 
 py-[5px] px-2.5 rounded-md w-max max-w-[300px] shadow-elevation-low`;

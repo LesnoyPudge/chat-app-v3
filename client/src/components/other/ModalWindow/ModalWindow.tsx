@@ -1,7 +1,7 @@
-import { animated, easings, UseTransitionProps } from '@react-spring/web';
+import { animated, UseTransitionProps } from '@react-spring/web';
 import { FC, useContext } from 'react';
 import { AnimatedTransition, Button, ChildrenAsNodeOrFunction, Conditional, OverlayContext, OverlayContextProvider, OverlayItem, RefContext } from '@components';
-import { twClassNames } from '@utils';
+import { getTransitionOptions, twClassNames } from '@utils';
 import { useEventListener } from 'usehooks-ts';
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
@@ -12,15 +12,7 @@ interface ModalWindow extends PropsWithChildrenAsNodeOrFunction<OverlayContext> 
     transitionOptions?: UseTransitionProps;
 }
 
-const defaultTransitionOptions: UseTransitionProps = {
-    from: { opacity: 0, scale: 0 },
-    enter: { opacity: 1, scale: 1 },
-    leave: { opacity: 0, scale: 0 },
-    config: {
-        duration: 350,
-        easing: easings.easeOutBack,
-    },
-};
+const defaultTransitionOptions = getTransitionOptions.defaultModal();
 
 const styles = {
     wrapper: `grid place-items-center fixed w-screen 

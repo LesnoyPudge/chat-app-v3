@@ -16,3 +16,4 @@ export * from './getRandomNumber';
 export * from './isRef';
 export * from './secondsToMs';
 export * from './conditional';
+export * from './getTransitionOptions';
