@@ -1,4 +1,5 @@
-import { Button, ModalWindow, TextInput } from '@components';
+import { Button, ModalWindow } from '@components';
+import { FormikTextInput } from '@libs';
 import { Form, Formik } from 'formik';
 import { FC } from 'react';
 import { ModalContainer, ModalHeader, ModalTitle, ModalSubtitle, ModalContent, ModalFooter } from '../../components';
@@ -44,22 +45,22 @@ export const ChangePasswordModal: FC = () => {
                                 </ModalHeader>
 
                                 <ModalContent className='gap-4'>
-                                    <TextInput
+                                    <FormikTextInput
                                         name='oldPassword'
                                         label='Текущий пароль'
-                                        isRequired
+                                        required
                                     />
 
-                                    <TextInput
+                                    <FormikTextInput
                                         name='newPassword'
                                         label='Новый пароль'
-                                        isRequired
+                                        required
                                     />
 
-                                    <TextInput
+                                    <FormikTextInput
                                         name='newPasswordAgain'
                                         label='Подтверждение нового пароля'
-                                        isRequired
+                                        required
                                     />
                                 </ModalContent>
 

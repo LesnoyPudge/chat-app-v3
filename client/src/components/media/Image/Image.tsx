@@ -72,6 +72,7 @@ export const Image: FC<Image> = ({
                     src={src} 
                     alt={alt}
                     draggable={false}
+                    contentEditable={false}
                 />
             </Conditional>
 

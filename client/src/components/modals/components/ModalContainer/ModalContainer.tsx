@@ -4,8 +4,8 @@ import { twClassNames } from '@utils';
 import { FC } from 'react';
 
 
-
-const baseClassName = `flex flex-col justify-between min-h-[200px] 
+// min-h-[200px] 
+const baseClassName = `flex flex-col justify-between 
 max-h-[calc(100vh-40px)] w-[440px] shadow-elevation-high 
 bg-primary-200 rounded`;
 

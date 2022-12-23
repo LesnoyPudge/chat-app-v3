@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useLayoutEffect, useMemo } from 'react';
+import { FC, PropsWithChildren, useLayoutEffect, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { Descendant, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
@@ -19,7 +19,7 @@ const initialValue: Descendant[] = [
     },
 ];
 
-const plugins = () => {
+const createEditorWithPlugins = () => {
     let editor = createEditor();
     editor = withHistory(editor);
     editor = withReact(editor);
@@ -34,7 +34,7 @@ export const SlateContainer: FC<SlateContainer> = ({
     value = initialValue,
     onChange,
 }) => {
-    const editor = useMemo(plugins, []);
+    const [editor] = useState(() => (createEditorWithPlugins()));
 
     return (
         <ErrorBoundary FallbackComponent={ErrorReset}>

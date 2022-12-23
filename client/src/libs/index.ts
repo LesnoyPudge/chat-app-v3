@@ -3,3 +3,4 @@ export * from './AutoSizer';
 export * from './Heading';
 export * from './NoUiSlider';
 export * from './Placeholder';
+export * from './Formik';

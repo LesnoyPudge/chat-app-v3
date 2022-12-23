@@ -1,4 +1,5 @@
-import { Button, TabContext, TabContex, TextInput } from '@components';
+import { Button, TabContext, TabContex } from '@components';
+import { FormikTextInput } from '@libs';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
 
@@ -24,21 +25,21 @@ export const LoginForm: FC = () => {
                             Мы так рады видеть вас снова!
                         </div>
 
-                        <TextInput
+                        <FormikTextInput
+                            className='mb-5'
                             label='Логин'
                             name='login'
-                            isRequired
+                            required
                             placeholder='myLogin'
-                            className='mb-5'
                         />
 
-                        <TextInput
+                        <FormikTextInput
+                            className='mb-5'
                             label='Пароль'
                             name='password'
                             type='password'
-                            isRequired
+                            required
                             placeholder='myPassword'
-                            className='mb-5'
                         />
 
                         <Button 

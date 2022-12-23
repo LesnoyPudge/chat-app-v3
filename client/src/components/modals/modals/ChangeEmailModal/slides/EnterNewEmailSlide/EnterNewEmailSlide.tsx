@@ -1,7 +1,8 @@
 import { Form } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, OverlayContext, TextInput } from '@components';
+import { Button, OverlayContext } from '@components';
 import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
+import { FormikTextInput } from '@libs';
 
 
 
@@ -22,16 +23,16 @@ export const EnterNewEmailSlide: FC = () => {
                 </ModalHeader>
 
                 <ModalContent className='gap-4'>
-                    <TextInput
+                    <FormikTextInput
                         label='Электронная почта'
                         name='email'
-                        isRequired
+                        required
                     />
 
-                    <TextInput
+                    <FormikTextInput
                         label='Пароль'
                         name='password'
-                        isRequired
+                        required
                     />
                 </ModalContent>
 

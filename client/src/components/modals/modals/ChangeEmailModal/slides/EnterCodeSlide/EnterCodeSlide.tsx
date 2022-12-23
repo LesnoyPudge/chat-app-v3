@@ -1,7 +1,8 @@
 import { Form } from 'formik';
 import { FC } from 'react';
-import { TextInput, Button } from '@components';
+import { Button } from '@components';
 import { ModalHeader, ModalTitle, ModalSubtitle, ModalContent, ModalFooter, ModalContainer } from '../../../../components';
+import { FormikTextInput } from '@libs';
 
 
 
@@ -21,10 +22,10 @@ export const EnterCodeSlide: FC = () => {
                 </ModalHeader>
 
                 <ModalContent>
-                    <TextInput
+                    <FormikTextInput
                         name='accessCode'
                         label='Код подтверждения'
-                        isRequired
+                        required
                     />
 
                     <Button

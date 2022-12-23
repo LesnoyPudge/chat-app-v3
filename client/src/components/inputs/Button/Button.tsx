@@ -89,6 +89,8 @@ export const Button: FC<Button> = ({
     onFocus,
     children,
 }) => {
+    if (!size && !!stylingPreset) size = 'small';
+
     const handleLeftClickWithKeyboard = (e: React.KeyboardEvent) => {
         if (e.code !== 'Enter' && e.code !== 'Space') return;
 

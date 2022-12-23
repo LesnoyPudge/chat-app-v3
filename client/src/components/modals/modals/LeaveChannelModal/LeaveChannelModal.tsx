@@ -18,7 +18,7 @@ export const LeaveChannelModal: FC = () => {
                 return (
                     <ModalContainer>
                         <ModalHeader>
-                            <ModalTitle className='self-start text-heading-l'>
+                            <ModalTitle className='text-start text-heading-l truncated'>
                                 <>Покинуть &apos;{channelName}&apos;</>
                             </ModalTitle>
                         </ModalHeader>

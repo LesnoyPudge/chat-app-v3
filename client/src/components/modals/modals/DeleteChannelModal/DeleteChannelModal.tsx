@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { Button, ModalWindow, TextInput } from '@components';
+import { Button, ModalWindow } from '@components';
 import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../components';
 import { Form, Formik } from 'formik';
+import { FormikTextInput } from '@libs';
 
 
 
@@ -32,7 +33,7 @@ export const DeleteChannelModal: FC = () => {
                         <Form>
                             <ModalContainer>
                                 <ModalHeader>
-                                    <ModalTitle className='self-start text-heading-l'>
+                                    <ModalTitle className='text-start text-heading-l truncated'>
                                         <>Удалить канал &apos;{channelName}&apos;</>
                                     </ModalTitle>
                                 </ModalHeader>
@@ -44,10 +45,10 @@ export const DeleteChannelModal: FC = () => {
                                         <>? Это действие нельзя отменить.</>
                                     </p>
 
-                                    <TextInput
+                                    <FormikTextInput
                                         name='channelName'
                                         label='Введите название канала'
-                                        isRequired
+                                        required
                                     />
                                 </ModalContent>
 

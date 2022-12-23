@@ -1,6 +1,6 @@
 import { EmojiCode, emojiCodeList } from '@components';
-import { BasePoint, Editor, Element, Text, Transforms } from 'slate';
-import { CustomEditor, CustomElement, CustomText } from '../../types';
+import { Editor, Element, Text, Transforms } from 'slate';
+import { CustomEditor } from '../../types';
 
 
 
@@ -17,76 +17,87 @@ export const withEmoji = (editor: CustomEditor) => {
 
     editor.normalizeNode = (entry) => {
         try {
-            const [node, path] = entry;
+            const [entryNode, entryPath] = entry;
+            
+            if (!Text.isText(entryNode)) return normalizeNode(entry);
 
-            if (!Text.isText(node)) return normalizeNode(entry);
+            const [parentNode] = Editor.parent(editor, entryPath);
+            const inParagraph = Element.isElement(parentNode) && parentNode.type === 'paragraph';
 
-            const parent = Editor.parent(editor, path);
-            const isParagraph = parent && Element.isElement(parent[0]) && parent[0].type === 'paragraph';
+            if (!inParagraph) return normalizeNode(entry);
 
-            if (!isParagraph) return normalizeNode(entry);
+            const emojiCodeRegExp = new RegExp(emojiCodeList.map(code => code.replace(/[^a-zA-Z]/g, '\\$&')).join('|'));
 
-            const regExpString = emojiCodeList.map(code => code.replace(/[^a-zA-Z]/g, '\\$&')).join('|');
-            const emojiCodeRegExp = new RegExp(regExpString);
-            const nodeText = node.text.toLowerCase();
-            const match = nodeText.toLowerCase().match(emojiCodeRegExp);
-  
-            if (!match || !match.length) return normalizeNode(entry);
+            const nodeText = entryNode.text.toLowerCase();
+            const match = nodeText.match(emojiCodeRegExp);
+            
+            const noMatch = !match || !match.length;
 
-            const emojiCode = match[0].toLowerCase() as EmojiCode;
+            if (noMatch) return normalizeNode(entry);
 
-            Transforms.wrapNodes(
-                editor,
-                {
-                    type: 'emoji',
-                    code: emojiCode,
-                    children: [{ text: '' }], 
-                },
-                {
-                    at: {
-                        anchor: {
-                            path,
-                            offset: nodeText.indexOf(emojiCode),
-                        },
-                        focus: {
-                            path,
-                            offset: nodeText.indexOf(emojiCode) + emojiCode.length,
-                        },
+            const emojiCode = match[0] as EmojiCode;
+
+            const matchStart = nodeText.indexOf(emojiCode);
+            const matchEnd = matchStart + emojiCode.length;
+            const shouldSelect = nodeText.length === matchEnd;
+
+            Transforms.insertNodes(editor, {
+                type: 'emoji',
+                code: emojiCode,
+                children: [{ text: '' }],
+            }, {
+                at: {
+                    anchor: {
+                        path: entryPath,
+                        offset: matchStart,
                     },
-                    split: true,
+                    focus: {
+                        path: entryPath,
+                        offset: matchEnd,
+                    },
                 },
-            );
+                select: shouldSelect,
+            });
 
             normalizeNode(entry);
         } catch (error) {
             console.log('error cautgh emoji normalize');
+            normalizeNode(entry);
         }
     };
 
     editor.onChange = () => {
         try {
-            const moveOperation = editor.operations.find(operation => operation.type === 'set_selection');
-            const isFound = !!(moveOperation && moveOperation.type === 'set_selection');
-            const withProp = !!(isFound && moveOperation.newProperties && moveOperation.properties);
-            const withAnchor = !!(withProp && moveOperation.newProperties.anchor && moveOperation.properties.anchor);
+            if (!editor.selection) return onChange();
 
-            if (!withAnchor) return onChange();
+            const selectedPath = Editor.node(editor, editor.selection)[1];
+            const [selectedParentNode] = Editor.parent(editor, selectedPath);
 
-            const anchorNew = moveOperation.newProperties.anchor as BasePoint;
-            const anchorOld = moveOperation.properties.anchor as BasePoint;
-            const nodePath = Editor.node(editor, { path: anchorNew.path, offset: anchorNew.offset })[1];
-            const line = editor.children[nodePath[0]] as CustomElement;
-            const element = line.children[nodePath[1]] as unknown as CustomElement | CustomText;
-            const isEmoji = !Text.isText(element) && element.type === 'emoji';
+            const isEmoji = Element.isElement(selectedParentNode) && selectedParentNode.type === 'emoji';
 
             if (!isEmoji) return onChange();
 
+            const moveOperations = editor.operations.filter(operation => operation.type === 'set_selection');
+            const moveOperation = moveOperations[moveOperations.length - 1];
+
+            if (!moveOperation || moveOperation.type !== 'set_selection') return onChange();
+
+            const withProp = !!moveOperation.newProperties && !!moveOperation.properties;
+            const withAnchor = !!withProp && !!moveOperation.newProperties.anchor && !!moveOperation.properties.anchor;
+
+            if (!withAnchor) return onChange();
+
+            const anchorNew = moveOperation.newProperties.anchor!;
+            const anchorOld = moveOperation.properties.anchor!;
+
             const isMoveBackward = anchorNew.path[1] < anchorOld.path[1];
+            
             Transforms.move(editor, { reverse: isMoveBackward }); 
         
             onChange();
         } catch (error) {
-            console.log('error cautgh emoji onchange');
+            console.log('error cautgh emoji onchange', error);
+            onChange();
         }
     };
 

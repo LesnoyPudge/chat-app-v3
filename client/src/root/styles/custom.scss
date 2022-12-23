@@ -180,6 +180,6 @@
     }
 
     .truncated {
-        @apply text-ellipsis overflow-hidden whitespace-nowrap min-w-0;
+        @apply text-ellipsis overflow-hidden whitespace-nowrap min-w-0 w-full;
     }
 }

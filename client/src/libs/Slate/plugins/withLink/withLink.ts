@@ -68,7 +68,8 @@ export const withLink = (editor: CustomEditor) => {
 
             normalizeNode(entry);
         } catch (error) {
-            console.log('errro link normalize');
+            console.log('error link normalize');
+            normalizeNode(entry);
         }
     };
 

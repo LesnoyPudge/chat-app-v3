@@ -1,19 +1,25 @@
-import { useField } from 'formik';
-import { FC, useId, useState } from 'react';
+import { FC, ReactNode, useId, useState } from 'react';
 import { Button, Conditional, Icon } from '@components';
 import { conditional, twClassNames } from '@utils';
 
 
 
-interface ITextInputProps {
+export interface TextInput {
     className?: string;
     name: string;
     placeholder?: string;
     type?: 'text' | 'email' | 'password';
     maxLength?: number;
     inputMode?: 'text' | 'email';
-    label: string;
-    isRequired?: boolean;
+    label?: string;
+    error?: string;
+    required?: boolean;
+    readOnly?: boolean;
+    disabled?: boolean;
+    value?: string;
+    before?: ReactNode;
+    after?: ReactNode;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const styles = {
@@ -24,13 +30,13 @@ const styles = {
     },
     labelText: 'uppercase font-bold',
     required: 'ml-1 mr-1 text-required',
-    inputWrapper: 'bg-primary-500 w-full rounded flex',
+    inputWrapper: 'flex h-10 w-full bg-primary-500 rounded',
     input: 'w-full p-2 text-normal',
-    typeToggleButton: 'px-2 fill-icon-200 hover:fill-icon-300',
-    typeToggleIcon: 'h-[30px]',
+    typeToggleButton: 'aspect-square p-2 fill-icon-300 hover:fill-icon-100 focus-visible:fill-icon-100',
+    typeToggleIcon: 'h-full w-full',
 };
 
-export const TextInput: FC<ITextInputProps> = ({ 
+export const TextInput: FC<TextInput> = ({ 
     className = '', 
     name,
     placeholder = '',
@@ -38,70 +44,85 @@ export const TextInput: FC<ITextInputProps> = ({
     maxLength = 32, 
     inputMode = 'text',
     label,
-    isRequired = false,
+    error,
+    required = false,
+    readOnly = false,
+    disabled = false,
+    value,
+    before,
+    after,
+    onChange,
 }) => {
-    const [field, meta] = useField(name);
     const [typeState, setTypeState] = useState(type);
     const id = useId();
 
     const handleTypeToggle = () => {
-        setTypeState(prev => prev === 'password' ? 'text' : 'password');
+        const isPassword = typeState === 'password';
+        const newState = conditional('text', 'password', isPassword);
+        setTypeState(newState);
     };
-    
-    const isError = !!(meta.error && meta.touched);
+
     const iconId = conditional('password-eye-on', 'password-eye-off', typeState === 'password');
 
     return (
-        <>
-            <div className={twClassNames(styles.wrapper, className)}>
+        <div className={twClassNames(styles.wrapper, className)}>
+            <Conditional isRendered={!!label || !!error}>
                 <label 
-                    htmlFor={id} 
                     className={twClassNames(
                         styles.label.base, 
-                        { [styles.label.error]: isError },
+                        { [styles.label.error]: !!error },
                     )}
+                    htmlFor={id}
                 >
                     <span className={styles.labelText}>
                         {label}
                     </span>
                     
-                    <Conditional isRendered={isRequired}>
+                    <Conditional isRendered={required}>
                         <span className={styles.required}>
                             *
                         </span>
                     </Conditional>
 
-                    <Conditional isRendered={isError}>
-                        <> &#8722; {meta.error}</>
+                    <Conditional isRendered={!!error}>
+                        <> &#8722; {error}</>
                     </Conditional>
                 </label>
+            </Conditional>
 
-                <div className={styles.inputWrapper}>
-                    <input 
-                        {...field}
-                        id={id}
-                        className={styles.input}
-                        type={typeState} 
-                        placeholder={placeholder}
-                        maxLength={maxLength}
-                        spellCheck={false}
-                        inputMode={inputMode}
-                        required={isRequired}
-                    />
+            <div className={styles.inputWrapper}>
+                {before}
 
-                    <Conditional isRendered={type === 'password'}>
-                        <Button
-                            onLeftClick={handleTypeToggle}
-                            className={styles.typeToggleButton}
-                        >
-                            <Icon 
-                                iconId={iconId}
-                                className={styles.typeToggleIcon}
-                            />
-                        </Button>
-                    </Conditional>
-                </div>
+                <input
+                    className={styles.input}
+                    name={name}
+                    id={id}
+                    type={typeState}
+                    placeholder={placeholder}
+                    maxLength={maxLength}
+                    spellCheck={false}
+                    inputMode={inputMode}
+                    required={required}
+                    readOnly={readOnly}
+                    disabled={disabled}
+                    value={value}
+                    onChange={onChange}
+                />
+
+                {after}
+
+                <Conditional isRendered={type === 'password'}>
+                    <Button
+                        onLeftClick={handleTypeToggle}
+                        className={styles.typeToggleButton}
+                    >
+                        <Icon 
+                            iconId={iconId}
+                            className={styles.typeToggleIcon}
+                        />
+                    </Button>
+                </Conditional>
             </div>
-        </>
+        </div>
     );
 };

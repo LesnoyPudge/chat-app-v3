@@ -30,7 +30,7 @@ export const SlateEmoji: FC<SlateEmoji> = ({
             {...attributes}
         >
             {children}
-                
+              
             <Emoji
                 className={styles.emoji}
                 code={code}

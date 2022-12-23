@@ -29,7 +29,7 @@ const styles = {
     },
     avatar: 'h-8 w-8',
     username: {
-        base: `ml-3 font-medium truncated text-muted 
+        base: `ml-3 font-medium truncated text-start text-muted 
         group-hover:text-normal group-focus-within:text-normal`,
         active: 'text-normal',
     },
