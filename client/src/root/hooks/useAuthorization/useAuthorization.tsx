@@ -7,13 +7,13 @@ export const useAuthorization = () => {
     const timeoutRef = useRef(0);
 
     
-    useEffect(() => {
-        timeoutRef.current = setTimeout(() => {
-            setIsisAuthorized(true);
-        }, 4000);
+    // useEffect(() => {
+    //     timeoutRef.current = setTimeout(() => {
+    //         setIsisAuthorized(true);
+    //     }, 4000);
 
-        return () => {
-            clearTimeout(timeoutRef.current);
-        };
-    }, []);
+    //     return () => {
+    //         clearTimeout(timeoutRef.current);
+    //     };
+    // }, []);
 };

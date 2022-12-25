@@ -1,4 +1,4 @@
-import { useFiles } from '@hooks';
+import { useFileLoader } from '@hooks';
 import { FC, useEffect } from 'react';
 import { Button, UserStatus, Image } from '@components';
 
@@ -23,7 +23,7 @@ const styles = {
 };
 
 export const Header: FC = () => {
-    const { openFileLoader, files } = useFiles({ multiple: true });
+    const { openFileLoader, files } = useFileLoader();
 
     useEffect(() => {
         console.log(files);

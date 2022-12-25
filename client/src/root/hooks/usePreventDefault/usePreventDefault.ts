@@ -1,17 +1,11 @@
-import { useEffect } from 'react';
+import { useEventListener } from 'usehooks-ts';
 
 
 
 export const usePreventDefault = () => {
-    useEffect(() => {
-        const preventDefault = (e: Event) => {
-            e.preventDefault();
-        };
+    const preventDefault = (e: Event) => e.preventDefault();
 
-        document.addEventListener('contextmenu', preventDefault);
-    
-        return () => {
-            document.removeEventListener('contextmenu', preventDefault);
-        };
-    }, []);
+    useEventListener('contextmenu', preventDefault);
+    useEventListener('drop', preventDefault);
+    useEventListener('dragover', preventDefault);
 };

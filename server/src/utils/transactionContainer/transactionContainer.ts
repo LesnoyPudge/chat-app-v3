@@ -20,15 +20,13 @@ export const transactionContainer: TransactionContainerType = async(fn) => {
         if (successfullyCommitted && transactionCounter === 0) return await cb();
     });
 
-    const queryOptions: QueryOptionsType = (extraOptionsObject) => {
+    const queryOptions: QueryOptionsType = (extraOptionsObject = {}) => {
         const optionsObject = { 
             session, 
             lean: true, 
         };
-        if (!optionsObject) return optionsObject;
-        const mergedOptionsObject = { ...optionsObject, ...extraOptionsObject };
-
-        return mergedOptionsObject;
+        
+        return { ...optionsObject, ...extraOptionsObject };
     };
     
     try {

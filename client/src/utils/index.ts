@@ -17,3 +17,4 @@ export * from './isRef';
 export * from './secondsToMs';
 export * from './conditional';
 export * from './getTransitionOptions';
+export * from './encodeFiles';

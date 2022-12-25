@@ -13,6 +13,7 @@ export * from './useWindowSize';
 export * from './useAutoScroll';
 export * from './useResizeObserver';
 export * from './useIsMounted';
-export * from './useFiles';
+export * from './useFileLoader';
 export * from './useRelativePosition';
 export * from './useMousePosition';
+export * from './useFileDrop';

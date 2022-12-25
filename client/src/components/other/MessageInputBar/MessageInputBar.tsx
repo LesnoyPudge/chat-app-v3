@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { SlateEditor, SlateContainer } from '@libs';
 import { Button, Icon } from '@components';
 import { twClassNames } from '@utils';
-import { OpenEmojiPickerButton } from './components';
+import { FileDrop, OpenEmojiPickerButton } from './components';
 
 
 
@@ -27,32 +27,36 @@ export const MessageInputBar: FC<IMessageInputBar> = ({
     placeholder,
 }) => {
     return (
-        <SlateContainer>
-            <div className={twClassNames(styles.wrapper, className)}>
-                <Button className={styles.button}>
-                    <Icon
-                        className={styles.icon}
-                        iconId='add-file-icon'
-                    />
-                </Button>
+        <>
+            <SlateContainer>
+                <div className={twClassNames(styles.wrapper, className)}>
+                    <Button className={styles.button}>
+                        <Icon
+                            className={styles.icon}
+                            iconId='add-file-icon'
+                        />
+                    </Button>
 
-                <SlateEditor
-                    className={styles.editor}
-                    placeholder={placeholder}
-                />
+                    <SlateEditor
+                        className={styles.editor}
+                        placeholder={placeholder}
+                    />
                 
-                <OpenEmojiPickerButton className='h-11'/>
+                    <OpenEmojiPickerButton className='h-11'/>
 
-                <Button 
-                    className={styles.button}
-                    type='submit'
-                >
-                    <Icon
-                        className={styles.icon}
-                        iconId='send-message-icon'
-                    />
-                </Button>
-            </div>
-        </SlateContainer>
+                    <Button 
+                        className={styles.button}
+                        type='submit'
+                    >
+                        <Icon
+                            className={styles.icon}
+                            iconId='send-message-icon'
+                        />
+                    </Button>
+                </div>
+            </SlateContainer>
+
+            <FileDrop/>
+        </>
     );
 };

@@ -1,9 +1,9 @@
-import { FC, useContext, useRef } from 'react';
+import { FC, useRef } from 'react';
 import AuthPageBGSrc from '@assets/auth-page-bg.jpg';
-import { Image, TabContext, TabContex, TabContexProvider } from '@components';
+import { Image, TabContexProvider } from '@components';
 import { LoginForm, RegistrationForm } from './tabs';
-import { animated, useTransition } from '@react-spring/web';
 import classNames from 'classnames';
+import { WithTitle } from '@layouts';
 
 
 
@@ -11,52 +11,54 @@ export const AuthPage: FC = () => {
     const someRef = useRef<string | null>(null);
     
     return (
-        <div className='flex h-screen isolate'>
-            <Image
-                className='image-bg-fullscreen'
-                src={AuthPageBGSrc}
-            />
+        <WithTitle title='Авторизация'>
+            <div className='flex h-screen isolate'>
+                <Image
+                    className='image-bg-fullscreen'
+                    src={AuthPageBGSrc}
+                />
 
-            <div className='p-8 rounded bg-primary-200 m-auto w-[480px]'>
-                <TabContexProvider 
-                    tabs={[
-                        { 
-                            identifier: 'LoginForm', 
-                            tab: <LoginForm/>, 
-                        }, 
-                        { 
-                            identifier: 'RegistrationForm', 
-                            tab: <RegistrationForm/>, 
-                        },
-                    ]}
-                >
-                    {({ currentTab, tabs }) => {
-                        someRef.current = currentTab.identifier;
+                <div className='p-8 rounded bg-primary-200 m-auto w-[480px]'>
+                    <TabContexProvider 
+                        tabs={[
+                            { 
+                                identifier: 'LoginForm', 
+                                tab: <LoginForm/>, 
+                            }, 
+                            { 
+                                identifier: 'RegistrationForm', 
+                                tab: <RegistrationForm/>, 
+                            },
+                        ]}
+                    >
+                        {({ currentTab, tabs }) => {
+                            someRef.current = currentTab.identifier;
 
-                        return (
-                            <>
-                                {
-                                    tabs.map(({ identifier, tab }) => {
+                            return (
+                                <>
+                                    {
+                                        tabs.map(({ identifier, tab }) => {
                                         // return <Tab identifier={identifier} key={identifier}/>;
                                         
-                                        return (
-                                            <div key={identifier} className={classNames(
-                                                'contents',
-                                                {
-                                                    'hidden': currentTab.identifier !== identifier,
-                                                },
-                                            )}>
-                                                {tab}
-                                            </div>
-                                        );
-                                    })
-                                }
-                            </>
-                        );
-                    }}
-                </TabContexProvider>
+                                            return (
+                                                <div key={identifier} className={classNames(
+                                                    'contents',
+                                                    {
+                                                        'hidden': currentTab.identifier !== identifier,
+                                                    },
+                                                )}>
+                                                    {tab}
+                                                </div>
+                                            );
+                                        })
+                                    }
+                                </>
+                            );
+                        }}
+                    </TabContexProvider>
+                </div>
             </div>
-        </div>
+        </WithTitle>
     );
 };
 

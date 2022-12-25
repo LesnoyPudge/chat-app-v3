@@ -42,9 +42,9 @@ export const getTransitionOptions: GetTransitionOptions = {
 
     defaultModal: (extendedOptions = {}) => {
         return recursive({}, getWithOpacity(), {
-            from: { scale: 0 },
+            from: { scale: 0.1 },
             enter: { scale: 1 },
-            leave: { scale: 0 },
+            leave: { scale: 0.1 },
             config: {
                 duration: 350,
                 easing: easings.easeOutBack,
