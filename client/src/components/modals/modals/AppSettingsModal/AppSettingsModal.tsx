@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { ContentSide, NavigationSide } from './components';
-import { Tab, ModalWindow, TabContexProvider } from '@components';
+import { Tab, ModalWindow, TabContextProvider } from '@components';
 import { AppearanceTab, ProfileTab } from './tabs';
 import { getTransitionOptions } from '@utils';
 
@@ -22,7 +22,7 @@ const tabs: Tab[] = [
 export const AppSettingsModal: FC = () => {
     return (
         <ModalWindow transitionOptions={transitionOptions}>
-            <TabContexProvider tabs={tabs}>
+            <TabContextProvider tabs={tabs}>
                 {({ currentTab }) => (
                     <div className='flex h-screen w-screen bg-primary-200'>
                         <NavigationSide/>
@@ -32,7 +32,7 @@ export const AppSettingsModal: FC = () => {
                         </ContentSide>
                     </div>
                 )}
-            </TabContexProvider>
+            </TabContextProvider>
         </ModalWindow>
     );
 };

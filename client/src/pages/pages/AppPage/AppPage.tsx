@@ -1,9 +1,8 @@
-import { Tab, SearchBar, TabContexProvider } from '@components';
+import { Tab, SearchBar, TabContextProvider } from '@components';
 import { FC, useMemo, useState } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { Navigation } from './components';
 import { FriendList, FriendRequestList, BlockedList } from './tabs';
-import { WithTitle } from '@layouts';
 
 
 
@@ -104,31 +103,29 @@ export const AppPage: FC = () => {
     };
 
     return (
-        <WithTitle title='Друзья'>
-            <TabContexProvider tabs={tabs}>
-                {({ currentTab }) => {
-                    const currentIdentifier = currentTab.identifier as IdentifiersType;
-                    const tabToShow = tabsByIdentifier[currentIdentifier];
+        <TabContextProvider tabs={tabs}>
+            {({ currentTab }) => {
+                const currentIdentifier = currentTab.identifier as IdentifiersType;
+                const tabToShow = tabsByIdentifier[currentIdentifier];
 
-                    return (
-                        <>
-                            <Navigation/>
+                return (
+                    <>
+                        <Navigation/>
 
-                            <div className='flex flex-col h-full items-start py-4 px-[30px]'>
-                                <SearchBar
-                                    className='mb-5 h-9'
-                                    placeholder='Поиск по имени'
-                                    value={filterValue}
-                                    onChange={handleChange}
-                                    onReset={resetValue}
-                                />
+                        <div className='flex flex-col h-full items-start py-4 px-[30px]'>
+                            <SearchBar
+                                className='mb-5 h-9'
+                                placeholder='Поиск по имени'
+                                value={filterValue}
+                                onChange={handleChange}
+                                onReset={resetValue}
+                            />
 
-                                {tabToShow}
-                            </div>
-                        </>
-                    );
-                }}
-            </TabContexProvider>
-        </WithTitle>
+                            {tabToShow}
+                        </div>
+                    </>
+                );
+            }}
+        </TabContextProvider>
     );
 };

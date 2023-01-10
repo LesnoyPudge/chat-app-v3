@@ -14,12 +14,17 @@ export interface OverlayContext {
     toggleOverlay: () => void;
 }
 
-type OverlayContextProviderType = FC<PropsWithChildrenAsNodeOrFunction<OverlayContext>>;
+interface OverlayContextProvider extends PropsWithChildrenAsNodeOrFunction<OverlayContext> {
+    isOverlayExistInitial?: boolean;
+}
 
 export const OverlayContext = createContext<OverlayContext | undefined>(undefined);
 
-export const OverlayContextProvider: OverlayContextProviderType = ({ children }) => {
-    const [isOverlayExist, toggle, setIsOverlayExist] = useToggle(false);
+export const OverlayContextProvider: FC<OverlayContextProvider> = ({ 
+    children,
+    isOverlayExistInitial = false,
+}) => {
+    const [isOverlayExist, toggle, setIsOverlayExist] = useToggle(isOverlayExistInitial);
     const { isThrottling, throttle } = useThrottle();
 
     const handleClose = useCallback(() => {

@@ -1,4 +1,4 @@
-import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, RefContext, Icon, RefContextProvider, AddFriendModal, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal } from '@components';
+import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, RefContext, Icon, RefContextProvider, AddFriendModal, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider } from '@components';
 import { animated } from '@react-spring/web';
 import { getTransitionOptions } from '@utils';
 import { FC, useContext } from 'react';
@@ -59,85 +59,105 @@ export const ChannelMenu: FC = () => {
                                 role='menu' 
                                 aria-label='Меню канала'
                             >
-                                <RefContextProvider>
-                                    <Button 
-                                        className={styles.button}
-                                        role='menuitem'
-                                        hasPopup='dialog'
-                                        label='Пригласить друзей'
-                                    >
-                                        <span className={styles.buttonText}>
-                                            <>Пригласить друзей</>
-                                        </span>
+                                <OverlayContextProvider>
+                                    {({ openOverlay }) => (
+                                        <>
+                                            <Button 
+                                                className={styles.button}
+                                                role='menuitem'
+                                                hasPopup='dialog'
+                                                label='Пригласить друзей'
+                                                onLeftClick={openOverlay}
+                                            >
+                                                <span className={styles.buttonText}>
+                                                    <>Пригласить друзей</>
+                                                </span>
 
-                                        <Icon
-                                            className={styles.buttonIcon}
-                                            iconId='friend-icon'
-                                        />
-                                    </Button>
+                                                <Icon
+                                                    className={styles.buttonIcon}
+                                                    iconId='friend-icon'
+                                                />
+                                            </Button>
 
-                                    <InviteToChannelModal/>
-                                </RefContextProvider>
+                                            <InviteToChannelModal/>
+                                        </>
+                                    )}
+                                </OverlayContextProvider>
 
-                                <RefContextProvider>
-                                    <Button 
-                                        className={styles.button}
-                                        role='menuitem'
-                                        hasPopup='dialog'
-                                        label='Настройки канала'
-                                    >
-                                        <span className={styles.buttonText}>
-                                            <>Настройки канала</>
-                                        </span>
+                                <OverlayContextProvider>
+                                    {({ openOverlay }) => (
+                                        <>
+                                            <Button 
+                                                className={styles.button}
+                                                role='menuitem'
+                                                hasPopup='dialog'
+                                                label='Настройки канала'
+                                                onLeftClick={openOverlay}
+                                            >
+                                                <span className={styles.buttonText}>
+                                                    <>Настройки канала</>
+                                                </span>
 
-                                        <Icon
-                                            className={styles.buttonIcon}
-                                            iconId='settings-gear'
-                                        />
-                                    </Button>
+                                                <Icon
+                                                    className={styles.buttonIcon}
+                                                    iconId='settings-gear'
+                                                />
+                                            </Button>
 
-                                    <AddFriendModal/>
-                                </RefContextProvider>
+                                            <AddFriendModal/>
+                                        </>
+                                    )}
+                                </OverlayContextProvider>
 
-                                <RefContextProvider>
-                                    <Button 
-                                        className={styles.button}
-                                        role='menuitem'
-                                        hasPopup='dialog'
-                                        label='Покинуть канал'
-                                    >
-                                        <span className={styles.buttonText}>
-                                            <>Покинуть канал</>
-                                        </span>
+                                <OverlayContextProvider>
+                                    {({ openOverlay }) => (
+                                        <>
+                                            <Button 
+                                                className={styles.button}
+                                                role='menuitem'
+                                                hasPopup='dialog'
+                                                label='Покинуть канал'
+                                                onLeftClick={openOverlay}
+                                            >
+                                                <span className={styles.buttonText}>
+                                                    <>Покинуть канал</>
+                                                </span>
 
-                                        <Icon
-                                            className={styles.buttonIcon}
-                                            iconId='doorway-icon'
-                                        />
-                                    </Button>
+                                                <Icon
+                                                    className={styles.buttonIcon}
+                                                    iconId='doorway-icon'
+                                                />
+                                            </Button>
 
-                                    <LeaveChannelModal/>
-                                </RefContextProvider>
+                                            <LeaveChannelModal/>
+                                        </>
+                                    )}
+                                </OverlayContextProvider>
 
-                                <RefContextProvider>
-                                    <Button 
-                                        className={styles.button}
-                                        role='menuitem'
-                                        hasPopup='dialog'
-                                        label='Удалить канал'
-                                    >
-                                        <span className={styles.buttonText}>
-                                            <>Удалить канал</>
-                                        </span>
+                                <OverlayContextProvider>
+                                    {({ openOverlay }) => (
+                                        <>
+                                            <Button 
+                                                className={styles.button}
+                                                role='menuitem'
+                                                hasPopup='dialog'
+                                                label='Удалить канал'
+                                                onLeftClick={openOverlay}
+                                            >
+                                                <span className={styles.buttonText}>
+                                                    <>Удалить канал</>
+                                                </span>
 
-                                        <Icon
-                                            className={styles.buttonIcon}
-                                            iconId='garbage-can-icon'
-                                        />
-                                    </Button>
+                                                <Icon
+                                                    className={styles.buttonIcon}
+                                                    iconId='garbage-can-icon'
+                                                />
+                                            </Button>
 
-                                    <DeleteChannelModal/>
-                                </RefContextProvider>
+                                            <DeleteChannelModal/>
+                                        </>
+                                    )}
+                                </OverlayContextProvider>
                             </div>
                         </animated.div>
                     </RelativelyPositioned>

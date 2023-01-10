@@ -1,4 +1,4 @@
-import { Button, TabContext, TabContex } from '@components';
+import { Button, TabContext} from '@components';
 import { twClassNames } from '@utils';
 import classNames from 'classnames';
 import { FC, PropsWithChildren, useContext } from 'react';
@@ -18,7 +18,7 @@ const styles = {
 };
 
 export const TabNavigationButton: FC<TabNavigationButton> = ({ children, identifier }) => {
-    const { changeTab, currentTab } = useContext(TabContex) as TabContext;
+    const { changeTab, currentTab } = useContext(TabContext) as TabContext;
     const isActive = identifier === currentTab.identifier;
     const handleChangeTab = () => changeTab(identifier);
 

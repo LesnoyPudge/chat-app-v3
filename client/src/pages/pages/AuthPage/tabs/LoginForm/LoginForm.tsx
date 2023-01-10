@@ -1,4 +1,4 @@
-import { Button, TabContext, TabContex } from '@components';
+import { Button, TabContext} from '@components';
 import { FormikTextInput } from '@libs';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
@@ -6,7 +6,7 @@ import { FC, useContext } from 'react';
 
 
 export const LoginForm: FC = () => {
-    const { changeTab } = useContext(TabContex) as TabContext;
+    const { changeTab } = useContext(TabContext) as TabContext;
     const toRegistrationForm = () => changeTab('RegistrationForm');
 
     return (

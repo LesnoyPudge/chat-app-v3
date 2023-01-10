@@ -1,7 +1,6 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
 import { MessageInputBar, MessageList } from '@components';
 import { useNavigator } from '@hooks';
-import { WithTitle } from '@layouts';
 import { FC } from 'react';
 import { Header } from './components';
 
@@ -67,12 +66,12 @@ export const PrivateChatPage: FC = () => {
     const placeholder = `Отправте сообщение для ${friend.username}`;
     
     return (
-        <WithTitle title={friend.username}>
+        <>
             <Header/>
 
             <MessageList/>
 
             <MessageInputBar placeholder={placeholder}/> 
-        </WithTitle>
+        </>
     );
 };

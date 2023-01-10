@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Button, Image, TabContext, OverlayContext, TabContex } from '@components';
+import { Button, Image, OverlayContext, TabContext } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalContainer } from '../../../../components';
 
 
@@ -15,7 +15,7 @@ const styles = {
 
 export const RequestCodeSlide: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const { changeTab } = useContext(TabContex) as TabContext;
+    const { changeTab } = useContext(TabContext) as TabContext;
 
     const sendConfirmationCode = () => {
         console.log('send conf code');

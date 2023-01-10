@@ -1,6 +1,6 @@
 import { EncodedFile } from '@types';
 import { encodeFiles } from '@utils';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 
 
@@ -18,7 +18,7 @@ export const useFileLoader: UseFileLoader = ({ accept = '', multiple = false } =
     const [files, setFiles] = useState<EncodedFile[] | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    useEffect(() => {
+    const openFileLoader = () => {
         fileInputRef.current = document.createElement('input');
 
         const fileInput = fileInputRef.current;
@@ -35,10 +35,7 @@ export const useFileLoader: UseFileLoader = ({ accept = '', multiple = false } =
             });
         };
 
-    }, [accept, multiple]);
-
-    const openFileLoader = () => {
-        fileInputRef.current && fileInputRef.current.click();
+        fileInput.click();
     };
 
     return {

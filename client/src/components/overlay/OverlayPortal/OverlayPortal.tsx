@@ -4,6 +4,8 @@ import { createPortal } from 'react-dom';
 
 
 
+const overlay = getHTML().overlay;
+
 export const OverlayPortal: FC<PropsWithChildren> = ({ children }) => {
-    return createPortal(children, getHTML().overlay);
+    return createPortal(children, overlay);
 };

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Tab, ModalWindow, TabContexProvider } from '@components';
+import { Tab, ModalWindow, TabContextProvider } from '@components';
 import { EnterCodeSlide, EnterNewEmailSlide, RequestCodeSlide } from './slides';
 import { Formik } from 'formik';
 
@@ -36,7 +36,7 @@ export const ChangeEmailModal: FC = () => {
     return (
         <ModalWindow withBackdrop>
             {({ closeOverlay }) => (
-                <TabContexProvider tabs={tabs}>
+                <TabContextProvider tabs={tabs}>
                     {({ currentTab, changeTab }) => {
 
                         const handleSubmit = (values: FormValues) => {
@@ -57,7 +57,7 @@ export const ChangeEmailModal: FC = () => {
                             </Formik>
                         );
                     }}
-                </TabContexProvider>
+                </TabContextProvider>
                 
             )}
         </ModalWindow>

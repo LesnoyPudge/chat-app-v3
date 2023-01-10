@@ -89,6 +89,7 @@ module.exports = {
                 'heading-m': ['17px', '22px'],
                 'heading-s': ['12px', '16px'],
                 xxs: ['10px', '12px'],
+                0: ['0px', '0px'],
             },
 
             boxShadow: {

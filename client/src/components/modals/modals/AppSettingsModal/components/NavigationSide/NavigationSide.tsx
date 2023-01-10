@@ -1,4 +1,4 @@
-import { Button, Icon, TabContext, Link, Separator, TabContex } from '@components';
+import { Button, Icon, TabContext, Link, Separator } from '@components';
 import { twClassNames } from '@utils';
 import { FC, useContext } from 'react';
 
@@ -24,7 +24,7 @@ const styles = {
 };
 
 export const NavigationSide: FC = () => {
-    const { changeTab } = useContext(TabContex) as TabContext;
+    const { changeTab } = useContext(TabContext) as TabContext;
 
     return (
         <div className={styles.wrapper}>

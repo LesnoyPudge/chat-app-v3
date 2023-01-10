@@ -1,4 +1,4 @@
-import { Button, ChangeEmailModal, ChangePasswordModal, ChangeUsernameModal, RefContextProvider } from '@components';
+import { Button, ChangeEmailModal, ChangePasswordModal, ChangeUsernameModal, OverlayContextProvider, RefContextProvider } from '@components';
 import { useToggle } from '@hooks';
 import { Heading } from '@libs';
 import { conditional } from '@utils';
@@ -41,17 +41,22 @@ export const Content: FC = () => {
                     </div>
                 </div>
     
-                <RefContextProvider>
-                    <Button
-                        stylingPreset='brandNeutral'
-                        label='Изменить имя'
-                        hasPopup='dialog'
-                    >
-                        <>Изменить</>
-                    </Button>
+                <OverlayContextProvider>
+                    {({ openOverlay }) => (
+                        <>
+                            <Button
+                                stylingPreset='brandNeutral'
+                                label='Изменить имя'
+                                hasPopup='dialog'
+                                onLeftClick={openOverlay}
+                            >
+                                <>Изменить</>
+                            </Button>
 
-                    <ChangeUsernameModal/>
-                </RefContextProvider>
+                            <ChangeUsernameModal/>
+                        </>
+                    )}
+                </OverlayContextProvider>
             </li>
 
             <li className={styles.row}>
@@ -75,17 +80,22 @@ export const Content: FC = () => {
                     </div>
                 </div>
 
-                <RefContextProvider>
-                    <Button
-                        stylingPreset='brandNeutral'
-                        label='Изменить электронную почту'
-                        hasPopup='dialog'
-                    >
-                        <>Изменить</>
-                    </Button>
+                <OverlayContextProvider>
+                    {({ openOverlay }) => (
+                        <>
+                            <Button
+                                stylingPreset='brandNeutral'
+                                label='Изменить электронную почту'
+                                hasPopup='dialog'
+                                onLeftClick={openOverlay}
+                            >
+                                <>Изменить</>
+                            </Button>
 
-                    <ChangeEmailModal/>
-                </RefContextProvider>
+                            <ChangeEmailModal/>
+                        </>
+                    )}
+                </OverlayContextProvider>
             </li>
 
             <li className={styles.row}>
@@ -101,17 +111,22 @@ export const Content: FC = () => {
                     </div>
                 </div>
     
-                <RefContextProvider>
-                    <Button
-                        stylingPreset='brandNeutral'
-                        label='Изменить пароль'
-                        hasPopup='dialog'
-                    >
-                        <>Изменить</>
-                    </Button>
+                <OverlayContextProvider>
+                    {({ openOverlay }) => (
+                        <>
+                            <Button
+                                stylingPreset='brandNeutral'
+                                label='Изменить пароль'
+                                hasPopup='dialog'
+                                onLeftClick={openOverlay}
+                            >
+                                <>Изменить</>
+                            </Button>
 
-                    <ChangePasswordModal/>
-                </RefContextProvider>
+                            <ChangePasswordModal/>
+                        </>
+                    )}
+                </OverlayContextProvider>
             </li>
         </ul>
     );

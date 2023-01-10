@@ -1,7 +1,7 @@
 import { Conditional } from '@components';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
-import { FC, ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { JSImage } from './JSImage';
 
 
@@ -40,7 +40,7 @@ export const Image: FC<Image> = ({
     const imageRef = useRef(new JSImage());
     const [imageState, setImageState] = useState(states.initial);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const handleLoad = () => setImageState(states.success);
         const handleError = () => setImageState(states.failure);
 

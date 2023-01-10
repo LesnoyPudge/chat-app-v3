@@ -23,8 +23,8 @@ const styles = {
 };
 
 export const FileDrop: FC = () => {
-    const rootRef = useRef(getHTML().root);
-    const { isDragOver } = useFileDrop({ multiple: true }, rootRef);
+    const appRef = useRef(getHTML().app);
+    const { isDragOver } = useFileDrop({ multiple: true }, appRef);
 
     const heading = 'Загрузить на #general';
 

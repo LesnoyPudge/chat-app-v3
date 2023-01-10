@@ -22,7 +22,7 @@
         isolation: isolate;
     }
 
-    #root,
+    #app,
     #overlay {
         position: fixed;
         isolation: isolate;
@@ -33,7 +33,7 @@
         overflow: hidden;
     }
 
-    #root {
+    #app {
         z-index: 1;
     }
 
@@ -60,6 +60,7 @@
         outline: none;
     }
 
+    .focused,
     *:focus-visible {
         outline-color: var(--outline);
         outline-style: solid;
@@ -77,9 +78,9 @@
         }
     }
 
-    input[type="radio"],
-    input[type="file"],
-    input[type="color"],
+    // input[type="radio"],
+    // input[type="file"],
+    // input[type="color"],
     input[type="hidden"] {
         @apply sr-only;
     }

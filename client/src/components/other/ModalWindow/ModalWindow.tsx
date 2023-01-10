@@ -1,8 +1,7 @@
 import { animated, UseTransitionProps } from '@react-spring/web';
 import { FC, useContext } from 'react';
-import { AnimatedTransition, Button, ChildrenAsNodeOrFunction, Conditional, OverlayContext, OverlayContextProvider, OverlayItem, RefContext } from '@components';
+import { AnimatedTransition, ChildrenAsNodeOrFunction, Conditional, OverlayContext, OverlayItem } from '@components';
 import { getTransitionOptions, twClassNames } from '@utils';
-import { useEventListener } from 'usehooks-ts';
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
 
@@ -21,21 +20,13 @@ const styles = {
     focus-hidden opacity-70 -z-10 scale-[999]`,
 };
 
-const ModalWindowInner: FC<ModalWindow> = ({
+export const ModalWindow: FC<ModalWindow> = ({
     withBackdrop = false,
     transitionOptions = defaultTransitionOptions,
     children,
 }) => {
     const overlayValues = useContext(OverlayContext) as OverlayContext;
-    const { openOverlay, closeOverlay, isOverlayExist } = overlayValues;
-    const { targetRef } = useContext(RefContext) as RefContext;
-
-    const handleOpen = () => {  
-        if (!targetRef.current) return;
-        openOverlay();
-    };
-    
-    useEventListener('click', handleOpen, targetRef);
+    const { closeOverlay, isOverlayExist } = overlayValues;
 
     return (
         <AnimatedTransition 
@@ -56,13 +47,12 @@ const ModalWindowInner: FC<ModalWindow> = ({
                         style={style}
                     >
                         <Conditional isRendered={withBackdrop}>
-                            <Button
+                            <div
                                 className={twClassNames(styles.backdrop,
                                     { 'pointer-events-auto': isOverlayExist },
                                 )}
-                                onAnyClick={closeOverlay}
-                                label='Закрыть диалог'
-                            ></Button>
+                                onClick={closeOverlay}
+                            ></div>
                         </Conditional>
                         
                         <div 
@@ -79,13 +69,5 @@ const ModalWindowInner: FC<ModalWindow> = ({
                 </OverlayItem>
             )}   
         </AnimatedTransition>
-    );
-};
-
-export const ModalWindow: FC<ModalWindow> = (props) => {
-    return (
-        <OverlayContextProvider>
-            <ModalWindowInner {...props}/>
-        </OverlayContextProvider>
     );
 };

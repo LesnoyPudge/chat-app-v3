@@ -9,7 +9,7 @@ export interface Tab {
     identifier: string;
 }
 
-interface TabContexProvider extends PropsWithChildrenAsNodeOrFunction<TabContext> {
+interface TabContextProvider extends PropsWithChildrenAsNodeOrFunction<TabContext> {
     tabs: Tab[];
     initialTabIdentifier?: string;
 }
@@ -20,9 +20,9 @@ export interface TabContext {
     changeTab: (nextTab: string) => void;
 }
 
-export const TabContex = createContext<TabContext | undefined>(undefined);
+export const TabContext = createContext<TabContext | undefined>(undefined);
 
-export const TabContexProvider: FC<TabContexProvider> = ({ 
+export const TabContextProvider: FC<TabContextProvider> = ({ 
     children, 
     tabs, 
     initialTabIdentifier = tabs[0].identifier, 
@@ -43,10 +43,10 @@ export const TabContexProvider: FC<TabContexProvider> = ({
     };
 
     return (
-        <TabContex.Provider value={contextValues}>
+        <TabContext.Provider value={contextValues}>
             <ChildrenAsNodeOrFunction args={contextValues}>
                 {children}
             </ChildrenAsNodeOrFunction>
-        </TabContex.Provider>
+        </TabContext.Provider>
     );
 };

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Button, DeleteAccountModal, RefContextProvider, Separator } from '@components';
+import { Button, DeleteAccountModal, OverlayContextProvider, Separator } from '@components';
 import { SectionTitle, SettingsDescription, SettingsGroupTitle } from '../components';
 import { ProfileManager } from './components';
 import { HeadingLevel } from '@libs';
@@ -27,16 +27,21 @@ export const ProfileTab: FC = () => {
                         <>Удалив учётную запись, вы не сможете восстановить её.</>
                     </SettingsDescription>
 
-                    <RefContextProvider>
-                        <Button 
-                            stylingPreset='brandDanger'
-                            hasPopup='dialog'
-                        >
-                            <>Удалить учётную запись</>
-                        </Button>
+                    <OverlayContextProvider>
+                        {({ openOverlay }) => (
+                            <>
+                                <Button 
+                                    stylingPreset='brandDanger'
+                                    hasPopup='dialog'
+                                    onLeftClick={openOverlay}
+                                >
+                                    <>Удалить учётную запись</>
+                                </Button>
 
-                        <DeleteAccountModal/>
-                    </RefContextProvider>
+                                <DeleteAccountModal/>
+                            </>
+                        )}
+                    </OverlayContextProvider>
                 </HeadingLevel>
             </div>
         </HeadingLevel>
