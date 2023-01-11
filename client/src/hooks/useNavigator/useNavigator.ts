@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 
 
-interface IParams {
+interface Params {
     privateChatId?: string;
     channelId?: string;
     roomId?: string,
@@ -11,7 +11,7 @@ interface IParams {
 
 export const useNavigator = () => {
     const navigate = useNavigate();
-    const params = useParams() as IParams;
+    const params = useParams() as Params;
     const { pathname } = useLocation();
 
     const myLocationIs = useMemo(() => ({

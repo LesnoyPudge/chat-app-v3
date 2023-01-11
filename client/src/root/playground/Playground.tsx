@@ -1,4 +1,4 @@
-import { Conditional, CreateChannelModal, OverlayContextProvider } from '@components';
+import { Conditional } from '@components';
 import { FC, PropsWithChildren } from 'react';
 
 
@@ -10,9 +10,7 @@ interface Playground extends PropsWithChildren {
 const PlaygroundInner: FC = () => {
     return (
         <>
-            <OverlayContextProvider isOverlayExistInitial={true}>
-                <CreateChannelModal/>
-            </OverlayContextProvider>
+            
         </>
     );
 };

@@ -6,7 +6,7 @@ import { Playground } from './playground';
 
 
 
-const RootRouter = lazy(() => import('./router'));
+const Router = lazy(() => import('./router'));
 
 export const Root: FC = () => {
     usePageVisibility();
@@ -21,7 +21,7 @@ export const Root: FC = () => {
 
                 <Loader>
                     <Suspense>
-                        <RootRouter/>
+                        <Router/>
                     </Suspense>
                 </Loader>
             </ErrorBoundary>

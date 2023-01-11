@@ -7,6 +7,7 @@ import AppPage from '@pages/AppPage';
 import AuthPage from '@pages/AuthPage';
 import ChannelPage from '@pages/ChannelPage';
 import PrivateChatPage from '@pages/PrivateChatPage';
+import { NavigateToRoom } from './components';
 
 
 
@@ -15,7 +16,7 @@ import PrivateChatPage from '@pages/PrivateChatPage';
 // const PrivateChatPage = lazy(() => import('@pages/PrivateChatPage'));
 // const ChannelPage = lazy(() => import('@pages/ChannelPage'));
 
-export const RootRouter: FC = () => {
+export const Router: FC = () => {
     return (
         <BrowserRouter>
             <Routes>
@@ -40,15 +41,23 @@ export const RootRouter: FC = () => {
                             </Route>
 
                             <Route 
-                                path='channel/:channelId/room/:roomId' 
+                                path='channel/:channelId' 
                                 element={<WithRoomList/>}
                             >
-                                <Route index element={<ChannelPage/>}/>
+                                <Route 
+                                    index
+                                    element={<NavigateToRoom/>}
+                                />
+
+                                <Route 
+                                    path='room/:roomId' 
+                                    element={<ChannelPage/>}
+                                />
                             </Route>
 
                             <Route 
                                 path='*' 
-                                element={<Navigate to={'app'} replace/>}
+                                element={<Navigate to={'/app'} replace/>}
                             />
                         </Route>
                         
@@ -58,7 +67,7 @@ export const RootRouter: FC = () => {
 
                 {/* <Route path='account-activation/:activationLink' element={<>activation page</>}/> */}
             
-                <Route path='*' element={<Navigate to={'/app'} replace />}/>
+                <Route path='*' element={<Navigate to={'/app'} replace/>}/>
             </Routes>
         </BrowserRouter>
     );
