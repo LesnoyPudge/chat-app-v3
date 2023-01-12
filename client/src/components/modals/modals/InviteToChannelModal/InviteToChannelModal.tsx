@@ -2,14 +2,13 @@ import { FC, useState } from 'react';
 import { Button, Conditional, Icon, ModalWindow, SearchBar, Separator, TextInput, UserAvatar } from '@components';
 import { ModalContainer, ModalContent, ModalHeader, ModalTitle } from '../../components';
 import { conditional, copyToClipboard } from '@utils';
+import { useThrottle } from '@hooks';
 
 
 
 export const InviteToChannelModal: FC = () => {
     const [searchValue, setSearchValue] = useState('');
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchValue(e.target.value);
-    const handleReset = () => setSearchValue('');
+    const { throttle, isThrottling } = useThrottle();
 
     const channelName = 'лошок111';
     const invitationCode = 'https://wow.ru/123';
@@ -27,20 +26,25 @@ export const InviteToChannelModal: FC = () => {
         };
     });
 
-    const handleCopyInvitation = () => copyToClipboard(invitationCode);
-
     const filtredPrivateChats = privateChats.filter((privateChat) => {
         return privateChat.users[0].username.includes(searchValue);
     });
 
     const hasFriends = !!privateChats.length;
     const notEmptyList = !!filtredPrivateChats.length;
-
     const invitationCodeFieldLabel = conditional(
         'Или отправьте другу ссылку-приглашение на канал', 
         '', 
         hasFriends,
     );
+    const copyButtonText = conditional('Скопировано!', 'Копировать', isThrottling);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchValue(e.target.value);
+    const handleReset = () => setSearchValue('');
+    const handleCopyInvitation = () => {
+        copyToClipboard(invitationCode);
+        throttle(() => {}, 2000)();
+    };
 
     return (
         <ModalWindow withBackdrop>
@@ -126,7 +130,7 @@ export const InviteToChannelModal: FC = () => {
                                 stylingPreset='brand'
                                 onLeftClick={handleCopyInvitation}
                             >
-                                <>Копировать</>
+                                {copyButtonText}
                             </Button>
                         }
                     />

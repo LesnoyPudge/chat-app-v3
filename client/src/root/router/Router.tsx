@@ -2,12 +2,14 @@ import { FC } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { WithChannelsNavigation, WithPrivateChatList, WithRoomList } from '@layouts';
 import { Loaded, ProtectedRoute } from '../components';
+import { NavigateToRoom } from './components';
 
 import AppPage from '@pages/AppPage';
 import AuthPage from '@pages/AuthPage';
 import ChannelPage from '@pages/ChannelPage';
 import PrivateChatPage from '@pages/PrivateChatPage';
-import { NavigateToRoom } from './components';
+import InvitationPage from '@pages/InvitationPage';
+
 
 
 
@@ -61,7 +63,10 @@ export const Router: FC = () => {
                             />
                         </Route>
                         
-                        <Route path='invitation/:invitationLink' element={<>invitation page</>}/>
+                        <Route 
+                            path='invitation/:invitationLink' 
+                            element={<InvitationPage/>}
+                        />
                     </Route>
                 </Route>
 

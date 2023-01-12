@@ -10,9 +10,9 @@ export const Masks: FC = () => {
 
     return (
         <svg 
+            className='sr-only'
             viewBox='0 0 1 1' 
             aria-hidden='true'
-            className='absolute pointer-events-none -top-px -left-px w-px h-px'
         >
             <mask id='avatar-with-status-mask' {...commonAttributes}>
                 <circle fill='white' cx='0.5' cy='0.5' r='0.5'></circle>

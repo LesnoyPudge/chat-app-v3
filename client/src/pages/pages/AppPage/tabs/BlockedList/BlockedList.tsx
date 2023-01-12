@@ -1,6 +1,7 @@
 import { FC, useMemo } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { ListHeading, List, ListItem, ActionButton } from '../components';
+import { Conditional } from '@components';
 
 
 
@@ -40,11 +41,12 @@ export const BlockedList: FC<IBlockedList> = ({ filterValue }) => {
 
     return (
         <>
-            <ListHeading 
-                isFiltred={isFiltred}
-                filtredListlength={filtredUsers.length}
-            >
-                Заблокировано — {users.length}
+            <ListHeading>
+                <>Заблокировано — {users.length}</>
+                
+                <Conditional isRendered={isFiltred}>
+                    <> Показано — {filtredUsers.length}</>
+                </Conditional>
             </ListHeading>
 
             <List>

@@ -13,7 +13,7 @@ export type ChildrenAsFunction<ARGS> = (args: ARGS) => JSX.Element;
 export type ChildrenAsNodeOrFunction<ARGS = any> = ChildrenAsFunction<ARGS> | ReactNode;
 
 export type PropsWithChildrenAsNodeOrFunction<ARGS = any> = {
-    children: ChildrenAsNodeOrFunction<ARGS>;
+    children?: ChildrenAsNodeOrFunction<ARGS>;
 }
 
 export type PropsWithChildrenAsFunction<ARGS = any> = {

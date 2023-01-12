@@ -1,4 +1,5 @@
-import { Button, Icon, Separator, AddFriendModal, TopBar, RefContextProvider, OverlayContextProvider } from '@components';
+import { Button, Icon, Separator, AddFriendModal, TopBar, OverlayContextProvider } from '@components';
+import { Heading } from '@libs';
 import { FC } from 'react';
 import { TabNavigationButton } from './components';
 
@@ -7,14 +8,14 @@ import { TabNavigationButton } from './components';
 export const Navigation: FC = () => {
     return (
         <TopBar className='px-2 items-center'>
-            <Icon 
-                iconId='friend-icon'
+            <Icon
                 className='h-6 w-6 fill-icon-300 mx-2'
+                iconId='friend-icon'
             /> 
     
-            <h3 className='text-heading-m text-primary font-medium'>
-                Друзья
-            </h3>
+            <Heading className='text-heading-m text-primary font-medium'>
+                <>Друзья</>
+            </Heading>
 
             <Separator spacing={16} orientation='vertical' height={24}/>
 

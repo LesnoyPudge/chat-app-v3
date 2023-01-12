@@ -46,13 +46,13 @@ export const CreateChannelTab: FC = () => {
         
                 <ModalContent>
                     <FormikFileInput
-                        className='flex self-center w-20 h-20 mb-6 bg-primary-300 rounded-full'
+                        className='self-center mb-6'
                         label='Загрузить значок канала'
                         name='avatar'
                         accept='.jpg,.jpeg,.png'
                     >
                         {({ files }) => (
-                            <>
+                            <div className='peer-focus-visible:focused flex w-20 h-20 bg-primary-300 rounded-full'>
                                 <Conditional isRendered={!!files}>
                                     <Image
                                         className='rounded-full'
@@ -75,7 +75,7 @@ export const CreateChannelTab: FC = () => {
                                         </div>
                                     </div>
                                 </Conditional>
-                            </>
+                            </div>
                         )}
                     </FormikFileInput>
 

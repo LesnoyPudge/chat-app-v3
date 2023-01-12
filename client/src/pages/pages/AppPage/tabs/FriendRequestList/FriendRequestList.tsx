@@ -57,11 +57,12 @@ export const FriendRequestList: FC<IFriendRequestList> = ({ filterValue }) => {
 
     return (
         <>
-            <ListHeading 
-                isFiltred={isFiltred}
-                filtredListlength={filtredUsers.length}
-            >
-                Ожидание — {users.length}
+            <ListHeading>
+                <>Ожидание — {users.length}</>
+                
+                <Conditional isRendered={isFiltred}>
+                    <> Показано — {filtredUsers.length}</>
+                </Conditional>
             </ListHeading>
 
             <List>

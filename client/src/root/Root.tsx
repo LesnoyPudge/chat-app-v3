@@ -3,6 +3,7 @@ import { ErrorBoundary, Loader, Masks } from './components';
 import './styles/main.scss';
 import { useAuthorization, usePageVisibility, usePreventDefault, useThemeSwitcher } from './hooks';
 import { Playground } from './playground';
+import { Heading, HeadingLevel } from '@libs';
 
 
 
@@ -15,16 +16,22 @@ export const Root: FC = () => {
     // useAuthorization();
 
     return (
-        <Playground enabled>
-            <ErrorBoundary>
-                <Masks/>
+        <>
+            <Heading className='sr-only'>
+                <>ChatApp</>
+            </Heading>
 
-                <Loader>
-                    <Suspense>
-                        <Router/>
-                    </Suspense>
-                </Loader>
-            </ErrorBoundary>
-        </Playground>
+            <Masks/>
+
+            <Playground enabled>
+                <ErrorBoundary>
+                    <Loader>
+                        <Suspense>
+                            <Router/>
+                        </Suspense>
+                    </Loader>
+                </ErrorBoundary>
+            </Playground>
+        </>
     );
 };

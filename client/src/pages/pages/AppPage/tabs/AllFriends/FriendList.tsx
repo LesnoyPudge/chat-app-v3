@@ -2,6 +2,7 @@ import { FC, useMemo } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { useNavigator } from '@hooks';
 import { ActionButton, List, ListHeading, ListItem } from '../components';
+import { Conditional } from '@components';
 
 
 
@@ -23,11 +24,12 @@ export const FriendList: FC<IFriendList> = ({ filterValue, friends }) => {
 
     return (
         <>
-            <ListHeading 
-                isFiltred={isFiltred}
-                filtredListlength={filtredFriends.length}
-            >
-                Всего друзей — {friends.length}
+            <ListHeading>
+                <>Всего друзей — {friends.length}</>
+                
+                <Conditional isRendered={isFiltred}>
+                    <> Показано — {filtredFriends.length}</>
+                </Conditional>
             </ListHeading>
 
             <List>

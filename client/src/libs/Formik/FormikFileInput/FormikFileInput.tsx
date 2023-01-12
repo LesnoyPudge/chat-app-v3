@@ -20,8 +20,8 @@ PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
 }
 
 const styles = {
-    wrapper: 'relative focus-within:focused',
-    input: 'absolute inset-0 opacity-0 text-0 cursor-pointer',
+    wrapper: 'relative',
+    input: 'absolute z-[1] inset-0 opacity-0 text-0 cursor-pointer peer',
 };
 
 export const FormikFileInput: FC<FormikFileInput> = ({
@@ -45,10 +45,6 @@ export const FormikFileInput: FC<FormikFileInput> = ({
 
     return (
         <div className={twClassNames(styles.wrapper, className)}>
-            <ChildrenAsNodeOrFunction args={{ files: value }}>
-                {children}
-            </ChildrenAsNodeOrFunction>
-
             <input 
                 className={styles.input}
                 accept={accept}
@@ -58,6 +54,10 @@ export const FormikFileInput: FC<FormikFileInput> = ({
                 aria-label={label}
                 onChange={handleChange}
             />
+            
+            <ChildrenAsNodeOrFunction args={{ files: value }}>
+                {children}
+            </ChildrenAsNodeOrFunction>
         </div>
     );
 };

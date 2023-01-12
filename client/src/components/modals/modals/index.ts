@@ -8,3 +8,5 @@ export * from './LeaveChannelModal';
 export * from './DeleteChannelModal';
 export * from './InviteToChannelModal';
 export * from './CreateChannelModal';
+export * from './DeleteRoomModal';
+export * from './CreateRoomModal';

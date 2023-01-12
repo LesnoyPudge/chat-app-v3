@@ -1,4 +1,4 @@
-import { Conditional } from '@components';
+import { Conditional, CreateRoomModal, OverlayContextProvider } from '@components';
 import { FC, PropsWithChildren } from 'react';
 
 
@@ -8,9 +8,12 @@ interface Playground extends PropsWithChildren {
 }
 
 const PlaygroundInner: FC = () => {
+
     return (
         <>
-            
+            <OverlayContextProvider isOverlayExistInitial>
+                <CreateRoomModal/>
+            </OverlayContextProvider>
         </>
     );
 };

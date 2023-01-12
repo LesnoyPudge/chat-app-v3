@@ -1,6 +1,6 @@
-import { createContext, FC, PropsWithChildren, useContext, useEffect, useLayoutEffect, useRef } from 'react';
+import { createContext, FC, PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import { ErrorBoundary as ReactErrorBoundary, FallbackProps } from 'react-error-boundary';
-import errorBgImage from '@assets/error-boundary-bg.svg';
+import errorBgImage from '@assets/backgrounds/error-boundary-bg.svg';
 import errorImage from '@assets/error-boundary-image.svg';
 import { Button, Image } from '@components';
 import { useIsMounted } from '@hooks';
@@ -8,12 +8,12 @@ import { secondsToMs } from '@utils';
 
 
 
-interface IErorrContext {
+interface ErorrContext {
     handleReset: (cb: () => void) => void;
     onCrush: () => void;
 }
 
-const ErorrContext = createContext<IErorrContext | undefined>(undefined);
+const ErorrContext = createContext<ErorrContext | undefined>(undefined);
 
 export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
     const isMounted = useIsMounted();
@@ -35,7 +35,7 @@ export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
         cb();
     };
 
-    const contextValues: IErorrContext = {
+    const contextValues: ErorrContext = {
         handleReset,
         onCrush,
     };
@@ -50,11 +50,11 @@ export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
 };
 
 const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
-    const { handleReset, onCrush } = useContext(ErorrContext) as IErorrContext;
+    const { handleReset, onCrush } = useContext(ErorrContext) as ErorrContext;
     
     const handleClick = () => handleReset(resetErrorBoundary);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         onCrush();
     }, [onCrush]);
 
@@ -71,7 +71,7 @@ const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
                     src={errorImage}
                 />
 
-                <p className='text-heading-l text-primary mb-3 font-semibold'>
+                <p className='text-xl text-primary mb-3 font-semibold'>
                     Как-то неловко получается
                 </p>
 

@@ -1,5 +1,5 @@
 import { FC, useRef } from 'react';
-import AuthPageBGSrc from '@assets/auth-page-bg.jpg';
+import fancyBgSrc from '@assets/backgrounds/fancy-bg.jpg';
 import { Image, TabContextProvider } from '@components';
 import { LoginForm, RegistrationForm } from './tabs';
 import classNames from 'classnames';
@@ -13,10 +13,10 @@ export const AuthPage: FC = () => {
         <div className='flex h-screen isolate'>
             <Image
                 className='image-bg-fullscreen'
-                src={AuthPageBGSrc}
+                src={fancyBgSrc}
             />
 
-            <div className='p-8 rounded bg-primary-200 m-auto w-[480px]'>
+            <div className='flex flex-col p-8 max-[480px]:px-4 m-auto w-[480px] rounded bg-primary-200 shadow-elevation-high'>
                 <TabContextProvider 
                     tabs={[
                         { 

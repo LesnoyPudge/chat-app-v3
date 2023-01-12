@@ -1,5 +1,5 @@
 import { Button, TabContext } from '@components';
-import { FormikTextInput } from '@libs';
+import { FormikTextInput, Heading } from '@libs';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
 
@@ -17,9 +17,9 @@ export const RegistrationForm: FC = () => {
             {() => (
                 <Form>
                     <div className='flex flex-col items-center'>
-                        <h3 className='text-heading-xl text-primary font-bold mb-5'>
-                            Создать учётную запись
-                        </h3>
+                        <Heading className='text-heading-xl text-primary font-bold mb-5 text-center'>
+                            <>Создать учётную запись</>
+                        </Heading>
 
                         <FormikTextInput
                             className='mb-5'

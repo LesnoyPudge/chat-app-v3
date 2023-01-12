@@ -1,5 +1,6 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
 import { FocusableListItem, FocusableListWrapper } from '@components';
+import { Heading } from '@libs';
 import { FC } from 'react';
 import { PrivateChatItem } from './components';
 
@@ -275,9 +276,9 @@ const styles = {
 export const PrivateChatList: FC = () => {
     return (
         <div className={styles.section}>
-            <h2 className={styles.heading}>
-                Личные сообщения
-            </h2>
+            <Heading className={styles.heading}>
+                <>Личные сообщения</>
+            </Heading>
 
             <FocusableListWrapper className={styles.wrapper}>
                 <ul className={styles.list}>

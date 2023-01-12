@@ -1,3 +1,4 @@
+import { HeadingLevel } from '@libs';
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
@@ -11,8 +12,10 @@ export const ModalContent: FC<PropsWithChildrenAndClassName> = ({
     children,
 }) => {
     return (
-        <div className={twClassNames(baseClassName, className)}>
-            {children}
-        </div>
+        <HeadingLevel>
+            <div className={twClassNames(baseClassName, className)}>
+                {children}
+            </div>
+        </HeadingLevel>
     );
 };
