@@ -1,12 +1,20 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, RadioInput, ChildrenAsNodeOrFunction } from '@components';
+import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicator, RadioInputIndicator, Icon } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
-import { FormikContextType, useField, useFormikContext } from 'formik';
-import { Heading } from '@libs';
-import { PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { twClassNames } from '@utils';
+import { FormikContextType, useFormikContext } from 'formik';
+import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
 
 
+
+const styles = {
+    content: 'gap-5',
+    radioGroup: 'flex flex-col gap-2',
+    heading: 'text-xs uppercase text-secondary font-bold',
+    checkBoxContent: 'flex justify-between items-center text-primary font-medium',
+    checkBoxInfo: 'flex gap-1 items-center',
+    checkBoxIcon: 'w-4 h-4 fill-icon-200',
+    checkBoxExtraInfo: 'text-sm text-muted mt-2',
+};
 
 export const CreateRoomTab: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
@@ -23,39 +31,86 @@ export const CreateRoomTab: FC = () => {
                 </ModalTitle>
             </ModalHeader>
 
-            <ModalContent>
-                <div>
-                    <Heading>
+            <ModalContent className={styles.content}>
+                <div className={styles.radioGroup}>
+                    <Heading className={styles.heading}>
                         <>Тип комнаты</>
                     </Heading>
 
-                    <RadioInput
+                    <FormikRadioInput
                         name='roomType'
                         value='text'
-                        description=''
-                    />
+                        label='Текстовый тип комнаты'
+                    >
+                        {({ checked }) => (
+                            <>
+                                <div className='flex items-center gap-3 w-full'>
+                                    <Icon
+                                        className='w-4 h-4 fill-icon-200'
+                                        iconId='text-room-icon'
+                                    />
+                                    
+                                    <div>
+                                        <strong>text</strong>
 
-                    <RadioInput
+                                        <div>some bullshit</div>
+                                    </div>
+                                </div>
+                                
+                                <RadioInputIndicator checked={checked}/>
+                            </>
+                        )}
+                    </FormikRadioInput>
+
+                    <FormikRadioInput
                         name='roomType'
                         value='voice'
-                        description=''
-                    />
-
-                    <RI
-                        name='roomType'
-                        value='text'
-                        label=''
+                        label='Голосовой тип комнаты'
                     >
-                        <span>radio <strong>text</strong></span>
-                    </RI>
+                        {({ checked }) => (
+                            <>
+                                <span className='w-full'>
+                                    <>radio <strong>voice</strong></>
+                                </span>
+                                
+                                <RadioInputIndicator checked={checked}/>
+                            </>
+                        )}
+                    </FormikRadioInput>
+                </div>
 
-                    <RI
-                        name='roomType'
-                        value='voice'
-                        label=''
+                <FormikTextInput
+                    name='name'
+                    label='Название канала'
+                    placeholder='новый-канал'
+                    required
+                />
+
+                <div>
+                    <FormikCheckBox 
+                        name='isPrivate'
+                        label='Название канала'                    
                     >
-                        <span>radio <strong>voice</strong></span>
-                    </RI>
+                        {({ checked }) => (
+                            <div className={styles.checkBoxContent}>
+                                <div className={styles.checkBoxInfo}>
+                                    <Icon
+                                        className={styles.checkBoxIcon}
+                                        iconId='lock-icon'
+                                    />
+
+                                    <span>Приватная комната</span>
+                                </div>
+
+                                <CheckBoxIndicator checked={checked}/>
+                            </div>
+                        )}
+                    </FormikCheckBox>
+
+                    <div className={styles.checkBoxExtraInfo}>
+                        <>Только выбранные участники и участники </>
+                        <>с выбранными ролями смогут просматривать этот канал.</>
+                    </div>
                 </div>
             </ModalContent>
 
@@ -89,89 +144,5 @@ export const CreateRoomTab: FC = () => {
                 </Conditional>
             </ModalFooter>
         </>
-    );
-};
-
-interface ChildrenArgs {
-    checked: boolean;
-}
-
-interface RI extends 
-PropsWithChildrenAsNodeOrFunction<ChildrenArgs>,
-PropsWithClassName {
-    name: string;
-    value: string | number;
-    label: string;
-    indicatorPosition?: 'start' | 'end';
-}
-
-const styles = {
-    wrapper: 'relative min-h-[47px] group',
-    input: 'absolute z-[1] inset-0 opacity-0 text-0 cursor-pointer peer',
-    inner: {
-        base: `flex gap-3.5 p-2.5 rounded-md absolute inset-0 z-0 
-        text-secondary bg-primary-300 peer-focus-visible:focused
-        peer-focus-visible:text-primary peer-focus-visible:bg-primary-100
-        group-hover:text-primary group-hover:bg-primary-100`,
-        active: 'text-primary bg-primary-100',
-    },
-    indicatorWrapper: 'flex shrink-0 w-6 h-6 rounded-full border-2 border-current',
-    indicatorInner: {
-        base: 'm-auto w-3 h-3 scale-0 rounded-full bg-current transition-all',
-        active: 'scale-100',
-    },
-};
-
-const RI: FC<RI> = ({
-    className = '',
-    name,
-    value,
-    label,
-    indicatorPosition = 'start',
-    children,
-}) => {
-    const [{ value: radioGroupValue, onChange }] = useField(name);
-    const checked = value === radioGroupValue;
-
-    const indicator = (
-        <div className={styles.indicatorWrapper}>
-            <div 
-                className={twClassNames(
-                    styles.indicatorInner.base, 
-                    { [styles.indicatorInner.active]: checked },
-                )}
-            ></div>
-        </div>
-    );
-
-    return (
-        <div className={twClassNames(styles.wrapper, className)}>
-            <input 
-                className={styles.input}
-                type='radio' 
-                name={name} 
-                checked={checked}
-                value={value}
-                aria-label={label}
-                onChange={onChange}
-            />
-
-            <div className={twClassNames(
-                styles.inner.base, 
-                { [styles.inner.active]: checked },
-            )}>
-                <Conditional isRendered={indicatorPosition === 'start'}>
-                    {indicator}
-                </Conditional>
-
-                <ChildrenAsNodeOrFunction args={{ checked }}>
-                    {children}
-                </ChildrenAsNodeOrFunction>
-
-                <Conditional isRendered={indicatorPosition === 'end'}>
-                    {indicator}
-                </Conditional>
-            </div>
-        </div>
     );
 };

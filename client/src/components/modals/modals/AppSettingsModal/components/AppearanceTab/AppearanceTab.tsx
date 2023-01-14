@@ -1,7 +1,7 @@
-import { RadioInput, Separator, SliderInput } from '@components';
-import { HeadingLevel } from '@libs';
+import { Separator, SliderInput } from '@components';
+import { FormikRadioInput, HeadingLevel } from '@libs';
 import { FC } from 'react';
-import { SectionTitle, SettingsGroupTitle } from '../components';
+import { SectionTitle, SettingsGroupTitle } from '..';
 import { ChatExample } from './components';
 
 
@@ -23,23 +23,29 @@ export const AppearanceTab: FC = () => {
                         </SettingsGroupTitle>
                 
                         <div className='grid gap-2'>
-                            <RadioInput
+                            <FormikRadioInput
                                 name='theme'
+                                label='Тёмная тема'
                                 value='dark'
-                                description='Тёмная'
-                            />
+                            >
+                                <strong>Тёмная</strong>
+                            </FormikRadioInput>
 
-                            <RadioInput
+                            <FormikRadioInput
                                 name='theme'
+                                label='Светлая тема'
                                 value='light'
-                                description='Светлая'
-                            />
+                            >
+                                <strong>Светлая</strong>
+                            </FormikRadioInput>
 
-                            <RadioInput
+                            <FormikRadioInput
                                 name='theme'
+                                label='Автоматически'
                                 value='auto'
-                                description='Синхронизация с компьютером'
-                            />
+                            >
+                                <strong>Синхронизация с компьютером</strong>
+                            </FormikRadioInput>
                         </div>
                     </div>
                 </HeadingLevel>
@@ -52,17 +58,21 @@ export const AppearanceTab: FC = () => {
                     </SettingsGroupTitle>
 
                     <div className='grid gap-2'>
-                        <RadioInput
-                            name='message-display-type'
+                        <FormikRadioInput
+                            name='messageDisplayType'
+                            label='Стандартное отображение'
                             value='cozy'
-                            description='Уютно — современно, красиво и приятно для глаз.'
-                        />
-
-                        <RadioInput
-                            name='message-display-type'
+                        >
+                            <><strong>Уютно</strong> — современно, красиво и приятно для глаз.</>
+                        </FormikRadioInput>
+                            
+                        <FormikRadioInput
+                            name='messageDisplayType'
+                            label='Компактное отображение'
                             value='compact'
-                            description='Компактно — на экране помещается больше сообщений.'
-                        />
+                        >
+                            <><strong>Компактно</strong> — на экране помещается больше сообщений.</>
+                        </FormikRadioInput>
                     </div>
                 </HeadingLevel>
 

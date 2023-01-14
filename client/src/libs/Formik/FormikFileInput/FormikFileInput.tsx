@@ -1,6 +1,6 @@
-import { ChildrenAsNodeOrFunction } from '@components';
+import { ChildrenAsNodeOrFunction, FileInput } from '@components';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { encodeFiles, twClassNames } from '@utils';
+import { encodeFiles } from '@utils';
 import { useField, useFormikContext } from 'formik';
 import { FC } from 'react';
 
@@ -16,13 +16,8 @@ PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
     name: string;
     accept?: string;
     multiple?: boolean;
-    label?: string; 
+    label: string; 
 }
-
-const styles = {
-    wrapper: 'relative',
-    input: 'absolute z-[1] inset-0 opacity-0 text-0 cursor-pointer peer',
-};
 
 export const FormikFileInput: FC<FormikFileInput> = ({
     className = '',
@@ -32,7 +27,7 @@ export const FormikFileInput: FC<FormikFileInput> = ({
     label,
     children,
 }) => {
-    const [{ value }] = useField(name);
+    const [{ value: files }] = useField(name);
     const { setFieldValue } = useFormikContext();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,20 +39,17 @@ export const FormikFileInput: FC<FormikFileInput> = ({
     };
 
     return (
-        <div className={twClassNames(styles.wrapper, className)}>
-            <input 
-                className={styles.input}
-                accept={accept}
-                multiple={multiple}
-                type='file'
-                name={name}
-                aria-label={label}
-                onChange={handleChange}
-            />
-            
-            <ChildrenAsNodeOrFunction args={{ files: value }}>
+        <FileInput
+            className={className}
+            label={label}
+            name={name}
+            accept={accept}
+            multiple={multiple}
+            onChange={handleChange}
+        >
+            <ChildrenAsNodeOrFunction args={{ files }}>
                 {children}
             </ChildrenAsNodeOrFunction>
-        </div>
+        </FileInput>
     );
 };

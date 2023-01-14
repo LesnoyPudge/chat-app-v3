@@ -23,7 +23,7 @@ export const Root: FC = () => {
 
             <Masks/>
 
-            <Playground enabled>
+            <Playground enabled={true}>
                 <ErrorBoundary>
                     <Loader>
                         <Suspense>

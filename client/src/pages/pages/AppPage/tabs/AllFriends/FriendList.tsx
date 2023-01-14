@@ -56,8 +56,8 @@ export const FriendList: FC<IFriendList> = ({ filterValue, friends }) => {
 
                                         <ActionButton
                                             buttonClassName='ml-2'
-                                            iconClassName='group-2-hover:fill-red
-                                            group-2-focus-visible:fill-red'
+                                            iconClassName='group-1-hover:fill-red
+                                            group-1-focus-visible:fill-red'
                                             iconId='garbage-can-icon'
                                             tooltipContent='Удалить из друзей'
                                             onClick={() => {console.log('delete friend');}}

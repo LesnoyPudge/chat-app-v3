@@ -4,31 +4,25 @@ import { FC, useId } from 'react';
 
 
 
-interface RadioInput extends PropsWithChildrenAndClassName {
+interface CheckBox extends PropsWithChildrenAndClassName {
     name: string;
     label: string;
     checked: boolean;
-    value: string | number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const styles = {
-    label: {
-        base: `cursor-pointer block min-h-[47px] flex items-center gap-3.5 p-2.5 rounded-md
-        text-secondary bg-primary-300 hover:text-primary hover:bg-primary-100`,
-        active: 'text-primary bg-primary-100', 
-    },
-    input: 'sr-only [&:focus-visible+*]:focused peer',
+    label: 'cursor-pointer block',
+    input: 'sr-only [&:focus-visible+*]:focused',
 };
 
-export const RadioInput: FC<RadioInput> = ({
+export const CheckBox: FC<CheckBox> = ({
     className = '',
     name,
     label,
     checked,
-    value,
-    children,
     onChange,
+    children,
 }) => {
     const id = useId();
 
@@ -36,9 +30,8 @@ export const RadioInput: FC<RadioInput> = ({
         <>
             <input 
                 className={styles.input}
-                type='radio' 
+                type='checkbox' 
                 name={name}
-                value={value}
                 checked={checked}
                 aria-label={label}
                 id={id}
@@ -46,15 +39,11 @@ export const RadioInput: FC<RadioInput> = ({
             />
 
             <label 
-                className={twClassNames(
-                    styles.label.base, 
-                    { [styles.label.active]: checked },
-                    className,
-                )}
+                className={twClassNames(styles.label, className)}
                 htmlFor={id}
             >
                 {children}
-            </label>
+            </label>   
         </>
     );
 };

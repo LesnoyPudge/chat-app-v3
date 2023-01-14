@@ -64,6 +64,7 @@
         "yup": "^0.32.11"
     },
     "devDependencies": {
+        "@axe-core/react": "^4.5.2",
         "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
         "@testing-library/jest-dom": "^5.16.4",
         "@testing-library/react": "^13.3.0",

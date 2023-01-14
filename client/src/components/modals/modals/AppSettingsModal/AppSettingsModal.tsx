@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { ContentSide, NavigationSide } from './components';
+import { ContentSide, NavigationSide, AppearanceTab, ProfileTab } from './components';
 import { Tab, ModalWindow, TabContextProvider } from '@components';
-import { AppearanceTab, ProfileTab } from './tabs';
 import { getTransitionOptions } from '@utils';
+import { Form, Formik } from 'formik';
 
 
 
@@ -22,17 +22,24 @@ const tabs: Tab[] = [
 export const AppSettingsModal: FC = () => {
     return (
         <ModalWindow transitionOptions={transitionOptions}>
-            <TabContextProvider tabs={tabs}>
-                {({ currentTab }) => (
-                    <div className='flex h-screen w-screen bg-primary-200'>
-                        <NavigationSide/>
+            <Formik
+                initialValues={{ theme: 'dark', messageDisplayType: 'cozy' }}
+                onSubmit={(values) => {console.log('submit', values);}}
+            >
+                <Form>
+                    <TabContextProvider tabs={tabs}>
+                        {({ currentTab }) => (
+                            <div className='flex h-screen w-screen bg-primary-200'>
+                                <NavigationSide/>
     
-                        <ContentSide>
-                            {currentTab.tab}
-                        </ContentSide>
-                    </div>
-                )}
-            </TabContextProvider>
+                                <ContentSide>
+                                    {currentTab.tab}
+                                </ContentSide>
+                            </div>
+                        )}
+                    </TabContextProvider>
+                </Form>
+            </Formik>
         </ModalWindow>
     );
 };

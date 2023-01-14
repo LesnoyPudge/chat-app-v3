@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { Button, DeleteAccountModal, OverlayContextProvider, Separator } from '@components';
-import { SectionTitle, SettingsDescription, SettingsGroupTitle } from '../components';
 import { ProfileManager } from './components';
 import { HeadingLevel } from '@libs';
+import { SectionTitle, SettingsDescription, SettingsGroupTitle } from '..';
 
 
 
