@@ -18,7 +18,10 @@ const initialValues: FormValues = {
 
 export const ChangeUsernameModal: FC = () => {
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow 
+            label='Изменить имя пользователя'
+            withBackdrop
+        >
             {({ closeOverlay }) => {
                 const handleSubmit = (values: FormValues) => {
                     console.log('change username submit', values);

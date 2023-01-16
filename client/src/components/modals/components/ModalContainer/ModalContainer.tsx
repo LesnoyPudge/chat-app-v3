@@ -14,10 +14,8 @@ export const ModalContainer: FC<PropsWithChildrenAndClassName> = ({
     children,
 }) => {
     return (
-        <HeadingLevel>
-            <div className={twClassNames(baseClassName, className)}>
-                {children}
-            </div>
-        </HeadingLevel>
+        <div className={twClassNames(baseClassName, className)}>
+            {children}
+        </div>
     );
 };

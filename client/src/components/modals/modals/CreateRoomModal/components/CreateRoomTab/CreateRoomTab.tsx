@@ -1,8 +1,9 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicator, RadioInputIndicator, Icon } from '@components';
+import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicator, RadioInputIndicator, Icon, FieldLabel, PasswordTextToggleButton, PasswordTextToggle, RequiredWildcard, ErrorMessage, TextInputWrapper } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { FormikContextType, useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
+import { TI } from 'src/components/inputs/TextInput/TI';
 
 
 
@@ -27,7 +28,7 @@ export const CreateRoomTab: FC = () => {
         <>
             <ModalHeader>
                 <ModalTitle>
-                    <>Создать канал</>
+                    <>Создать комнату</>
                 </ModalTitle>
             </ModalHeader>
 
@@ -69,9 +70,18 @@ export const CreateRoomTab: FC = () => {
                     >
                         {({ checked }) => (
                             <>
-                                <span className='w-full'>
-                                    <>radio <strong>voice</strong></>
-                                </span>
+                                <div className='flex items-center gap-3 w-full'>
+                                    <Icon
+                                        className='w-4 h-4 fill-icon-200'
+                                        iconId='voice-room-icon'
+                                    />
+                                    
+                                    <div>
+                                        <strong>voice</strong>
+
+                                        <div>some bullshit 2</div>
+                                    </div>
+                                </div>
                                 
                                 <RadioInputIndicator checked={checked}/>
                             </>
@@ -81,10 +91,40 @@ export const CreateRoomTab: FC = () => {
 
                 <FormikTextInput
                     name='name'
-                    label='Название канала'
-                    placeholder='новый-канал'
+                    label='Название комнаты'
+                    placeholder='новыая-комната'
                     required
                 />
+
+                <PasswordTextToggle initialType='password'>
+                    {({ type, toggleType }) => (
+                        <div>
+                            <FieldLabel htmlFor='1'>
+                                <>Password Field</>
+
+                                <RequiredWildcard/>
+
+                                <ErrorMessage>
+                                    <>Необходимо заполнить поле</>
+                                </ErrorMessage>
+                            </FieldLabel>
+    
+                            <TextInputWrapper>
+                                <TI
+                                    name='name'
+                                    label='Some'
+                                    type={type}
+                                    id='1'
+                                />
+    
+                                <PasswordTextToggleButton
+                                    type={type}
+                                    onToggle={toggleType}
+                                />
+                            </TextInputWrapper>
+                        </div>
+                    )}
+                </PasswordTextToggle>
 
                 <div>
                     <FormikCheckBox 

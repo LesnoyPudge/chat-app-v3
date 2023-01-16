@@ -20,25 +20,25 @@ export const Navigation: FC = () => {
             <Separator spacing={16} orientation='vertical' height={24}/>
 
             <ul className='flex gap-4'>
-                <li className='contents'>
+                <li>
                     <TabNavigationButton identifier='OnlineFriends'>
                         В сети
                     </TabNavigationButton>
                 </li>
                 
-                <li className='contents'>
+                <li>
                     <TabNavigationButton identifier='AllFriends'>
                         Все
                     </TabNavigationButton>
                 </li>
 
-                <li className='contents'>
+                <li>
                     <TabNavigationButton identifier='IncomingRequests'>
                         Ожидение
                     </TabNavigationButton>
                 </li>
 
-                <li className='contents'>
+                <li>
                     <TabNavigationButton identifier='Blocked'>
                         Заблокированные
                     </TabNavigationButton>
@@ -48,11 +48,12 @@ export const Navigation: FC = () => {
             <Separator spacing={16} orientation='vertical' height={24}/>
 
             <OverlayContextProvider>
-                {({ openOverlay }) => (
+                {({ openOverlay, isOverlayExist }) => (
                     <>
                         <Button 
                             stylingPreset='brand'
                             hasPopup='dialog'
+                            expanded={isOverlayExist}
                             label='Добавить друзей'
                             onLeftClick={openOverlay}
                         >

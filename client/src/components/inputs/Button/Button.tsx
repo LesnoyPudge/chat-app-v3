@@ -132,6 +132,9 @@ export const Button: FC<Button> = ({
 
         e.preventDefault();
     };
+
+    const isExpanded = (isActive && !!hasPopup) || expanded;
+    const isPressed = (isActive && !hasPopup) || pressed;
     
     return (
         <button
@@ -149,8 +152,8 @@ export const Button: FC<Button> = ({
             disabled={isDisabled}
             tabIndex={tabIndex}
             aria-label={label}
-            aria-pressed={pressed}
-            aria-expanded={expanded}
+            aria-pressed={isPressed}
+            aria-expanded={isExpanded}
             aria-haspopup={hasPopup}
             role={role}
             onKeyDown={handleLeftClickWithKeyboard}

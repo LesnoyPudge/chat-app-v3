@@ -42,12 +42,13 @@ export const Content: FC = () => {
                 </div>
     
                 <OverlayContextProvider>
-                    {({ openOverlay }) => (
+                    {({ openOverlay, isOverlayExist }) => (
                         <>
                             <Button
                                 stylingPreset='brandNeutral'
                                 label='Изменить имя'
                                 hasPopup='dialog'
+                                expanded={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <>Изменить</>
@@ -81,12 +82,13 @@ export const Content: FC = () => {
                 </div>
 
                 <OverlayContextProvider>
-                    {({ openOverlay }) => (
+                    {({ openOverlay, isOverlayExist }) => (
                         <>
                             <Button
                                 stylingPreset='brandNeutral'
                                 label='Изменить электронную почту'
                                 hasPopup='dialog'
+                                expanded={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <>Изменить</>
@@ -112,12 +114,13 @@ export const Content: FC = () => {
                 </div>
     
                 <OverlayContextProvider>
-                    {({ openOverlay }) => (
+                    {({ openOverlay, isOverlayExist }) => (
                         <>
                             <Button
                                 stylingPreset='brandNeutral'
                                 label='Изменить пароль'
                                 hasPopup='dialog'
+                                expanded={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <>Изменить</>

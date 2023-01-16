@@ -28,11 +28,12 @@ export const ProfileTab: FC = () => {
                     </SettingsDescription>
 
                     <OverlayContextProvider>
-                        {({ openOverlay }) => (
+                        {({ openOverlay, isOverlayExist }) => (
                             <>
                                 <Button 
                                     stylingPreset='brandDanger'
                                     hasPopup='dialog'
+                                    expanded={isOverlayExist}
                                     onLeftClick={openOverlay}
                                 >
                                     <>Удалить учётную запись</>

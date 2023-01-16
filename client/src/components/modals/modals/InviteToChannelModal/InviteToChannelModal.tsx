@@ -47,7 +47,10 @@ export const InviteToChannelModal: FC = () => {
     };
 
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow 
+            withBackdrop
+            label='Пригласить на канал'
+        >
             <ModalContainer>
                 <ModalHeader>
                     <ModalTitle className='text-start font-medium text-base truncated'>

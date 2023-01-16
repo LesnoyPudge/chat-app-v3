@@ -75,7 +75,10 @@ const DeleteAccountModalInner: FC = () => {
 
 export const DeleteAccountModal: FC = () => {
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow 
+            label='Удалить учётную запись'
+            withBackdrop
+        >
             <DeleteAccountModalInner/>
         </ModalWindow>
     );

@@ -12,7 +12,10 @@ export const DeleteRoomModal: FC = () => {
     };
 
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow 
+            label='Удалить комнату'
+            withBackdrop
+        >
             {({ closeOverlay }) => (
                 <ModalContainer>
                     <ModalHeader>

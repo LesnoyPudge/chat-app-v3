@@ -22,7 +22,10 @@ const tabs: Tab[] = [
 
 export const CreateChannelModal: FC = () => {
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow 
+            label='Создать канал'
+            withBackdrop
+        >
             <ModalContainer>
                 <TabContextProvider tabs={tabs}>
                     {({ currentTab }) => (

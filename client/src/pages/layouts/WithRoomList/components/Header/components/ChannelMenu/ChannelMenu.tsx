@@ -60,12 +60,13 @@ export const ChannelMenu: FC = () => {
                                 aria-label='Меню канала'
                             >
                                 <OverlayContextProvider>
-                                    {({ openOverlay }) => (
+                                    {({ openOverlay, isOverlayExist }) => (
                                         <>
                                             <Button 
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
+                                                expanded={isOverlayExist}
                                                 label='Пригласить друзей'
                                                 onLeftClick={openOverlay}
                                             >
@@ -85,12 +86,13 @@ export const ChannelMenu: FC = () => {
                                 </OverlayContextProvider>
 
                                 <OverlayContextProvider>
-                                    {({ openOverlay }) => (
+                                    {({ openOverlay, isOverlayExist }) => (
                                         <>
                                             <Button 
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
+                                                expanded={isOverlayExist}
                                                 label='Настройки канала'
                                                 onLeftClick={openOverlay}
                                             >
@@ -110,12 +112,13 @@ export const ChannelMenu: FC = () => {
                                 </OverlayContextProvider>
 
                                 <OverlayContextProvider>
-                                    {({ openOverlay }) => (
+                                    {({ openOverlay, isOverlayExist }) => (
                                         <>
                                             <Button 
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
+                                                expanded={isOverlayExist}
                                                 label='Покинуть канал'
                                                 onLeftClick={openOverlay}
                                             >
@@ -135,12 +138,13 @@ export const ChannelMenu: FC = () => {
                                 </OverlayContextProvider>
 
                                 <OverlayContextProvider>
-                                    {({ openOverlay }) => (
+                                    {({ openOverlay, isOverlayExist }) => (
                                         <>
                                             <Button 
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
+                                                expanded={isOverlayExist}
                                                 label='Удалить канал'
                                                 onLeftClick={openOverlay}
                                             >

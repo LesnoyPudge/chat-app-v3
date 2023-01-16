@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { Button, Conditional, ModalWindow, Tab, TabContextProvider } from '@components';
-import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../components';
+import { ModalWindow, Tab, TabContextProvider } from '@components';
+import { ModalContainer } from '../../components';
 import { Form, Formik } from 'formik';
 import { AddWhiteListTab, CreateRoomTab } from './components';
 
@@ -40,7 +40,10 @@ export const CreateRoomModal: FC = () => {
     };
 
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow 
+            label='Создать комнату'
+            withBackdrop
+        >
             <Formik
                 initialValues={initialValues}
                 onSubmit={handleSubmit}

@@ -21,7 +21,10 @@ const tabs: Tab[] = [
 
 export const AppSettingsModal: FC = () => {
     return (
-        <ModalWindow transitionOptions={transitionOptions}>
+        <ModalWindow 
+            label='Настройки приложения'
+            transitionOptions={transitionOptions}
+        >
             <Formik
                 initialValues={{ theme: 'dark', messageDisplayType: 'cozy' }}
                 onSubmit={(values) => {console.log('submit', values);}}

@@ -11,4 +11,3 @@ export * from './RelativelyPositioned';
 export * from './ModalWindow';
 export * from './AnimatedTransition';
 export * from './FocusHolder';
-export * from './ErrorBlock';

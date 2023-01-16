@@ -20,7 +20,10 @@ const initialValues: FormValues = {
 
 export const ChangePasswordModal: FC = () => {
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow 
+            label='Изменить пароль'
+            withBackdrop
+        >
             {({ closeOverlay }) => {
                 const handleSubmit = (values: FormValues) => {
                     console.log('form submited', values);

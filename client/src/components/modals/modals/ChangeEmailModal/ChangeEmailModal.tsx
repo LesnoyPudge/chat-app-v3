@@ -34,7 +34,10 @@ const tabs: Tab[] = [
 
 export const ChangeEmailModal: FC = () => {
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow
+            label='Изменить электронную почту' 
+            withBackdrop
+        >
             {({ closeOverlay }) => (
                 <TabContextProvider tabs={tabs}>
                     {({ currentTab, changeTab }) => {

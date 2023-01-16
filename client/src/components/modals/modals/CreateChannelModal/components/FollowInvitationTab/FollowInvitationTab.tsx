@@ -1,7 +1,7 @@
 import { useNavigator } from '@hooks';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, ErrorBlock, OverlayContext, TabContext } from '@components';
+import { Button, OverlayContext, TabContext } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { FormikTextInput } from '@libs';
 
@@ -52,9 +52,9 @@ export const FollowInvitationTab: FC = () => {
                         required
                     />
 
-                    <ErrorBlock isError={true}>
+                    {/* <ErrorBlock isError={true}>
                         <p>Errro: приглашение не действительно</p>
-                    </ErrorBlock>
+                    </ErrorBlock> */}
                 </ModalContent>
         
                 <ModalFooter>

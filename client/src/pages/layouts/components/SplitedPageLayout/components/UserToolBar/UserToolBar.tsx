@@ -30,9 +30,9 @@ export const UserToolBar: FC = () => {
             <RefContextProvider>
                 <Button 
                     className={styles.button}
-                    onLeftClick={toggleVoice}
                     label='Переключить состояние микрофона'
-                    pressed={isVoiceMuted}
+                    isActive={isVoiceMuted}
+                    onLeftClick={toggleVoice}
                 >
                     <Icon
                         className={styles.icon}
@@ -51,9 +51,9 @@ export const UserToolBar: FC = () => {
             <RefContextProvider>
                 <Button 
                     className={styles.button}
-                    onLeftClick={toggleSound}
                     label='Переключить состояние звука'
-                    pressed={isSoundMuted}
+                    isActive={isSoundMuted}
+                    onLeftClick={toggleSound}
                 >
                     <Icon
                         className={styles.icon}
@@ -70,13 +70,14 @@ export const UserToolBar: FC = () => {
             </RefContextProvider>
 
             <OverlayContextProvider>
-                {({ openOverlay }) => (
+                {({ openOverlay, isOverlayExist }) => (
                     <>
                         <RefContextProvider>
                             <Button 
                                 className={styles.button}
                                 label='Открыть настройки'
                                 hasPopup='dialog'
+                                expanded={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <Icon

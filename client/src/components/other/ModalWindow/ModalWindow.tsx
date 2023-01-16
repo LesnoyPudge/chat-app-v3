@@ -9,6 +9,7 @@ import { PropsWithChildrenAsNodeOrFunction } from '@types';
 interface ModalWindow extends PropsWithChildrenAsNodeOrFunction<OverlayContext> {
     withBackdrop?: boolean;
     transitionOptions?: UseTransitionProps;
+    label: string;
 }
 
 const defaultTransitionOptions = getTransitionOptions.defaultModal();
@@ -23,6 +24,7 @@ const styles = {
 export const ModalWindow: FC<ModalWindow> = ({
     withBackdrop = false,
     transitionOptions = defaultTransitionOptions,
+    label,
     children,
 }) => {
     const overlayValues = useContext(OverlayContext) as OverlayContext;
@@ -56,10 +58,11 @@ export const ModalWindow: FC<ModalWindow> = ({
                         </Conditional>
                         
                         <div 
-                            className={twClassNames({ 
-                                'pointer-events-auto': isOverlayExist, 
-                            })}
+                            className={twClassNames(
+                                { 'pointer-events-auto': isOverlayExist },
+                            )}
                             role='dialog'
+                            aria-label={label}
                         >
                             <ChildrenAsNodeOrFunction args={overlayValues}>
                                 {children}

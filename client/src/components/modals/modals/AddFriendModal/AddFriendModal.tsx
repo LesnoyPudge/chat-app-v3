@@ -143,7 +143,10 @@ const AddFriendModalInner: FC = () => {
 
 export const AddFriendModal: FC = () => {
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow 
+            label='Добавить друзей'
+            withBackdrop
+        >
             <AddFriendModalInner/>
         </ModalWindow>
     );

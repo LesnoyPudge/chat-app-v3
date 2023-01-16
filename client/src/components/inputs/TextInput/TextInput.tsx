@@ -16,6 +16,7 @@ export interface TextInput {
     required?: boolean;
     readOnly?: boolean;
     disabled?: boolean;
+    autoComplete?: boolean;
     value?: string;
     before?: ReactNode;
     after?: ReactNode;
@@ -48,6 +49,7 @@ export const TextInput: FC<TextInput> = ({
     required = false,
     readOnly = false,
     disabled = false,
+    autoComplete = false,
     value,
     before,
     after,
@@ -63,6 +65,7 @@ export const TextInput: FC<TextInput> = ({
     };
 
     const iconId = conditional('password-eye-on', 'password-eye-off', typeState === 'password');
+    const autoCompleteValue = conditional('on', 'off', autoComplete);
 
     return (
         <div className={twClassNames(styles.wrapper, className)}>
@@ -105,6 +108,7 @@ export const TextInput: FC<TextInput> = ({
                     required={required}
                     readOnly={readOnly}
                     disabled={disabled}
+                    autoComplete={autoCompleteValue}
                     value={value}
                     onChange={onChange}
                 />

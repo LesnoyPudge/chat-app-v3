@@ -29,6 +29,7 @@ export const Header: FC = () => {
                                 className={styles.button}
                                 label='Открыть меню канала'
                                 hasPopup='menu'
+                                expanded={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <span className='font-semibold text-primary'>

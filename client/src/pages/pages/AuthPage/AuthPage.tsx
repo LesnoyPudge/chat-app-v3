@@ -1,14 +1,11 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import fancyBgSrc from '@assets/backgrounds/fancy-bg.jpg';
 import { Image, TabContextProvider } from '@components';
 import { LoginForm, RegistrationForm } from './tabs';
-import classNames from 'classnames';
 
 
 
 export const AuthPage: FC = () => {
-    const someRef = useRef<string | null>(null);
-    
     return (
         <div className='flex h-screen isolate'>
             <Image
@@ -29,30 +26,9 @@ export const AuthPage: FC = () => {
                         },
                     ]}
                 >
-                    {({ currentTab, tabs }) => {
-                        someRef.current = currentTab.identifier;
-
-                        return (
-                            <>
-                                {
-                                    tabs.map(({ identifier, tab }) => {
-                                        // return <Tab identifier={identifier} key={identifier}/>;
-                                        
-                                        return (
-                                            <div key={identifier} className={classNames(
-                                                'contents',
-                                                {
-                                                    'hidden': currentTab.identifier !== identifier,
-                                                },
-                                            )}>
-                                                {tab}
-                                            </div>
-                                        );
-                                    })
-                                }
-                            </>
-                        );
-                    }}
+                    {({ currentTab }) => (
+                        <>{currentTab.tab}</>
+                    )}
                 </TabContextProvider>
             </div>
         </div>

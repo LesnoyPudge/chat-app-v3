@@ -18,7 +18,10 @@ export const DeleteChannelModal: FC = () => {
     const channelName = 'zdraste';
 
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow
+            label='Удалить канал' 
+            withBackdrop
+        >
             {({ closeOverlay }) => {
                 const handleSubmit = (values: FormValues) => {
                     console.log('delete channel', values);

@@ -8,7 +8,10 @@ export const LeaveChannelModal: FC = () => {
     const channelName = 'zdraste';
 
     return (
-        <ModalWindow withBackdrop>
+        <ModalWindow
+            label='Покинуть канал' 
+            withBackdrop
+        >
             {({ closeOverlay }) => {
                 const handleLeaveChannel = () => {
                     console.log('leave channel');
