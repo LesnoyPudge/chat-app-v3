@@ -11,6 +11,7 @@ interface Image extends PropsWithClassName {
     alt?: string;
     placeholder?: ReactNode;
     fallback?: ReactNode;
+    style?: React.CSSProperties;
 }
 
 const states = {
@@ -28,7 +29,7 @@ const states = {
     },
 };
 
-const baseClassName = 'w-full object-cover';
+const baseClassName = 'h-auto w-full max-w-full object-cover';
 
 export const Image: FC<Image> = ({
     className = '',
@@ -36,6 +37,7 @@ export const Image: FC<Image> = ({
     alt = '',
     placeholder,
     fallback,
+    style,
 }) => {
     const imageRef = useRef(new JSImage());
     const [imageState, setImageState] = useState(states.initial);
@@ -69,6 +71,7 @@ export const Image: FC<Image> = ({
             <Conditional isRendered={showImage}>
                 <img 
                     className={twClassNames(baseClassName, className)}
+                    style={style}
                     src={src} 
                     alt={alt}
                     draggable={false}

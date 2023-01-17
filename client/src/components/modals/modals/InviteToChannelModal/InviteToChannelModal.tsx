@@ -1,19 +1,19 @@
-import { FC, useState } from 'react';
-import { Button, Conditional, Icon, ModalWindow, SearchBar, Separator, TextInput, UserAvatar } from '@components';
+import { FC } from 'react';
+import { Button, Conditional, FieldLabel, Icon, Id, ModalWindow, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
 import { ModalContainer, ModalContent, ModalHeader, ModalTitle } from '../../components';
 import { conditional, copyToClipboard } from '@utils';
-import { useThrottle } from '@hooks';
+import { useSearch, useThrottle } from '@hooks';
 
 
 
 export const InviteToChannelModal: FC = () => {
-    const [searchValue, setSearchValue] = useState('');
+    const { searchValue, handleChange, handleReset } = useSearch();
     const { throttle, isThrottling } = useThrottle();
 
     const channelName = 'лошок111';
     const invitationCode = 'https://wow.ru/123';
 
-    const privateChats = Array(0).fill('').map((_, index) => {
+    const privateChats = Array(5).fill('').map((_, index) => {
         return {
             id: index.toString(),
             users: [
@@ -30,17 +30,10 @@ export const InviteToChannelModal: FC = () => {
         return privateChat.users[0].username.includes(searchValue);
     });
 
-    const hasFriends = !!privateChats.length;
+    const haveFriends = !!privateChats.length;
     const notEmptyList = !!filtredPrivateChats.length;
-    const invitationCodeFieldLabel = conditional(
-        'Или отправьте другу ссылку-приглашение на канал', 
-        '', 
-        hasFriends,
-    );
     const copyButtonText = conditional('Скопировано!', 'Копировать', isThrottling);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchValue(e.target.value);
-    const handleReset = () => setSearchValue('');
     const handleCopyInvitation = () => {
         copyToClipboard(invitationCode);
         throttle(() => {}, 2000)();
@@ -59,9 +52,10 @@ export const InviteToChannelModal: FC = () => {
                 </ModalHeader>
 
                 <ModalContent>
-                    <Conditional isRendered={hasFriends}>
+                    <Conditional isRendered={haveFriends}>
                         <SearchBar
                             className='h-8'
+                            label='Поиск друзей по имени'
                             value={searchValue}
                             onChange={handleChange}
                             onReset={handleReset}
@@ -108,7 +102,7 @@ export const InviteToChannelModal: FC = () => {
                         </Conditional>
 
                         <Conditional isRendered={!notEmptyList}>
-                            <p className='text-heading-m uppercase font-semibold'>
+                            <p className='text-center text-heading-m uppercase font-semibold'>
                                 <>Никого не найдено</>
                             </p>
                         </Conditional>
@@ -116,27 +110,43 @@ export const InviteToChannelModal: FC = () => {
                         <Separator spacing={16}/>
                     </Conditional>
 
-                    <Conditional isRendered={!hasFriends}>
+                    <Conditional isRendered={!haveFriends}>
                         <p className='mb-3 text-sm'>
                             <>Поделитесь ссылкой-приглашением, чтобы предоставить доступ к этому каналу!</>
                         </p>
                     </Conditional>
 
-                    <TextInput
-                        name='invitationCode'
-                        label={invitationCodeFieldLabel}
-                        value={invitationCode}
-                        readOnly
-                        after={
-                            <Button 
-                                className='h-8 my-auto mx-1.5'
-                                stylingPreset='brand'
-                                onLeftClick={handleCopyInvitation}
-                            >
-                                {copyButtonText}
-                            </Button>
-                        }
-                    />
+                    <div>
+                        <Id>
+                            {({ id }) => (
+                                <>
+                                    <Conditional isRendered={haveFriends}>
+                                        <FieldLabel htmlFor={id}>
+                                            <>Или отправьте другу ссылку-приглашение на канал</>
+                                        </FieldLabel>
+                                    </Conditional>
+
+                                    <TextInputWrapper>
+                                        <TextInput
+                                            name='invitationCode'
+                                            label='Ссылка-приглашение на канал'
+                                            value={invitationCode}
+                                            id={id}
+                                            readOnly
+                                        />
+
+                                        <Button 
+                                            className='h-8 my-auto mx-1.5'
+                                            stylingPreset='brand'
+                                            onLeftClick={handleCopyInvitation}
+                                        >
+                                            {copyButtonText}
+                                        </Button>
+                                    </TextInputWrapper>
+                                </>
+                            )}
+                        </Id>
+                    </div>
                 </ModalContent>
             </ModalContainer>
         </ModalWindow>

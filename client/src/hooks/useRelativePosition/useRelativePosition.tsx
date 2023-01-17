@@ -1,7 +1,8 @@
 import { RefObject, useCallback, useLayoutEffect, useState } from 'react';
-import { useResizeObserver, useWindowSize } from '@hooks';
+import { useResizeObserver } from '@hooks';
 import { isRef } from '@utils';
 import { Aligment } from '@types';
+import { useWindowSize } from 'usehooks-ts';
 
 
 

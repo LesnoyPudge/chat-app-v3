@@ -5,7 +5,6 @@ export * from './UserStatus';
 export * from './TopBar';
 export * from './MessageInputBar';
 export * from './MessageList';
-export * from './Link';
 export * from './MessageItem';
 export * from './RelativelyPositioned';
 export * from './ModalWindow';

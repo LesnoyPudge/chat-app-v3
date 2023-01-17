@@ -5,7 +5,7 @@ import { FC } from 'react';
 
 
 const styles = {
-    wrapper: 'flex w-full bg-primary-500 rounded',
+    wrapper: 'flex w-full h-10 bg-primary-500 rounded',
 };
 
 export const TextInputWrapper: FC<PropsWithChildrenAndClassName> = ({

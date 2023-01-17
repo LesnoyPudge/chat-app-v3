@@ -3,21 +3,19 @@ import { FC, PropsWithChildren } from 'react';
 
 
 
-interface ILink extends PropsWithChildren {
+interface Link extends PropsWithChildren {
     className?: string;
     href: string;
 }
 
-const baseCN = 'inline-block';
-
-export const Link: FC<ILink> = ({
+export const Link: FC<Link> = ({
     className = '',
     href,
     children,
 }) => {
     return (
         <a 
-            className={twClassNames(baseCN, className)}
+            className={twClassNames('inline-block', className)}
             href={href} 
             rel='noopener noreferrer' 
             target='_blank'

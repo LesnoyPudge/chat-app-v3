@@ -46,6 +46,18 @@ module.exports = {
                     200: 'var(--icon-200)',
                     300: 'var(--icon-300)',
                 },
+                
+                brand: 'var(--color-bg-brand)',
+                'brand-hover': 'var(--color-bg-brand-hover)',
+                'brand-active': 'var(--color-bg-brand-active)',
+
+                danger: 'var(--color-bg-danger)',
+                'danger-hover': 'var(--color-bg-danger-hover)',
+                'danger-active': 'var(--color-bg-danger-active)',
+
+                neutral: 'var(--color-bg-neutral)',
+                'neutral-hover': 'var(--color-bg-neutral-hover)',
+                'neutral-active': 'var(--color-bg-neutral-active)',
             },
               
             textColor: {
@@ -75,18 +87,6 @@ module.exports = {
                 light: 'var(--color-bg-light)',
                 message: 'var(--color-bg-message)',
                 'slider-track': 'var(--color-bg-slider-track)',
-
-                brand: 'var(--color-bg-brand)',
-                'brand-hover': 'var(--color-bg-brand-hover)',
-                'brand-active': 'var(--color-bg-brand-active)',
-
-                danger: 'var(--color-bg-danger)',
-                'danger-hover': 'var(--color-bg-danger-hover)',
-                'danger-active': 'var(--color-bg-danger-active)',
-
-                neutral: 'var(--color-bg-neutral)',
-                'neutral-hover': 'var(--color-bg-neutral-hover)',
-                'neutral-active': 'var(--color-bg-neutral-active)',
             },
 
             fontSize: {
@@ -104,12 +104,6 @@ module.exports = {
                 'elevation-low': 'var(--elevation-low)',
                 'elevation-medium': 'var(--elevation-medium)',
                 'elevation-high': 'var(--elevation-high)',
-            },
-
-            borderColor: {
-                primary: {
-                    500: 'var(--color-bg-primary-500)',
-                },
             },
 
             screens: {

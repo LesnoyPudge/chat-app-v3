@@ -1,16 +1,20 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicator, RadioInputIndicator, Icon, FieldLabel, PasswordTextToggleButton, PasswordTextToggle, RequiredWildcard, ErrorMessage, TextInputWrapper } from '@components';
+import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicator, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { FormikContextType, useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
-import { TI } from 'src/components/inputs/TextInput/TI';
 
 
 
 const styles = {
+    title: 'text-heading-l self-start font-medium',
     content: 'gap-5',
     radioGroup: 'flex flex-col gap-2',
     heading: 'text-xs uppercase text-secondary font-bold',
+    radioWrapper: 'flex items-center gap-2.5 w-full',
+    radioIcon: 'w-4 h-4 fill-icon-200',
+    radioTitle: 'font-medium text-primary',
+    radioDescription: 'text-sm mt-0.5',
     checkBoxContent: 'flex justify-between items-center text-primary font-medium',
     checkBoxInfo: 'flex gap-1 items-center',
     checkBoxIcon: 'w-4 h-4 fill-icon-200',
@@ -27,7 +31,7 @@ export const CreateRoomTab: FC = () => {
     return (
         <>
             <ModalHeader>
-                <ModalTitle>
+                <ModalTitle className={styles.title}>
                     <>Создать комнату</>
                 </ModalTitle>
             </ModalHeader>
@@ -45,16 +49,21 @@ export const CreateRoomTab: FC = () => {
                     >
                         {({ checked }) => (
                             <>
-                                <div className='flex items-center gap-3 w-full'>
+                                <div className={styles.radioWrapper}>
                                     <Icon
-                                        className='w-4 h-4 fill-icon-200'
+                                        className={styles.radioIcon}
                                         iconId='text-room-icon'
                                     />
                                     
                                     <div>
-                                        <strong>text</strong>
-
-                                        <div>some bullshit</div>
+                                        <div className={styles.radioTitle}>
+                                            <>Text</>
+                                        </div>
+                                        
+                                        <div className={styles.radioDescription}>
+                                            <>Отправляйте сообщения, изображения, </>
+                                            <>GIF, эмодзи, мнения и приколы</>
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -70,16 +79,21 @@ export const CreateRoomTab: FC = () => {
                     >
                         {({ checked }) => (
                             <>
-                                <div className='flex items-center gap-3 w-full'>
+                                <div className={styles.radioWrapper}>
                                     <Icon
-                                        className='w-4 h-4 fill-icon-200'
-                                        iconId='voice-room-icon'
+                                        className={styles.radioIcon}
+                                        iconId='text-room-icon'
                                     />
                                     
                                     <div>
-                                        <strong>voice</strong>
-
-                                        <div>some bullshit 2</div>
+                                        <div className={styles.radioTitle}>
+                                            <>Voice</>
+                                        </div>
+                                        
+                                        <div className={styles.radioDescription}>
+                                            <>Общайтесь голосом или в видеочате и </>
+                                            <>пользуйтесь функцией показа экрана</>
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -92,39 +106,25 @@ export const CreateRoomTab: FC = () => {
                 <FormikTextInput
                     name='name'
                     label='Название комнаты'
-                    placeholder='новыая-комната'
+                    placeholder='новая-комната'
                     required
-                />
-
-                <PasswordTextToggle initialType='password'>
-                    {({ type, toggleType }) => (
+                >
+                    {(textInputProps) => (
                         <div>
-                            <FieldLabel htmlFor='1'>
-                                <>Password Field</>
-
+                            <FieldLabel htmlFor={textInputProps.id}>
+                                <>Название комнаты</>
+    
                                 <RequiredWildcard/>
-
-                                <ErrorMessage>
-                                    <>Необходимо заполнить поле</>
+    
+                                <ErrorMessage hidden={!textInputProps.error}>
+                                    {textInputProps.error}
                                 </ErrorMessage>
                             </FieldLabel>
-    
-                            <TextInputWrapper>
-                                <TI
-                                    name='name'
-                                    label='Some'
-                                    type={type}
-                                    id='1'
-                                />
-    
-                                <PasswordTextToggleButton
-                                    type={type}
-                                    onToggle={toggleType}
-                                />
-                            </TextInputWrapper>
+        
+                            <TextInput {...textInputProps}/>
                         </div>
                     )}
-                </PasswordTextToggle>
+                </FormikTextInput>
 
                 <div>
                     <FormikCheckBox 

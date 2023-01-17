@@ -9,6 +9,7 @@ import { PropsWithClassName } from '@types';
 
 interface Icon extends PropsWithClassName {
     iconId: string;
+    style?: React.CSSProperties;
 }
 
 const baseClassName = 'transition-all flex shrink-0';
@@ -16,12 +17,16 @@ const baseClassName = 'transition-all flex shrink-0';
 export const Icon: FC<Icon> = ({ 
     className = '',
     iconId, 
+    style,
 }) => {
     const src = `/src/assets/icons/${iconId}.svg`;
 
     return (
         <Conditional isRendered={!!iconId}>
-            <div className={twClassNames(baseClassName, className)}>
+            <div 
+                className={twClassNames(baseClassName, className)}
+                style={style}
+            >
                 <AutoSizer>
                     {(size) => (
                         <SVG

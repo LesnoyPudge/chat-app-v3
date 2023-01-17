@@ -1,27 +1,40 @@
-import { FC } from 'react';
+import { FC, useId } from 'react';
 import { useField } from 'formik';
-import { TextInput } from '@components';
+import { ChildrenAsNodeOrFunction, TextInput } from '@components';
 import { conditional } from '@utils';
+import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
 
 
 type OmitedKeys = 'onChange' | 'value' | 'error';
 
-type FormikTextInput = Omit<TextInput, OmitedKeys>
+type ChildrenArgs = TextInput & {
+    id: string;
+};
+
+type FormikTextInput = Omit<TextInput, OmitedKeys> & PropsWithChildrenAsNodeOrFunction<ChildrenArgs>;
 
 export const FormikTextInput: FC<FormikTextInput> = ({
-    name,
-    ...rest
+    children,
+    ...props
 }) => {
-    const [field, meta] = useField(name);
-    
-    const error = conditional(meta.error, '', !!(meta.error && meta.touched));
+    const { name } = props;
+
+    const [{ value, onChange }, meta] = useField(name);
+    const id = useId();
+    const error = conditional(meta.error!, '', !!meta.error && meta.touched);
+
+    const childrenArgs: ChildrenArgs = {
+        ...props,
+        id,
+        error,
+        value,
+        onChange,
+    };
 
     return (
-        <TextInput
-            error={error}
-            {...rest}
-            {...field}
-        />
+        <ChildrenAsNodeOrFunction args={childrenArgs}>
+            {children}
+        </ChildrenAsNodeOrFunction>
     );
 };

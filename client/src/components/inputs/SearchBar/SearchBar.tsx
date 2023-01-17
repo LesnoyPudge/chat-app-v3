@@ -1,30 +1,28 @@
-import { Button, Icon } from '@components';
+import { Button, Icon, TextInput, TextInputWrapper } from '@components';
 import { conditional, twClassNames } from '@utils';
 import { FC, useRef } from 'react';
 
 
 
-interface ISearchBar {
+interface SearchBar {
     className?: string;
     placeholder?: string;
+    label?: string;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onReset: () => void;
 }
 
 const styles = {
-    wrapper: `bg-primary-500 rounded-md w-full text-normal 
-    flex shrink-0`,
-    input: 'py-1 px-2 w-full',
-    button: 'aspect-square flex shrink-0 group',
-    icon: `h-2/3 aspect-square m-auto fill-icon-300 
-    group-hover:fill-icon-200 group-active:fill-icon-200
-    group-focus-visible:fill-icon-200`,
+    button: `flex shrink-0 h-full aspect-square rounded fill-icon-300 
+    hover:fill-icon-200 focus-visible:fill-icon-200`,
+    icon: 'h-2/3 aspect-square m-auto',
 };
 
-export const SearchBar: FC<ISearchBar> = ({
+export const SearchBar: FC<SearchBar> = ({
     className = '',
     placeholder = 'Поиск',
+    label,
     value,
     onChange,
     onReset,
@@ -40,28 +38,27 @@ export const SearchBar: FC<ISearchBar> = ({
     const buttonLabel = conditional('Очистить поиск', 'Перейти к поиску', !!value);
 
     return (
-        <div className={twClassNames(styles.wrapper, className)}>
-            <input
-                className={styles.input}
-                type='text' 
+        <TextInputWrapper className={className}>
+            <TextInput
+                className='h-full'
+                name='search'
                 placeholder={placeholder}
                 value={value}
-                ref={inputRef}
+                label={label}
+                inputRef={inputRef}
                 onChange={onChange}
             />
 
-            {
-                <Button
-                    className={styles.button}
-                    label={buttonLabel}
-                    onLeftClick={handleClick}
-                >
-                    <Icon
-                        iconId={iconId}
-                        className={styles.icon}
-                    />
-                </Button>
-            }
-        </div>
+            <Button
+                className={styles.button}
+                label={buttonLabel}
+                onLeftClick={handleClick}
+            >
+                <Icon
+                    className={styles.icon}
+                    iconId={iconId}
+                />
+            </Button>
+        </TextInputWrapper>
     );
 };

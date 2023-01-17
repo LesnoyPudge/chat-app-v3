@@ -3,6 +3,7 @@ import { ModalWindow, Tab, TabContextProvider } from '@components';
 import { ModalContainer } from '../../components';
 import { Form, Formik } from 'formik';
 import { AddWhiteListTab, CreateRoomTab } from './components';
+import { IRole, IUserPreview } from '@backendTypes';
 
 
 
@@ -10,8 +11,8 @@ export interface CreateRoomFormValues {
     roomType: 'text' | 'voice';
     name: string;
     isPrivate: boolean;
-    allowedRoles: [];
-    allowedUsers: [];
+    allowedRoles: IRole[];
+    allowedUsers: IUserPreview[];
 }
 
 const initialValues: CreateRoomFormValues = {
@@ -50,7 +51,7 @@ export const CreateRoomModal: FC = () => {
             >
                 <Form>
                     <ModalContainer>
-                        <TabContextProvider tabs={tabs}>
+                        <TabContextProvider tabs={tabs} initialTabIdentifier='AddWhiteListTab'>
                             {({ currentTab }) => (
                                 <>{currentTab.tab}</>
                             )}

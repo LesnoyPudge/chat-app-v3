@@ -10,3 +10,4 @@ export * from './InviteToChannelModal';
 export * from './CreateChannelModal';
 export * from './DeleteRoomModal';
 export * from './CreateRoomModal';
+export * from './LightBoxModal'

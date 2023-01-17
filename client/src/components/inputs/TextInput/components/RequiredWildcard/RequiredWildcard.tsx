@@ -10,7 +10,7 @@ interface RequiredWildcard extends PropsWithClassName {
 }
 
 const styles = {
-    wildcard: 'px-1 text-required',
+    wildcard: 'text-required',
 };
 
 export const RequiredWildcard: FC<RequiredWildcard> = ({

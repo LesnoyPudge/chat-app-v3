@@ -24,7 +24,7 @@ export const Root: FC = () => {
             <Masks/>
 
             <HeadingLevel>
-                <Playground enabled={true}>
+                <Playground>
                     <ErrorBoundary>
                         <Loader>
                             <Suspense>

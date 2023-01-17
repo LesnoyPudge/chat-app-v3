@@ -1,8 +1,9 @@
 import { Tab, SearchBar, TabContextProvider } from '@components';
-import { FC, useMemo, useState } from 'react';
+import { FC, useMemo } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { Navigation } from './components';
 import { FriendList, FriendRequestList, BlockedList } from './tabs';
+import { useSearch } from '@hooks';
 
 
 
@@ -28,9 +29,7 @@ const tabs: Tab[] = [
 ];
 
 export const AppPage: FC = () => {
-    const [filterValue, setFilterValue] = useState('');
-    const resetValue = () => setFilterValue('');
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setFilterValue(e.target.value);
+    const { searchValue, handleChange, handleReset } = useSearch();
     
     const friends: IUserPreview[] = useMemo(() => ([
         {
@@ -96,10 +95,10 @@ export const AppPage: FC = () => {
     }, [friends]);
 
     const tabsByIdentifier = {
-        OnlineFriends: <FriendList friends={onlyOnlineFriends} filterValue={filterValue}/>,
-        AllFriends: <FriendList friends={friends} filterValue={filterValue}/>,
-        IncomingRequests: <FriendRequestList filterValue={filterValue}/>,
-        Blocked: <BlockedList filterValue={filterValue}/>,
+        OnlineFriends: <FriendList friends={onlyOnlineFriends} filterValue={searchValue}/>,
+        AllFriends: <FriendList friends={friends} filterValue={searchValue}/>,
+        IncomingRequests: <FriendRequestList filterValue={searchValue}/>,
+        Blocked: <BlockedList filterValue={searchValue}/>,
     };
 
     return (
@@ -116,9 +115,10 @@ export const AppPage: FC = () => {
                             <SearchBar
                                 className='mb-5 h-9'
                                 placeholder='Поиск по имени'
-                                value={filterValue}
+                                label='Имя пользователя'
+                                value={searchValue}
                                 onChange={handleChange}
-                                onReset={resetValue}
+                                onReset={handleReset}
                             />
 
                             {tabToShow}

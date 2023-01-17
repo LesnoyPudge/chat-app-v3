@@ -1,20 +1,13 @@
 import { Button, Conditional, Icon, ModalWindow, OverlayContext, SearchBar, UserAvatar } from '@components';
-import { useThrottle } from '@hooks';
+import { useSearch } from '@hooks';
 import { getRandomNumber } from '@utils';
-import { FC, useContext, useState } from 'react';
+import { FC, useContext } from 'react';
+import { IUserPreview } from '@backendTypes';
 import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../components';
 
 
 
-
-interface FoundUser {
-    id: string, 
-    username: string, 
-    avatar: string,
-}
-
 const style = {
-    searchBar: 'h-10',
     resultWrapper: 'mt-4',
     list: 'flex flex-col gap-2',
     item: 'flex justify-between items-center gap-2 px-2 py-1',
@@ -29,31 +22,15 @@ const style = {
 
 const AddFriendModalInner: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const [searchValue, setSearchValue] = useState('');
-    const [foundUsers, setFoundUsers] = useState<FoundUser[]>([]);
-    const { throttle } = useThrottle();
+    const { searchValue, handleChange, handleReset } = useSearch();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-
-        setSearchValue(value);
-
-        if (!value) return;
-
-        throttle(() => {
-            const foundUsers = Array(getRandomNumber(1, 10)).fill('').map((_, index) => {
-                return {
-                    id: index.toString(),
-                    username: `user ${index}`,
-                    avatar: `https://i.pravatar.cc/${50 + index}`,
-                } as FoundUser;
-            });
-
-            setFoundUsers(foundUsers);
-        }, 2000)();
-    };
-
-    const handleReset = () => setSearchValue('');
+    const foundUsers = Array(getRandomNumber(1, 10)).fill('').map((_, index) => {
+        return {
+            id: index.toString(),
+            username: `user ${index}`,
+            avatar: `https://i.pravatar.cc/${50 + index}`,
+        } as IUserPreview;
+    });
 
     const showUserList = !!foundUsers.length && !!searchValue;
     const noUsersFound = !foundUsers.length && !!searchValue;
@@ -72,8 +49,8 @@ const AddFriendModalInner: FC = () => {
 
             <ModalContent>
                 <SearchBar
-                    className={style.searchBar}
                     placeholder='Введите имя пользователя'
+                    label='Имя пользователя'
                     value={searchValue}
                     onChange={handleChange}
                     onReset={handleReset}
