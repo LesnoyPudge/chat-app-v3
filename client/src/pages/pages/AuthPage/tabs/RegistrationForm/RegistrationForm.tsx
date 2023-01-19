@@ -1,13 +1,13 @@
 import { Button, TabContext } from '@components';
 import { FormikTextInput, Heading } from '@libs';
+import { AuthPageTabs } from '@pages/AuthPage/AuthPage';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
 
 
 
 export const RegistrationForm: FC = () => {
-    const { changeTab } = useContext(TabContext) as TabContext;
-    const toLoginForm = () => changeTab('LoginForm');
+    const { changeTab } = useContext(TabContext) as TabContext<AuthPageTabs>;
 
     return (
         <Formik
@@ -58,7 +58,7 @@ export const RegistrationForm: FC = () => {
                         <Button 
                             className='self-start'
                             stylingPreset='link' 
-                            onLeftClick={toLoginForm}
+                            onLeftClick={changeTab.loginForm}
                         >
                             Уже зарегистрированы?
                         </Button>

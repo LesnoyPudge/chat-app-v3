@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Button, Conditional, CreateRoomFormValues, Icon, SearchBar, TabContext, UserAvatar } from '@components';
+import { Button, Conditional, CreateRoomFormValues, CreateRoomModalTabs, Icon, SearchBar, TabContext, UserAvatar } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../../../components';
 import { conditional, twClassNames } from '@utils';
 import { IRole, IUserPreview } from '@backendTypes';
@@ -47,11 +47,9 @@ const members = Array(15).fill('').map((_, index) => ({
 } as IUserPreview));
 
 export const AddWhiteListTab: FC = () => {
-    const { changeTab } = useContext(TabContext) as TabContext;
+    const { changeTab } = useContext(TabContext) as TabContext<CreateRoomModalTabs>;
     const { values, setFieldValue } = useFormikContext() as FormikContextType<CreateRoomFormValues>;
     const { searchValue, handleChange, handleReset } = useSearch();
-
-    const handleGoToPrevStep = () => changeTab('CreateRoomTab');
 
     const isAnyChecked = !!values.allowedRoles.length || !!values.allowedUsers.length;
     const submitButtonText = conditional('Создать комнату', 'Пропустить', isAnyChecked);
@@ -116,7 +114,7 @@ export const AddWhiteListTab: FC = () => {
                                                 { [styles.listItem.active]: isRoleChecked },
                                             )}
                                             label={`Добавить роль ${role.name}`}
-                                            pressed={isRoleChecked}
+                                            isActive={isRoleChecked}
                                             onLeftClick={handleRoleCheck}
                                         >
                                             <div className={twClassNames(
@@ -180,7 +178,7 @@ export const AddWhiteListTab: FC = () => {
                                                 { [styles.listItem.active]: isRoleChecked },
                                             )}
                                             label={`Добавить участника ${member.username}`}
-                                            pressed={isRoleChecked}
+                                            isActive={isRoleChecked}
                                             onLeftClick={handleRoleCheck}
                                         >
                                             <div className={twClassNames(
@@ -230,7 +228,7 @@ export const AddWhiteListTab: FC = () => {
                 <Button
                     stylingPreset='lite'
                     size='medium'
-                    onLeftClick={handleGoToPrevStep}
+                    onLeftClick={changeTab.createRoomTab}
                 >
                     <>Назад</>
                 </Button>

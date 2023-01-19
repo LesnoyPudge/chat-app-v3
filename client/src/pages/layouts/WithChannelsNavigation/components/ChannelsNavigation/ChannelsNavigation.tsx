@@ -159,7 +159,7 @@ export const ChannelsNavigation: FC = () => {
                                     },
                                 )}
                                 hasPopup='dialog'
-                                expanded={isOverlayExist}
+                                isActive={isOverlayExist}
                                 label='Добавить канал'
                                 onLeftClick={openOverlay}
                             >

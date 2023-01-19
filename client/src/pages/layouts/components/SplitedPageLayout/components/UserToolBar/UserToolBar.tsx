@@ -77,7 +77,7 @@ export const UserToolBar: FC = () => {
                                 className={styles.button}
                                 label='Открыть настройки'
                                 hasPopup='dialog'
-                                expanded={isOverlayExist}
+                                isActive={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <Icon

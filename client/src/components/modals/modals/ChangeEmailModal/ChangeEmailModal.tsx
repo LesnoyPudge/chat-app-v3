@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Tab, ModalWindow, TabContextProvider } from '@components';
+import { ModalWindow, TabContextProvider } from '@components';
 import { EnterCodeSlide, EnterNewEmailSlide, RequestCodeSlide } from './slides';
 import { Formik } from 'formik';
 
@@ -17,20 +17,13 @@ const initialValues: FormValues = {
     password: '',
 };
 
-const tabs: Tab[] = [
-    {
-        identifier: 'RequestCodeSlide',
-        tab: <RequestCodeSlide/>,
-    },
-    {
-        identifier: 'EnterCodeSlide',
-        tab: <EnterCodeSlide/>,
-    },
-    {
-        identifier: 'EnterNewEmailSlide',
-        tab: <EnterNewEmailSlide/>,
-    },
-];
+const tabs = {
+    requestCodeSlide: <RequestCodeSlide/>,
+    enterCodeSlide: <EnterCodeSlide/>,
+    enterNewEmailSlide: <EnterNewEmailSlide/>,
+};
+
+export type ChangeEmailModalTabs = typeof tabs;
 
 export const ChangeEmailModal: FC = () => {
     return (
@@ -40,14 +33,9 @@ export const ChangeEmailModal: FC = () => {
         >
             {({ closeOverlay }) => (
                 <TabContextProvider tabs={tabs}>
-                    {({ currentTab, changeTab }) => {
-
+                    {({ currentTab }) => {
                         const handleSubmit = (values: FormValues) => {
-                            if (currentTab.identifier === 'EnterCodeSlide') {
-                                return changeTab('EnterNewEmailSlide');
-                            }
-
-                            console.log('final step submit', values);
+                            console.log(`submit on step ${currentTab.identifier} with value ${values}`);
                             closeOverlay();
                         };
 

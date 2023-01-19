@@ -1,23 +1,34 @@
 import { FC } from 'react';
-import { ContentSide, NavigationSide, AppearanceTab, ProfileTab } from './components';
-import { Tab, ModalWindow, TabContextProvider } from '@components';
+import { AppearanceTab, Navigation, ProfileTab } from './components';
+import { ModalWindow, TabContextProvider, TabPanel } from '@components';
 import { getTransitionOptions } from '@utils';
 import { Form, Formik } from 'formik';
+import { FullScreenModalWrapper, FullScreenModalNavigationSide, FullScreenModalContentSide } from '../../components';
 
 
 
 const transitionOptions = getTransitionOptions.fullScreenModal();
 
-const tabs: Tab[] = [
-    {
-        identifier: 'ProfileTab',
-        tab: <ProfileTab/>,
-    },
-    {
-        identifier: 'AppearanceTab',
-        tab: <AppearanceTab/>,
-    },
-];
+const tabs = {
+    profileTab: (
+        <TabPanel 
+            label='Настройки профиля' 
+            controls='ProfileTab'
+        >
+            <ProfileTab/>
+        </TabPanel>
+    ),
+    appearanceTab: (
+        <TabPanel 
+            label='Настройки внешнего вида' 
+            controls='AppearanceTab'
+        >
+            <AppearanceTab/>
+        </TabPanel>
+    ),
+};
+
+export type AppSettingsModalTabs = typeof tabs;
 
 export const AppSettingsModal: FC = () => {
     return (
@@ -32,13 +43,15 @@ export const AppSettingsModal: FC = () => {
                 <Form>
                     <TabContextProvider tabs={tabs}>
                         {({ currentTab }) => (
-                            <div className='flex h-screen w-screen bg-primary-200'>
-                                <NavigationSide/>
+                            <FullScreenModalWrapper>
+                                <FullScreenModalNavigationSide>
+                                    <Navigation/>
+                                </FullScreenModalNavigationSide>
     
-                                <ContentSide>
+                                <FullScreenModalContentSide>
                                     {currentTab.tab}
-                                </ContentSide>
-                            </div>
+                                </FullScreenModalContentSide>
+                            </FullScreenModalWrapper>   
                         )}
                     </TabContextProvider>
                 </Form>

@@ -1,8 +1,6 @@
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext } from 'react';
 import { Button, Link, ModalWindow, OverlayContext, Image } from '@components';
 import { ModalContainer, ModalFooter } from '../../components';
-import { useWindowSize } from 'usehooks-ts';
-import { getDecodedImage } from '@utils';
 
 
 
@@ -11,31 +9,22 @@ interface LightBoxModal {
 }
 
 export const LightBoxModal: FC<LightBoxModal> = ({ src }) => {
-    src = 'https://via.placeholder.com/3500';
-
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;    
-    const windowSize = useWindowSize();
-
-    useEffect(() => {
-        getDecodedImage(src).then((image) => {
-            console.log(image.naturalWidth, image.naturalHeight);
-        });
-    }, [src]);
+    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
 
     return (
         <ModalWindow
             label='Изображение'
             withBackdrop
         >
-            <ModalContainer className='block max-w-[calc(100vw-40px)]'>
+            <ModalContainer className='max-h-[calc(100vh-40px)] max-w-[calc(100vw-40px)]'>
                 <div onContextMenu={(e) => e.stopPropagation()}>
                     <Image
+                        className='max-h-[calc(100vh-40px-48px)]'
                         src={src}
-                        style={{ height: '200px' }}
                     />
                 </div>
 
-                <ModalFooter className='justify-between p-2'>
+                <ModalFooter className='gap-4 justify-between p-2 h-12'>
                     <Link 
                         className='text-sm'
                         href={src}

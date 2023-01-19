@@ -40,7 +40,7 @@ export const PasswordTextToggleButton: FC<PasswordTextToggleButton> = ({
     return (
         <Button
             className={twClassNames(styles.button, className)}
-            pressed={isPressed}
+            isActive={isPressed}
             label={label}
             onLeftClick={onToggle}
         >

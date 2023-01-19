@@ -1,7 +1,7 @@
 import { useNavigator } from '@hooks';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, OverlayContext, TabContext } from '@components';
+import { Button, CreateChannelModalTabs, OverlayContext, TabContext } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { FormikTextInput } from '@libs';
 
@@ -16,7 +16,7 @@ const initialValues: FollowInvitationFormValues = {
 };
 
 export const FollowInvitationTab: FC = () => {
-    const { changeTab } = useContext(TabContext) as TabContext;
+    const { changeTab } = useContext(TabContext) as TabContext<CreateChannelModalTabs>;
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
     // const { navigateTo } = useNavigator();
 
@@ -25,8 +25,6 @@ export const FollowInvitationTab: FC = () => {
         closeOverlay();
         // navigateTo.channel('followed-channel');
     };
-
-    const handleGoBack = () => changeTab('CreateOrFollowInvitation');
 
     return (
         <Formik 
@@ -61,7 +59,7 @@ export const FollowInvitationTab: FC = () => {
                     <Button
                         stylingPreset='lite'
                         size='medium'
-                        onLeftClick={handleGoBack}
+                        onLeftClick={changeTab.createOrFollowInvitation}
                     >
                         <>Назад</>
                     </Button>

@@ -33,7 +33,7 @@ export const ProfileTab: FC = () => {
                                 <Button 
                                     stylingPreset='brandDanger'
                                     hasPopup='dialog'
-                                    expanded={isOverlayExist}
+                                    isActive={isOverlayExist}
                                     onLeftClick={openOverlay}
                                 >
                                     <>Удалить учётную запись</>

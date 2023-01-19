@@ -1,5 +1,5 @@
-import { Tab, SearchBar, TabContextProvider } from '@components';
-import { FC, useMemo } from 'react';
+import { SearchBar, TabContextProvider, TabPanel } from '@components';
+import { FC, ReactNode, useMemo } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { Navigation } from './components';
 import { FriendList, FriendRequestList, BlockedList } from './tabs';
@@ -7,26 +7,12 @@ import { useSearch } from '@hooks';
 
 
 
-type IdentifiersType = 'OnlineFriends' | 'AllFriends' | 'IncomingRequests' | 'Blocked';
-
-const tabs: Tab[] = [
-    { 
-        identifier: 'OnlineFriends', 
-        tab: '', 
-    },
-    { 
-        identifier: 'AllFriends', 
-        tab: '', 
-    },
-    { 
-        identifier: 'IncomingRequests', 
-        tab: '', 
-    },
-    { 
-        identifier: 'Blocked', 
-        tab: '', 
-    },
-];
+export interface AppPageTabs {
+    onlineFriends: ReactNode;
+    allFriends: ReactNode;
+    incomingRequests: ReactNode;
+    blocked: ReactNode;
+}
 
 export const AppPage: FC = () => {
     const { searchValue, handleChange, handleReset } = useSearch();
@@ -94,38 +80,49 @@ export const AppPage: FC = () => {
         return friends.filter((friend) => friend.status === 'online' && friend.extraStatus !== 'invisible');
     }, [friends]);
 
-    const tabsByIdentifier = {
-        OnlineFriends: <FriendList friends={onlyOnlineFriends} filterValue={searchValue}/>,
-        AllFriends: <FriendList friends={friends} filterValue={searchValue}/>,
-        IncomingRequests: <FriendRequestList filterValue={searchValue}/>,
-        Blocked: <BlockedList filterValue={searchValue}/>,
+    const tabs = {
+        onlineFriends: (
+            <TabPanel controls='onlineFriends' label='Друзья в сети'>
+                <FriendList friends={onlyOnlineFriends} filterValue={searchValue}/>
+            </TabPanel>
+        ),
+        allFriends: (
+            <TabPanel controls='allFriends' label='Все друзья'>
+                <FriendList friends={friends} filterValue={searchValue}/>
+            </TabPanel>
+        ),
+        incomingRequests: (
+            <TabPanel controls='incomingRequests' label='Входящие запросы дружбы'>
+                <FriendRequestList filterValue={searchValue}/>
+            </TabPanel>
+        ),
+        blocked: (
+            <TabPanel controls='blocked' label='Исходящие запросы дружбы'>
+                <BlockedList filterValue={searchValue}/>
+            </TabPanel>
+        ),
     };
-
+    
     return (
         <TabContextProvider tabs={tabs}>
-            {({ currentTab }) => {
-                const currentIdentifier = currentTab.identifier as IdentifiersType;
-                const tabToShow = tabsByIdentifier[currentIdentifier];
+            {({ currentTab }) => (
+                <>
+                    <Navigation/>
 
-                return (
-                    <>
-                        <Navigation/>
+                    <div className='flex flex-col h-full items-start py-4 px-[30px]'>
+                        <SearchBar
+                            className='mb-5 h-9'
+                            placeholder='Поиск по имени'
+                            label='Имя пользователя'
+                            value={searchValue}
+                            onChange={handleChange}
+                            onReset={handleReset}
+                        />
 
-                        <div className='flex flex-col h-full items-start py-4 px-[30px]'>
-                            <SearchBar
-                                className='mb-5 h-9'
-                                placeholder='Поиск по имени'
-                                label='Имя пользователя'
-                                value={searchValue}
-                                onChange={handleChange}
-                                onReset={handleReset}
-                            />
-
-                            {tabToShow}
-                        </div>
-                    </>
-                );
-            }}
+                        {currentTab.tab}
+                    </div>
+                </>
+            )}
         </TabContextProvider>
     );
 };

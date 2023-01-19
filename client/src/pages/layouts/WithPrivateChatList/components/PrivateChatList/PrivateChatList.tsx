@@ -1,5 +1,5 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { FocusableListItem, FocusableListWrapper } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem } from '@components';
 import { Heading } from '@libs';
 import { FC } from 'react';
 import { PrivateChatItem } from './components';
@@ -280,25 +280,22 @@ export const PrivateChatList: FC = () => {
                 <>Личные сообщения</>
             </Heading>
 
-            <FocusableListWrapper className={styles.wrapper}>
-                <ul className={styles.list}>
-                    {privateChats.map((privateChat, index) => {
-                        return (
-                            <FocusableListItem 
-                                index={index}
-                                key={privateChat.id}
-                            >
+            <ArrowFocusContextProvider list={privateChats} direction='vertical'>
+                <div className={styles.wrapper}>
+                    <ul className={styles.list}>
+                        {privateChats.map((privateChat) => (
+                            <ArrowFocusItem id={privateChat.id} key={privateChat.id}>
                                 {({ tabIndex }) => (
                                     <PrivateChatItem 
                                         privateChat={privateChat}
                                         tabIndex={tabIndex}
                                     />
                                 )}
-                            </FocusableListItem>
-                        );
-                    })}
-                </ul>
-            </FocusableListWrapper>
+                            </ArrowFocusItem>
+                        ))}
+                    </ul>
+                </div>
+            </ArrowFocusContextProvider>
         </div>
     );
 };

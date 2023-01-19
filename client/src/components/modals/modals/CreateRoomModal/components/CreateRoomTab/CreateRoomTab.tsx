@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicator, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput } from '@components';
+import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicator, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput, CreateRoomModalTabs } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { FormikContextType, useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
@@ -23,10 +23,8 @@ const styles = {
 
 export const CreateRoomTab: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const { changeTab } = useContext(TabContext) as TabContext;
+    const { changeTab } = useContext(TabContext) as TabContext<CreateRoomModalTabs>;
     const { values } = useFormikContext() as FormikContextType<CreateRoomFormValues>;
-
-    const handleGoToNextStep = () => changeTab('AddWhiteListTab');
 
     return (
         <>
@@ -177,7 +175,7 @@ export const CreateRoomTab: FC = () => {
                     <Button
                         stylingPreset='brand'
                         size='medium'
-                        onLeftClick={handleGoToNextStep}
+                        onLeftClick={changeTab.addWhiteListTab}
                     >
                         <>Далее</>
                     </Button>

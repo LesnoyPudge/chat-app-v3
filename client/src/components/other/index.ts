@@ -10,3 +10,6 @@ export * from './RelativelyPositioned';
 export * from './ModalWindow';
 export * from './AnimatedTransition';
 export * from './FocusHolder';
+export * from './TabList';
+export * from './TabPanel';
+export * from './ArrowFocusItem';

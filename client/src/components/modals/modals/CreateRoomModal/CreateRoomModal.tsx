@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { ModalWindow, Tab, TabContextProvider } from '@components';
+import { ModalWindow, TabContextProvider } from '@components';
 import { ModalContainer } from '../../components';
 import { Form, Formik } from 'formik';
 import { AddWhiteListTab, CreateRoomTab } from './components';
@@ -23,19 +23,14 @@ const initialValues: CreateRoomFormValues = {
     allowedUsers: [],
 };
 
-const tabs: Tab[] = [
-    {
-        identifier: 'CreateRoomTab',
-        tab: <CreateRoomTab/>,
-    },
-    {
-        identifier: 'AddWhiteListTab',
-        tab: <AddWhiteListTab/>,
-    },
-];
+const tabs = {
+    createRoomTab: <CreateRoomTab/>,
+    addWhiteListTab: <AddWhiteListTab/>,
+};
+
+export type CreateRoomModalTabs = typeof tabs;
 
 export const CreateRoomModal: FC = () => {
-
     const handleSubmit = (values: CreateRoomFormValues) => {
         console.log('submit', values);
     };
@@ -51,7 +46,7 @@ export const CreateRoomModal: FC = () => {
             >
                 <Form>
                     <ModalContainer>
-                        <TabContextProvider tabs={tabs} initialTabIdentifier='AddWhiteListTab'>
+                        <TabContextProvider tabs={tabs}>
                             {({ currentTab }) => (
                                 <>{currentTab.tab}</>
                             )}

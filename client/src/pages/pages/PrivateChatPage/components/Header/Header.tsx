@@ -1,4 +1,5 @@
 import { TopBar, UserStatus, RefContextProvider, Button, Icon, Tooltip, Conditional, UserAvatar } from '@components';
+import { Heading } from '@libs';
 import { twClassNames } from '@utils';
 import { FC, useState } from 'react';
 
@@ -20,9 +21,9 @@ export const Header: FC = () => {
     return (
         <div className={twClassNames('flex flex-col w-full', { 'bg-primary-500 shadow-elevation-low': inCall })}>
             <TopBar className={twClassNames('px-4', { 'shadow-none': inCall })}>
-                <span className='font-bold truncated'>
+                <Heading className='font-bold truncated'>
                     {friend.username}
-                </span>
+                </Heading>
 
                 <UserStatus 
                     className='w-2.5 h-2.5 mx-2.5'

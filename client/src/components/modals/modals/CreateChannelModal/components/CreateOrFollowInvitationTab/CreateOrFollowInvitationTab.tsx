@@ -1,15 +1,12 @@
 import { FC, useContext } from 'react';
-import { Button, OverlayContext, TabContext } from '@components';
+import { Button, CreateChannelModalTabs, OverlayContext, TabContext } from '@components';
 import { ModalHeader, ModalContent, ModalTitle, ModalSubtitle } from '../../../../components';
 
 
 
 export const CreateOrFollowInvitationTab: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const { changeTab } = useContext(TabContext) as TabContext;
-
-    const handleGoToFollowInvitationTab = () => changeTab('FollowInvitation');
-    const handleGoToCreateChannelTab = () => changeTab('CreateChannel');
+    const { changeTab } = useContext(TabContext) as TabContext<CreateChannelModalTabs>;
 
     return (
         <>
@@ -29,7 +26,7 @@ export const CreateOrFollowInvitationTab: FC = () => {
                     className='w-full'
                     stylingPreset='brand'
                     size='medium'
-                    onLeftClick={handleGoToCreateChannelTab}
+                    onLeftClick={changeTab.createChannel}
                 >
                     <>Перейти к созданию</>
                 </Button>
@@ -38,7 +35,7 @@ export const CreateOrFollowInvitationTab: FC = () => {
                     className='w-full'
                     stylingPreset='brand'
                     size='medium'
-                    onLeftClick={handleGoToFollowInvitationTab}
+                    onLeftClick={changeTab.followInvitation}
                 >
                     <>Воспользуйтесь приглашением</>
                 </Button>

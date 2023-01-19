@@ -1,7 +1,7 @@
 import { Icon, Button } from '@components';
 import { useNavigator } from '@hooks';
 import { conditional, twClassNames } from '@utils';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 
 
@@ -13,7 +13,6 @@ interface IRoom {
 
 interface IRoomListItem {
     room: IRoom;
-    tabIndex: number;
 }
 
 const styles = {
@@ -21,14 +20,11 @@ const styles = {
         base: `flex justify-start items-center w-full h-8 px-2 
         cursor-pointer rounded-md hover:bg-hover 
         focus-visible:bg-hover`,
-        active: '',
+        active: 'bg-hover',
     },
 };
 
-export const RoomListItem: FC<IRoomListItem> = ({ 
-    room,
-    tabIndex,
-}) => {
+export const RoomListItem: FC<IRoomListItem> = ({ room }) => {
     const { myLocationIs, params, navigateTo } = useNavigator();
     const channelId = params.channelId as string;
     

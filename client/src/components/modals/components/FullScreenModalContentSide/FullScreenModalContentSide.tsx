@@ -18,7 +18,7 @@ const styles = {
     text-muted text-center pointer-events-none`,
 };
 
-export const ContentSide: FC<PropsWithChildren> = ({ children }) => {
+export const FullScreenModalContentSide: FC<PropsWithChildren> = ({ children }) => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
 
     return (

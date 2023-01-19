@@ -1,4 +1,4 @@
-import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, RefContext, Icon, RefContextProvider, AddFriendModal, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider } from '@components';
+import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, RefContext, Icon, AddFriendModal, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider } from '@components';
 import { animated } from '@react-spring/web';
 import { getTransitionOptions } from '@utils';
 import { FC, useContext } from 'react';
@@ -66,7 +66,7 @@ export const ChannelMenu: FC = () => {
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
-                                                expanded={isOverlayExist}
+                                                isActive={isOverlayExist}
                                                 label='Пригласить друзей'
                                                 onLeftClick={openOverlay}
                                             >
@@ -92,7 +92,7 @@ export const ChannelMenu: FC = () => {
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
-                                                expanded={isOverlayExist}
+                                                isActive={isOverlayExist}
                                                 label='Настройки канала'
                                                 onLeftClick={openOverlay}
                                             >
@@ -118,7 +118,7 @@ export const ChannelMenu: FC = () => {
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
-                                                expanded={isOverlayExist}
+                                                isActive={isOverlayExist}
                                                 label='Покинуть канал'
                                                 onLeftClick={openOverlay}
                                             >
@@ -144,7 +144,7 @@ export const ChannelMenu: FC = () => {
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
-                                                expanded={isOverlayExist}
+                                                isActive={isOverlayExist}
                                                 label='Удалить канал'
                                                 onLeftClick={openOverlay}
                                             >

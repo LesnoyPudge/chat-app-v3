@@ -4,6 +4,9 @@ import { getHTML, getTransitionOptions, twClassNames } from '@utils';
 import { FC, useRef } from 'react';
 import { Conditional, AnimatedTransition, OverlayPortal, Image } from '@components';
 import { Heading, HeadingLevel } from '@libs';
+import fileDropImage1 from '@assets/filedrop-image-1.svg';
+import fileDropImage2 from '@assets/filedrop-image-2.svg';
+import fileDropImage3 from '@assets/filedrop-image-3.svg';
 
 
 
@@ -45,17 +48,17 @@ export const FileDrop: FC = () => {
                                         <div className={styles.imageWrapper}>
                                             <Image 
                                                 className={twClassNames(styles.image, styles.firstImage)}
-                                                src='\src\assets\filedrop-image-1.svg'
+                                                src={fileDropImage1}
                                             />
 
                                             <Image 
                                                 className={twClassNames(styles.image, styles.secondImage)}
-                                                src='\src\assets\filedrop-image-2.svg'
+                                                src={fileDropImage2}
                                             />
 
                                             <Image 
                                                 className={twClassNames(styles.image, styles.thirdImage)}
-                                                src='\src\assets\filedrop-image-3.svg'
+                                                src={fileDropImage3}
                                             />
                                         </div>
 

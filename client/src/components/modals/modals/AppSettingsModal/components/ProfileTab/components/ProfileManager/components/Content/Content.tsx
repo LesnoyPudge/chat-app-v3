@@ -48,7 +48,7 @@ export const Content: FC = () => {
                                 stylingPreset='brandNeutral'
                                 label='Изменить имя'
                                 hasPopup='dialog'
-                                expanded={isOverlayExist}
+                                isActive={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <>Изменить</>
@@ -88,7 +88,7 @@ export const Content: FC = () => {
                                 stylingPreset='brandNeutral'
                                 label='Изменить электронную почту'
                                 hasPopup='dialog'
-                                expanded={isOverlayExist}
+                                isActive={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <>Изменить</>
@@ -120,7 +120,7 @@ export const Content: FC = () => {
                                 stylingPreset='brandNeutral'
                                 label='Изменить пароль'
                                 hasPopup='dialog'
-                                expanded={isOverlayExist}
+                                isActive={isOverlayExist}
                                 onLeftClick={openOverlay}
                             >
                                 <>Изменить</>

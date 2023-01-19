@@ -1,5 +1,6 @@
 import { Icon, TopBar } from '@components';
 import { useNavigator } from '@hooks';
+import { Heading } from '@libs';
 import { FC } from 'react';
 
 
@@ -16,9 +17,9 @@ export const Header: FC = () => {
                 iconId='text-room-icon'
             />
 
-            <span className='ml-2 text-primary font-bold truncated'>
+            <Heading className='ml-2 text-primary font-bold truncated'>
                 {roomLabel}
-            </span>
+            </Heading>
         </TopBar>
     );
 };

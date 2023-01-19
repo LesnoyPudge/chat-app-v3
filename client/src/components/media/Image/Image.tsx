@@ -7,11 +7,10 @@ import { JSImage } from './JSImage';
 
 
 interface Image extends PropsWithClassName {
-    src?: string;
+    src: string;
     alt?: string;
     placeholder?: ReactNode;
     fallback?: ReactNode;
-    style?: React.CSSProperties;
 }
 
 const states = {
@@ -33,11 +32,10 @@ const baseClassName = 'h-auto w-full max-w-full object-cover';
 
 export const Image: FC<Image> = ({
     className = '',
-    src = 'https://picsum.photos/400',
+    src,
     alt = '',
     placeholder,
     fallback,
-    style,
 }) => {
     const imageRef = useRef(new JSImage());
     const [imageState, setImageState] = useState(states.initial);
@@ -71,7 +69,6 @@ export const Image: FC<Image> = ({
             <Conditional isRendered={showImage}>
                 <img 
                     className={twClassNames(baseClassName, className)}
-                    style={style}
                     src={src} 
                     alt={alt}
                     draggable={false}

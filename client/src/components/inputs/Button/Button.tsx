@@ -13,10 +13,11 @@ interface Button extends PropsWithChildrenAndClassName {
     isLoading?: boolean;
     tabIndex?: number;
     label?: string;
-    pressed?: boolean;
-    expanded?: boolean;
+    // pressed?: boolean;
+    // expanded?: boolean;
+    controls?: string;
     hasPopup?: 'dialog' | 'menu';
-    role?: 'button' | 'menuitem',
+    role?: 'button' | 'menuitem' | 'tab',
     onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onMiddleClick?: (e?: React.MouseEvent) => void;
@@ -78,8 +79,7 @@ export const Button: FC<Button> = ({
     isLoading = false,
     tabIndex = 0,
     label,
-    pressed,
-    expanded,
+    controls,
     hasPopup,
     role = 'button',
     onAnyClick,
@@ -133,8 +133,9 @@ export const Button: FC<Button> = ({
         e.preventDefault();
     };
 
-    const isExpanded = (isActive && !!hasPopup) || expanded;
-    const isPressed = (isActive && !hasPopup) || pressed;
+    const isExpanded = isActive && !!hasPopup;
+    const isPressed = isActive && role === 'button';
+    const isSelected = isActive && role === 'tab';
     
     return (
         <button
@@ -154,7 +155,9 @@ export const Button: FC<Button> = ({
             aria-label={label}
             aria-pressed={isPressed}
             aria-expanded={isExpanded}
+            aria-selected={isSelected}
             aria-haspopup={hasPopup}
+            aria-controls={controls}
             role={role}
             onKeyDown={handleLeftClickWithKeyboard}
             onClick={handleLeftClick}
