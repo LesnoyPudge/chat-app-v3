@@ -1,6 +1,6 @@
 import { FC, lazy, Suspense } from 'react';
 import { ErrorBoundary, Loader, Masks } from './components';
-import { useAuthorization, usePageVisibility, usePreventDefault, useThemeSwitcher } from './hooks';
+import { useAuthorization, useDebug, usePageVisibility, usePreventDefault, useThemeSwitcher } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import './styles/main.scss';
@@ -14,6 +14,7 @@ export const Root: FC = () => {
     usePreventDefault();
     // useAuthorization();
     useThemeSwitcher();
+    useDebug();
     
     return (
         <>

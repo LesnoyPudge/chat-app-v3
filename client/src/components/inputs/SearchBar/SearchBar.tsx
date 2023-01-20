@@ -14,6 +14,8 @@ interface SearchBar {
 }
 
 const styles = {
+    wrapper: 'h-10',
+    input: 'h-full',
     button: `flex shrink-0 h-full aspect-square rounded fill-icon-300 
     hover:fill-icon-200 focus-visible:fill-icon-200`,
     icon: 'h-2/3 aspect-square m-auto',
@@ -38,9 +40,9 @@ export const SearchBar: FC<SearchBar> = ({
     const buttonLabel = conditional('Очистить поиск', 'Перейти к поиску', !!value);
 
     return (
-        <TextInputWrapper className={className}>
+        <TextInputWrapper className={twClassNames(styles.wrapper, className)}>
             <TextInput
-                className='h-full'
+                className={styles.input}
                 name='search'
                 placeholder={placeholder}
                 value={value}

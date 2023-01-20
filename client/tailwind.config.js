@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const defaultTheme = require('tailwindcss/defaultTheme');
 const plugin = require('tailwindcss/plugin');
-const scopedGroups = require('tailwindcss-scoped-groups');
 
 
 
@@ -18,10 +17,7 @@ module.exports = {
         // plugin(({ addVariant }) => {
         //     addVariant('focus-to-next', '[&:focus-visible+*]:focused');
         // }),
-        scopedGroups({
-            groups: ['1', '2', '3', '4', '5'],
-        }),
-        
+
         // require('@tailwindcss/container-queries'),
     ],
 

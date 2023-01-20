@@ -1,12 +1,12 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import React, { createContext, FC, useRef, useState } from 'react';
+import React, { createContext, FC, useEffect, useRef, useState } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
 
 
 
-type ProvidedArray = {
+type ProvidedArray = Record<string, any> & {
     id: string;
-    [x: string]: unknown;
+    // [x: string]: unknown;
 }[];
 
 interface Focus {
@@ -32,11 +32,11 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
     direction,
     children,
 }) => {
+    const focusedWithArrow = useRef<boolean>(false);
     const [focus, setFocus] = useState<Focus>({ 
-        focusableId: list[0].id,
+        focusableId: list[0]?.id,
         focusedId: null,
     });
-    const focusedWithArrow = useRef<boolean>(false);
 
     const getAvailableSteps = () => {
         const length = list.length - 1;
@@ -44,8 +44,8 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
         
         if (currentIndex === -1) {
             return {
-                prev: list[0].id,
-                next: list[0].id,
+                prev: list[0]?.id,
+                next: list[0]?.id,
             };
         }
 
@@ -93,6 +93,17 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
             focusableId: id,
         });
     };
+
+    useEffect(() => {
+        const isListFocusable = list.findIndex((item) => item.id === focus.focusableId) !== -1;
+        
+        if (isListFocusable) return;
+
+        setFocus({ 
+            focusableId: list[0]?.id,
+            focusedId: null,
+        });
+    }, [focus.focusableId, list]);
 
     const contextValues: ArrowFocusContext = {
         focus,

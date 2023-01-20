@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, FocusableListItem, FocusableListWrapper, Separator, ContextMenu, Image } from '@components';
+import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Image, ArrowFocusContextProvider, ArrowFocusItem } from '@components';
 import { WrapperWithBullet } from './components';
 import { useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -30,12 +30,12 @@ const styles = {
     wrapper: 'flex flex-col shrink-0 gap-2 h-screen w-[72px] py-3 bg-primary-500',
     button: {
         base: `w-12 h-12 mx-auto flex justify-center items-center bg-primary-300 
-        rounded-full overflow-hidden transition-all ease-out duration-100 
+        rounded-full overflow-hidden transition-all ease-linear
         hover:rounded-2xl focus-visible:rounded-2xl hover:text-white 
         focus-visible:text-white peer`,
         active: 'rounded-2xl text-white',
     },
-    icon: 'w-7 h-7 transition-all ease-out duration-100',
+    icon: 'w-7 h-7 transition-all ease-linear ease-linear',
     addChannelButton: {
         base: `hover:bg-green focus-visible:bg-green 
         fill-green hover:fill-white focus-visible:fill-white`,
@@ -61,7 +61,7 @@ export const ChannelsNavigation: FC = () => {
                 <RefContextProvider>
                     <Button
                         className={twClassNames(
-                            styles.button.base, 
+                            styles.button.base,
                             styles.brandButton.base,
                             { 
                                 [styles.button.active]: isInAppOrPrivateChatPage,
@@ -86,61 +86,63 @@ export const ChannelsNavigation: FC = () => {
             <Conditional isRendered={!!channels.length}>
                 <Separator className='w-1/2' spacing={0}/>
 
-                <FocusableListWrapper className={styles.focusableListWrapper}>
-                    <ul className={styles.channelList}>
-                        {channels.map((channel, index) => {
-                            const isInChannel = myLocationIs.channel(channel.id);
-                            const formatedChannelName = channel.name.split(' ').map(word => word.charAt(0)).join('');
+                <ArrowFocusContextProvider list={channels} direction='vertical'>
+                    <div className={styles.focusableListWrapper}>
+                        <ul className={styles.channelList}>
+                            {channels.map((channel) => {
+                                const isInChannel = myLocationIs.channel(channel.id);
+                                const formatedChannelName = channel.name.split(' ').map(word => word.charAt(0)).join('');
                             
-                            const handleNavigateToChannel = () => navigateTo.channel(channel.id);
+                                const handleNavigateToChannel = () => navigateTo.channel(channel.id);
 
-                            return (
-                                <FocusableListItem key={channel.id} index={index}>
-                                    {({ tabIndex }) => (
-                                        <WrapperWithBullet isActive={isInChannel}>
-                                            <RefContextProvider>
-                                                <Button
-                                                    className={twClassNames(
-                                                        styles.button.base, 
-                                                        styles.brandButton.base,
-                                                        { 
-                                                            [styles.button.active]: isInChannel,
-                                                            [styles.brandButton.active]: isInChannel, 
-                                                        },
-                                                    )}
-                                                    tabIndex={tabIndex}
-                                                    label={channel.name}
-                                                    onLeftClick={handleNavigateToChannel}
-                                                >
-                                                    <Conditional isRendered={!channel.avatar}>
-                                                        <span className={styles.channelName}>
-                                                            {formatedChannelName}
-                                                        </span>
-                                                    </Conditional>
+                                return (
+                                    <ArrowFocusItem id={channel.id} key={channel.id} >
+                                        {({ tabIndex }) => (
+                                            <WrapperWithBullet isActive={isInChannel}>
+                                                <RefContextProvider>
+                                                    <Button
+                                                        className={twClassNames(
+                                                            styles.button.base, 
+                                                            styles.brandButton.base,
+                                                            { 
+                                                                [styles.button.active]: isInChannel,
+                                                                [styles.brandButton.active]: isInChannel, 
+                                                            },
+                                                        )}
+                                                        tabIndex={tabIndex}
+                                                        label={channel.name}
+                                                        onLeftClick={handleNavigateToChannel}
+                                                    >
+                                                        <Conditional isRendered={!channel.avatar}>
+                                                            <span className={styles.channelName}>
+                                                                {formatedChannelName}
+                                                            </span>
+                                                        </Conditional>
 
-                                                    <Conditional isRendered={!!channel.avatar}>
-                                                        <Image
-                                                            src={channel.avatar}
-                                                            alt={`Значок канала '${channel.name}'`}
-                                                        />
-                                                    </Conditional>
-                                                </Button>
+                                                        <Conditional isRendered={!!channel.avatar}>
+                                                            <Image
+                                                                src={channel.avatar}
+                                                                alt={`Значок канала '${channel.name}'`}
+                                                            />
+                                                        </Conditional>
+                                                    </Button>
 
-                                                <Tooltip preferredAligment='right'>
-                                                    <>{channel.name}</>
-                                                </Tooltip>
+                                                    <Tooltip preferredAligment='right'>
+                                                        <>{channel.name}</>
+                                                    </Tooltip>
 
-                                                <ContextMenu preferredAligment='right'>
-                                                    <>menu</>
-                                                </ContextMenu>
-                                            </RefContextProvider>
-                                        </WrapperWithBullet>
-                                    )}
-                                </FocusableListItem>
-                            );
-                        })}
-                    </ul>
-                </FocusableListWrapper>
+                                                    <ContextMenu preferredAligment='right'>
+                                                        <>menu</>
+                                                    </ContextMenu>
+                                                </RefContextProvider>
+                                            </WrapperWithBullet>
+                                        )}
+                                    </ArrowFocusItem>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                </ArrowFocusContextProvider>
 
                 <Separator className='w-1/2' spacing={0}/>
             </Conditional>

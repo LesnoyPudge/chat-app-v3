@@ -1,8 +1,8 @@
 import { IMessage } from '@backendTypes';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { getRandomNumber } from '@utils';
 import { useAutoScroll } from '@hooks';
-import { FocusableListContextProvider, FocusableListItem, MessageItem } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, MessageItem } from '@components';
 
 
 
@@ -44,63 +44,52 @@ export const MessageList: FC = () => {
         };
     }, [autoAdd]);
 
-    const messageList = useMemo(() => (
-        messages.map((message, index) => {
-            const tmpHead = !!parseInt(message.user);
-            const isFirst = index === 0;
-            return (
-                <li key={message.id}>
-                    <FocusableListItem index={index}>
-                        {({ tabIndex }) => (
-                        
-                            <MessageItem 
-                                message={message}
-                                isHeadless={tmpHead}
-                                isFirst={isFirst}
-                                tabIndex={tabIndex}
-                            />
-                        
-                        )}
-                    </FocusableListItem>
-                </li>
-            );
-        })
-    ), [messages]);
-
     return (
-        <FocusableListContextProvider>
-            {({ wrapperProps }) => (
-                <>
-                    <div className='flex gap-8 justify-center'>
-                        <button 
-                            onClick={() => setMessages(prev => [...prev, ...getMessages(1)])}
-                        >
-                            add
-                        </button>
-                        <button
-                            onClick={() => setAutoAdd(prev => !prev)}
-                        >
-                            toggle autoAdd: <span>{`${autoAdd}`}</span>
-                        </button>
-                    </div>
-
-                    <div 
-                        className='h-full w-full overflow-y-scroll 
-                        scrollbar-with-gutter scrollbar-primary' 
-                        ref={setScrollbarRef}
-                        {...wrapperProps}
+        <ArrowFocusContextProvider list={messages} direction='vertical'>
+            <>
+                <div className='flex gap-8 justify-center'>
+                    <button 
+                        onClick={() => setMessages(prev => [...prev, ...getMessages(1)])}
                     >
-                        <ol 
-                            className='flex flex-col justify-end 
-                            min-h-full overflow-hidden'
-                        >
-                            {messageList}
-                        </ol>
+                            add
+                    </button>
+                    <button
+                        onClick={() => setAutoAdd(prev => !prev)}
+                    >
+                            toggle autoAdd: <span>{`${autoAdd}`}</span>
+                    </button>
+                </div>
+
+                <div 
+                    className='h-full w-full overflow-y-scroll 
+                    scrollbar-with-gutter scrollbar-primary' 
+                    ref={setScrollbarRef}
+                >
+                    <ol className='flex flex-col justify-end min-h-full overflow-hidden'>
+                        {messages.map((message, index) => {
+                            const tmpHead = !!parseInt(message.user);
+                            const isFirst = index === 0;
+
+                            return (
+                                <li key={message.id}>
+                                    <ArrowFocusItem id={message.id}>
+                                        {({ tabIndex }) => (
+                                            <MessageItem 
+                                                message={message}
+                                                isHeadless={tmpHead}
+                                                isFirst={isFirst}
+                                                tabIndex={tabIndex}
+                                            />
+                                        )}
+                                    </ArrowFocusItem>
+                                </li>
+                            );
+                        })}
+                    </ol>
                         
-                        <div ref={setAutoScrollTriggerRef}></div>
-                    </div>
-                </>
-            )}
-        </FocusableListContextProvider>
+                    <div ref={setAutoScrollTriggerRef}></div>
+                </div>
+            </>
+        </ArrowFocusContextProvider>
     );
 };

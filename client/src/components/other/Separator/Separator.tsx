@@ -13,7 +13,7 @@ interface ISeparator {
 
 const orientations = {
     vertical: 'h-[var(--height)] w-[var(--thikness)] my-auto mx-[var(--spacing)]',
-    horizontal: 'w-full h-[var(--thikness)] mx-auto my-[var(--spacing)]',
+    horizontal: 'h-[var(--thikness)] mx-auto my-[var(--spacing)]',
 };
 
 export const Separator: FC<ISeparator> = ({ 
@@ -32,11 +32,9 @@ export const Separator: FC<ISeparator> = ({
     return (
         <div 
             className={twClassNames(
-                'shrink-0 bg-primary-100', 
-                {
-                    [orientations[orientation]]: true,
-                    [className]: !!className,
-                },
+                'shrink-0 bg-primary-100',
+                orientations[orientation],
+                className,
             )}
             style={style}
         ></div>
