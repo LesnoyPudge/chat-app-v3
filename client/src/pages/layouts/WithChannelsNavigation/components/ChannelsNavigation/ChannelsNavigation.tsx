@@ -30,12 +30,12 @@ const styles = {
     wrapper: 'flex flex-col shrink-0 gap-2 h-screen w-[72px] py-3 bg-primary-500',
     button: {
         base: `w-12 h-12 mx-auto flex justify-center items-center bg-primary-300 
-        rounded-full overflow-hidden transition-all ease-linear
+        rounded-3xl overflow-hidden transition-all ease-linear
         hover:rounded-2xl focus-visible:rounded-2xl hover:text-white 
         focus-visible:text-white peer`,
         active: 'rounded-2xl text-white',
     },
-    icon: 'w-7 h-7 transition-all ease-linear ease-linear',
+    icon: 'w-7 h-7 transition-all ease-linear',
     addChannelButton: {
         base: `hover:bg-green focus-visible:bg-green 
         fill-green hover:fill-white focus-visible:fill-white`,

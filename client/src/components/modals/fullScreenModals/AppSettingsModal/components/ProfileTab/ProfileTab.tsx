@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { Button, DeleteAccountModal, OverlayContextProvider, Separator } from '@components';
+import { FC, useContext } from 'react';
+import { AppSettingsModalTabs, Button, DeleteAccountModal, OverlayContextProvider, Separator, TabContext, TabPanel } from '@components';
 import { ProfileManager } from './components';
 import { HeadingLevel } from '@libs';
 import { SectionTitle, SettingsDescription, SettingsGroupTitle } from '..';
@@ -7,9 +7,14 @@ import { SectionTitle, SettingsDescription, SettingsGroupTitle } from '..';
 
 
 export const ProfileTab: FC = () => {
+    const { tabs } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
+
     return (
         <HeadingLevel>
-            <div>
+            <TabPanel 
+                label='Настройки профиля' 
+                controls={tabs.profileTab.identifier}
+            >
                 <SectionTitle className='mb-5'>
                     <>Моя учётная запись</>
                 </SectionTitle>
@@ -44,7 +49,7 @@ export const ProfileTab: FC = () => {
                         )}
                     </OverlayContextProvider>
                 </HeadingLevel>
-            </div>
+            </TabPanel>
         </HeadingLevel>
     );
 };

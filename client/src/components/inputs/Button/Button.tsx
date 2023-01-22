@@ -1,5 +1,5 @@
 import { PropsWithChildrenAndClassName } from '@types';
-import { twClassNames } from '@utils';
+import { conditional, twClassNames } from '@utils';
 import React, { FC } from 'react';
 
 
@@ -13,8 +13,6 @@ interface Button extends PropsWithChildrenAndClassName {
     isLoading?: boolean;
     tabIndex?: number;
     label?: string;
-    // pressed?: boolean;
-    // expanded?: boolean;
     controls?: string;
     hasPopup?: 'dialog' | 'menu';
     role?: 'button' | 'menuitem' | 'tab',
@@ -133,10 +131,14 @@ export const Button: FC<Button> = ({
         e.preventDefault();
     };
 
-    const isExpanded = isActive && !!hasPopup;
-    const isPressed = isActive && role === 'button';
-    const isSelected = isActive && role === 'tab';
-    
+    const withExpanded = !!hasPopup;
+    const withPressed = role === 'button';
+    const withSelected = role === 'tab';
+
+    const isExpanded = conditional(isActive, undefined, withExpanded);
+    const isPressed = conditional(isActive, undefined, withPressed);
+    const isSelected = conditional(isActive, undefined, withSelected);
+
     return (
         <button
             className={twClassNames({

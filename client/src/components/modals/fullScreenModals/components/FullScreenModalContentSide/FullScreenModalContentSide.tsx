@@ -32,6 +32,7 @@ export const FullScreenModalContentSide: FC<PropsWithChildren> = ({ children }) 
                     <div className={styles.buttonWrapper}>
                         <Button
                             className={styles.button}
+                            label='Закрыть диалог'
                             onLeftClick={closeOverlay}
                         >
                             <Icon

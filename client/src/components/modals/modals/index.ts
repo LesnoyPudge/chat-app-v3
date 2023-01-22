@@ -1,5 +1,4 @@
 export * from './AddFriendModal';
-export * from './AppSettingsModal';
 export * from './DeleteAccountModal';
 export * from './ChangeEmailModal';
 export * from './ChangePasswordModal';
@@ -10,4 +9,4 @@ export * from './InviteToChannelModal';
 export * from './CreateChannelModal';
 export * from './DeleteRoomModal';
 export * from './CreateRoomModal';
-export * from './LightBoxModal'
+export * from './LightBoxModal';

@@ -80,7 +80,7 @@ const styles = {
     filtredLength: 'text-xs uppercase font-semibold text-secondary mx-2.5',
     separator: 'mx-2.5',
     listWrapper: 'h-full overflow-y-scroll scrollbar-primary',
-    list: 'flex flex-col gap-2 py-2',
+    list: 'flex flex-col gap-0.5 py-2',
     listItem: `flex items-center gap-3 h-[60px] py-2 px-2.5 mr-1 rounded-lg 
     hover:bg-hover focus-within:bg-hover`,
     avatar: 'h-8 w-8',

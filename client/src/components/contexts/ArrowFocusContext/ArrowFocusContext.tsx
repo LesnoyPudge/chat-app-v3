@@ -6,8 +6,13 @@ import { ChildrenAsNodeOrFunction } from '@components';
 
 type ProvidedArray = Record<string, any> & {
     id: string;
-    // [x: string]: unknown;
 }[];
+
+type ProvidedObject = Record<string, Record<string, any> & {
+    identifier: string;
+}>;
+
+type ProvidedList = ProvidedArray | ProvidedObject;
 
 interface Focus {
     focusableId: string;
@@ -21,7 +26,7 @@ export interface ArrowFocusContext {
 }
 
 interface ArrowFocusContextProvider extends PropsWithChildrenAsNodeOrFunction<ArrowFocusContext> {
-    list: ProvidedArray;
+    list: ProvidedList;
     direction: 'horizontal' | 'vertical' | 'both';
 }
 
@@ -32,20 +37,23 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
     direction,
     children,
 }) => {
+    const normalizedList = Array.isArray(list) ? list : Object.values(list).map((item) => ({
+        id: item.identifier,
+    }));
     const focusedWithArrow = useRef<boolean>(false);
     const [focus, setFocus] = useState<Focus>({ 
-        focusableId: list[0]?.id,
+        focusableId: normalizedList[0]?.id,
         focusedId: null,
     });
 
     const getAvailableSteps = () => {
-        const length = list.length - 1;
-        const currentIndex = list.findIndex((item) => item.id === focus.focusableId);
+        const length = normalizedList.length - 1;
+        const currentIndex = normalizedList.findIndex((item) => item.id === focus.focusableId);
         
         if (currentIndex === -1) {
             return {
-                prev: list[0]?.id,
-                next: list[0]?.id,
+                prev: normalizedList[0]?.id,
+                next: normalizedList[0]?.id,
             };
         }
 
@@ -53,8 +61,8 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
         const nextIndex = currentIndex === length ? 0 : currentIndex + 1;
 
         return {
-            prev: list[prevIndex].id,
-            next: list[nextIndex].id,
+            prev: normalizedList[prevIndex].id,
+            next: normalizedList[nextIndex].id,
         };
     };
 
@@ -95,15 +103,15 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
     };
 
     useEffect(() => {
-        const isListFocusable = list.findIndex((item) => item.id === focus.focusableId) !== -1;
+        const isListFocusable = normalizedList.findIndex((item) => item.id === focus.focusableId) !== -1;
         
         if (isListFocusable) return;
 
         setFocus({ 
-            focusableId: list[0]?.id,
+            focusableId: normalizedList[0]?.id,
             focusedId: null,
         });
-    }, [focus.focusableId, list]);
+    }, [focus.focusableId, normalizedList]);
 
     const contextValues: ArrowFocusContext = {
         focus,

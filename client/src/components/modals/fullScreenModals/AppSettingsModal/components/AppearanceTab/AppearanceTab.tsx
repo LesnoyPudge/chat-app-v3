@@ -1,15 +1,20 @@
-import { Separator, SliderInput } from '@components';
+import { AppSettingsModalTabs, Separator, SliderInput, TabContext, TabPanel } from '@components';
 import { FormikRadioInput, HeadingLevel } from '@libs';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { SectionTitle, SettingsGroupTitle } from '..';
 import { ChatExample } from './components';
 
 
 
 export const AppearanceTab: FC = () => {
+    const { tabs } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
+    
     return (
         <HeadingLevel>
-            <div>
+            <TabPanel 
+                label='Настройки внешнего вида' 
+                controls={tabs.appearanceTab.identifier}
+            >
                 <SectionTitle className='mb-5'>
                     <>Внешний вид</>
                 </SectionTitle>
@@ -103,7 +108,7 @@ export const AppearanceTab: FC = () => {
                         />
                     </div>
                 </HeadingLevel>
-            </div>
+            </TabPanel>
         </HeadingLevel>
     );
 };

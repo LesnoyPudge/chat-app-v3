@@ -18,13 +18,6 @@ const styles = {
 export const Navigation: FC = () => {
     const { changeTab, isActive, tabs } = useContext(TabContext) as TabContext<AppPageTabs>;
 
-    const tabList = [
-        { id: tabs.onlineFriends.identifier },
-        { id: tabs.allFriends.identifier },
-        { id: tabs.friendRequests.identifier },
-        { id: tabs.blocked.identifier },
-    ];
-
     return (
         <TopBar className='px-2 items-center'>
             <Icon
@@ -38,7 +31,7 @@ export const Navigation: FC = () => {
 
             <Separator spacing={16} orientation='vertical' height={24}/>
 
-            <ArrowFocusContextProvider list={tabList} direction='horizontal'>
+            <ArrowFocusContextProvider list={tabs} direction='horizontal'>
                 <TabList
                     className='flex gap-4'
                     label='Пользователи'

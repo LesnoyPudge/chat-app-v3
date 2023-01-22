@@ -3,29 +3,15 @@ import { AppearanceTab, Navigation, ProfileTab } from './components';
 import { ModalWindow, TabContextProvider, TabPanel } from '@components';
 import { getTransitionOptions } from '@utils';
 import { Form, Formik } from 'formik';
-import { FullScreenModalWrapper, FullScreenModalNavigationSide, FullScreenModalContentSide } from '../../components';
+import { FullScreenModalWrapper, FullScreenModalNavigationSide, FullScreenModalContentSide } from '../components';
 
 
 
 const transitionOptions = getTransitionOptions.fullScreenModal();
 
 const tabs = {
-    profileTab: (
-        <TabPanel 
-            label='Настройки профиля' 
-            controls='ProfileTab'
-        >
-            <ProfileTab/>
-        </TabPanel>
-    ),
-    appearanceTab: (
-        <TabPanel 
-            label='Настройки внешнего вида' 
-            controls='AppearanceTab'
-        >
-            <AppearanceTab/>
-        </TabPanel>
-    ),
+    profileTab: <ProfileTab/>,
+    appearanceTab: <AppearanceTab/>,
 };
 
 export type AppSettingsModalTabs = typeof tabs;

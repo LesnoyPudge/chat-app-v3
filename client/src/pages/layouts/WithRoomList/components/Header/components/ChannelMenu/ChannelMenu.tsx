@@ -1,4 +1,4 @@
-import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, RefContext, Icon, AddFriendModal, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider } from '@components';
+import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, RefContext, Icon, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider, ChannelSettingsModal } from '@components';
 import { animated } from '@react-spring/web';
 import { getTransitionOptions } from '@utils';
 import { FC, useContext } from 'react';
@@ -106,7 +106,7 @@ export const ChannelMenu: FC = () => {
                                                 />
                                             </Button>
 
-                                            <AddFriendModal/>
+                                            <ChannelSettingsModal/>
                                         </>
                                     )}
                                 </OverlayContextProvider>

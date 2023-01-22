@@ -72,6 +72,10 @@
     button,
     [role="button"] {
         cursor: pointer;
+        // https://stackoverflow.com/questions/4567988/what-is-it-in-the-css-dom-that-prevents-an-input-box-with-display-block-from-ex
+        width: -webkit-fill-available;
+        width: -moz-available;
+        width: stretch;
 
         &:disabled {
             cursor: not-allowed;
