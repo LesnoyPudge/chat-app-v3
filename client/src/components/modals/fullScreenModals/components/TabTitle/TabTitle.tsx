@@ -5,14 +5,14 @@ import { FC } from 'react';
 
 
 
-const baseCN = 'text-primary font-semibold text-heading-l';
+const baseClassName = 'text-primary font-semibold text-heading-l';
 
-export const SectionTitle: FC<PropsWithChildrenAndClassName> = ({
+export const TabTitle: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {
     return (
-        <Heading className={twClassNames(baseCN, className)}>
+        <Heading className={twClassNames(baseClassName, className)}>
             {children}
         </Heading>
     );

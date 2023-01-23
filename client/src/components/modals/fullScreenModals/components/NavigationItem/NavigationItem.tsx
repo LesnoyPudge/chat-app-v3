@@ -11,8 +11,8 @@ interface NavigationItem extends PropsWithChildrenAndClassName {
 const styles = {
     item: {
         base: `w-full py-1.5 px-2.5 text-secondary font-medium text-start
-        rounded-md hover:bg-hover hover:text-primary focus-visible:bg-hover 
-        focus-visible:text-primary`,
+        rounded-md hover:bg-hover hover:text-primary group-focus-visible:bg-hover 
+        group-focus-visible:text-primary`,
         active: 'bg-hover text-primary',
     },
 };

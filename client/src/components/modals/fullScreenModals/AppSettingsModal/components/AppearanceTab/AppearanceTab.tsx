@@ -1,7 +1,8 @@
 import { AppSettingsModalTabs, Separator, SliderInput, TabContext, TabPanel } from '@components';
 import { FormikRadioInput, HeadingLevel } from '@libs';
 import { FC, useContext } from 'react';
-import { SectionTitle, SettingsGroupTitle } from '..';
+import { SettingsGroupTitle } from '..';
+import { TabTitle } from '../../../components';
 import { ChatExample } from './components';
 
 
@@ -15,9 +16,9 @@ export const AppearanceTab: FC = () => {
                 label='Настройки внешнего вида' 
                 controls={tabs.appearanceTab.identifier}
             >
-                <SectionTitle className='mb-5'>
+                <TabTitle className='mb-5'>
                     <>Внешний вид</>
-                </SectionTitle>
+                </TabTitle>
 
                 <ChatExample/>
 

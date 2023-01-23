@@ -4,14 +4,14 @@ import { FC } from 'react';
 
 
 
-const baseCN = 'text-secondary text-sm';
+const baseClassName = 'text-secondary text-sm';
 
 export const SettingsDescription: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {
     return (
-        <p className={twClassNames(baseCN, className)}>
+        <p className={twClassNames(baseClassName, className)}>
             {children}
         </p>
     );

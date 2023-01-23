@@ -5,6 +5,7 @@ import { NavigationHeading, NavigationItem } from '../../../components';
 
 
 const styles = {
+    button: 'group',
     logoutButton: 'hover:fill-icon-100 flex justify-between items-center',
     logoutIcon: 'h-4 w-4 fill-icon-200',
     socialWrapper: 'flex gap-1.5 mt-2 px-2.5',
@@ -25,6 +26,7 @@ export const Navigation: FC = () => {
                 <ArrowFocusItem id={tabs.profileTab.identifier}>
                     {({ tabIndex }) => (
                         <Button
+                            className={styles.button}
                             isActive={isActive.profileTab}
                             label='Моя учётная запись'
                             role='tab'
@@ -48,6 +50,7 @@ export const Navigation: FC = () => {
                 <ArrowFocusItem id={tabs.appearanceTab.identifier}>
                     {({ tabIndex }) => (
                         <Button
+                            className={styles.button}
                             isActive={isActive.appearanceTab}
                             label='Внешний вид'
                             role='tab'
@@ -65,6 +68,7 @@ export const Navigation: FC = () => {
                 <Separator spacing={16}/>
                         
                 <Button
+                    className={styles.button}
                     label='Выйти за аккаунта'
                     onLeftClick={() => console.log('click on logout button')}
                 >

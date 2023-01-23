@@ -2,7 +2,8 @@ import { FC, useContext } from 'react';
 import { AppSettingsModalTabs, Button, DeleteAccountModal, OverlayContextProvider, Separator, TabContext, TabPanel } from '@components';
 import { ProfileManager } from './components';
 import { HeadingLevel } from '@libs';
-import { SectionTitle, SettingsDescription, SettingsGroupTitle } from '..';
+import { SettingsDescription, SettingsGroupTitle } from '..';
+import { TabTitle } from '../../../components';
 
 
 
@@ -15,9 +16,9 @@ export const ProfileTab: FC = () => {
                 label='Настройки профиля' 
                 controls={tabs.profileTab.identifier}
             >
-                <SectionTitle className='mb-5'>
+                <TabTitle className='mb-5'>
                     <>Моя учётная запись</>
-                </SectionTitle>
+                </TabTitle>
 
                 <ProfileManager/>
 

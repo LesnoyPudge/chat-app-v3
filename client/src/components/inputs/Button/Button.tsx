@@ -5,7 +5,7 @@ import React, { FC } from 'react';
 
 
 interface Button extends PropsWithChildrenAndClassName {
-    stylingPreset?: 'brand' | 'link' | 'lite' | 'brandNeutral' | 'brandDanger',
+    stylingPreset?: 'brand' | 'link' | 'lite' | 'brandNeutral' | 'brandDanger' | 'brandPositive',
     size?: 'small' | 'medium' | 'big';
     type?: 'button' | 'submit' | 'reset';
     isActive?: boolean;
@@ -48,6 +48,13 @@ const styles = {
         hover:bg-danger-hover focus-visible:bg-danger-hover 
         active:bg-danger-active`,
         active: 'bg-danger-active',
+    },
+
+    brandPositive: {
+        base: `text-white font-medium bg-positive 
+        hover:bg-positive-hover focus-visible:bg-positive-hover 
+        active:bg-positive-active`,
+        active: 'bg-positive-active',
     },
 
     link: {

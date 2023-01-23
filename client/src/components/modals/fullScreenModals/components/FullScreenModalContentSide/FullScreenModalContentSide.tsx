@@ -5,7 +5,7 @@ import { Button, Icon, OverlayContext } from '@components';
 
 const styles = {
     wrapper: `grow shrink basis-[800px] overflow-hidden 
-    overflow-y-scroll scrollbar-primary`,
+    overflow-y-scroll scrollbar-primary relative`,
     inner: 'flex h-fit',
     content: 'max-w-[740px] py-[60px] px-10 flex-1',
     sidebar: 'pt-[60px] mr-5 basis-[36px] relative',

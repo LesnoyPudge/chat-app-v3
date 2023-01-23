@@ -14,9 +14,11 @@ module.exports = {
 
     
     plugins: [
-        // plugin(({ addVariant }) => {
-        //     addVariant('focus-to-next', '[&:focus-visible+*]:focused');
-        // }),
+        plugin(({ addVariant }) => {
+            // addVariant('focus-to-next', '[&:focus-visible+*]:focused');
+            // addVariant('parent-focus-visible', '*:focus-visible &');
+            // addVariant('parent', 'html[data-desktop] &');
+        }),
 
         // require('@tailwindcss/container-queries'),
     ],
@@ -54,6 +56,10 @@ module.exports = {
                 neutral: 'var(--color-bg-neutral)',
                 'neutral-hover': 'var(--color-bg-neutral-hover)',
                 'neutral-active': 'var(--color-bg-neutral-active)',
+
+                positive: 'var(--color-bg-positive)',
+                'positive-hover': 'var(--color-bg-positive-hover)',
+                'positive-active': 'var(--color-bg-positive-active)',
             },
               
             textColor: {

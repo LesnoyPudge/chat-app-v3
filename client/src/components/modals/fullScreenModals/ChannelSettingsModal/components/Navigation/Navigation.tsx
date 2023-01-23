@@ -6,6 +6,7 @@ import { NavigationHeading, NavigationItem } from '../../../components';
 
 const styles = {
     list: 'flex flex-col gap-0.5',
+    button: 'group',
 };
 
 export const Navigation: FC = () => {
@@ -22,6 +23,7 @@ export const Navigation: FC = () => {
                     <ArrowFocusItem id={tabs.overviewTab.identifier}>
                         {({ tabIndex }) => (
                             <Button
+                                className={styles.button}
                                 isActive={isActive.overviewTab}
                                 label='Обзор канала'
                                 role='tab'
@@ -39,6 +41,7 @@ export const Navigation: FC = () => {
                     <ArrowFocusItem id={tabs.rolesTab.identifier}>
                         {({ tabIndex }) => (
                             <Button
+                                className={styles.button}
                                 isActive={isActive.rolesTab}
                                 label='Роли канала'
                                 role='tab'
@@ -64,6 +67,7 @@ export const Navigation: FC = () => {
                     <ArrowFocusItem id={tabs.membersTab.identifier}>
                         {({ tabIndex }) => (
                             <Button
+                                className={styles.button}
                                 isActive={isActive.membersTab}
                                 label='Участники канала'
                                 role='tab'
@@ -81,6 +85,7 @@ export const Navigation: FC = () => {
                     <ArrowFocusItem id={tabs.bannedTab.identifier}>
                         {({ tabIndex }) => (
                             <Button
+                                className={styles.button}
                                 isActive={isActive.bannedTab}
                                 label='Забаненные пользователи'
                                 role='tab'
@@ -99,6 +104,7 @@ export const Navigation: FC = () => {
                 <Separator spacing={16}/>
 
                 <Button
+                    className={styles.button}
                     label='Удалить канал'
                     onLeftClick={() => console.log('delete channel')}
                 >
