@@ -1,14 +1,15 @@
-import { FC } from 'react';
-import { Button, ModalWindow, TabContextProvider } from '@components';
+import { FC, useRef } from 'react';
+import { ModalWindow, TabContextProvider } from '@components';
 import { getTransitionOptions } from '@utils';
-import { FullScreenModalWrapper, FullScreenModalNavigationSide, FullScreenModalContentSide } from '../components';
+import { FullScreenModalWrapper, FullScreenModalNavigationSide, FullScreenModalContentSide, ScreenShake } from '../components';
 import { BannedTab, MembersTab, Navigation, OverviewTab, RolesTab } from './components';
+import { Form, Formik } from 'formik';
 
 
 
 export type ChannelSettingsModalTabs = typeof tabs;
 
-const transitionOptions = getTransitionOptions.fullScreenModal();
+const transitionOptions = getTransitionOptions.fullScreenModal({});
 
 const tabs = {
     overviewTab: <OverviewTab/>,
@@ -17,49 +18,71 @@ const tabs = {
     bannedTab: <BannedTab/>,
 };
 
+const initialValues = {
+    overviewTab: { 
+        isPrivate: false,
+    },
+    rolesTab: {
+
+    },
+    membersTab: {
+        
+    },
+    bannedTab: {
+        
+    },
+};
+
 export const ChannelSettingsModal: FC = () => {
+    const isDirtyRef = useRef(false);
+
     return (
         <ModalWindow 
             label='Настройки канала' 
             transitionOptions={transitionOptions}
         >
-            <TabContextProvider tabs={tabs}>
-                {({ currentTab }) => (
-                    <FullScreenModalWrapper>
-                        <FullScreenModalNavigationSide>
-                            <Navigation/>
-                        </FullScreenModalNavigationSide>
-    
-                        <FullScreenModalContentSide>
-                            {currentTab.tab}
-                            
-                            <div className='absolute max-w-[740px] px-5 pb-5 left-0 right-0 bottom-0 pointer-events-none'>
-                                <div className='flex w-full items-center gap-2.5 p-2.5 rounded-md bg-primary-500 pointer-events-auto'>
-                                    <div className='font-medium truncate mr-auto'>
-                                        <>Аккуратнее, вы не сохранили изменения!</>
-                                    </div>
+            <ScreenShake>
+                {({ resetShakeStacks, triggerScreenShake }) => {
+                    const onTabChange = () => {
+                        if (isDirtyRef.current) triggerScreenShake();
+                        return !isDirtyRef.current;
+                    };
 
-                                    <Button
-                                        stylingPreset='lite'
-                                        size='small'
-                                        type='reset'
-                                    >
-                                        <>Сброс</>
-                                    </Button>
+                    return (
+                        <TabContextProvider tabs={tabs} onTabChange={onTabChange}>
+                            {({ currentTab }) => (
+                                <Formik
+                                    initialValues={initialValues[currentTab.identifier]}
+                                    onSubmit={(values) => {
+                                        resetShakeStacks();
+                                        console.log(values);
+                                    }}
+                                    onReset={resetShakeStacks}
+                                >
+                                    {({ dirty }) => {
+                                        isDirtyRef.current = dirty;
+                                        if (!dirty) resetShakeStacks();
 
-                                    <Button
-                                        stylingPreset='brandPositive'
-                                        size='small'
-                                        type='submit'
-                                    >
-                                        <>Сохранить изменения</>
-                                    </Button>
-                                </div>
-                            </div>
-                        </FullScreenModalContentSide>
-                    </FullScreenModalWrapper>
-                )}
-            </TabContextProvider>
+                                        return (
+                                            <Form>
+                                                <FullScreenModalWrapper>
+                                                    <FullScreenModalNavigationSide>
+                                                        <Navigation/>
+                                                    </FullScreenModalNavigationSide>
+                
+                                                    <FullScreenModalContentSide>
+                                                        {currentTab.tab}
+                                                    </FullScreenModalContentSide>
+                                                </FullScreenModalWrapper>
+                                            </Form>
+                                        );
+                                    }}
+                                </Formik>
+                            )}
+                        </TabContextProvider>
+                    );
+                }}
+            </ScreenShake>
         </ModalWindow>
     );
 };

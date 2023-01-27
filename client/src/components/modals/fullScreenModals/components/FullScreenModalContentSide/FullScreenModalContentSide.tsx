@@ -1,21 +1,21 @@
 import { FC, PropsWithChildren, useContext } from 'react';
 import { Button, Icon, OverlayContext } from '@components';
+import { FormConfirmationBar } from '../FormConfirmationBar';
 
 
 
 const styles = {
-    wrapper: `grow shrink basis-[800px] overflow-hidden 
-    overflow-y-scroll scrollbar-primary relative`,
-    inner: 'flex h-fit',
-    content: 'max-w-[740px] py-[60px] px-10 flex-1',
-    sidebar: 'pt-[60px] mr-5 basis-[36px] relative',
-    buttonWrapper: 'grid gap-1.5 fixed',
-    button: `grid place-items-center h-9 w-9 
-    rounded-full border-2 border-icon-200 fill-icon-200
-    hover:border-icon-100 hover:fill-icon-100 transition-all duration-75`,
-    icon: 'h-5 w-5 transition-all duration-75',
-    text: `font-semibold text-sm 
-    text-muted text-center pointer-events-none`,
+    wrapper: 'grow shrink basis-[800px] relative',
+    inner: 'flex h-full overflow-hidden overflow-y-scroll scrollbar-primary relative',
+    content: 'h-fit max-w-[740px] pt-[60px] pb-24 px-10 flex-1',
+    toolbar: 'flex basis-14 py-[60px]',
+    button: `flex flex-col gap-1.5 items-center w-auto fixed border-icon-200 fill-icon-200
+    text-muted transition-all duration-75 hover:border-icon-100 hover:fill-icon-100
+    hover:text-primary focus-visible:fill-icon-100 focus-visible:text-primary
+    focus-visible:border-icon-100`,
+    iconWrapper: 'h-9 w-9 p-1.5 rounded-full border-2',
+    icon: 'h-full w-full duration-75',
+    text: 'font-semibold text-sm transition-all duration-75',
 };
 
 export const FullScreenModalContentSide: FC<PropsWithChildren> = ({ children }) => {
@@ -28,25 +28,27 @@ export const FullScreenModalContentSide: FC<PropsWithChildren> = ({ children }) 
                     {children}
                 </div>
 
-                <div className={styles.sidebar}>
-                    <div className={styles.buttonWrapper}>
-                        <Button
-                            className={styles.button}
-                            label='Закрыть диалог'
-                            onLeftClick={closeOverlay}
-                        >
+                <div className={styles.toolbar}>
+                    <Button
+                        className={styles.button}
+                        label='Закрыть диалог'
+                        onLeftClick={closeOverlay}
+                    >
+                        <div className={styles.iconWrapper}>
                             <Icon
                                 className={styles.icon}
                                 iconId='cross-icon'
                             />
-                        </Button>
+                        </div>
 
                         <span className={styles.text}>
                             <>ESC</>
                         </span>
-                    </div>
+                    </Button>
                 </div>
             </div>
+
+            <FormConfirmationBar/>
         </div>
     );
 };

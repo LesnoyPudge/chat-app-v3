@@ -34,7 +34,7 @@ export const FileDrop: FC = () => {
     return (
         <AnimatedTransition 
             isExist={isDragOver}
-            transitionOptions={getTransitionOptions.defaultModal()}
+            transitionOptions={getTransitionOptions.defaultModal({})}
         >
             {({ isAnimatedExist, style }) => (
                 <Conditional isRendered={isAnimatedExist}>

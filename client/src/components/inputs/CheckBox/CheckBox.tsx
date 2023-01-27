@@ -1,6 +1,6 @@
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
-import { FC, useId } from 'react';
+import { FC, useId, useRef } from 'react';
 
 
 
@@ -24,7 +24,15 @@ export const CheckBox: FC<CheckBox> = ({
     onChange,
     children,
 }) => {
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const id = useId();
+
+    const handleEnter = (e: React.KeyboardEvent) => {
+        if (e.code !== 'Enter') return;
+
+        e.preventDefault();
+        inputRef.current?.click();
+    };
 
     return (
         <>
@@ -35,7 +43,9 @@ export const CheckBox: FC<CheckBox> = ({
                 checked={checked}
                 aria-label={label}
                 id={id}
+                ref={inputRef}
                 onChange={onChange}
+                onKeyDown={handleEnter}
             />
 
             <label 

@@ -36,6 +36,7 @@
             "@pages/*": ["src/pages/pages/*"],
             "@layouts": ["src/pages/layouts/index"],
             "@libs": ["src/libs/index"],
+            "@reExport": ["src/reExport"],
         },
     },
     "include": [

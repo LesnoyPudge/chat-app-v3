@@ -16,7 +16,7 @@ PropsWithChildrenAsNodeOrFunction<OverlayContext> {
     preferredAligment: Aligment;
 }
 
-const transitionOptions = getTransitionOptions.defaultContextMenu();
+const transitionOptions = getTransitionOptions.defaultContextMenu({});
 
 const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-normal p-5';
 

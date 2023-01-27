@@ -1,0 +1,1 @@
+export { default as deepMerge } from 'ts-deepmerge';

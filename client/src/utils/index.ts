@@ -19,3 +19,4 @@ export * from './conditional';
 export * from './getTransitionOptions';
 export * from './encodeFiles';
 export * from './getDecodedImage';
+export * from './deepEqual';

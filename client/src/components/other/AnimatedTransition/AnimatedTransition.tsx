@@ -1,28 +1,30 @@
-import { useTransition, UseTransitionProps } from '@react-spring/web';
+import { PickAnimated, SpringValues, useTransition, UseTransitionProps } from '@react-spring/web';
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import { FC } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
 import { getTransitionOptions } from '@utils';
 
 
 
-type AnimatedTransition = PropsWithChildrenAsNodeOrFunction<{
-    style: Record<string, never>;
+type AnimatedTransition<T extends UseTransitionProps<boolean>> = PropsWithChildrenAsNodeOrFunction<{
+    style: SpringValues<PickAnimated<T>>;
     isAnimatedExist: boolean;
 }> & {
     isExist?: boolean;
-    transitionOptions?: UseTransitionProps<boolean>;
+    transitionOptions?: T;
 }
 
-const defaultTransitionOptions = getTransitionOptions.withOpacity();
+const defaultTransitionOptions = getTransitionOptions.withOpacity({});
 
-export const AnimatedTransition: FC<AnimatedTransition> = ({
-    isExist = true,
-    transitionOptions = defaultTransitionOptions,
-    children,
-}) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const AnimatedTransition = <T extends UseTransitionProps<boolean> | object>(props: AnimatedTransition<T>) => {
+    const {
+        transitionOptions = defaultTransitionOptions,
+        isExist = true,
+        children,
+    } = props;
+
     const transition = useTransition(isExist, transitionOptions);
-
+    
     return transition((style, isAnimatedExist) => (
         <ChildrenAsNodeOrFunction args={{ style, isAnimatedExist }}>
             {children}

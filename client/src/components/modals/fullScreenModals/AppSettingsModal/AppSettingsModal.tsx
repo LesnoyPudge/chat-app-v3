@@ -7,7 +7,7 @@ import { FullScreenModalWrapper, FullScreenModalNavigationSide, FullScreenModalC
 
 
 
-const transitionOptions = getTransitionOptions.fullScreenModal();
+const transitionOptions = getTransitionOptions.fullScreenModal({});
 
 const tabs = {
     profileTab: <ProfileTab/>,
