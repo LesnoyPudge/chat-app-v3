@@ -180,6 +180,10 @@
     }
 
     .truncated {
-        @apply text-ellipsis overflow-hidden whitespace-nowrap min-w-0 w-full;
+        @apply truncate min-w-0 w-full;
+    }
+
+    .sr-input {
+        @apply absolute inset-0 opacity-0 text-0 cursor-pointer;
     }
 }

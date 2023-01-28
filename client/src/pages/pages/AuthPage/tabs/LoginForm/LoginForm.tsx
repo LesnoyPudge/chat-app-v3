@@ -1,4 +1,4 @@
-import { Button, TabContext } from '@components';
+import { Button, FieldLabel, PasswordTypeToggle, PasswordTypeToggleButton, TabContext, TextInput, TextInputWrapper } from '@components';
 import { FormikTextInput, Heading } from '@libs';
 import { AuthPageTabs } from '@pages/AuthPage/AuthPage';
 import { Form, Formik } from 'formik';
@@ -26,28 +26,60 @@ export const LoginForm: FC = () => {
                         </div>
 
                         <FormikTextInput
-                            className='mb-5'
                             label='Логин'
                             name='login'
                             required
                             placeholder='myLogin'
-                        />
+                        >
+                            {(props) => (
+                                <div>
+                                    <FieldLabel htmlFor={props.id}>
+                                        <>Логин</>
+                                    </FieldLabel>
 
-                        <FormikTextInput
-                            className='mb-5'
-                            label='Пароль'
-                            name='password'
-                            type='password'
-                            required
-                            placeholder='myPassword'
-                        />
+                                    <TextInput 
+                                        className='mb-5'
+                                        {...props}
+                                    />
+                                </div>
+                            )}
+                        </FormikTextInput>
 
+                        <PasswordTypeToggle>
+                            {({ toggleType, type }) => (
+                                <FormikTextInput
+                                    label='Пароль'
+                                    name='password'
+                                    type={type}
+                                    required
+                                    placeholder='qwerty'
+                                >
+                                    {(props) => (
+                                        <div>
+                                            <FieldLabel htmlFor={props.id}>
+                                                <>Пароль</>
+                                            </FieldLabel>
+
+                                            <TextInputWrapper className='mb-5'>
+                                                <TextInput {...props}/>
+                                    
+                                                <PasswordTypeToggleButton
+                                                    type={type}
+                                                    onToggle={toggleType}
+                                                />
+                                            </TextInputWrapper>
+                                        </div>
+                                    )}
+                                </FormikTextInput>
+                            )}
+                        </PasswordTypeToggle>
+                        
                         <Button 
                             className='w-full h-11 mb-2'
                             type='submit' 
                             stylingPreset='brand' 
                         >
-                            Вход
+                            <>Вход</>
                         </Button>
 
                         <div className='self-start flex items-center flex-wrap'>
@@ -59,7 +91,7 @@ export const LoginForm: FC = () => {
                                 stylingPreset='link' 
                                 onLeftClick={changeTab.registrationForm}
                             >
-                                Зарегистрироваться
+                                <>Зарегистрироваться</>
                             </Button>
                         </div>
                     </div>

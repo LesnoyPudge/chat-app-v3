@@ -107,19 +107,19 @@ export const CreateRoomTab: FC = () => {
                     placeholder='новая-комната'
                     required
                 >
-                    {(textInputProps) => (
+                    {(props) => (
                         <div>
-                            <FieldLabel htmlFor={textInputProps.id}>
-                                <>Название комнаты</>
+                            <FieldLabel htmlFor={props.id}>
+                                {props.label}
     
                                 <RequiredWildcard/>
     
-                                <ErrorMessage hidden={!textInputProps.error}>
-                                    {textInputProps.error}
+                                <ErrorMessage hidden={!props.error}>
+                                    {props.error}
                                 </ErrorMessage>
                             </FieldLabel>
         
-                            <TextInput {...textInputProps}/>
+                            <TextInput {...props}/>
                         </div>
                     )}
                 </FormikTextInput>

@@ -33,12 +33,14 @@ module.exports = {
                 green: 'var(--green)',
                 white: 'var(--white)',
                 red: 'var(--red)',
+
                 status: {
                     online: 'var(--status-online)',
                     afk: 'var(--status-afk)',
                     offline: 'var(--status-offline)',
                     dnd: 'var(--status-dnd)',
                 },
+
                 icon: {
                     100: 'var(--icon-100)',
                     200: 'var(--icon-200)',
@@ -81,6 +83,7 @@ module.exports = {
                     300: 'var(--color-bg-primary-300)',
                     400: 'var(--color-bg-primary-400)',
                     500: 'var(--color-bg-primary-500)',
+                    600: 'var(--color-bg-primary-600)',
                 },
 
                 hover: 'var(--color-bg-hover)',

@@ -1,6 +1,6 @@
 import { Form } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, OverlayContext } from '@components';
+import { Button, FieldLabel, OverlayContext, PasswordTypeToggle, PasswordTypeToggleButton, TextInput, TextInputWrapper } from '@components';
 import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { FormikTextInput } from '@libs';
 
@@ -26,14 +26,47 @@ export const EnterNewEmailSlide: FC = () => {
                     <FormikTextInput
                         label='Электронная почта'
                         name='email'
+                        type='email'
                         required
-                    />
+                    >
+                        {(props) => (
+                            <div>
+                                <FieldLabel htmlFor={props.id}>
+                                    {props.label}
+                                </FieldLabel>
 
-                    <FormikTextInput
-                        label='Пароль'
-                        name='password'
-                        required
-                    />
+                                <TextInput {...props}/>
+                            </div>
+                        )}
+                    </FormikTextInput>
+
+                    <PasswordTypeToggle>
+                        {({ type, toggleType }) => (
+                            <FormikTextInput
+                                label='Пароль'
+                                name='password'
+                                type={type}
+                                required
+                            >
+                                {(props) => (
+                                    <div>
+                                        <FieldLabel htmlFor={props.id}>
+                                            {props.label}
+                                        </FieldLabel>
+
+                                        <TextInputWrapper>
+                                            <TextInput {...props}/>
+
+                                            <PasswordTypeToggleButton
+                                                type={type}
+                                                onToggle={toggleType}
+                                            />
+                                        </TextInputWrapper>
+                                    </div>
+                                )}
+                            </FormikTextInput>
+                        )}
+                    </PasswordTypeToggle>
                 </ModalContent>
 
                 <ModalFooter>

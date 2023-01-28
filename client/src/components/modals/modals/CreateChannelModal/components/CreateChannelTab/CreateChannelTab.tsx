@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, Conditional, TabContext, Image, Icon, CreateChannelModalTabs } from '@components';
+import { Button, Conditional, TabContext, Image, Icon, CreateChannelModalTabs, FieldLabel, TextInput } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { EncodedFile } from '@types';
 import { FormikFileInput, FormikTextInput } from '@libs';
@@ -86,7 +86,17 @@ export const CreateChannelTab: FC = () => {
                         label='Название канала'
                         maxLength={32}
                         required
-                    />
+                    >
+                        {(props) => (
+                            <div>
+                                <FieldLabel htmlFor={props.id}>
+                                    {props.label}
+                                </FieldLabel>
+
+                                <TextInput {...props}/>
+                            </div>
+                        )}
+                    </FormikTextInput>
                 </ModalContent>
         
                 <ModalFooter>

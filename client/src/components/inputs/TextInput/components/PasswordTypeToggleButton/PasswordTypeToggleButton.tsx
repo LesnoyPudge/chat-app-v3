@@ -7,7 +7,7 @@ import { conditional, twClassNames } from '@utils';
 
 type TepeState = 'password' | 'text'
 
-interface PasswordTextToggleButton extends PropsWithClassName {
+interface PasswordTypeToggleButton extends PropsWithClassName {
     type: TepeState;
     onToggle: () => void;
 }
@@ -17,7 +17,7 @@ const styles = {
     icon: 'h-full w-full',
 };
 
-export const PasswordTextToggleButton: FC<PasswordTextToggleButton> = ({
+export const PasswordTypeToggleButton: FC<PasswordTypeToggleButton> = ({
     className = '',
     type,
     onToggle,

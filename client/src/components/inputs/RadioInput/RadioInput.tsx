@@ -14,11 +14,11 @@ interface RadioInput extends PropsWithChildrenAndClassName {
 
 const styles = {
     label: {
-        base: `cursor-pointer block min-h-[47px] flex items-center gap-3.5 p-2.5 rounded-md
-        text-secondary bg-primary-300 hover:text-primary hover:bg-primary-100`,
+        base: `cursor-pointer min-h-[47px] flex items-center gap-3.5 p-2.5 rounded-md
+        text-secondary bg-primary-300 hover:text-primary hover:bg-primary-100 focus-within:focused`,
         active: 'text-primary bg-primary-100', 
     },
-    input: 'sr-only [&:focus-visible+*]:focused peer',
+    input: 'sr-only',
 };
 
 export const RadioInput: FC<RadioInput> = ({
@@ -30,29 +30,25 @@ export const RadioInput: FC<RadioInput> = ({
     children,
     onChange,
 }) => {
-    const id = useId();
-
     return (
         <>
-            <input 
-                className={styles.input}
-                type='radio' 
-                name={name}
-                value={value}
-                checked={checked}
-                aria-label={label}
-                id={id}
-                onChange={onChange}
-            />
-
             <label 
                 className={twClassNames(
                     styles.label.base, 
                     { [styles.label.active]: checked },
                     className,
                 )}
-                htmlFor={id}
             >
+                <input 
+                    className={styles.input}
+                    type='radio' 
+                    name={name}
+                    value={value}
+                    checked={checked}
+                    aria-label={label}
+                    onChange={onChange}
+                />
+
                 {children}
             </label>
         </>

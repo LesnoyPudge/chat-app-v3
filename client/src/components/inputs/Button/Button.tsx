@@ -15,7 +15,8 @@ interface Button extends PropsWithChildrenAndClassName {
     label?: string;
     controls?: string;
     hasPopup?: 'dialog' | 'menu';
-    role?: 'button' | 'menuitem' | 'tab',
+    role?: 'button' | 'menuitem' | 'tab' | 'presentation';
+    hidden?: boolean;
     onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onMiddleClick?: (e?: React.MouseEvent) => void;
@@ -32,38 +33,40 @@ const styles = {
     brand: {
         base: `text-white font-medium bg-brand 
         hover:bg-brand-hover focus-visible:bg-brand-hover 
-        active:bg-brand-active`,
+        focus-within:bg-brand-hover active:bg-brand-active`,
         active: 'bg-brand-active',
     },
 
     brandNeutral: {
         base: `text-white font-medium bg-neutral 
         hover:bg-neutral-hover focus-visible:bg-neutral-hover 
-        active:bg-neutral-active`,
+        focus-within:bg-neutral-hover active:bg-neutral-active`,
         active: 'bg-neutral-active',
     },
 
     brandDanger: {
         base: `text-white font-medium bg-danger
         hover:bg-danger-hover focus-visible:bg-danger-hover 
-        active:bg-danger-active`,
+        focus-within:bg-danger-hover active:bg-danger-active`,
         active: 'bg-danger-active',
     },
 
     brandPositive: {
         base: `text-white font-medium bg-positive 
         hover:bg-positive-hover focus-visible:bg-positive-hover 
-        active:bg-positive-active`,
+        focus-within:bg-positive-hover active:bg-positive-active`,
         active: 'bg-positive-active',
     },
 
     link: {
-        base: 'p-0 text-link hover:underline focus-visible:underline',
+        base: `p-0 text-link hover:underline focus-visible:underline
+        focus-within:underline`,
         active: 'underline',
     },
 
     lite: {
-        base: 'text-primary hover:underline focus-visible:underline',
+        base: `text-primary hover:underline focus-visible:underline
+        focus-within:underline`,
         active: 'underline',
     },
 };
@@ -87,6 +90,7 @@ export const Button: FC<Button> = ({
     controls,
     hasPopup,
     role = 'button',
+    hidden = false,
     onAnyClick,
     onLeftClick,
     onMiddleClick,
@@ -146,6 +150,8 @@ export const Button: FC<Button> = ({
     const isPressed = conditional(isActive, undefined, withPressed);
     const isSelected = conditional(isActive, undefined, withSelected);
 
+    const validTabIndex = conditional(-1, tabIndex, hidden);
+
     return (
         <button
             className={twClassNames({
@@ -160,13 +166,14 @@ export const Button: FC<Button> = ({
             data-disabled={isDisabled}
             data-loading={isLoading}
             disabled={isDisabled}
-            tabIndex={tabIndex}
+            tabIndex={validTabIndex}
             aria-label={label}
             aria-pressed={isPressed}
             aria-expanded={isExpanded}
             aria-selected={isSelected}
             aria-haspopup={hasPopup}
             aria-controls={controls}
+            aria-hidden={hidden}
             role={role}
             onKeyDown={handleLeftClickWithKeyboard}
             onClick={handleLeftClick}

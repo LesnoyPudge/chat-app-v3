@@ -1,6 +1,6 @@
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
-import React, { FC, useId } from 'react';
+import React, { FC } from 'react';
 
 
 
@@ -13,8 +13,8 @@ interface FileInput extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    label: 'cursor-pointer block',
-    input: 'sr-only [&:focus-visible+*]:focused',
+    wrapper: 'relative focus-within:focused',
+    input: 'sr-input',
 };
 
 export const FileInput: FC<FileInput> = ({
@@ -26,27 +26,19 @@ export const FileInput: FC<FileInput> = ({
     children,
     onChange,
 }) => {
-    const id = useId();
-
     return (
-        <>
+        <div className={twClassNames(styles.wrapper, className)}>
             <input 
                 className={styles.input}
                 accept={accept}
                 multiple={multiple}
                 type='file'
                 name={name}
-                id={id}
                 aria-label={label}
                 onChange={onChange}
             />
 
-            <label
-                className={twClassNames(styles.label, className)}
-                htmlFor={id}
-            >
-                {children}
-            </label>
-        </>
+            {children}
+        </div>
     );
 };

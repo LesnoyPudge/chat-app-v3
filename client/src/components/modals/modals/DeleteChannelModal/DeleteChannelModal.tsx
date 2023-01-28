@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Button, ModalWindow } from '@components';
+import { Button, FieldLabel, ModalWindow, TextInput } from '@components';
 import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../components';
 import { Form, Formik } from 'formik';
 import { FormikTextInput } from '@libs';
@@ -52,7 +52,17 @@ export const DeleteChannelModal: FC = () => {
                                         name='channelName'
                                         label='Введите название канала'
                                         required
-                                    />
+                                    >
+                                        {(props) => (
+                                            <div>
+                                                <FieldLabel htmlFor={props.id}>
+                                                    {props.label}
+                                                </FieldLabel>
+
+                                                <TextInput {...props}/>
+                                            </div>
+                                        )}
+                                    </FormikTextInput>
                                 </ModalContent>
 
                                 <ModalFooter>

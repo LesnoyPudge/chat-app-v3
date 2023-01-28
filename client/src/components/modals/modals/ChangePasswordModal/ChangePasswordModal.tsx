@@ -1,4 +1,4 @@
-import { Button, ModalWindow } from '@components';
+import { Button, FieldLabel, ModalWindow, PasswordTypeToggle, PasswordTypeToggleButton, TextInput, TextInputWrapper } from '@components';
 import { FormikTextInput } from '@libs';
 import { Form, Formik } from 'formik';
 import { FC } from 'react';
@@ -48,23 +48,89 @@ export const ChangePasswordModal: FC = () => {
                                 </ModalHeader>
 
                                 <ModalContent className='gap-4'>
-                                    <FormikTextInput
-                                        name='oldPassword'
-                                        label='Текущий пароль'
-                                        required
-                                    />
+                                    <PasswordTypeToggle>
+                                        {({ toggleType, type }) => (
+                                            <FormikTextInput
+                                                name='oldPassword'
+                                                label='Текущий пароль'
+                                                type={type}
+                                                required
+                                            >
+                                                {(props) => (
+                                                    <div>
+                                                        <FieldLabel htmlFor={props.id}>
+                                                            {props.label}
+                                                        </FieldLabel>
 
-                                    <FormikTextInput
-                                        name='newPassword'
-                                        label='Новый пароль'
-                                        required
-                                    />
+                                                        <TextInputWrapper>
+                                                            <TextInput {...props}/>
 
-                                    <FormikTextInput
-                                        name='newPasswordAgain'
-                                        label='Подтверждение нового пароля'
-                                        required
-                                    />
+                                                            <PasswordTypeToggleButton
+                                                                type={type}
+                                                                onToggle={toggleType}
+                                                            />
+                                                        </TextInputWrapper>
+                                                    </div>
+                                                )}
+                                            </FormikTextInput>
+                                        )}
+                                    </PasswordTypeToggle>
+
+                                    <PasswordTypeToggle>
+                                        {({ toggleType, type }) => (
+                                            <FormikTextInput
+                                                name='newPassword'
+                                                label='Новый пароль'
+                                                type={type}
+                                                required
+                                            >
+                                                {(props) => (
+                                                    <div>
+                                                        <FieldLabel htmlFor={props.id}>
+                                                            {props.label}
+                                                        </FieldLabel>
+
+                                                        <TextInputWrapper>
+                                                            <TextInput {...props}/>
+
+                                                            <PasswordTypeToggleButton
+                                                                type={type}
+                                                                onToggle={toggleType}
+                                                            />
+                                                        </TextInputWrapper>
+                                                    </div>
+                                                )}
+                                            </FormikTextInput>
+                                        )}
+                                    </PasswordTypeToggle>
+
+                                    <PasswordTypeToggle>
+                                        {({ toggleType, type }) => (
+                                            <FormikTextInput
+                                                name='newPasswordAgain'
+                                                label='Подтверждение нового пароля'
+                                                type={type}
+                                                required
+                                            >
+                                                {(props) => (
+                                                    <div>
+                                                        <FieldLabel htmlFor={props.id}>
+                                                            {props.label}
+                                                        </FieldLabel>
+
+                                                        <TextInputWrapper>
+                                                            <TextInput {...props}/>
+
+                                                            <PasswordTypeToggleButton
+                                                                type={type}
+                                                                onToggle={toggleType}
+                                                            />
+                                                        </TextInputWrapper>
+                                                    </div>
+                                                )}
+                                            </FormikTextInput>
+                                        )}
+                                    </PasswordTypeToggle>
                                 </ModalContent>
 
                                 <ModalFooter>

@@ -1,7 +1,7 @@
 import { useNavigator } from '@hooks';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, CreateChannelModalTabs, OverlayContext, TabContext } from '@components';
+import { Button, CreateChannelModalTabs, FieldLabel, OverlayContext, TabContext, TextInput } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { FormikTextInput } from '@libs';
 
@@ -48,7 +48,17 @@ export const FollowInvitationTab: FC = () => {
                         label='Ссылка-приглашение'
                         placeholder='https://discord.gg/hTkzmak, hTkzmak'
                         required
-                    />
+                    >
+                        {(props) => (
+                            <div>
+                                <FieldLabel htmlFor={props.id}>
+                                    {props.label}
+                                </FieldLabel>
+
+                                <TextInput {...props}/>
+                            </div>
+                        )}
+                    </FormikTextInput>
 
                     {/* <ErrorBlock isError={true}>
                         <p>Errro: приглашение не действительно</p>

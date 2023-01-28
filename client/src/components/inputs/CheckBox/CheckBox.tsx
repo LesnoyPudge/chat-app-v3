@@ -12,8 +12,8 @@ interface CheckBox extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    label: 'cursor-pointer block',
-    input: 'sr-only [&:focus-visible+*]:focused',
+    label: 'relative focus-within:focused',
+    input: 'sr-input',
 };
 
 export const CheckBox: FC<CheckBox> = ({
@@ -25,7 +25,6 @@ export const CheckBox: FC<CheckBox> = ({
     children,
 }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const id = useId();
 
     const handleEnter = (e: React.KeyboardEvent) => {
         if (e.code !== 'Enter') return;
@@ -36,22 +35,18 @@ export const CheckBox: FC<CheckBox> = ({
 
     return (
         <>
-            <input 
-                className={styles.input}
-                type='checkbox' 
-                name={name}
-                checked={checked}
-                aria-label={label}
-                id={id}
-                ref={inputRef}
-                onChange={onChange}
-                onKeyDown={handleEnter}
-            />
+            <label className={twClassNames(styles.label, className)}>
+                <input 
+                    className={styles.input}
+                    type='checkbox' 
+                    name={name}
+                    checked={checked}
+                    aria-label={label}
+                    ref={inputRef}
+                    onChange={onChange}
+                    onKeyDown={handleEnter}
+                />
 
-            <label 
-                className={twClassNames(styles.label, className)}
-                htmlFor={id}
-            >
                 {children}
             </label>   
         </>

@@ -6,7 +6,7 @@ import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
 
 
-type OmitedKeys = 'onChange' | 'value' | 'error';
+type OmitedKeys = 'className' | 'onChange' | 'value' | 'error' | 'children';
 
 type ChildrenArgs = TextInput & {
     id: string;

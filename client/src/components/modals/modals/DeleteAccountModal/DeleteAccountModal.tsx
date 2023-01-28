@@ -1,4 +1,4 @@
-import { Button, ModalWindow, OverlayContext } from '@components';
+import { Button, FieldLabel, ModalWindow, OverlayContext, PasswordTypeToggle, PasswordTypeToggleButton, TextInput, TextInputWrapper } from '@components';
 import { FormikTextInput } from '@libs';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
@@ -42,12 +42,33 @@ const DeleteAccountModalInner: FC = () => {
                             <>Все каналы, которыми вы владеете, также будут удалены.</>
                         </p>
 
-                        <FormikTextInput
-                            name='password'
-                            required
-                            label='Введите пароль'
-                            type='password'
-                        />
+                        <PasswordTypeToggle>
+                            {({ toggleType, type }) => (
+                                <FormikTextInput
+                                    name='password'
+                                    label='Введите пароль'
+                                    type={type}
+                                    required
+                                >
+                                    {(props) => (
+                                        <div>
+                                            <FieldLabel htmlFor={props.id}>
+                                                {props.label}
+                                            </FieldLabel>
+
+                                            <TextInputWrapper>
+                                                <TextInput {...props}/>
+
+                                                <PasswordTypeToggleButton
+                                                    type={type}
+                                                    onToggle={toggleType}
+                                                />
+                                            </TextInputWrapper>
+                                        </div>
+                                    )}
+                                </FormikTextInput>
+                            )}
+                        </PasswordTypeToggle>
                     </ModalContent>
     
                     <ModalFooter>

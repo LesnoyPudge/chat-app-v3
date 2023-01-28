@@ -5,7 +5,7 @@ import { FC } from 'react';
 
 
 
-const baseClassName = 'text-primary font-semibold text-heading-l';
+const baseClassName = 'text-primary font-semibold text-heading-l mb-5';
 
 export const TabTitle: FC<PropsWithChildrenAndClassName> = ({
     className = '',

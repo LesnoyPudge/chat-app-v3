@@ -16,7 +16,7 @@ export const AppearanceTab: FC = () => {
                 label='Настройки внешнего вида' 
                 controls={tabs.appearanceTab.identifier}
             >
-                <TabTitle className='mb-5'>
+                <TabTitle>
                     <>Внешний вид</>
                 </TabTitle>
 

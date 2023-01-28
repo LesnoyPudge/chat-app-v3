@@ -12,11 +12,11 @@ interface ChildrenArgs {
     toggleType: () => void;
 }
 
-interface PasswordTextToggle extends PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
+interface PasswordTypeToggle extends PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
     initialType?: FieldType;
 }
 
-export const PasswordTextToggle: FC<PasswordTextToggle> = ({
+export const PasswordTypeToggle: FC<PasswordTypeToggle> = ({
     initialType = 'password',
     children,
 }) => {

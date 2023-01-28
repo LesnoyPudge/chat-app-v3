@@ -1,4 +1,4 @@
-import { Button, ModalWindow } from '@components';
+import { Button, FieldLabel, ModalWindow, PasswordTypeToggle, PasswordTypeToggleButton, TextInput, TextInputWrapper } from '@components';
 import { FormikTextInput } from '@libs';
 import { Form, Formik } from 'formik';
 import { FC } from 'react';
@@ -50,13 +50,45 @@ export const ChangeUsernameModal: FC = () => {
                                         label='Имя пользователя'
                                         name='username'
                                         required
-                                    />
+                                    >
+                                        {(props) => (
+                                            <div>
+                                                <FieldLabel htmlFor={props.id}>
+                                                    {props.label}
+                                                </FieldLabel>
 
-                                    <FormikTextInput
-                                        label='Текущий пароль'
-                                        name='password'
-                                        required
-                                    />
+                                                <TextInput {...props}/>
+                                            </div>
+                                        )}
+                                    </FormikTextInput>
+
+                                    <PasswordTypeToggle>
+                                        {({ toggleType, type }) => (
+                                            <FormikTextInput
+                                                label='Текущий пароль'
+                                                name='password'
+                                                type={type}
+                                                required
+                                            >
+                                                {(props) => (
+                                                    <div>
+                                                        <FieldLabel htmlFor={props.id}>
+                                                            {props.label}
+                                                        </FieldLabel>
+
+                                                        <TextInputWrapper>
+                                                            <TextInput {...props}/>
+
+                                                            <PasswordTypeToggleButton
+                                                                type={type}
+                                                                onToggle={toggleType}
+                                                            />
+                                                        </TextInputWrapper>
+                                                    </div>
+                                                )}
+                                            </FormikTextInput>
+                                        )}
+                                    </PasswordTypeToggle>
                                 </ModalContent>
 
                                 <ModalFooter>

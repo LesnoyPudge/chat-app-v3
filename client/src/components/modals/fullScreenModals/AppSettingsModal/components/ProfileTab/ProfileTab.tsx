@@ -16,7 +16,7 @@ export const ProfileTab: FC = () => {
                 label='Настройки профиля' 
                 controls={tabs.profileTab.identifier}
             >
-                <TabTitle className='mb-5'>
+                <TabTitle>
                     <>Моя учётная запись</>
                 </TabTitle>
 

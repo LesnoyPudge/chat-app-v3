@@ -12,7 +12,7 @@ const styles = {
     right-0 bottom-0 pointer-events-none`,
     inner: {
         base: `flex w-full items-center gap-2.5 p-2.5 rounded-md 
-        bg-primary-500 shadow-elevation-high transition-all`,
+        bg-primary-600 shadow-elevation-high transition-all`,
         active: 'pointer-events-auto',
         throttle: 'bg-danger text-white',
     },
