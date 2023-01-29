@@ -8,10 +8,10 @@ import { FC, useContext } from 'react';
 
 const styles = {
     button: {
-        base: `px-2 py-0.5 shrink-0 rounded text-secondary font-semibold transition-all 
-        duration-75 hover:text-primary hover:bg-active 
-        focus-visible:text-primary focus-visible:bg-active`,
-        active: 'text-primary bg-active',
+        base: `px-2 py-0.5 shrink-0 rounded text-color-secondary font-semibold transition-all 
+        duration-75 hover:text-color-primary hover:bg-primary-active 
+        focus-visible:text-color-primary focus-visible:bg-primary-active`,
+        active: 'text-color-primary bg-primary-active',
     },
 };
 
@@ -25,7 +25,7 @@ export const Navigation: FC = () => {
                 iconId='friend-icon'
             /> 
     
-            <Heading className='text-heading-m text-primary font-medium'>
+            <Heading className='text-heading-m text-color-primary font-medium'>
                 <>Друзья</>
             </Heading>
 

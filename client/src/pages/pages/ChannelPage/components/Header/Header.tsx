@@ -17,7 +17,7 @@ export const Header: FC = () => {
                 iconId='text-room-icon'
             />
 
-            <Heading className='ml-2 text-primary font-bold truncated'>
+            <Heading className='ml-2 text-color-primary font-bold truncated'>
                 {roomLabel}
             </Heading>
         </TopBar>

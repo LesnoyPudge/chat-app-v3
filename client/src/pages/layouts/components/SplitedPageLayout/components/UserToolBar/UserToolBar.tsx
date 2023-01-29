@@ -8,7 +8,7 @@ import { UserInfo } from './components';
 
 const styles = {
     wrapper: 'flex shrink-0 mt-auto items-center h-[52px] py-0 px-2 bg-primary-400',
-    button: `h-8 w-8 flex shrink-0 rounded hover:bg-hover focus-visible:bg-hover
+    button: `h-8 w-8 flex shrink-0 rounded hover:bg-primary-hover focus-visible:bg-primary-hover
     fill-icon-300 hover:fill-icon-200 focus-visible:fill-icon-200`,
     icon: 'w-5 h-5 m-auto',
 };

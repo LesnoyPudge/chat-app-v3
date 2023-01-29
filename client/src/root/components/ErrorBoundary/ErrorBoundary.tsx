@@ -59,7 +59,7 @@ const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
     }, [onCrush]);
 
     return (
-        <div className='h-screen w-screen isolate bg-primary-300 text-normal flex'>
+        <div className='h-screen w-screen isolate bg-primary-300 text-color-base flex'>
             <Image
                 className='image-bg-fullscreen'
                 src={errorBgImage}
@@ -71,11 +71,11 @@ const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
                     src={errorImage}
                 />
 
-                <p className='text-xl text-primary mb-3 font-semibold'>
+                <p className='text-xl text-color-primary mb-3 font-semibold'>
                     Как-то неловко получается
                 </p>
 
-                <div className='text-muted mb-6'>
+                <div className='text-color-muted mb-6'>
                     <p>В приложении возник неожиданный сбой....</p>
 
                     <p>Мы отследили ошибку и вскоре ей займёмся.</p>

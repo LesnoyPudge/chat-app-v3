@@ -70,7 +70,7 @@ export const InviteToChannelModal: FC = () => {
 
                                     return (
                                         <li 
-                                            className='flex justify-between gap-4 p-2 h-11 w-full hover:bg-hover focus-within:bg-hover items-center'
+                                            className='flex justify-between gap-4 p-2 h-11 w-full hover:bg-primary-hover focus-within:bg-primary-hover items-center'
                                             key={privateChat.id}
                                         >
                                             <div className='flex gap-2.5 items-center'>

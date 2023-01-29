@@ -8,11 +8,11 @@ import { ChannelMenu } from './components';
 
 const styles = {
     topBar: {
-        base: 'relative hover:bg-hover focus-within:bg-hover',
-        acvive: 'bg-hover',
+        base: 'relative hover:bg-primary-hover focus-within:bg-primary-hover',
+        acvive: 'bg-primary-hover',
     },
     button: 'flex justify-between items-center w-full h-full px-4',
-    buttonText: 'font-semibold text-primary',
+    buttonText: 'font-semibold text-color-primary',
     buttonIcon: 'w-4 h-4 fill-icon-100',
 };
 

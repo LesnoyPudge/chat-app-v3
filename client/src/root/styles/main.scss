@@ -5,99 +5,70 @@
 @import './fonts.scss';
 @import './vars.scss';
 @import './light-theme.scss';
-@import './custom.scss';
 
 
 
 @layer base {
     html {
-        overflow: hidden;
+        @apply overflow-hidden;
         text-rendering: optimizeLegibility;
     }
 
     body {
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-        isolation: isolate;
+        @apply bg-primary-500 text-base text-color-base h-screen w-screen overflow-hidden isolate;
     }
 
     #app,
     #overlay {
-        position: fixed;
-        isolation: isolate;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        overflow: hidden;
+        @apply fixed isolate inset-0 overflow-hidden;
     }
 
     #app {
-        z-index: 1;
+        @apply z-10;
     }
 
     #overlay {
-        z-index: 2;
-        pointer-events: none;
+        @apply z-20 pointer-events-none;
     }
 
     input,
     textarea {
-        background-color: transparent;
-        border: none;
-        color: inherit;
+        @apply bg-transparent border-none border-0 text-inherit p-0 resize-none;
+
         font-size: inherit;
-        padding: 0;
-        resize: none;
 
         &:disabled {
-            cursor: not-allowed;
+            @apply cursor-not-allowed;
         }
     }
 
-    *:focus {
-        outline: none;
+    *:focus:not(:focus-visible) {
+        @apply focus-hidden;
     }
 
-    .focused,
     *:focus-visible {
-        outline-color: var(--outline);
-        outline-style: solid;
-        outline-width: 3px;
-        // box-shadow: inset 4px 4px 0px 0px gold;
-        // box-shadow: inset 0 0 0px 3px var(--outline);
+        @apply focused;
     }
 
     button,
     [role="button"] {
-        cursor: pointer;
-        // https://stackoverflow.com/questions/4567988/what-is-it-in-the-css-dom-that-prevents-an-input-box-with-display-block-from-ex
-        width: -webkit-fill-available;
-        width: -moz-available;
-        width: stretch;
+        @apply cursor-pointer;
+
+        // width: -webkit-fill-available;
+        // width: -moz-available;
+        // width: stretch;
 
         &:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            @apply opacity-50 cursor-not-allowed;
         }
     }
 
-    // input[type="radio"],
-    // input[type="file"],
-    // input[type="color"],
     input[type="hidden"] {
         @apply sr-only;
     }
 
     *::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-        // background-color: red !important;
-    }
-
-    *::-webkit-scrollbar-thumb {
-        // background-color: green !important;
+        @apply w-2 h-2;
     }
 
     * {

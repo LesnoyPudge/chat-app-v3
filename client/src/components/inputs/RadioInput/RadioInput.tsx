@@ -15,8 +15,8 @@ interface RadioInput extends PropsWithChildrenAndClassName {
 const styles = {
     label: {
         base: `cursor-pointer min-h-[47px] flex items-center gap-3.5 p-2.5 rounded-md
-        text-secondary bg-primary-300 hover:text-primary hover:bg-primary-100 focus-within:focused`,
-        active: 'text-primary bg-primary-100', 
+        text-color-secondary bg-primary-300 hover:text-color-primary hover:bg-primary-100 focus-within:focused`,
+        active: 'text-color-primary bg-primary-100', 
     },
     input: 'sr-only',
 };

@@ -64,7 +64,7 @@ export const CreateChannelTab: FC = () => {
 
                                     <Conditional isRendered={!files}>
                                         <div className='flex relative w-full h-full rounded-full border-2 border-icon-100 border-dashed'>
-                                            <span className='m-auto text-xxs uppercase font-semibold'>
+                                            <span className='m-auto text-2xs uppercase font-semibold'>
                                                 <>Загрузить</>
                                             </span>
 

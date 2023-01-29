@@ -15,7 +15,7 @@ const styles = {
     wrapper: `flex min-h-[44px] max-h-[50vh] mt-auto 
     mb-6 mx-4 rounded-lg bg-primary-100`,
     editor: `w-full px-2 h-full py-[11px]
-    placeholder:text-placeholder min-h-[44px] max-h-[50vh] 
+    placeholder:text-color-placeholder min-h-[44px] max-h-[50vh] 
     overflow-y-auto overflow-x-hidden`,
     button: `h-11 fill-icon-200 hover:fill-icon-300 
     focus-visible:fill-icon-300`,

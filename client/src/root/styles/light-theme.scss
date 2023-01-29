@@ -1,61 +1,55 @@
 [data-theme=light] {
-    --color-bg-primary-100: #ebedef;
-    --color-bg-primary-200: #FFFFFF;
-    --color-bg-primary-300: #F2F3F5;
-    --color-bg-primary-400: #ebedef;
-    --color-bg-primary-500: #E3E5E8;
-    --color-bg-primary-600: #FFFFFF;
+    --color-primary-100: hsl(210, 11%, 93%);
+    --color-primary-200: hsl(0, 0%, 100%);
+    --color-primary-300: hsl(220, 13%, 95%);
+    --color-primary-400: hsl(210, 11%, 93%);
+    --color-primary-500: hsl(216, 10%, 90%);
+    --color-primary-600: hsl(0, 0%, 100%);
 
-    --color-bg-hover: rgba(106, 116, 128, 0.16);
-    --color-bg-active: rgba(106, 116, 128, 0.2);
-    --color-bg-selected: rgba(106, 116, 128, 0.24);
+    --color-primary-hover: rgba(106, 116, 128, 0.16);
+    --color-primary-active: rgba(106, 116, 128, 0.2);
+    --color-primary-selected: rgba(106, 116, 128, 0.24);
 
-    --color-bg-slider-track: #dcddde;
+    --color-focus: hsl(212, 100%, 44%);
 
-    --color-font-primary: #060607;
-    --color-font-secondary: #4f5660;
-    --color-font-normal: #2e3338;
-    --color-font-muted: #5e6772;
+    --color-icon-100: hsl(210, 10%, 20%);
+    --color-icon-200: hsl(215, 10%, 34%);
+    --color-icon-300: hsl(216, 8%, 26%);
 
-    --color-font-rooms: #5e6772;
-    --color-font-interactive-normal: #4f5660;
-    --color-font-interactive-hover: #2e3338;
-    --color-font-interactive-active: #060607;
-    --color-font-interactive-muted: #c7ccd1;
+    --color-white-black: black;
+    --color-black-white: white;
 
-    --icon-100: #2e3338;
-    --icon-200: #4f5660;
-    --icon-300: #3d4147;
+    --color-font-primary: hsl(240, 8%, 3%);
+    --color-font-secondary: hsl(215, 10%, 34%);
+    --color-font-base: hsl(210, 10%, 20%);
+    --color-font-muted: hsl(213, 10%, 41%);
 }
 
 @media (prefers-color-scheme: light) {
     [data-theme=auto] {
-        --color-bg-primary-100: #ebedef;
-        --color-bg-primary-200: #FFFFFF;
-        --color-bg-primary-300: #F2F3F5;
-        --color-bg-primary-400: #ebedef;
-        --color-bg-primary-500: #E3E5E8;
-        --color-bg-primary-600: #FFFFFF;
+        --color-primary-100: hsl(210, 11%, 93%);
+        --color-primary-200: hsl(0, 0%, 100%);
+        --color-primary-300: hsl(220, 13%, 95%);
+        --color-primary-400: hsl(210, 11%, 93%);
+        --color-primary-500: hsl(216, 10%, 90%);
+        --color-primary-600: hsl(0, 0%, 100%);
 
-        --color-bg-hover: rgba(106, 116, 128, 0.16);
-        --color-bg-active: rgba(106, 116, 128, 0.2);
-        --color-bg-selected: rgba(106, 116, 128, 0.24);
+        --color-primary-hover: rgba(106, 116, 128, 0.16);
+        --color-primary-active: rgba(106, 116, 128, 0.2);
+        --color-primary-selected: rgba(106, 116, 128, 0.24);
 
-        --color-bg-slider-track: #dcddde;
+        --color-focus: hsl(212, 100%, 44%);
 
-        --color-font-primary: #060607;
-        --color-font-secondary: #4f5660;
-        --color-font-normal: #2e3338;
-        --color-font-muted: #5e6772;
-        --color-font-link: #0068e0;
-        --color-font-rooms: #5e6772;
-        --color-font-interactive-normal: #4f5660;
-        --color-font-interactive-hover: #2e3338;
-        --color-font-interactive-active: #060607;
-        --color-font-interactive-muted: #c7ccd1;
+        --color-icon-100: hsl(210, 10%, 20%);
+        --color-icon-200: hsl(215, 10%, 34%);
+        --color-icon-300: hsl(216, 8%, 26%);
 
-        --icon-100: #2e3338;
-        --icon-200: #4f5660;
-        --icon-300: #3d4147;
+        --color-white-black: black;
+        --color-black-white: white;
+
+        --color-font-primary: hsl(240, 8%, 3%);
+        --color-font-secondary: hsl(215, 10%, 34%);
+        --color-font-base: hsl(210, 10%, 20%);
+        --color-font-muted: hsl(213, 10%, 41%);
     }
 }

@@ -17,8 +17,8 @@ const styles = {
     list: 'flex flex-col gap-1 h-full overflow-y-scroll scrollbar-primary',
     listItem: {
         base: `flex w-full items-center py-2 px-1.5 rounded 
-        hover:bg-hover focus-visible:bg-hover`,
-        active: 'bg-selected',
+        hover:bg-primary-hover focus-visible:bg-primary-hover`,
+        active: 'bg-primary-selected',
     },
     checkBox: {
         base: 'mr-4 w-5 h-5 rounded border-2 border-brand',

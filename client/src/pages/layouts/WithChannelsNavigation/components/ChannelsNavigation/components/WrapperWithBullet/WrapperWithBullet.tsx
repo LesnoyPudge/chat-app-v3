@@ -11,7 +11,7 @@ interface WrapperWithBullet extends PropsWithChildrenAndClassName {
 const styles = {
     buttonWrapper: 'relative',
     bullet: {
-        base: `opacity-0 transition-all w-2 h-0 bg-light absolute top-1/2 
+        base: `opacity-0 transition-all w-2 h-0 bg-white-black absolute top-1/2 
         left-0 -translate-y-1/2 -translate-x-1/2 rounded-r-[4px]`,
         hover: `peer-hover:h-5 peer-focus-visible:h-5 peer-hover:opacity-100 
         peer-focus-visible:opacity-100`,

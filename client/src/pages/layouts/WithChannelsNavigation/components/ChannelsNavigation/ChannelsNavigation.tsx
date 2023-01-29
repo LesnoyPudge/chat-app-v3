@@ -37,9 +37,9 @@ const styles = {
     },
     icon: 'w-7 h-7 transition-all ease-linear',
     addChannelButton: {
-        base: `hover:bg-green focus-visible:bg-green 
-        fill-green hover:fill-white focus-visible:fill-white`,
-        active: 'bg-green fill-white',
+        base: `hover:bg-positive focus-visible:bg-positive 
+        fill-positive hover:fill-white focus-visible:fill-white`,
+        active: 'bg-positive fill-white',
     },
     brandButton: {
         base: `hover:bg-brand focus-visible:bg-brand 

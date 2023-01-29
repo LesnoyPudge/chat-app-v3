@@ -11,7 +11,7 @@ interface ErrorMessage extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    error: 'text-xs w-full text-error normal-case',
+    error: 'text-xs w-full text-color-error normal-case',
 };
 
 export const ErrorMessage: FC<ErrorMessage> = ({

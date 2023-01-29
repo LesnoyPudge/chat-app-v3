@@ -17,7 +17,7 @@ export const RegistrationForm: FC = () => {
             {() => (
                 <Form>
                     <div className='flex flex-col items-center'>
-                        <Heading className='text-heading-xl text-primary font-bold mb-5 text-center'>
+                        <Heading className='text-heading-xl text-color-primary font-bold mb-5 text-center'>
                             <>Создать учётную запись</>
                         </Heading>
 

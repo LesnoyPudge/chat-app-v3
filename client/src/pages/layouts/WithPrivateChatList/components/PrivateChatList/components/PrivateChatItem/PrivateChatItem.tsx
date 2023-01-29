@@ -23,15 +23,15 @@ const styles = {
     wrapper: 'relative group',
     userInfo: {
         base: `flex items-center w-full h-[42px] py-1 pl-2 pr-2
-        group-hover:bg-hover group-focus-within:bg-hover
+        group-hover:bg-primary-hover group-focus-within:bg-primary-hover
         group-hover:pr-10 group-focus-within:pr-10`,
-        active: 'bg-hover pr-10',
+        active: 'bg-primary-hover pr-10',
     },
     avatar: 'h-8 w-8',
     username: {
-        base: `ml-3 font-medium truncated text-start text-muted 
-        group-hover:text-normal group-focus-within:text-normal`,
-        active: 'text-normal',
+        base: `ml-3 font-medium truncated text-start text-color-muted 
+        group-hover:text-color-base group-focus-within:text-color-base`,
+        active: 'text-color-base',
     },
     hideChatButton: {
         base: `flex absolute top-1/2 -translate-y-1/2 right-2 

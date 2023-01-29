@@ -267,7 +267,7 @@ const privateChats: IPrivateChats[] = [
 
 const styles = {
     section: 'flex flex-col overflow-hidden h-full mt-6',
-    heading: 'mx-3.5 mb-4 uppercase font-semibold text-xs text-normal',
+    heading: 'mx-3.5 mb-4 uppercase font-semibold text-xs text-color-base',
     wrapper: `w-full h-full overflow-y-scroll scrollbar-with-gutters 
     scrollbar-primary scrollbar-auto-hidden`,
     list: 'flex flex-col gap-[3px] w-full pt-1 pb-4',

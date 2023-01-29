@@ -7,7 +7,7 @@ import { FC } from 'react';
 
 const styles = {
     button: `flex w-full items-center px-3 h-full
-    hover:bg-hover focus-visible:bg-hover group`,
+    hover:bg-primary-hover focus-visible:bg-primary-hover group`,
     icon: `w-6 h-6 mr-3 fill-icon-300 group-hover:fill-icon-200 
     group-focus-visible:fill-icon-200 transition-none`,
 };
@@ -21,7 +21,7 @@ export const Header: FC = () => {
             <Button
                 className={twClassNames(
                     styles.button, 
-                    { 'bg-hover': isActive },
+                    { 'bg-primary-hover': isActive },
                 )}
                 isActive={isActive}
                 onLeftClick={navigateTo.app}

@@ -6,7 +6,7 @@ import { NavigationHeading, NavigationItem } from '../../../components';
 
 const styles = {
     list: 'flex flex-col gap-0.5',
-    button: 'group',
+    button: 'group w-full',
 };
 
 export const Navigation: FC = () => {

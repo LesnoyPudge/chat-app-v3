@@ -12,14 +12,14 @@ interface CheckBoxIndicator extends PropsWithClassName {
 const styles = {
     wrapper: {
         base: 'flex shrink-0 w-10 h-6 p-[3px] rounded-full bg-icon-300 transition-all duration-200 ease-linear',
-        active: 'bg-green',
+        active: 'bg-positive',
     },
     inner: 'w-full relative',
     ball: 'absolute top-1/2 h-[18px] w-[18px] rounded-full bg-white',
     barsWrapper: 'h-full w-full relative',
     bars: {
         base: 'absolute top-1/2 left-1/2 w-0.5 bg-icon-300',
-        active: 'bg-green',
+        active: 'bg-positive',
     },
 };
 

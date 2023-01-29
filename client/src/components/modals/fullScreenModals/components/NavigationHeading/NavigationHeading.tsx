@@ -5,7 +5,7 @@ import { FC } from 'react';
 
 
 const styles = {
-    heading: 'mb-1.5 px-2.5 text-xs text-room font-bold uppercase truncated',
+    heading: 'mb-1.5 px-2.5 text-xs text-color-mutedfont-bold uppercase truncated',
 };
 
 export const NavigationHeading: FC<PropsWithChildrenAndClassName> = ({

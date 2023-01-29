@@ -10,10 +10,10 @@ const styles = {
     list: 'flex flex-col gap-6 p-4 bg-primary-300 rounded-lg',
     row: 'flex w-full gap-4 items-center',
     infoWrapper: 'flex flex-col min-w-0 mr-auto',
-    infoTitle: 'font-bold uppercase text-xs text-secondary mb-1',
+    infoTitle: 'font-bold uppercase text-xs text-color-secondary mb-1',
     infoValueWrapper: 'flex gap-2',
-    infoValue: 'text-primary truncated',
-    revealInfoValueButton: 'text-link p-0 min-h-0 h-auto',
+    infoValue: 'text-color-primary truncated',
+    revealInfoValueButton: 'text-color-link p-0 min-h-0 h-auto',
 };
 
 export const Content: FC = () => {

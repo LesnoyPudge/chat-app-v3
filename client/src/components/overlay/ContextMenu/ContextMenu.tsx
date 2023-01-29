@@ -18,7 +18,7 @@ PropsWithChildrenAsNodeOrFunction<OverlayContext> {
 
 const transitionOptions = getTransitionOptions.defaultContextMenu({});
 
-const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-normal p-5';
+const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-color-base p-5';
 
 const ContextMenuInner: FC<ContextMenu> = ({
     className = '',

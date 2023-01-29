@@ -23,7 +23,7 @@ const transitionOptions = getTransitionOptions.withOpacity({
 const styles = {
     wrapper: 'flex flex-col gap-1 w-[220px] bg-primary-500 py-1.5 px-2 rounded-md pointer-events-auto',
     button: `flex shrink-0 items-center justify-between gap-1 h-8 w-full text-start
-    py-1.5 px-2 text-secondary rounded hover:bg-brand focus-visible:bg-brand
+    py-1.5 px-2 text-color-secondary rounded hover:bg-brand focus-visible:bg-brand
     hover:text-white focus-visible:text-white fill-icon-300 hover:fill-white focus-visible:fill-white`,
     buttonText: 'truncated font-medium text-sm',
     buttonIcon: 'h-5 w-5 transition-none',

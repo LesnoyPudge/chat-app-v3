@@ -10,7 +10,7 @@ interface SlateLink extends PropsWithChildrenAndClassName {
     attributes: RenderElementAttributes;
 }
 
-const baseClassName = 'text-link';
+const baseClassName = 'text-color-link';
 
 export const SlateLink: FC<SlateLink> = ({
     className = '',

@@ -59,13 +59,13 @@ const styles = {
     },
 
     link: {
-        base: `p-0 text-link hover:underline focus-visible:underline
+        base: `p-0 text-color-link hover:underline focus-visible:underline
         focus-within:underline`,
         active: 'underline',
     },
 
     lite: {
-        base: `text-primary hover:underline focus-visible:underline
+        base: `text-color-primary hover:underline focus-visible:underline
         focus-within:underline`,
         active: 'underline',
     },

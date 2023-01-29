@@ -5,7 +5,7 @@ import { FC } from 'react';
 
 
 
-const baseClassName = 'text-2xl font-bold text-primary text-center';
+const baseClassName = 'text-2xl font-bold text-color-primary text-center';
 
 export const ModalTitle: FC<PropsWithChildrenAndClassName> = ({
     className = '',

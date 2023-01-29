@@ -30,13 +30,13 @@ export const InvitationPage: FC = () => {
                 />
 
                 <div className='flex flex-col mt-8'>
-                    <Heading className='font-semibold text-2xl text-primary'>
+                    <Heading className='font-semibold text-2xl text-color-primary'>
                         {channel.name}
                     </Heading>
 
-                    <div className='flex flex-wrap justify-center gap-3 mt-2 text-muted'>
+                    <div className='flex flex-wrap justify-center gap-3 mt-2 text-color-muted'>
                         <div className='flex gap-1 items-center'>
-                            <div className='w-2.5 h-2.5 bg-green rounded-full'></div>
+                            <div className='w-2.5 h-2.5 bg-positive rounded-full'></div>
 
                             <span>
                                 <>{channel.onlineCount} в сети</>

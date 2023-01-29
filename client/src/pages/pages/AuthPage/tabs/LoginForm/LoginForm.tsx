@@ -17,11 +17,11 @@ export const LoginForm: FC = () => {
             {() => (
                 <Form>
                     <div className='flex flex-col items-center'>
-                        <Heading className='text-heading-xl text-primary font-semibold mb-2 text-center'>
+                        <Heading className='text-heading-xl text-color-primary font-semibold mb-2 text-center'>
                             С возвращением
                         </Heading>
 
-                        <div className='text-secondary mb-5 text-center'>
+                        <div className='text-color-secondary mb-5 text-center'>
                             Мы так рады видеть вас снова!
                         </div>
 
@@ -83,7 +83,7 @@ export const LoginForm: FC = () => {
                         </Button>
 
                         <div className='self-start flex items-center flex-wrap'>
-                            <span className='text-sm text-muted mr-1'>
+                            <span className='text-sm text-color-muted mr-1'>
                                 Нужна учётная запись?
                             </span>
 

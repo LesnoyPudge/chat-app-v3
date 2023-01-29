@@ -17,12 +17,12 @@ const customTwMerge = createTailwindMerge(getDefaultConfig, (config) =>
             // ↓ Adding value to existing class group
             // animate: ['animate-magic'],
             'font-size': [
-                'text-heading-xxl',
+                'text-heading-2xl',
                 'text-heading-xl',
                 'text-heading-l',
                 'text-heading-m',
                 'text-heading-s',
-                'text-xxs',
+                'text-2xs',
             ],
         },
 

@@ -1,81 +1,3 @@
-// :root {
-//     --color-bg-primary-100: #40444B;
-//     --color-bg-primary-200: #36393F;
-//     --color-bg-primary-300: #2F3136;
-//     --color-bg-primary-400: #292b2f;
-//     --color-bg-primary-500: #202225;
-//     --color-bg-primary-600: #17181c;
-
-//     --color-bg-hover: rgba(79, 84, 92, 0.4);
-//     --color-bg-active: rgba(79, 84, 92, 0.48);
-//     --color-bg-selected: rgba(79, 84, 92, 0.6);
-
-//     --color-bg-light: var(--color-font-primary);
-//     --color-bg-message: rgba(5, 5, 6, 0.07);
-//     --color-bg-slider-track: #4f545c;
-
-//     --color-bg-brand: #5865f2;
-//     --color-bg-brand-hover: #4752c4;
-//     --color-bg-brand-active: #3c45a5;
-
-//     --color-bg-danger: hsl(359, 66.7%, 54.1%);
-//     --color-bg-danger-hover: hsl(359, 56%, 40%);
-//     --color-bg-danger-active: hsl(359, 56.4%, 35.1%);
-//     // --color-bg-danger-disabled: hsl(359, 66.7%, 54.1%);
-
-//     --color-bg-neutral: hsl(217, 8%, 34%);
-//     --color-bg-neutral-hover: hsl(213, 5%, 42.9%);
-//     --color-bg-neutral-active: hsl(218, 4.6%, 46.9%);
-//     // --color-bg-neutral-disabled: hsl(217, 7.6%, 33.5%);
-
-//     --color-bg-positive: hsl(139, 47.1%, 33.3%);
-//     --color-bg-positive-hover: hsl(138, 46.8%, 24.3%);
-//     --color-bg-positive-active: hsl(138, 46.9%, 22.2%);
-//     // --color-bg-positive-disabled: hsl(139, calc(var(--saturation-factor, 1) * 47.1%), 33.3%);
-
-//     --color-font-primary: #ffffff;
-//     --color-font-secondary: #b9bbbe;
-//     --color-font-normal: #dcddde;
-//     --color-font-muted: #a3a6aa;
-//     --color-font-link: #00aff4;
-//     --color-font-rooms: #96989d;
-
-//     // --color-font-interactive-normal: #b9bbbe;
-//     // --color-font-interactive-hover: #dcddde;
-//     // --color-font-interactive-active: #ffffff;
-//     // --color-font-interactive-muted: #4f545c;
-
-//     --color-font-error: #f38688;
-//     --color-font-required: #ed4245;
-//     --color-font-placeholder: red;
-
-//     --outline: #00aff4;
-//     --icon-100: #dcddde;
-//     --icon-200: #b9bbbe;
-//     --icon-300: #8c8f94;
-
-//     --white: #ffffff;
-//     --green: #3BA55D;
-//     --red: #ed4245;
-
-//     --status-online: #3BA55D;
-//     --status-afk: #faa81a;
-//     --status-offline: #747f8d;
-//     --status-dnd: #ed4245;
-
-//     --color-elevation-100: 6, 6, 7;
-//     --color-elevation-200: 4, 4, 5;
-//     --color-elevation-300: 0, 0, 0;
-
-//     --elevation-stroke: 0 0 0 1px rgba(var(--color-elevation-200), 0.15);
-//     --elevation-low:
-//         0 1px 0 rgba(var(--color-elevation-100), 0.2),
-//         0 1.5px 0 rgba(var(--color-elevation-200), 0.05),
-//         0 2px 0 rgba(var(--color-elevation-100), 0.05);
-//     --elevation-medium: 0 4px 4px rgba(var(--color-elevation-300), 0.16);
-//     --elevation-high: 0 8px 16px rgba(var(--color-elevation-300), 0.24);
-// }
-
 :root {
     --color-primary-100: hsl(218, 8%, 27%);
     --color-primary-200: hsl(220, 8%, 23%);
@@ -104,26 +26,22 @@
     --color-neutral-hover: hsl(213, 5%, 42.9%);
     --color-neutral-active: hsl(218, 4.6%, 46.9%);
 
-
-    // hueta
-    --color-bg-light: var(--color-font-primary);
-    --color-bg-message: rgba(5, 5, 6, 0.07);
-    --color-bg-slider-track: hsl(217, 8%, 34%);
-    --color-font-rooms: #96989d;
-
-    --color-font-primary: #ffffff;
-    --color-font-secondary: #b9bbbe;
-    --color-font-normal: #dcddde;
-    --color-font-muted: #a3a6aa;
-    --color-font-link: #00aff4;
-    --color-font-error: #f38688;
-    --color-font-danger: var(--color-danger);
-
-    --color-outline: #00aff4;
-    --color-icon-100: #dcddde;
-    --color-icon-200: #b9bbbe;
-    --color-icon-300: #8c8f94;
+    --color-focus: hsl(197, 100%, 48%);
     --color-warn: hsl(38, 96%, 54%);
+
+    --color-icon-100: hsl(210, 3%, 87%);
+    --color-icon-200: hsl(216, 4%, 74%);
+    --color-icon-300: hsl(218, 4%, 56%);
+
+    --color-white-black: white;
+    --color-black-white: black;
+
+    --color-font-primary: hsl(0, 0%, 100%);
+    --color-font-secondary: hsl(216, 4%, 74%);
+    --color-font-base: hsl(210, 3%, 87%);
+    --color-font-muted: hsl(214, 4%, 65%);
+    --color-font-link: var(--color-focus);
+    --color-font-error: var(--color-danger);
 
     --status-online: var(--color-positive);
     --status-afk: var(--color-positive);

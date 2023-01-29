@@ -10,15 +10,15 @@ const styles = {
     title: 'text-heading-l self-start font-medium',
     content: 'gap-5',
     radioGroup: 'flex flex-col gap-2',
-    heading: 'text-xs uppercase text-secondary font-bold',
+    heading: 'text-xs uppercase text-color-secondary font-bold',
     radioWrapper: 'flex items-center gap-2.5 w-full',
     radioIcon: 'w-4 h-4 fill-icon-200',
-    radioTitle: 'font-medium text-primary',
+    radioTitle: 'font-medium text-color-primary',
     radioDescription: 'text-sm mt-0.5',
-    checkBoxContent: 'flex justify-between items-center text-primary font-medium',
+    checkBoxContent: 'flex justify-between items-center text-color-primary font-medium',
     checkBoxInfo: 'flex gap-1 items-center',
     checkBoxIcon: 'w-4 h-4 fill-icon-200',
-    checkBoxExtraInfo: 'text-sm text-muted mt-2',
+    checkBoxExtraInfo: 'text-sm text-color-muted mt-2',
 };
 
 export const CreateRoomTab: FC = () => {

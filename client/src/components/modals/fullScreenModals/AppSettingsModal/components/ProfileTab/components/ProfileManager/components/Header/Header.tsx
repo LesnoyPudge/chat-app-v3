@@ -14,12 +14,12 @@ const styles = {
     before:opacity-0 before:bg-primary-300 before:group-hover:opacity-80 
     before:group-focus-visible:opacity-80 before:transition-all before:absolute 
     before:top-0 before:left-0 before:w-full before:h-full before:rounded-full before:-z-10`,
-    avatarOverlayText: `text-xxs font-bold uppercase opacity-0 group-hover:opacity-100 
+    avatarOverlayText: `text-2xs font-bold uppercase opacity-0 group-hover:opacity-100 
     group-focus-visible:opacity-100 transition-all`,
     avatar: 'w-full h-full rounded-full',
     userStatusWrapper: 'absolute w-7 h-7 p-1.5 -bottom-1 -right-1 bg-primary-500 rounded-full',
     userStatus: 'w-full h-full',
-    username: 'ml-4 text-xl text-primary font-medium',
+    username: 'ml-4 text-xl text-color-primary font-medium',
 };
 
 export const Header: FC = () => {

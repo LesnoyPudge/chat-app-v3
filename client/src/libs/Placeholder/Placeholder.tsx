@@ -20,7 +20,7 @@ export const Placeholder: FC<IPlaceholder> = ({
             <Conditional isRendered={!isLoaded}>
                 <div className={twClassNames(className)}>
                     <ContentLoader 
-                        className='w-auto h-auto bg-red'
+                        className='w-auto h-auto bg-danger'
                         // animate
                         // backgroundColor='#40444B'
                         // foregroundColor='#36393F'

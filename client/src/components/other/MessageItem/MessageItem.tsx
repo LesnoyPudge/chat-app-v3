@@ -23,8 +23,8 @@ export const MessageItem: FC<IMessageItem> = ({
     
     return (
         <div 
-            className={twClassNames(`hover:bg-message 
-            focus-visible:bg-message focus-within:bg-message
+            className={twClassNames(`hover:bg-primary-300 
+            focus-visible:bg-primary-300 focus-within:bg-primary-300
             flex group`, { 'mt-4': withMargin })}
             key={message.id}
             tabIndex={tabIndex}

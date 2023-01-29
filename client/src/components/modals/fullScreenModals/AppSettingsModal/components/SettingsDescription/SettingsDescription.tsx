@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 
 
-const baseClassName = 'text-secondary text-sm';
+const baseClassName = 'text-color-secondary text-sm';
 
 export const SettingsDescription: FC<PropsWithChildrenAndClassName> = ({
     className = '',

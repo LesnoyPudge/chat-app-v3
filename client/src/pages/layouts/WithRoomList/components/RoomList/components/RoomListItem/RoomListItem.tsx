@@ -18,9 +18,9 @@ interface IRoomListItem {
 const styles = {
     item: {
         base: `flex justify-start items-center w-full h-8 px-2 
-        cursor-pointer rounded-md hover:bg-hover 
-        focus-visible:bg-hover`,
-        active: 'bg-hover',
+        cursor-pointer rounded-md hover:bg-primary-hover 
+        focus-visible:bg-primary-hover`,
+        active: 'bg-primary-hover',
     },
 };
 

@@ -37,7 +37,7 @@ export const OverviewTab: FC = () => {
                             />
 
                             <div className='grid place-items-center absolute inset-0 rounded-full opacity-0 bg-black bg-opacity-40 pointer-events-none group-focus-within:opacity-100 group-hover:opacity-100 transition-all'>
-                                <div className='uppercase font-bold text-xxs text-white text-center'>
+                                <div className='uppercase font-bold text-2xs text-white text-center'>
                                     <>Сменить <br/> значок</>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@ export const OverviewTab: FC = () => {
                     </div>
 
                     <div>
-                        <div className='text-sm text-secondary mb-4'>
+                        <div className='text-sm text-color-secondary mb-4'>
                             <>Мы рекомендуем для вашего сервера </>
                             <>изображение размером не менее 512х512 пикселей.</>
                         </div>

@@ -5,7 +5,7 @@ import { FC } from 'react';
 
 
 
-const baseClassName = 'text-xs uppercase mb-2 text-secondary';
+const baseClassName = 'text-xs uppercase mb-2 text-color-secondary';
 
 export const SettingsGroupTitle: FC<PropsWithChildrenAndClassName> = ({
     className = '',

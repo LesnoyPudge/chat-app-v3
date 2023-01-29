@@ -5,7 +5,7 @@ import { NavigationHeading, NavigationItem } from '../../../components';
 
 
 const styles = {
-    button: 'group',
+    button: 'group w-full',
     logoutButton: 'hover:fill-icon-100 flex justify-between items-center',
     logoutIcon: 'h-4 w-4 fill-icon-200',
     socialWrapper: 'flex gap-1.5 mt-2 px-2.5',

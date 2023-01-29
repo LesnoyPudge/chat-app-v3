@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const defaultTheme = require('tailwindcss/defaultTheme');
 const plugin = require('tailwindcss/plugin');
+const getCustomClasses = require('./src/root/styles/customClasses.js');
 
 
+
+
+const pxToRem = (px = 0, baseFontSize = 16) => {
+    return px / baseFontSize;
+};
 
 /** @type {import('tailwindcss').Config} */
 // eslint-disable-next-line no-undef
@@ -12,15 +18,8 @@ module.exports = {
         './src/**/*.{js,ts,jsx,tsx}',
     ],
 
-    
     plugins: [
-        plugin(({ addVariant }) => {
-            // addVariant('focus-to-next', '[&:focus-visible+*]:focused');
-            // addVariant('parent-focus-visible', '*:focus-visible &');
-            // addVariant('parent', 'html[data-desktop] &');
-        }),
-
-        // require('@tailwindcss/container-queries'),
+        getCustomClasses(),
     ],
 
     theme: {
@@ -30,77 +29,74 @@ module.exports = {
             },
             
             colors: {
-                green: 'var(--green)',
-                white: 'var(--white)',
-                red: 'var(--red)',
+                primary: {
+                    100: 'var(--color-primary-100)',
+                    200: 'var(--color-primary-200)',
+                    300: 'var(--color-primary-300)',
+                    400: 'var(--color-primary-400)',
+                    500: 'var(--color-primary-500)',
+                    600: 'var(--color-primary-600)',
+                    hover: 'var(--color-primary-hover)',
+                    active: 'var(--color-primary-active)',
+                    selected: 'var(--color-primary-selected)',
+                },
+                
+                brand: 'var(--color-brand)',
+                'brand-hover': 'var(--color-brand-hover)',
+                'brand-active': 'var(--color-brand-active)',
 
+                danger: 'var(--color-danger)',
+                'danger-hover': 'var(--color-danger-hover)',
+                'danger-active': 'var(--color-danger-active)',
+
+                positive: 'var(--color-positive)',
+                'positive-hover': 'var(--color-positive-hover)',
+                'positive-active': 'var(--color-positive-active)',
+
+                neutral: 'var(--color-neutral)',
+                'neutral-hover': 'var(--color-neutral-hover)',
+                'neutral-active': 'var(--color-neutral-active)',
+                
+                focus: 'var(--color-focus)',
+                warn: 'var(--color-warn)',
+
+                icon: {
+                    100: 'var(--color-icon-100)',
+                    200: 'var(--color-icon-200)',
+                    300: 'var(--color-icon-300)',
+                },
+                
+                'white-black': 'var(--color-white-black)',
+                'black-white': 'var(--color-black-white)',
+ 
                 status: {
                     online: 'var(--status-online)',
                     afk: 'var(--status-afk)',
                     offline: 'var(--status-offline)',
                     dnd: 'var(--status-dnd)',
                 },
-
-                icon: {
-                    100: 'var(--icon-100)',
-                    200: 'var(--icon-200)',
-                    300: 'var(--icon-300)',
-                },
-                
-                brand: 'var(--color-bg-brand)',
-                'brand-hover': 'var(--color-bg-brand-hover)',
-                'brand-active': 'var(--color-bg-brand-active)',
-
-                danger: 'var(--color-bg-danger)',
-                'danger-hover': 'var(--color-bg-danger-hover)',
-                'danger-active': 'var(--color-bg-danger-active)',
-
-                neutral: 'var(--color-bg-neutral)',
-                'neutral-hover': 'var(--color-bg-neutral-hover)',
-                'neutral-active': 'var(--color-bg-neutral-active)',
-
-                positive: 'var(--color-bg-positive)',
-                'positive-hover': 'var(--color-bg-positive-hover)',
-                'positive-active': 'var(--color-bg-positive-active)',
             },
               
             textColor: {
-                primary: 'var(--color-font-primary)',
-                secondary: 'var(--color-font-secondary)',
-                normal: 'var(--color-font-normal)',
-                muted: 'var(--color-font-muted)',
-                link: 'var(--color-font-link)',
-                error: 'var(--color-font-error)',
-                required: 'var(--color-font-required)',
-                placeholder: 'var(--color-font-placeholder)',
-                room: 'var(--color-font-rooms)',
-            },
-
-            backgroundColor: {
-                primary: {
-                    100: 'var(--color-bg-primary-100)',
-                    200: 'var(--color-bg-primary-200)',
-                    300: 'var(--color-bg-primary-300)',
-                    400: 'var(--color-bg-primary-400)',
-                    500: 'var(--color-bg-primary-500)',
-                    600: 'var(--color-bg-primary-600)',
+                color: {
+                    primary: 'var(--color-font-primary)',
+                    secondary: 'var(--color-font-secondary)',
+                    base: 'var(--color-font-base)',
+                    muted: 'var(--color-font-muted)',
+                    link: 'var(--color-font-link)',
+                    error: 'var(--color-font-error)',
+                    required: 'var(--color-font-required)',
+                    placeholder: 'var(--color-font-placeholder)',
                 },
-
-                hover: 'var(--color-bg-hover)',
-                active: 'var(--color-bg-active)',
-                selected: 'var(--color-bg-selected)',
-                light: 'var(--color-bg-light)',
-                message: 'var(--color-bg-message)',
-                'slider-track': 'var(--color-bg-slider-track)',
             },
 
             fontSize: {
-                'heading-xxl': ['34px', '40px'],
-                'heading-xl': ['25px', '30px'],
-                'heading-l': ['20px', '24px'],
-                'heading-m': ['17px', '22px'],
-                'heading-s': ['12px', '16px'],
-                xxs: ['10px', '12px'],
+                'heading-2xl': [`${pxToRem(34)}rem`, `${pxToRem(40)}rem`],
+                'heading-xl': [`${pxToRem(25)}rem`, `${pxToRem(30)}rem`],
+                'heading-l': [`${pxToRem(20)}rem`, `${pxToRem(24)}rem`],
+                'heading-m': [`${pxToRem(17)}rem`, `${pxToRem(22)}rem`],
+                'heading-s': [`${pxToRem(12)}rem`, `${pxToRem(16)}rem`],
+                '2xs': [`${pxToRem(10)}rem`, `${pxToRem(12)}rem`],
                 0: ['0px', '0px'],
             },
 

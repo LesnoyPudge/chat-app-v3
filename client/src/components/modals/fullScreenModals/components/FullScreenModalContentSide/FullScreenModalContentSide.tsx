@@ -10,8 +10,8 @@ const styles = {
     content: 'h-fit max-w-[740px] pt-[60px] pb-24 px-10 flex-1',
     toolbar: 'flex basis-14 py-[60px]',
     button: `flex flex-col gap-1.5 items-center w-auto fixed border-icon-200 fill-icon-200
-    text-muted transition-all duration-75 hover:border-icon-100 hover:fill-icon-100
-    hover:text-primary focus-visible:fill-icon-100 focus-visible:text-primary
+    text-color-muted transition-all duration-75 hover:border-icon-100 hover:fill-icon-100
+    hover:text-color-primary focus-visible:fill-icon-100 focus-visible:text-color-primary
     focus-visible:border-icon-100`,
     iconWrapper: 'h-9 w-9 p-1.5 rounded-full border-2',
     icon: 'h-full w-full duration-75',
