@@ -39,6 +39,7 @@ export const Banner: FC = () => {
                                         { [styles.bannerButton.active]: isOverlayExist },
                                     )}
                                     isActive={isOverlayExist}
+                                    label='Открыть цветовую палитру'
                                     onLeftClick={openOverlay}
                                 >
                                     <Icon

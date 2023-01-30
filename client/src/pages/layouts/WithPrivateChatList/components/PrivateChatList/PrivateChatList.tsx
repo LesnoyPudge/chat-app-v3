@@ -280,7 +280,7 @@ export const PrivateChatList: FC = () => {
                 <>Личные сообщения</>
             </Heading>
 
-            <ArrowFocusContextProvider list={privateChats} direction='vertical'>
+            <ArrowFocusContextProvider list={privateChats} orientation='vertical'>
                 <div className={styles.wrapper}>
                     <ul className={styles.list}>
                         {privateChats.map((privateChat) => (

@@ -45,7 +45,7 @@ export const MessageList: FC = () => {
     }, [autoAdd]);
 
     return (
-        <ArrowFocusContextProvider list={messages} direction='vertical'>
+        <ArrowFocusContextProvider list={messages} orientation='vertical'>
             <>
                 <div className='flex gap-8 justify-center'>
                     <button 

@@ -31,7 +31,7 @@ export const Navigation: FC = () => {
 
             <Separator spacing={16} orientation='vertical' height={24}/>
 
-            <ArrowFocusContextProvider list={tabs} direction='horizontal'>
+            <ArrowFocusContextProvider list={tabs} orientation='horizontal'>
                 <TabList
                     className='flex gap-4'
                     label='Пользователи'

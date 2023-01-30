@@ -59,8 +59,8 @@ export const ScreenShake: FC<ScreenShake> = ({
             if (value === 0) return 0;
 
             const baseValue = 5;
-            const direction = getRandomNumber(0, 1) ? 1 : -1;
-            const result = baseValue * shakeStackRef.current * direction;
+            const orientation = getRandomNumber(0, 1) ? 1 : -1;
+            const result = baseValue * shakeStackRef.current * orientation;
 
             return `${result}px`;
         })

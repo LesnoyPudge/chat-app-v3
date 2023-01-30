@@ -1,21 +1,19 @@
-import { useFileLoader } from '@hooks';
-import { FC, useEffect } from 'react';
-import { Button, UserStatus, Image } from '@components';
+import { FC } from 'react';
+import { UserStatus, Image } from '@components';
+import { FormikFileInput } from '@libs';
 
 
 
 const styles = {
     header: 'flex h-14',
     avatarWrapper: 'w-[94px] relative',
-    avatarInner: `flex absolute w-full aspect-square bottom-0 
+    avatarInner: `absolute w-full aspect-square bottom-0 
     bg-primary-500 rounded-full p-[7px]`,
     avatarButton: 'relative w-full h-full rounded-full group',
-    avatarOverlay: `grid place-items-center absolute w-full h-full rounded-full isolate
-    before:opacity-0 before:bg-primary-300 before:group-hover:opacity-80 
-    before:group-focus-visible:opacity-80 before:transition-all before:absolute 
-    before:top-0 before:left-0 before:w-full before:h-full before:rounded-full before:-z-10`,
-    avatarOverlayText: `text-2xs font-bold uppercase opacity-0 group-hover:opacity-100 
-    group-focus-visible:opacity-100 transition-all`,
+    avatarOverlay: `grid place-items-center absolute inset-0 
+    rounded-full opacity-0 bg-black bg-opacity-40 pointer-events-none 
+    group-focus-within:opacity-100 group-hover:opacity-100 transition-all`,
+    avatarOverlayText: 'uppercase font-bold text-2xs text-white text-center',
     avatar: 'w-full h-full rounded-full',
     userStatusWrapper: 'absolute w-7 h-7 p-1.5 -bottom-1 -right-1 bg-primary-500 rounded-full',
     userStatus: 'w-full h-full',
@@ -23,12 +21,6 @@ const styles = {
 };
 
 export const Header: FC = () => {
-    const { openFileLoader, files } = useFileLoader();
-
-    useEffect(() => {
-        console.log(files);
-    }, [files]);
-
     const status = 'online';
     const extraStatus = 'default';
 
@@ -36,30 +28,38 @@ export const Header: FC = () => {
         <div className={styles.header}>
             <div className={styles.avatarWrapper}>
                 <div className={styles.avatarInner}>
-                    <Button
-                        className={styles.avatarButton}
-                        onLeftClick={openFileLoader}
+
+                    <FormikFileInput 
+                        className={styles.avatarButton} 
+                        name='avatar' 
+                        label='Ваше изображение профиля'
+                        accept='image/*'
                     >
-                        <div className={styles.avatarOverlay}>
-                            <span className={styles.avatarOverlayText}>
-                                <>Изменить аватар</>
-                            </span>
-                        </div>
+                        {({ value }) => (
+                            <>
+                                <Image
+                                    className={styles.avatar}
+                                    src='https://i.pravatar.cc/52'
+                                    file={value}
+                                    alt='Изображение профиля'
+                                />
 
-                        <Image
-                            className={styles.avatar}
-                            src='https://i.pravatar.cc/52'
-                            alt='my avatar'
-                        />
+                                <div className={styles.avatarOverlay}>
+                                    <div className={styles.avatarOverlayText}>
+                                        <>Изменить <br/> аватар</>
+                                    </div>
+                                </div>
 
-                        <div className={styles.userStatusWrapper}>
-                            <UserStatus
-                                className={styles.userStatus}
-                                status={status}
-                                extraStatus={extraStatus}
-                            />
-                        </div>
-                    </Button>
+                                <div className={styles.userStatusWrapper}>
+                                    <UserStatus
+                                        className={styles.userStatus}
+                                        status={status}
+                                        extraStatus={extraStatus}
+                                    />
+                                </div>
+                            </>
+                        )}
+                    </FormikFileInput>
                 </div>
             </div>
 

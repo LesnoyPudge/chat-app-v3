@@ -19,18 +19,9 @@ const tabs = {
 };
 
 const initialValues = {
-    overviewTab: { 
-        isPrivate: false,
-    },
-    rolesTab: {
-
-    },
-    membersTab: {
-        
-    },
-    bannedTab: {
-        
-    },
+    name: 'coolChannel',
+    channelImage: null,
+    isPrivate: false,
 };
 
 export const ChannelSettingsModal: FC = () => {
@@ -49,10 +40,10 @@ export const ChannelSettingsModal: FC = () => {
                     };
 
                     return (
-                        <TabContextProvider tabs={tabs} onTabChange={onTabChange}>
+                        <TabContextProvider tabs={tabs} onTabChange={onTabChange} initialTab='rolesTab'>
                             {({ currentTab }) => (
                                 <Formik
-                                    initialValues={initialValues[currentTab.identifier]}
+                                    initialValues={initialValues}
                                     onSubmit={(values) => {
                                         resetShakeStacks();
                                         console.log(values);

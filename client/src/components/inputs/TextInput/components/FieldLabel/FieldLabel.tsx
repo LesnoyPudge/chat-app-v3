@@ -9,7 +9,7 @@ interface FieldLabel extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    label: 'block text-xs w-full mb-2 text-color-secondary uppercase font-bold',
+    label: 'block text-xs mb-2 text-color-secondary uppercase font-bold',
 };
 
 export const FieldLabel: FC<FieldLabel> = ({

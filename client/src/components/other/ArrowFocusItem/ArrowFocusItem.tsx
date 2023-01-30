@@ -14,7 +14,7 @@ interface ChildrenArgs {
 interface ArrowFocusItem extends 
 PropsWithClassName,
 PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
-    id: string;
+    id: string | number;
 }
 
 export const ArrowFocusItem: FC<ArrowFocusItem> = ({
@@ -23,12 +23,13 @@ export const ArrowFocusItem: FC<ArrowFocusItem> = ({
     children,
 }) => {
     const { focus, handleArrowMove, setFocusable } = useContext(ArrowFocusContext) as ArrowFocusContext;
-
-    const isFocused = id === focus.focusedId;
-    const isFocusable = id === focus.focusableId;
+    
+    const normalizedId = id.toString();
+    const isFocused = normalizedId === focus.focusedId;
+    const isFocusable = normalizedId === focus.focusableId;
     const tabIndex = isFocusable ? 0 : -1;
 
-    const handleFocus = () => setFocusable(id);
+    const handleFocus = () => setFocusable(normalizedId);
 
     const childrenArgs: ChildrenArgs = {
         tabIndex,

@@ -5,7 +5,7 @@ import { ChildrenAsNodeOrFunction } from '@components';
 
 
 type ProvidedArray = Record<string, any> & {
-    id: string;
+    id: string | number;
 }[];
 
 type ProvidedObject = Record<string, Record<string, any> & {
@@ -27,19 +27,29 @@ export interface ArrowFocusContext {
 
 interface ArrowFocusContextProvider extends PropsWithChildrenAsNodeOrFunction<ArrowFocusContext> {
     list: ProvidedList;
-    direction: 'horizontal' | 'vertical' | 'both';
+    orientation: 'horizontal' | 'vertical' | 'both';
 }
+
+const normalizeList = (list: ProvidedList) => (
+    Array.isArray(list) ? (
+        list.map((item) => ({
+            id: item.id.toString(),
+        }))
+    ) : (
+        Object.values(list).map((item) => ({
+            id: item.identifier,
+        }))
+    )
+);
 
 export const ArrowFocusContext = createContext<ArrowFocusContext | undefined>(undefined);
 
 export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
     list,
-    direction,
+    orientation,
     children,
 }) => {
-    const normalizedList = Array.isArray(list) ? list : Object.values(list).map((item) => ({
-        id: item.identifier,
-    }));
+    const normalizedList = normalizeList(list);
     const focusedWithArrow = useRef<boolean>(false);
     const [focus, setFocus] = useState<Focus>({ 
         focusableId: normalizedList[0]?.id,
@@ -72,8 +82,8 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
         const isMoveDown = e.code === 'ArrowDown';
         const isMoveLeft = e.code === 'ArrowLeft';
         const notMove = !isMoveUp && !isMoveRight && !isMoveDown && !isMoveLeft;
-        const notHorizontal = direction === 'horizontal' && !isMoveLeft && !isMoveRight;
-        const notVertical = direction === 'vertical' && !isMoveUp && !isMoveDown;
+        const notHorizontal = orientation === 'horizontal' && !isMoveLeft && !isMoveRight;
+        const notVertical = orientation === 'vertical' && !isMoveUp && !isMoveDown;
         const isForvard = isMoveDown || isMoveRight;
 
         if (notMove) return;

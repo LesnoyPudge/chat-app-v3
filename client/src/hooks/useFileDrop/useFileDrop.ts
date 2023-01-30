@@ -5,10 +5,13 @@ import { useState, useRef, RefObject, useEffect, useCallback } from 'react';
 
 
 type UseFileDrop = (
-    options?: {multiple?: boolean; accept?: string;},
+    options?: {
+        multiple?: boolean; 
+        accept?: string;
+    },
     elementRef?: RefObject<HTMLElement>,
 ) => {
-    files: EncodedFile[] | null;
+    files: EncodedFile | EncodedFile[] | null;
     isDragOver: boolean;
 };
 
@@ -19,7 +22,7 @@ export const useFileDrop: UseFileDrop = (
     } = {}, 
     elementRef,
 ) => {
-    const [files, setFiles] = useState<EncodedFile[] | null>(null);
+    const [files, setFiles] = useState<EncodedFile | EncodedFile[] | null>(null);
     const [isDragOver, setIsDragOver] = useState(false);
     const dragOverCounter = useRef(0);
 
@@ -50,11 +53,11 @@ export const useFileDrop: UseFileDrop = (
 
         if (!e.dataTransfer?.files) return;
 
-        encodeFiles(Object.values(e.dataTransfer.files)).then((transferedFiles) => {
+        encodeFiles(Object.values(e.dataTransfer.files), multiple).then((transferedFiles) => {
             setFiles(transferedFiles);
             console.log(transferedFiles);
         });
-    }, [dragOverCounterReset, isDragOver]);
+    }, [dragOverCounterReset, isDragOver, multiple]);
 
     useEffect(() => {
         if (elementRef && !elementRef.current) return;

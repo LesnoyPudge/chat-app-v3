@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalTabs, Separator, TabContext, TabList } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalTabs, Icon, Separator, TabContext, TabList } from '@components';
 import { NavigationHeading, NavigationItem } from '../../../components';
 
 
@@ -7,6 +7,7 @@ import { NavigationHeading, NavigationItem } from '../../../components';
 const styles = {
     list: 'flex flex-col gap-0.5',
     button: 'group w-full',
+    deleteChannelIcon: 'w-4 h-4',
 };
 
 export const Navigation: FC = () => {
@@ -14,7 +15,7 @@ export const Navigation: FC = () => {
     
     return (
         <div>
-            <ArrowFocusContextProvider list={tabs} direction='vertical'>
+            <ArrowFocusContextProvider list={tabs} orientation='vertical'>
                 <TabList label='Настройки канала' orientation='vertical'>
                     <NavigationHeading>
                         <>Канал лошок111</>
@@ -113,6 +114,11 @@ export const Navigation: FC = () => {
             >
                 <NavigationItem>
                     <>Удалить канал</>
+
+                    <Icon
+                        className={styles.deleteChannelIcon}
+                        iconId='garbage-can-icon'
+                    />
                 </NavigationItem>
             </Button>
         </div>

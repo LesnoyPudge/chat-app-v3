@@ -1,13 +1,22 @@
 import { Conditional } from '@components';
-import { PropsWithClassName } from '@types';
+import { EncodedFile, PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC, ReactNode, useEffect, useRef, useState } from 'react';
-import { JSImage } from './JSImage';
 
 
 
-interface Image extends PropsWithClassName {
+type OptionalValues = {
     src: string;
+    file?: never;
+} | {
+    src?: never;
+    file: EncodedFile | null;
+} | {
+    src: string;
+    file: EncodedFile | null;
+}
+
+type Image = PropsWithClassName & OptionalValues & {
     alt?: string;
     placeholder?: ReactNode;
     fallback?: ReactNode;
@@ -28,25 +37,37 @@ const states = {
     },
 };
 
-const baseClassName = 'h-auto w-full max-w-full object-cover';
+const styles = {
+    image: {
+        base: 'h-auto w-full max-w-full object-cover sr-only',
+        active: 'not-sr-only',
+        error: 'opacity-0',
+    },
+};
 
 export const Image: FC<Image> = ({
     className = '',
     src,
+    file,
     alt = '',
     placeholder,
     fallback,
 }) => {
-    const imageRef = useRef(new JSImage());
+    const imageRef = useRef<HTMLImageElement | null>(null);
     const [imageState, setImageState] = useState(states.initial);
-
+        
     useEffect(() => {
+        if (!imageRef.current) return;
+        if (!src && !file) return;
+        
+        const source = file ? file.base64 : (src || '');
+        const image = imageRef.current;
+        
+        image.src = source;
+    
         const handleLoad = () => setImageState(states.success);
         const handleError = () => setImageState(states.failure);
 
-        const image = imageRef.current;
-        image.src = src;
-        
         image.addEventListener('load', handleLoad);
         image.addEventListener('error', handleError);
 
@@ -54,7 +75,7 @@ export const Image: FC<Image> = ({
             image.removeEventListener('load', handleLoad);
             image.removeEventListener('error', handleError);
         };
-    }, [src]);
+    }, [src, file]);
 
     const showImage = (
         (!imageState.loading && !imageState.error) || 
@@ -66,15 +87,20 @@ export const Image: FC<Image> = ({
 
     return (
         <>
-            <Conditional isRendered={showImage}>
-                <img 
-                    className={twClassNames(baseClassName, className)}
-                    src={src} 
-                    alt={alt}
-                    draggable={false}
-                    contentEditable={false}
-                />
-            </Conditional>
+            <img 
+                className={twClassNames(
+                    styles.image.base, 
+                    { 
+                        [styles.image.active]: showImage,
+                        [styles.image.error]: imageState.error,
+                    },
+                    className,
+                )}
+                alt={alt}
+                draggable={false}
+                contentEditable={false}
+                ref={imageRef}
+            />
 
             <Conditional isRendered={showPlaceholder}>
                 {placeholder}

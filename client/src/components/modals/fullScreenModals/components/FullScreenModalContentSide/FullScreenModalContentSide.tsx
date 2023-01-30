@@ -6,7 +6,7 @@ import { FormConfirmationBar } from '../FormConfirmationBar';
 
 const styles = {
     wrapper: 'grow shrink basis-[800px] relative',
-    inner: 'flex h-full overflow-hidden overflow-y-scroll scrollbar-primary relative',
+    inner: 'flex h-full overflow-hidden overflow-y-auto scrollbar-primary relative',
     content: 'h-fit max-w-[740px] pt-[60px] pb-24 px-10 flex-1',
     toolbar: 'flex basis-14 py-[60px]',
     button: `flex flex-col gap-1.5 items-center w-auto fixed border-icon-200 fill-icon-200

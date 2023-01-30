@@ -6,11 +6,13 @@ import { FC, PropsWithChildren } from 'react';
 interface Link extends PropsWithChildren {
     className?: string;
     href: string;
+    label?: string;
 }
 
 export const Link: FC<Link> = ({
     className = '',
     href,
+    label,
     children,
 }) => {
     return (
@@ -19,6 +21,7 @@ export const Link: FC<Link> = ({
             href={href} 
             rel='noopener noreferrer' 
             target='_blank'
+            aria-label={label}
         >
             {children}
         </a>

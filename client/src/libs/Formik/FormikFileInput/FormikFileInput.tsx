@@ -6,31 +6,37 @@ import { FC } from 'react';
 
 
 
-interface ChildrenArgs {
-    files: EncodedFile[] | null;
+type ReturnValue<MULTIPLE extends boolean> = MULTIPLE extends false ? EncodedFile | null : EncodedFile[] | null;
+
+interface ChildrenArgs<MULTIPLE extends boolean> {
+    value: ReturnValue<MULTIPLE>
 }
 
-interface FormikFileInput extends 
+interface FormikFileInput<MULTIPLE extends boolean = false> extends 
 PropsWithClassName,
-PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
+PropsWithChildrenAsNodeOrFunction<ChildrenArgs<MULTIPLE>> {
     name: string;
     accept?: string;
-    multiple?: boolean;
+    multiple?: MULTIPLE;
     label: string; 
+    tabIndex?: number;
 }
 
 export const FormikFileInput: FC<FormikFileInput> = ({
     className = '',
     name,
     accept,
-    multiple,
+    multiple = false,
     label,
+    tabIndex = 0,
     children,
 }) => {
-    const [{ value: files }] = useField(name);
+    const [{ value }] = useField(name);
     const { setFieldValue } = useFormikContext();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.files);
+        
         if (!e.target.files || !e.target.files.length) return;
         
         encodeFiles(Object.values(e.target.files)).then((encodedFiles) => {
@@ -45,9 +51,10 @@ export const FormikFileInput: FC<FormikFileInput> = ({
             name={name}
             accept={accept}
             multiple={multiple}
+            tabIndex={tabIndex}
             onChange={handleChange}
         >
-            <ChildrenAsNodeOrFunction args={{ files }}>
+            <ChildrenAsNodeOrFunction args={{ value }}>
                 {children}
             </ChildrenAsNodeOrFunction>
         </FileInput>

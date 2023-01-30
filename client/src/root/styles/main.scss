@@ -15,7 +15,11 @@
     }
 
     body {
-        @apply bg-primary-500 text-base text-color-base h-screen w-screen overflow-hidden isolate;
+        @apply bg-primary-500 text-base h-screen w-screen overflow-hidden isolate break-all;
+    }
+
+    * {
+        @apply text-color-base border-inherit fill-inherit;
     }
 
     #app,

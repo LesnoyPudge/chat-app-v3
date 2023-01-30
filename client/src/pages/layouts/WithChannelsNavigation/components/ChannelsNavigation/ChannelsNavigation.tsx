@@ -86,7 +86,7 @@ export const ChannelsNavigation: FC = () => {
             <Conditional isRendered={!!channels.length}>
                 <Separator className='w-1/2' spacing={0}/>
 
-                <ArrowFocusContextProvider list={channels} direction='vertical'>
+                <ArrowFocusContextProvider list={channels} orientation='vertical'>
                     <div className={styles.focusableListWrapper}>
                         <ul className={styles.channelList}>
                             {channels.map((channel) => {

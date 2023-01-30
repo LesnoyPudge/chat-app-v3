@@ -11,7 +11,6 @@ export * from './useIsFirstRender';
 export * from './useAutoScroll';
 export * from './useResizeObserver';
 export * from './useIsMounted';
-export * from './useFileLoader';
 export * from './useRelativePosition';
 export * from './useMousePosition';
 export * from './useFileDrop';

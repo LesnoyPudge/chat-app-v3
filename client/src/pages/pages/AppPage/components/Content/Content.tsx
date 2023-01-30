@@ -127,7 +127,7 @@ export const Content: FC<Content> = ({ searchValue }) => {
 
             <Separator className={styles.separator} spacing={12}/>
             
-            <ArrowFocusContextProvider list={listToShow} direction='both'>
+            <ArrowFocusContextProvider list={listToShow} orientation='both'>
                 <div className={styles.listWrapper}>
                     <ul className={styles.list}>
                         {listToShow.map((user) => (

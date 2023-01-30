@@ -8,7 +8,7 @@ import { FormikFileInput, FormikTextInput } from '@libs';
 
 
 interface CreateChannelFormValues {
-    avatar: EncodedFile[] | null;
+    avatar: EncodedFile | null;
     name: string;
 }
 
@@ -49,20 +49,18 @@ export const CreateChannelTab: FC = () => {
                         name='avatar'
                         accept='.jpg,.jpeg,.png'
                     >
-                        {({ files }) => {
-                            const channelImage = files && !!files.length ? files[0].base64 : undefined;
-
+                        {({ value }) => {
                             return (
                                 <div className='peer-focus-visible:focused flex w-20 h-20 bg-primary-300 rounded-full'>
-                                    <Conditional isRendered={!!channelImage}>
+                                    <Conditional isRendered={!!value}>
                                         <Image
                                             className='rounded-full'
-                                            src={channelImage!}
+                                            file={value}
                                             alt='Значок канала'
                                         />
                                     </Conditional>
 
-                                    <Conditional isRendered={!files}>
+                                    <Conditional isRendered={!value}>
                                         <div className='flex relative w-full h-full rounded-full border-2 border-icon-100 border-dashed'>
                                             <span className='m-auto text-2xs uppercase font-semibold'>
                                                 <>Загрузить</>

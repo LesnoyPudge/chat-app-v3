@@ -9,6 +9,7 @@ interface FileInput extends PropsWithChildrenAndClassName {
     accept?: string;
     multiple?: boolean;
     label: string;
+    tabIndex?: number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -23,6 +24,7 @@ export const FileInput: FC<FileInput> = ({
     name,
     accept = '',
     multiple = false,
+    tabIndex = 0,
     children,
     onChange,
 }) => {
@@ -34,6 +36,7 @@ export const FileInput: FC<FileInput> = ({
                 multiple={multiple}
                 type='file'
                 name={name}
+                tabIndex={tabIndex}
                 aria-label={label}
                 onChange={onChange}
             />

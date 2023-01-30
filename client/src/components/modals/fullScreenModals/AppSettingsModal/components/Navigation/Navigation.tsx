@@ -19,7 +19,7 @@ export const Navigation: FC = () => {
     return (
         <div>
             <TabList label='Настройки приложения' orientation='vertical'>
-                <ArrowFocusContextProvider list={tabs} direction='vertical'>
+                <ArrowFocusContextProvider list={tabs} orientation='vertical'>
                     <NavigationHeading>
                         <>Настройки пользователя</>
                     </NavigationHeading>
@@ -91,6 +91,7 @@ export const Navigation: FC = () => {
                 <Link 
                     className={styles.socialIconWrapper}
                     href='https://twitter.com/discord'
+                    label='Мы в twitter'
                 >
                     <Icon 
                         className={styles.socialIcon}
@@ -101,6 +102,7 @@ export const Navigation: FC = () => {
                 <Link
                     className={styles.socialIconWrapper}
                     href='https://www.facebook.com/discord'
+                    label='Мы в facebook'
                 >
                     <Icon
                         className={styles.socialIcon}
@@ -111,6 +113,7 @@ export const Navigation: FC = () => {
                 <Link
                     className={styles.socialIconWrapper}
                     href='https://www.instagram.com/discord/'
+                    label='Мы в instagram'
                 >
                     <Icon 
                         className={styles.socialIcon}

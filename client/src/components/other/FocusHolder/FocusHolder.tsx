@@ -3,6 +3,8 @@ import { FC, PropsWithChildren, useLayoutEffect, useRef, useState } from 'react'
 
 
 
+const focusableElementsSelector = 'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
+
 export const FocusHolder: FC<PropsWithChildren> = ({
     children,
 }) => {
@@ -14,9 +16,10 @@ export const FocusHolder: FC<PropsWithChildren> = ({
         if (!wrapperRef.current) return;
 
         const wrapper = wrapperRef.current as HTMLDivElement;
-        const focusableElementsSelector = 'a:not([disabled]), button:not([disabled]), input[type=text]:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
+        
         const tabableElements = wrapper.querySelectorAll(focusableElementsSelector);
         const newShouldHoldFocus = !tabableElements.length;
+        
         setShouldHoldFocus(newShouldHoldFocus);
     }, []);
 

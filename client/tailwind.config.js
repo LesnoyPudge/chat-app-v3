@@ -25,6 +25,7 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
+                // "Noto Sans","Helvetica Neue",Helvetica,Arial,sans-serif
                 'sans': [ 'Inter', 'Arial', 'Helvetica', ...defaultTheme.fontFamily.sans],
             },
             
@@ -85,8 +86,6 @@ module.exports = {
                     muted: 'var(--color-font-muted)',
                     link: 'var(--color-font-link)',
                     error: 'var(--color-font-error)',
-                    required: 'var(--color-font-required)',
-                    placeholder: 'var(--color-font-placeholder)',
                 },
             },
 

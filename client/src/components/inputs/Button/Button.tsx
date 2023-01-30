@@ -15,7 +15,7 @@ interface Button extends PropsWithChildrenAndClassName {
     label?: string;
     controls?: string;
     hasPopup?: 'dialog' | 'menu';
-    role?: 'button' | 'menuitem' | 'tab' | 'presentation';
+    role?: 'button' | 'menuitem' | 'tab';
     hidden?: boolean;
     onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
     onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
@@ -33,40 +33,38 @@ const styles = {
     brand: {
         base: `text-white font-medium bg-brand 
         hover:bg-brand-hover focus-visible:bg-brand-hover 
-        focus-within:bg-brand-hover active:bg-brand-active`,
+        active:bg-brand-active`,
         active: 'bg-brand-active',
     },
 
     brandNeutral: {
         base: `text-white font-medium bg-neutral 
         hover:bg-neutral-hover focus-visible:bg-neutral-hover 
-        focus-within:bg-neutral-hover active:bg-neutral-active`,
+        active:bg-neutral-active`,
         active: 'bg-neutral-active',
     },
 
     brandDanger: {
         base: `text-white font-medium bg-danger
         hover:bg-danger-hover focus-visible:bg-danger-hover 
-        focus-within:bg-danger-hover active:bg-danger-active`,
+        active:bg-danger-active`,
         active: 'bg-danger-active',
     },
 
     brandPositive: {
         base: `text-white font-medium bg-positive 
         hover:bg-positive-hover focus-visible:bg-positive-hover 
-        focus-within:bg-positive-hover active:bg-positive-active`,
+        active:bg-positive-active`,
         active: 'bg-positive-active',
     },
 
     link: {
-        base: `p-0 text-color-link hover:underline focus-visible:underline
-        focus-within:underline`,
+        base: 'p-0 text-color-link hover:underline focus-visible:underline',
         active: 'underline',
     },
 
     lite: {
-        base: `text-color-primary hover:underline focus-visible:underline
-        focus-within:underline`,
+        base: 'text-color-primary hover:underline focus-visible:underline',
         active: 'underline',
     },
 };
