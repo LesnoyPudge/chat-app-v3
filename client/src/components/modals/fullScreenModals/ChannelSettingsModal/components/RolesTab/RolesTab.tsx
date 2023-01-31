@@ -1,5 +1,7 @@
-import { ChannelSettingsModalTabs, TabContext, TabPanel } from '@components';
+import { ChannelSettingsModalFormValues, ChannelSettingsModalTabs, TabContext, TabContextProvider, TabPanel } from '@components';
+import { useFormikContext, FormikContextType } from 'formik';
 import { FC, useContext } from 'react';
+import { ScreenShakeContext } from '../../../components';
 import { RoleContent, RoleNavigation } from './components';
 
 
@@ -8,8 +10,24 @@ const styles = {
     wrapper: 'flex absolute inset-0 max-w-[calc(740px+56px)] pr-[56px]',
 };
 
+const roles = Array(32).fill('').map((_, index) => ({
+    id: index.toString(),
+    name: `role${index}`,
+    color: 'rgb(34 197 94)',
+}));
+
 export const RolesTab: FC = () => {
     const { tabs } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { dirty } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
+    const { triggerScreenShake } = useContext(ScreenShakeContext) as ScreenShakeContext;
+    
+    const rolesTabs: Record<string, string> = {};
+    roles.forEach((role) => rolesTabs[role.id] = role.name);
+
+    const navigateToRoleTab = () => {
+        if (dirty) triggerScreenShake();
+        return !dirty;
+    };
 
     return (
         <TabPanel
@@ -17,9 +35,14 @@ export const RolesTab: FC = () => {
             label='Роли канала' 
             controls={tabs.rolesTab.identifier}
         >
-            <RoleNavigation/>
+            <TabContextProvider 
+                tabs={rolesTabs} 
+                onTabChange={navigateToRoleTab}
+            >
+                <RoleNavigation/>
 
-            <RoleContent/>
+                <RoleContent/>
+            </TabContextProvider>
         </TabPanel>
     );
 };

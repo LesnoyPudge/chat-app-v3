@@ -9,6 +9,8 @@ import { Form, Formik } from 'formik';
 
 export type ChannelSettingsModalTabs = typeof tabs;
 
+export type ChannelSettingsModalFormValues = typeof initialValues;
+
 const transitionOptions = getTransitionOptions.fullScreenModal({});
 
 const tabs = {
@@ -19,9 +21,11 @@ const tabs = {
 };
 
 const initialValues = {
-    name: 'coolChannel',
+    channelName: 'coolChannel',
     channelImage: null,
-    isPrivate: false,
+    channelIsPrivate: false,
+    roleName: 'roleName',
+    roleColor: '#fff',
 };
 
 export const ChannelSettingsModal: FC = () => {
@@ -49,6 +53,7 @@ export const ChannelSettingsModal: FC = () => {
                                         console.log(values);
                                     }}
                                     onReset={resetShakeStacks}
+                                    enableReinitialize
                                 >
                                     {({ dirty }) => {
                                         isDirtyRef.current = dirty;

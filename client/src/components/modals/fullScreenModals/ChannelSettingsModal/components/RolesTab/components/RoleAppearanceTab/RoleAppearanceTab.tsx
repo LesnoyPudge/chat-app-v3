@@ -1,6 +1,7 @@
 import { FormikTextInput } from '@libs';
 import { FC } from 'react';
 import { FieldLabel, RequiredWildcard, Separator, TextInput } from '@components';
+import { RoleColor } from './components';
 
 
 
@@ -8,7 +9,7 @@ export const RoleAppearanceTab: FC = () => {
     return (
         <>
             <FormikTextInput 
-                name='name'
+                name='roleName'
                 label='Название роли'
                 required
             >
@@ -28,15 +29,7 @@ export const RoleAppearanceTab: FC = () => {
                 
             <Separator spacing={24}/>
 
-            <FieldLabel>
-                <>Цвет роли</>
-
-                <RequiredWildcard/>
-            </FieldLabel>
-
-            <div className='mb-2 text-sm'>
-                <>Для участников используется цвет высшей роли, которую они имеют.</>
-            </div>
+            <RoleColor/>
         </>
     );
 };

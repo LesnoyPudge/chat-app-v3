@@ -1,8 +1,11 @@
-import { Heading, HeadingLevel } from '@libs';
-import { FC } from 'react';
-import { ArrowFocusContextProvider, ArrowFocusItem, Button, TabContextProvider, TabList } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, Button, TabContext, TabContextProvider, TabList, TabPanel } from '@components';
+import { HeadingLevel, Heading } from '@libs';
 import { twClassNames } from '@utils';
-import { RoleAppearanceTab, RoleMembersTab, RolePermissionsTab } from './components';
+import { useFormikContext } from 'formik';
+import { FC, useContext } from 'react';
+import { RoleAppearanceTab } from '../RoleAppearanceTab';
+import { RoleMembersTab } from '../RoleMembersTab';
+import { RolePermissionsTab } from '../RolePermissionsTab';
 
 
 
@@ -41,63 +44,76 @@ const styles = {
 };
 
 export const RoleContent: FC = () => {
-    const roleName = 'новая роль';
+    const { currentTab } = useContext(TabContext) as TabContext<Record<string, string>>;
+    const {} = useFormikContext();
+
+    const roles = Array(32).fill('').map((_, index) => ({
+        id: index.toString(),
+        name: `role${index}`,
+        color: 'rgb(34 197 94)',
+    }));
+    const normalizedRoles: Record<string, {id: string, name: string, color: string}> = {};
+    roles.forEach((role) => normalizedRoles[role.id] = role);
+
+    const role = normalizedRoles[currentTab.identifier];
 
     return (
-        <HeadingLevel>
-            <div className={styles.wrapper}>
-                <Heading className={styles.title}>
-                    <>Редактировать роль — {roleName}</>
-                </Heading>
+        <TabContextProvider tabs={providedTabs}>
+            {({ currentTab, tabs, changeTab, isActive }) => (
+                <HeadingLevel>
+                    <TabPanel
+                        className={styles.wrapper}
+                        label={`Редактировать роль: ${currentTab.tab}`} 
+                        controls={currentTab.identifier}
+                    >
+                        <Heading className={styles.title}>
+                            <>Редактировать роль — {role.name}</>
+                        </Heading>
 
-                <TabContextProvider tabs={providedTabs}>
-                    {({ currentTab, tabs, changeTab, isActive }) => (
-                        <>
-                            <ArrowFocusContextProvider 
-                                list={tabs} 
+                        <ArrowFocusContextProvider 
+                            list={tabs} 
+                            orientation='horizontal'
+                        >
+                            <TabList 
+                                className={styles.header}
+                                label='Настройки роли' 
                                 orientation='horizontal'
                             >
-                                <TabList 
-                                    className={styles.header}
-                                    label='Настройки роли' 
-                                    orientation='horizontal'
-                                >
-                                    <div className={styles.headerDivider}></div>
+                                <div className={styles.headerDivider}></div>
 
-                                    {Object.keys(tabs).map((tab) => {
-                                        const label = labels[tab as keyof RoleContentTabs];
-                                        const tabName = tabNames[tab as keyof RoleContentTabs];
-                                        const isTabActive = isActive[tab as keyof RoleContentTabs];
-                                        const handleNavigate = changeTab[tab as keyof RoleContentTabs];
+                                {Object.keys(tabs).map((tab) => {
+                                    const label = labels[tab as keyof RoleContentTabs];
+                                    const tabName = tabNames[tab as keyof RoleContentTabs];
+                                    const isTabActive = isActive[tab as keyof RoleContentTabs];
+                                    const handleNavigate = changeTab[tab as keyof RoleContentTabs];
 
-                                        return (
-                                            <ArrowFocusItem id={tab} key={tab}>
-                                                {({ tabIndex }) => (
-                                                    <Button
-                                                        className={twClassNames(
-                                                            styles.button.base,
-                                                            { [styles.button.active]: isTabActive },
-                                                        )}
-                                                        label={label}
-                                                        role='tab'
-                                                        controls={tab}
-                                                        tabIndex={tabIndex}
-                                                        onLeftClick={handleNavigate}
-                                                    >
-                                                        <>{tabName}</>
-                                                    </Button>
-                                                )}
-                                            </ArrowFocusItem>
-                                        );
-                                    })}
-                                </TabList>
-                            </ArrowFocusContextProvider>
+                                    return (
+                                        <ArrowFocusItem id={tab} key={tab}>
+                                            {({ tabIndex }) => (
+                                                <Button
+                                                    className={twClassNames(
+                                                        styles.button.base,
+                                                        { [styles.button.active]: isTabActive },
+                                                    )}
+                                                    label={label}
+                                                    role='tab'
+                                                    controls={tab}
+                                                    tabIndex={tabIndex}
+                                                    onLeftClick={handleNavigate}
+                                                >
+                                                    <>{tabName}</>
+                                                </Button>
+                                            )}
+                                        </ArrowFocusItem>
+                                    );
+                                })}
+                            </TabList>
+                        </ArrowFocusContextProvider>
 
-                            {currentTab.tab}
-                        </>
-                    )}
-                </TabContextProvider>
-            </div>
-        </HeadingLevel>
+                        {currentTab.tab}
+                    </TabPanel>
+                </HeadingLevel>
+            )}
+        </TabContextProvider>
     );
 };

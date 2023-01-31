@@ -109,7 +109,7 @@ export const OverviewTab: FC = () => {
                 </div>
 
                 <FormikTextInput
-                    name='name'
+                    name='channelName'
                     label='Название сервера'
                     required 
                 >

@@ -1,6 +1,7 @@
-import { FC } from 'react';
-import { RefContextProvider, ArrowFocusContextProvider, Button, Icon, ArrowFocusItem, TabList, Tooltip } from '@components';
+import { FC, useContext } from 'react';
+import { RefContextProvider, ArrowFocusContextProvider, Button, Icon, ArrowFocusItem, TabList, Tooltip, TabContext } from '@components';
 import { TabTitle } from '../../../../../components';
+import { twClassNames } from '@utils';
 
 
 
@@ -9,19 +10,25 @@ const styles = {
     header: 'flex justify-between gap-2 mb-6 pl-6 pr-4',
     listWrapper: 'scrollbar-primary scrollbar-with-gutter h-full overflow-y-auto',
     list: 'flex flex-col gap-0.5 pl-8 pr-2 pb-[60px]',
-    roleItem: 'flex items-center w-full gap-2 py-1.5 px-2.5 rounded-md hover:bg-primary-hover focus-visible:bg-primary-hover',
+    roleItem: {
+        base: `flex items-center w-full gap-2 py-1.5 px-2.5 rounded-md 
+        hover:bg-primary-hover focus-visible:bg-primary-hover`,
+        active: 'bg-primary-hover',
+    },
     roleIndicator: 'w-3 h-3 rounded-full',
     roleName: 'truncate font-medium text-sm text-color-primary',
 };
 
-export const RoleNavigation: FC = () => {
-    const handleCreateRole = () => console.log('create role');
+const roles = Array(32).fill('').map((_, index) => ({
+    id: index.toString(),
+    name: `role${index}`,
+    color: 'rgb(34 197 94)',
+}));
 
-    const roles = Array(32).fill('').map((_, index) => ({
-        id: index,
-        name: `role${index}`,
-        color: 'rgb(34 197 94)',
-    }));
+export const RoleNavigation: FC = () => {
+    const { changeTab, tabs, isActive } = useContext(TabContext) as TabContext<Record<string, string>>;
+
+    const handleCreateRole = () => console.log('create role');
     
     return (
         <div className={styles.wrapper}>
@@ -53,7 +60,7 @@ export const RoleNavigation: FC = () => {
             </div>
 
             <ArrowFocusContextProvider 
-                list={roles} 
+                list={tabs} 
                 orientation='vertical'
             >
                 <TabList 
@@ -62,16 +69,19 @@ export const RoleNavigation: FC = () => {
                     orientation='vertical'
                 >
                     <div className={styles.list}>
-                        {roles.map(({ id, name, color }) => (
+                        {roles.map(({ id, color, name }) => (
                             <ArrowFocusItem id={id} key={id}>
                                 {({ tabIndex }) => (
                                     <Button
-                                        className={styles.roleItem}
+                                        className={twClassNames(
+                                            styles.roleItem.base,
+                                            { [styles.roleItem.active]: isActive[id] },
+                                        )}
                                         role='tab'
-                                        controls={''}
+                                        controls={id}
                                         label={`Роль ${name}`}
                                         tabIndex={tabIndex}
-                                        onLeftClick={() => console.log('go to role', id)}
+                                        onLeftClick={changeTab[id]}
                                     >
                                         <div 
                                             className={styles.roleIndicator}

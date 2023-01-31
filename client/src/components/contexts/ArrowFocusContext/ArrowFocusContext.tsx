@@ -14,6 +14,10 @@ type ProvidedObject = Record<string, Record<string, any> & {
 
 type ProvidedList = ProvidedArray | ProvidedObject;
 
+type NormalizedList = Record<string, any> & {
+    id: string;
+}[];
+
 interface Focus {
     focusableId: string;
     focusedId: string | null;
@@ -30,8 +34,10 @@ interface ArrowFocusContextProvider extends PropsWithChildrenAsNodeOrFunction<Ar
     orientation: 'horizontal' | 'vertical' | 'both';
 }
 
-const normalizeList = (list: ProvidedList) => (
-    Array.isArray(list) ? (
+const normalizeList = (list: ProvidedList): NormalizedList | [] => {
+    if (list.length === 0) return list as [];
+
+    return Array.isArray(list) ? (
         list.map((item) => ({
             id: item.id.toString(),
         }))
@@ -39,8 +45,8 @@ const normalizeList = (list: ProvidedList) => (
         Object.values(list).map((item) => ({
             id: item.identifier,
         }))
-    )
-);
+    );
+};
 
 export const ArrowFocusContext = createContext<ArrowFocusContext | undefined>(undefined);
 
@@ -113,8 +119,10 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
     };
 
     useEffect(() => {
-        const isListFocusable = normalizedList.findIndex((item) => item.id === focus.focusableId) !== -1;
+        if (!normalizedList.length) return;
         
+        const isListFocusable = normalizedList.findIndex((item) => item.id === focus.focusableId) !== -1;
+
         if (isListFocusable) return;
 
         setFocus({ 
