@@ -9,7 +9,22 @@ import { Form, Formik } from 'formik';
 
 export type ChannelSettingsModalTabs = typeof tabs;
 
-export type ChannelSettingsModalFormValues = typeof initialValues;
+export interface ChannelSettingsModalFormValues {
+    channelName: string,
+    channelImage: string | null,
+    channelIsPrivate: boolean,
+    roleId: string,
+    roleName: string,
+    roleColorHEX: string,
+    roleImage: string | null,
+    roleChannelControl: boolean;
+    roleRoomControl: boolean;
+    roleCreateInvitation: boolean;
+    roleKickMember: boolean;
+    roleBanMember: boolean;
+    roleSendMessage: boolean;
+    roleIsAdministrator: boolean;
+}
 
 const transitionOptions = getTransitionOptions.fullScreenModal({});
 
@@ -20,12 +35,21 @@ const tabs = {
     bannedTab: <BannedTab/>,
 };
 
-const initialValues = {
+const initialValues: ChannelSettingsModalFormValues = {
     channelName: 'coolChannel',
     channelImage: null,
     channelIsPrivate: false,
+    roleId: 'id1',
     roleName: 'roleName',
-    roleColor: '#fff',
+    roleColorHEX: '#fff',
+    roleImage: null,
+    roleBanMember: false,
+    roleChannelControl: false,
+    roleCreateInvitation: false,
+    roleIsAdministrator: false,
+    roleKickMember: false,
+    roleRoomControl: false,
+    roleSendMessage: false,
 };
 
 export const ChannelSettingsModal: FC = () => {
@@ -44,7 +68,11 @@ export const ChannelSettingsModal: FC = () => {
                     };
 
                     return (
-                        <TabContextProvider tabs={tabs} onTabChange={onTabChange} initialTab='rolesTab'>
+                        <TabContextProvider
+                            initialTab='rolesTab'
+                            tabs={tabs} 
+                            onTabChange={onTabChange}
+                        >
                             {({ currentTab }) => (
                                 <Formik
                                     initialValues={initialValues}

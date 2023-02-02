@@ -1,8 +1,8 @@
 import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, Tooltip, AnimatedTransition, RefContextProvider } from '@components';
+import { FormikColorPicker } from '@libs';
 import { animated } from '@react-spring/web';
 import { getTransitionOptions, twClassNames } from '@utils';
-import { FC, useState } from 'react';
-import { ColorPicker } from './components';
+import { FC } from 'react';
 
 
 
@@ -24,7 +24,10 @@ const colorPickerTransitionOptions = getTransitionOptions.withOpacity({
 });
 
 export const Banner: FC = () => {
-    const [bannerColor, setBannerColor] = useState('#ffffff');
+    const initialBannerColor = '#a90d0e';
+    const colorPresets = [initialBannerColor, '#e3722c', '#5b0da9', '#0da9a9', '#5ba90d'];
+
+    const bannerColor = '#fff';
 
     return (
         <div className={styles.banner} style={{ backgroundColor: bannerColor }}>
@@ -39,7 +42,8 @@ export const Banner: FC = () => {
                                         { [styles.bannerButton.active]: isOverlayExist },
                                     )}
                                     isActive={isOverlayExist}
-                                    label='Открыть цветовую палитру'
+                                    label='Выбрать цвет баннера'
+                                    hasPopup='dialog'
                                     onLeftClick={openOverlay}
                                 >
                                     <Icon
@@ -66,10 +70,15 @@ export const Banner: FC = () => {
                                                     spacing={10}
                                                     targetRefOrRect={targetRef}
                                                 >
-                                                    <ColorPicker
-                                                        color={bannerColor}
-                                                        onChange={setBannerColor}
-                                                    />
+                                                    <div 
+                                                        role='dialog' 
+                                                        aira-label='Выберите цвет баннера'
+                                                    >
+                                                        <FormikColorPicker
+                                                            name='bannerColor'
+                                                            colorPresets={colorPresets}
+                                                        />
+                                                    </div>
                                                 </RelativelyPositioned>
                                             </animated.div>
                                         </OverlayItem>

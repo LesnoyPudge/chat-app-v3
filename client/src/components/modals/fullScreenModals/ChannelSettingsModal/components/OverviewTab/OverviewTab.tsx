@@ -9,7 +9,7 @@ const styles = {
     firstSection: 'grid grid-cols-2 gap-5',
     sectionSide: 'flex gap-5',
     removeFile: 'w-full mt-1.5',
-    firstFileInput: 'w-[100px] h-[100px] rounded-full relative group',
+    firstFileInput: 'w-[100px] h-[100px] rounded-full relative group bg-primary-300',
     channelImage: 'h-full w-full rounded-full',
     channelImageOverlay: `grid place-items-center absolute inset-0 
     rounded-full opacity-0 bg-black bg-opacity-40 pointer-events-none 
@@ -50,7 +50,7 @@ export const OverviewTab: FC = () => {
                                 <>
                                     <Image
                                         className={styles.channelImage}
-                                        src='https://via.placeholder.com/150'
+                                        src='https://picsum.photos/150'
                                         file={value}
                                         alt='Значок канала'
                                     />
@@ -102,7 +102,7 @@ export const OverviewTab: FC = () => {
                                 name='channelImage'
                                 label=''
                                 accept='image/*'
-                                tabIndex={-1}
+                                hidden
                             />
                         </Button>
                     </div>
@@ -130,7 +130,7 @@ export const OverviewTab: FC = () => {
             <FormikCheckBox 
                 className={styles.checkBox}
                 label='Приватность канала' 
-                name='isPrivate'
+                name='channelIsPrivate'
             >
                 {({ checked }) => (
                     <>

@@ -1,11 +1,9 @@
-import { ArrowFocusContextProvider, ArrowFocusItem, Button, TabContext, TabContextProvider, TabList, TabPanel } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalFormValues, TabContext, TabContextProvider, TabList, TabPanel } from '@components';
 import { HeadingLevel, Heading } from '@libs';
 import { twClassNames } from '@utils';
-import { useFormikContext } from 'formik';
-import { FC, useContext } from 'react';
-import { RoleAppearanceTab } from '../RoleAppearanceTab';
-import { RoleMembersTab } from '../RoleMembersTab';
-import { RolePermissionsTab } from '../RolePermissionsTab';
+import { FormikContextType, useFormikContext } from 'formik';
+import { FC, useContext, useEffect } from 'react';
+import { RoleMembersTab, RoleAppearanceTab, RolePermissionsTab } from './components';
 
 
 
@@ -45,20 +43,32 @@ const styles = {
 
 export const RoleContent: FC = () => {
     const { currentTab } = useContext(TabContext) as TabContext<Record<string, string>>;
-    const {} = useFormikContext();
+    const { values, resetForm } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
 
     const roles = Array(32).fill('').map((_, index) => ({
         id: index.toString(),
         name: `role${index}`,
-        color: 'rgb(34 197 94)',
+        color: '#fff',
     }));
     const normalizedRoles: Record<string, {id: string, name: string, color: string}> = {};
     roles.forEach((role) => normalizedRoles[role.id] = role);
-
     const role = normalizedRoles[currentTab.identifier];
 
+    useEffect(() => {
+        if (values.roleId === role.id) return;
+
+        resetForm({
+            values: {
+                ...values,
+                roleId: role.id,
+                roleColorHEX: role.color,
+                roleName: role.name,
+            },
+        });
+    }, [resetForm, role, values]);
+
     return (
-        <TabContextProvider tabs={providedTabs}>
+        <TabContextProvider tabs={providedTabs} initialTab='permissions'>
             {({ currentTab, tabs, changeTab, isActive }) => (
                 <HeadingLevel>
                     <TabPanel

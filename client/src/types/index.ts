@@ -29,3 +29,9 @@ export interface EncodedFile {
 }
 
 export type Aligment = 'top' | 'bottom' | 'left' | 'right';
+
+export interface RGB {
+    r: number;
+    g: number;
+    b: number;
+}

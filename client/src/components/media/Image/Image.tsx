@@ -6,13 +6,13 @@ import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 
 
 type OptionalValues = {
-    src: string;
+    src: string | null;
     file?: never;
 } | {
     src?: never;
     file: EncodedFile | null;
 } | {
-    src: string;
+    src: string | null;
     file: EncodedFile | null;
 }
 

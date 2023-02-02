@@ -19,7 +19,7 @@ PropsWithChildrenAsNodeOrFunction<ChildrenArgs<MULTIPLE>> {
     accept?: string;
     multiple?: MULTIPLE;
     label: string; 
-    tabIndex?: number;
+    hidden?: boolean;
 }
 
 export const FormikFileInput: FC<FormikFileInput> = ({
@@ -28,15 +28,13 @@ export const FormikFileInput: FC<FormikFileInput> = ({
     accept,
     multiple = false,
     label,
-    tabIndex = 0,
+    hidden = false,
     children,
 }) => {
     const [{ value }] = useField(name);
     const { setFieldValue } = useFormikContext();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.files);
-        
         if (!e.target.files || !e.target.files.length) return;
         
         encodeFiles(Object.values(e.target.files)).then((encodedFiles) => {
@@ -51,7 +49,7 @@ export const FormikFileInput: FC<FormikFileInput> = ({
             name={name}
             accept={accept}
             multiple={multiple}
-            tabIndex={tabIndex}
+            hidden={hidden}
             onChange={handleChange}
         >
             <ChildrenAsNodeOrFunction args={{ value }}>

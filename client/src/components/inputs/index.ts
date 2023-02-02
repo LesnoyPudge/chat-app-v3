@@ -5,3 +5,4 @@ export * from './SliderInput';
 export * from './CheckBox';
 export * from './RadioInput';
 export * from './FileInput';
+export * from './ColorPicker';

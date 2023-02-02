@@ -27,7 +27,7 @@ interface Button extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    base: `flex shrink-0 items-center justify-center w-fit 
+    base: `flex shrink-0 items-center justify-center w-fit h-fit
     text-sm text-center rounded-[3px] underline-offset-4 decoration-2 
     decoration-current py-1 px-3 transition-all duration-100`,
 
