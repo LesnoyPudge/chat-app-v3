@@ -7,7 +7,7 @@ import { RoleContent, RoleNavigation } from './components';
 
 
 const styles = {
-    wrapper: 'flex absolute inset-0 max-w-[calc(740px+56px)] pr-[56px]',
+    wrapper: 'flex absolute inset-0 max-w-[calc(740px+56px)] pr-[56px] overflow-hidden',
 };
 
 const roles = Array(32).fill('').map((_, index) => ({
@@ -17,7 +17,7 @@ const roles = Array(32).fill('').map((_, index) => ({
 }));
 
 export const RolesTab: FC = () => {
-    const { tabs } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabs, tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
     const { dirty } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
     const { triggerScreenShake } = useContext(ScreenShakeContext) as ScreenShakeContext;
     
@@ -32,8 +32,7 @@ export const RolesTab: FC = () => {
     return (
         <TabPanel
             className={styles.wrapper}
-            label='Роли канала' 
-            controls={tabs.rolesTab.identifier}
+            {...tabPanelProps.rolesTab}
         >
             <TabContextProvider 
                 tabs={rolesTabs} 

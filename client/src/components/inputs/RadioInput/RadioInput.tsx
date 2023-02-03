@@ -18,7 +18,7 @@ const styles = {
         text-color-secondary bg-primary-300 hover:text-color-primary hover:bg-primary-100 focus-within:focused`,
         active: 'text-color-primary bg-primary-100', 
     },
-    input: 'sr-only',
+    input: 'sr-only peer',
 };
 
 export const RadioInput: FC<RadioInput> = ({

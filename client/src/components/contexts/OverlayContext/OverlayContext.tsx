@@ -1,8 +1,9 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
 import React, { createContext, FC, useCallback, useMemo } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
-import { useThrottle, useToggle } from '@hooks';
+import { useThrottle } from '@hooks';
 import { fpsToMs } from '@utils';
+import { useToggle } from 'usehooks-ts';
 
 
 

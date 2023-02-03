@@ -4,13 +4,10 @@ import { FC, useContext } from 'react';
 
 
 export const MembersTab: FC = () => {
-    const { tabs } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
 
     return (
-        <TabPanel 
-            label='Участники канала канала' 
-            controls={tabs.membersTab.identifier}
-        >
+        <TabPanel {...tabPanelProps.membersTab}>
             3
         </TabPanel>
     );

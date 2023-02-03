@@ -24,6 +24,7 @@ export interface ChannelSettingsModalFormValues {
     roleBanMember: boolean;
     roleSendMessage: boolean;
     roleIsAdministrator: boolean;
+    roleMembers: string[];
 }
 
 const transitionOptions = getTransitionOptions.fullScreenModal({});
@@ -43,13 +44,14 @@ const initialValues: ChannelSettingsModalFormValues = {
     roleName: 'roleName',
     roleColorHEX: '#fff',
     roleImage: null,
-    roleBanMember: false,
-    roleChannelControl: false,
+    roleBanMember: true,
+    roleChannelControl: true,
     roleCreateInvitation: false,
     roleIsAdministrator: false,
     roleKickMember: false,
     roleRoomControl: false,
     roleSendMessage: false,
+    roleMembers: Array(29).fill('').map((_, index) => index.toString()),
 };
 
 export const ChannelSettingsModal: FC = () => {

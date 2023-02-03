@@ -14,7 +14,7 @@ const styles = {
 };
 
 export const Navigation: FC = () => {
-    const { changeTab, tabs, isActive } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
+    const { changeTab, tabs, isActive, tabProps } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
 
     return (
         <div>
@@ -30,9 +30,8 @@ export const Navigation: FC = () => {
                                 className={styles.button}
                                 isActive={isActive.profileTab}
                                 label='Моя учётная запись'
-                                role='tab'
-                                controls={tabs.profileTab.identifier}
                                 tabIndex={tabIndex}
+                                {...tabProps.profileTab}
                                 onLeftClick={changeTab.profileTab}
                             >
                                 <NavigationItem isActive={isActive.profileTab}>
@@ -54,9 +53,8 @@ export const Navigation: FC = () => {
                                 className={styles.button}
                                 isActive={isActive.appearanceTab}
                                 label='Внешний вид'
-                                role='tab'
-                                controls={tabs.appearanceTab.identifier}
                                 tabIndex={tabIndex}
+                                {...tabProps.appearanceTab}
                                 onLeftClick={changeTab.appearanceTab}
                             >
                                 <NavigationItem isActive={isActive.appearanceTab}>

@@ -4,13 +4,10 @@ import { FC, useContext } from 'react';
 
 
 export const BannedTab: FC = () => {
-    const { tabs } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
 
     return (
-        <TabPanel 
-            label='Забаненные пользователи' 
-            controls={tabs.bannedTab.identifier}
-        >
+        <TabPanel {...tabPanelProps.bannedTab}>
             4
         </TabPanel>
     );

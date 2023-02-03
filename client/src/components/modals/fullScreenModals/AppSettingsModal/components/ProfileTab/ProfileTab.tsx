@@ -8,14 +8,11 @@ import { TabTitle } from '../../../components';
 
 
 export const ProfileTab: FC = () => {
-    const { tabs } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
+    const { tabPanelProps } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
 
     return (
         <HeadingLevel>
-            <TabPanel 
-                label='Настройки профиля' 
-                controls={tabs.profileTab.identifier}
-            >
+            <TabPanel {...tabPanelProps.profileTab}>
                 <TabTitle>
                     <>Моя учётная запись</>
                 </TabTitle>

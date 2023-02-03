@@ -4,21 +4,21 @@ import { FC } from 'react';
 
 
 interface TabPanel extends PropsWithChildrenAndClassName {
-    controls: string;
-    label: string;
+    id: string;
+    labelledBy: string;
 }
 
 export const TabPanel: FC<TabPanel> = ({
     className = '',
-    controls,
-    label,
+    id,
+    labelledBy,
     children,
 }) => {
     return (
         <div
             className={className}
-            id={controls}
-            aria-label={label}
+            id={id}
+            aria-labelledby={labelledBy}
             role='tabpanel'
         >
             {children}

@@ -1,7 +1,7 @@
 import { AppSettingsModal, Button, Icon, OverlayContextProvider, RefContextProvider, Tooltip } from '@components';
-import { useToggle } from '@hooks';
 import { conditional } from '@utils';
 import { FC } from 'react';
+import { useToggle } from 'usehooks-ts';
 import { UserInfo } from './components';
 
 

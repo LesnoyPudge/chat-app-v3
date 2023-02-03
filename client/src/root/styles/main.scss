@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import './fonts.scss';
+@import './font-noto-sans.scss';
 @import './vars.scss';
 @import './light-theme.scss';
 
@@ -15,11 +16,11 @@
     }
 
     body {
-        @apply bg-primary-500 text-base h-screen w-screen overflow-hidden isolate break-all;
+        @apply font-sans bg-primary-500 text-color-base text-base h-screen w-screen overflow-hidden isolate break-all;
     }
 
     * {
-        @apply text-color-base border-inherit fill-inherit;
+        @apply text-inherit border-inherit fill-inherit min-h-0 min-w-0;
     }
 
     #app,

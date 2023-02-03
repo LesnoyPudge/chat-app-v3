@@ -11,7 +11,7 @@ const styles = {
 };
 
 export const Navigation: FC = () => {
-    const { tabs, changeTab, isActive } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabs, changeTab, isActive, tabProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
     
     return (
         <div>
@@ -28,9 +28,8 @@ export const Navigation: FC = () => {
                                     className={styles.button}
                                     isActive={isActive.overviewTab}
                                     label='Обзор канала'
-                                    role='tab'
-                                    controls={tabs.overviewTab.identifier}
                                     tabIndex={tabIndex}
+                                    {...tabProps.overviewTab}
                                     onLeftClick={changeTab.overviewTab}
                                 >
                                     <NavigationItem isActive={isActive.overviewTab}>
@@ -46,9 +45,8 @@ export const Navigation: FC = () => {
                                     className={styles.button}
                                     isActive={isActive.rolesTab}
                                     label='Роли канала'
-                                    role='tab'
-                                    controls={tabs.rolesTab.identifier}
                                     tabIndex={tabIndex}
+                                    {...tabProps.rolesTab}
                                     onLeftClick={changeTab.rolesTab}
                                 >
                                     <NavigationItem isActive={isActive.rolesTab}>
@@ -72,9 +70,8 @@ export const Navigation: FC = () => {
                                     className={styles.button}
                                     isActive={isActive.membersTab}
                                     label='Участники канала'
-                                    role='tab'
-                                    controls={tabs.membersTab.identifier}
                                     tabIndex={tabIndex}
+                                    {...tabProps.membersTab}
                                     onLeftClick={changeTab.membersTab}
                                 >
                                     <NavigationItem isActive={isActive.membersTab}>
@@ -90,9 +87,8 @@ export const Navigation: FC = () => {
                                     className={styles.button}
                                     isActive={isActive.bannedTab}
                                     label='Забаненные пользователи'
-                                    role='tab'
-                                    controls={tabs.bannedTab.identifier}
                                     tabIndex={tabIndex}
+                                    {...tabProps.bannedTab}
                                     onLeftClick={changeTab.bannedTab}
                                 >
                                     <NavigationItem isActive={isActive.bannedTab}>

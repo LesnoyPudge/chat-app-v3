@@ -7,14 +7,14 @@ import { FC, useRef } from 'react';
 interface SearchBar {
     className?: string;
     placeholder?: string;
-    label?: string;
+    label: string;
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onReset: () => void;
 }
 
 const styles = {
-    wrapper: 'h-10',
+    wrapper: 'flex h-10',
     input: 'h-full',
     button: `flex shrink-0 h-full aspect-square rounded fill-icon-300 
     hover:fill-icon-200 focus-visible:fill-icon-200`,

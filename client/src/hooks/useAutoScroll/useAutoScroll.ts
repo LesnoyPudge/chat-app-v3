@@ -1,6 +1,7 @@
 import { useCallback, useLayoutEffect, useRef } from 'react';
-import { useIsFirstRender, useResizeObserver } from '@hooks';
+import { useResizeObserver } from '@hooks';
 import { useInView } from 'react-intersection-observer';
+import { useIsFirstRender } from 'usehooks-ts';
 
 
 

@@ -12,8 +12,8 @@ interface CheckBox extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    label: 'relative focus-within:focused',
-    input: 'sr-input',
+    label: 'block relative focus-within:focused',
+    input: 'sr-input peer',
 };
 
 export const CheckBox: FC<CheckBox> = ({

@@ -26,13 +26,10 @@ const styles = {
 };
 
 export const OverviewTab: FC = () => {
-    const { tabs } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
     
     return (
-        <TabPanel
-            label='Обзор канала' 
-            controls={tabs.overviewTab.identifier}
-        >
+        <TabPanel {...tabPanelProps.overviewTab}>
             <TabTitle>
                 <>Обзор канала</>
             </TabTitle>

@@ -1,5 +1,5 @@
-import { useIsFirstRender } from '@hooks';
 import { FC, useContext, useEffect } from 'react';
+import { useIsFirstRender } from 'usehooks-ts';
 import { ILoadingContext, LoadingContext } from '../Loader';
 
 

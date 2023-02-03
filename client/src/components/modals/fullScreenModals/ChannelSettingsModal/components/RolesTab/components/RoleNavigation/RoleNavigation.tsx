@@ -26,7 +26,7 @@ const roles = Array(32).fill('').map((_, index) => ({
 }));
 
 export const RoleNavigation: FC = () => {
-    const { changeTab, tabs, isActive } = useContext(TabContext) as TabContext<Record<string, string>>;
+    const { changeTab, tabs, isActive, tabProps } = useContext(TabContext) as TabContext<Record<string, string>>;
 
     const handleCreateRole = () => console.log('create role');
     
@@ -77,10 +77,9 @@ export const RoleNavigation: FC = () => {
                                             styles.roleItem.base,
                                             { [styles.roleItem.active]: isActive[id] },
                                         )}
-                                        role='tab'
-                                        controls={id}
-                                        label={`Роль ${name}`}
+                                        label={`Редактировать роль ${name}`}
                                         tabIndex={tabIndex}
+                                        {...tabProps[id]}
                                         onLeftClick={changeTab[id]}
                                     >
                                         <div 

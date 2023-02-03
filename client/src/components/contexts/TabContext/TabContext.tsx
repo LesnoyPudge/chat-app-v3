@@ -4,6 +4,17 @@ import { ChildrenAsNodeOrFunction } from '@components';
 
 
 
+type TabProps<KEY extends string> = {
+    role: 'tab';
+    controls: `tabPanel-${KEY}`;
+    id: `tab-${KEY}`;
+}
+
+type TabPanelProps<KEY extends string> = {
+    id: `tabPanel-${KEY}`;
+    labelledBy: `tab-${KEY}`;
+}
+
 type ProvidedTabs = Record<string, ReactNode>;
 
 interface Tab<VALUES> {
@@ -16,6 +27,8 @@ export interface TabContext<VALUES extends ProvidedTabs> {
     currentTab: Tab<VALUES>;
     changeTab: Record<keyof VALUES, () => void>;
     isActive: Record<keyof VALUES, boolean>;
+    tabProps: Record<keyof VALUES, TabProps<Extract<keyof VALUES, string>>>;
+    tabPanelProps: Record<keyof VALUES, TabPanelProps<Extract<keyof VALUES, string>>>;
 }
 
 interface TabContextProvider<VALUES extends ProvidedTabs> extends PropsWithChildrenAsNodeOrFunction<TabContext<VALUES>> {
@@ -24,11 +37,12 @@ interface TabContextProvider<VALUES extends ProvidedTabs> extends PropsWithChild
     onTabChange?: () => boolean;
 }
 
-export const TabContext = createContext<TabContext<any> | undefined>(undefined);
+export const TabContext = createContext<TabContext<never> | undefined>(undefined);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProvider<T>) => {
     const { tabs, initialTab, onTabChange, children } = props;
+    const tabsArray = Object.keys(tabs) as (keyof T)[];
     
     const getCurrentTab = (identifier: keyof T): Tab<T> => ({
         identifier: identifier.toString(),
@@ -36,34 +50,54 @@ export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProv
     });
 
     const [currentTab, setCurrentTab] = useState<Tab<T>>(
-        () => getCurrentTab(initialTab?.toString() || Object.keys(tabs)[0]),
+        () => getCurrentTab(initialTab?.toString() || tabsArray[0]),
     );
 
-    const changeTab = Object.keys(tabs).reduce((o, key) => ({ ...o, [key]: () => {
-        if (key === currentTab.identifier) return;
-        if (!onTabChange) return setCurrentTab(getCurrentTab(key));
+    const changeTab = tabsArray.reduce((acc, key) => ({ 
+        ...acc, 
+        [key]: () => {
+            if (key === currentTab.identifier) return;
+            if (!onTabChange || onTabChange()) setCurrentTab(getCurrentTab(key));
+        }, 
+    }), {}) as Record<keyof T, () => void>;
 
-        const isChangeAllowed = onTabChange();
-        if (!isChangeAllowed) return;
+    const transformedTabs = tabsArray.reduce((acc, key) => ({ 
+        ...acc, 
+        [key]: {
+            identifier: key,
+            tab: tabs[key],
+        }, 
+    }), {}) as Record<keyof T, Tab<T>>;
 
-        setCurrentTab(getCurrentTab(key));
-    } }), {}) as Record<keyof T, () => void>;
-
-    const transformedTabs = Object.keys(tabs).reduce((o, key) => ({ ...o, [key]: {
-        identifier: key,
-        tab: tabs[key],
-    } }), {}) as Record<keyof T, Tab<T>>;
-
-    const isActive = Object.keys(tabs).reduce((o, key) => ({ 
-        ...o, [key]: 
-        currentTab.identifier === key, 
+    const isActive = tabsArray.reduce((acc, key) => ({ 
+        ...acc, 
+        [key]: currentTab.identifier === key, 
     }), {}) as Record<keyof T, boolean>;
+
+    const tabProps = tabsArray.reduce((acc, key) => ({ 
+        ...acc, 
+        [key]: {
+            role: 'tab',
+            controls: `tabPanel-${key.toString()}`,
+            id: `tab-${key.toString()}`,
+        }, 
+    }), {}) as Record<keyof T, TabProps<Extract<keyof T, string>>>;
+
+    const tabPanelProps = tabsArray.reduce((acc, key) => ({ 
+        ...acc, 
+        [key]: {
+            id: `tabPanel-${key.toString()}`,
+            labelledBy: `tab-${key.toString()}`,
+        }, 
+    }), {}) as Record<keyof T, TabPanelProps<Extract<keyof T, string>>>;
     
     const contextValues: TabContext<T> = {
         tabs: transformedTabs,
         currentTab,
         changeTab,
         isActive,
+        tabProps,
+        tabPanelProps,
     };
 
     return (

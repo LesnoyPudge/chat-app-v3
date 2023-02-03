@@ -1,7 +1,8 @@
-import { animated, easings, useSpring } from '@react-spring/web';
+import { animated, easings, useSpringValue } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
+import { useUpdateEffect } from 'usehooks-ts';
 
 
 
@@ -27,15 +28,17 @@ export const CheckBoxIndicator: FC<CheckBoxIndicator> = ({
     className = '',
     checked,
 }) => {
-    const [props] = useSpring(() => ({
+    const x = useSpringValue(checked ? 1 : 0, {
         config: {
             duration: 200,
             easing: easings.linear,
         },
-        from: { x: 0 },
-        x: checked ? 1 : 0,
-    }), [checked]);
-
+    });
+    
+    useUpdateEffect(() => {
+        x.start(checked ? 1 : 0);
+    }, [checked]);
+    
     return (
         <div className={twClassNames(
             styles.wrapper.base,
@@ -53,17 +56,17 @@ export const CheckBoxIndicator: FC<CheckBoxIndicator> = ({
                             70% { width: 24px; height: 16; }
                             100% { width: 18px; height: 18; translateX: 16px; }
                         `*/
-                        width: props.x.to({
+                        width: x.to({
                             range: [0, 0.3, 0.7, 1], 
                             output: [18, 24, 24, 18],
                         }).to((value) => `${value}px`),
 
-                        height: props.x.to({
+                        height: x.to({
                             range: [0, 0.3, 0.7, 1], 
                             output: [18, 15, 15, 18],
                         }).to((value) => `${value}px`),                
 
-                        transform: props.x.to({
+                        transform: x.to({
                             range: [0, 1],
                             output: [0, 16],
                         }).to((value) => `translateY(-50%) translateX(${value}px)`),
@@ -78,24 +81,24 @@ export const CheckBoxIndicator: FC<CheckBoxIndicator> = ({
                             style={{
                                 /*  
                                     keyframes
-                                    0 % { height: 12; translateX: -1px; translateY: -6px; rotate: 45deg; }
-                                    30% { height: 6; translateY: -3px; rotate: 90deg; }
-                                    70% { height: 6; translateY: -3px; rotate: 90deg; }
-                                    100% { height: 5; translateX: -3px; translateY: 0px; rotate: 120deg; }
+                                    0 % { height: 12px; translateX: -1px; translateY: -6px; rotate: 45deg; }
+                                    30% { height: 6px; translateY: -3px; rotate: 90deg; }
+                                    70% { height: 6px; translateY: -3px; rotate: 90deg; }
+                                    100% { height: 5px; translateX: -3px; translateY: 0px; rotate: 120deg; }
                                 `*/
-                                height: props.x.to({
+                                height: x.to({
                                     range: [0, 0.3, 0.7, 1],
                                     output: [12, 6, 6, 5],
                                 }).to((value) => `${value}px`),
-                                translateX: props.x.to({
+                                translateX: x.to({
                                     range: [0, 1],
                                     output: [-1, -3],
                                 }).to((value) => `${value}px`),
-                                translateY: props.x.to({
+                                translateY: x.to({
                                     range: [0, 0.3, 0.7, 1],
                                     output: [-6, -3, -3, 0],
                                 }).to((value) => `${value}px`),
-                                rotate: props.x.to({
+                                rotate: x.to({
                                     range: [0, 0.3, 0.7, 1],
                                     output: [45, 90, 90, 120],
                                 }).to((value) => `${value}deg`),
@@ -110,24 +113,24 @@ export const CheckBoxIndicator: FC<CheckBoxIndicator> = ({
                             style={{
                                 /*  
                                     keyframes
-                                    0 % { height: 12; translateX: -1px; translateY: -6px; rotate: -45deg; }
-                                    30% { height: 6; translateY: -3px; rotate: -90deg; }
-                                    70% { height: 6; translateY: -3px; rotate: -90deg; }
-                                    100% { height: 8; translateX: 1px; translateY: -3px; rotate: -135deg; }
+                                    0 % { height: 12px; translateX: -1px; translateY: -6px; rotate: -45deg; }
+                                    30% { height: 6px; translateY: -3px; rotate: -90deg; }
+                                    70% { height: 6px; translateY: -3px; rotate: -90deg; }
+                                    100% { height: 8px; translateX: 1px; translateY: -3px; rotate: -135deg; }
                                 `*/
-                                height: props.x.to({
+                                height: x.to({
                                     range: [0, 0.3, 0.7, 1],
                                     output: [12, 6, 6, 8],
                                 }).to((value) => `${value}px`),
-                                translateX: props.x.to({
+                                translateX: x.to({
                                     range: [0, 1],
                                     output: [-1, 1],
                                 }).to((value) => `${value}px`),
-                                translateY: props.x.to({
+                                translateY: x.to({
                                     range: [0, 0.3, 0.7, 1],
                                     output: [-6, -3, -3, -3],
                                 }).to((value) => `${value}px`),
-                                rotate: props.x.to({
+                                rotate: x.to({
                                     range: [0, 0.3, 0.7, 1],
                                     output: [-45, -90, -90, -135],
                                 }).to((value) => `${value}deg`),

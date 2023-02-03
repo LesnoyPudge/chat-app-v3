@@ -1,12 +1,14 @@
 import { FormikFileInput, FormikTextInput } from '@libs';
-import { FC } from 'react';
-import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button, Conditional, Icon, ChannelSettingsModalFormValues } from '@components';
+import { FC, useContext } from 'react';
+import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button, Conditional, Icon, ChannelSettingsModalFormValues, TabContext, TabPanel } from '@components';
 import { RoleColor } from './components';
 import { FormikContextType, useFormikContext } from 'formik';
+import { RoleContentTabs } from '../..';
 
 
 
 const styles = {
+    wrapper: 'pb-[60px]',
     roleColor: 'mb-4',
     roleImageDescription: 'text-sm text-color-secondary mb-4',
     fileInputsArea: 'flex gap-4',
@@ -19,9 +21,13 @@ const styles = {
 
 export const RoleAppearanceTab: FC = () => {
     const { values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
-
+    const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
+    
     return (
-        <>
+        <TabPanel 
+            className={styles.wrapper}
+            {...tabPanelProps.appearance}
+        >
             <FormikTextInput 
                 name='roleName'
                 label='Название роли'
@@ -100,6 +106,6 @@ export const RoleAppearanceTab: FC = () => {
                     ></FormikFileInput>
                 </Button>
             </div>
-        </>
+        </TabPanel>
     );
 };

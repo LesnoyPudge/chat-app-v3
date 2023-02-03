@@ -1,4 +1,4 @@
-import { AppSettingsModal, ChannelSettingsModal, Conditional, OverlayContextProvider } from '@components';
+import { ChannelSettingsModal, Conditional, OverlayContextProvider } from '@components';
 import { FC, PropsWithChildren } from 'react';
 
 
@@ -7,8 +7,6 @@ const PlaygroundInner: FC = () => {
     return (
         <>
             <OverlayContextProvider isOverlayExistInitial={true}>
-                {/* <AppSettingsModal/> */}
-
                 <ChannelSettingsModal/>
             </OverlayContextProvider>
         </>

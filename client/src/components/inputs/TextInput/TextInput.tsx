@@ -25,7 +25,7 @@ export interface TextInput {
 }
 
 const styles = {
-    input: 'h-10 w-full p-2 text-color-base bg-primary-500 rounded',
+    input: 'h-10 flex-1 w-full p-2 text-color-base bg-primary-500 rounded',
     error: 'sr-only',
 };
 

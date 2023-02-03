@@ -1,4 +1,4 @@
-import { ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalFormValues, TabContext, TabContextProvider, TabList, TabPanel } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalFormValues, DeleteRoleModal, Icon, OverlayContextProvider, RefContextProvider, TabContext, TabContextProvider, TabList, TabPanel, Tooltip } from '@components';
 import { HeadingLevel, Heading } from '@libs';
 import { twClassNames } from '@utils';
 import { FormikContextType, useFormikContext } from 'formik';
@@ -17,19 +17,19 @@ const providedTabs = {
 
 const labels: Record<keyof RoleContentTabs, string> = {
     appearance: 'Элементы отображения',
-    members: 'Права доступа',
-    permissions: 'Управление участниками',
+    members: 'Управление участниками',
+    permissions: 'Права доступа',
 };
 
 const tabNames: Record<keyof RoleContentTabs, string> = {
     appearance: 'Отображение',
-    members: 'Права доступа',
-    permissions: 'Участники',
+    members: 'Участники',
+    permissions: 'Права доступа',
 };
 
 const styles = {
-    wrapper: 'w-full py-[60px] pl-6 pr-10',
-    title: 'font-semibold text-color-primary uppercase mb-6',
+    wrapper: 'flex flex-col w-full pt-[60px] pl-6 pr-10',
+    title: 'font-semibold text-color-primary uppercase truncate',
     header: 'flex justify-between gap-2 relative mb-8',
     headerDivider: 'absolute w-full bottom-0 h-0.5 bg-primary-100',
     button: {
@@ -42,7 +42,7 @@ const styles = {
 };
 
 export const RoleContent: FC = () => {
-    const { currentTab } = useContext(TabContext) as TabContext<Record<string, string>>;
+    const { currentTab, tabPanelProps } = useContext(TabContext) as TabContext<Record<string, string>>;
     const { values, resetForm } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
 
     const roles = Array(32).fill('').map((_, index) => ({
@@ -68,62 +68,86 @@ export const RoleContent: FC = () => {
     }, [resetForm, role, values]);
 
     return (
-        <TabContextProvider tabs={providedTabs} initialTab='permissions'>
-            {({ currentTab, tabs, changeTab, isActive }) => (
-                <HeadingLevel>
-                    <TabPanel
-                        className={styles.wrapper}
-                        label={`Редактировать роль: ${currentTab.tab}`} 
-                        controls={currentTab.identifier}
-                    >
-                        <Heading className={styles.title}>
-                            <>Редактировать роль — {role.name}</>
-                        </Heading>
+        <HeadingLevel>
+            <TabPanel
+                className={styles.wrapper}
+                {...tabPanelProps[currentTab.identifier]}
+            >
+                <div className='flex items-center justify-between gap-2 mb-6'>
+                    <Heading className={styles.title}>
+                        <>Редактировать роль — {role.name}</>
+                    </Heading>
 
-                        <ArrowFocusContextProvider 
-                            list={tabs} 
-                            orientation='horizontal'
-                        >
-                            <TabList 
-                                className={styles.header}
-                                label='Настройки роли' 
+                    <OverlayContextProvider>
+                        {({ isOverlayExist, openOverlay }) => (
+                            <RefContextProvider>
+                                <Button
+                                    className='w-8 h-8 p-1.5 fill-icon-100 hover:fill-danger focus-visible:fill-danger'
+                                    label={`Удалить роль ${role.name}`}
+                                    hasPopup='dialog'
+                                    isActive={isOverlayExist}
+                                    onLeftClick={openOverlay}
+                                >
+                                    <Icon
+                                        className='w-full h-full'
+                                        iconId='garbage-can-icon'
+                                    />
+                                </Button>
+    
+                                <Tooltip 
+                                    preferredAligment='top'
+                                    spacing={8}
+                                    boundsSize={0}
+                                >
+                                    <>Удалить роль</>
+                                </Tooltip>
+
+                                <DeleteRoleModal roleId={role.id}/>
+                            </RefContextProvider>
+                        )}
+                    </OverlayContextProvider>
+                </div>
+                        
+                <TabContextProvider tabs={providedTabs} initialTab='members'>
+                    {({ currentTab, tabs, changeTab, isActive, tabProps }) => (
+                        <>
+                            <ArrowFocusContextProvider 
+                                list={tabs} 
                                 orientation='horizontal'
                             >
-                                <div className={styles.headerDivider}></div>
+                                <TabList 
+                                    className={styles.header}
+                                    label='Настройки роли' 
+                                    orientation='horizontal'
+                                >
+                                    <div className={styles.headerDivider}></div>
 
-                                {Object.keys(tabs).map((tab) => {
-                                    const label = labels[tab as keyof RoleContentTabs];
-                                    const tabName = tabNames[tab as keyof RoleContentTabs];
-                                    const isTabActive = isActive[tab as keyof RoleContentTabs];
-                                    const handleNavigate = changeTab[tab as keyof RoleContentTabs];
-
-                                    return (
+                                    {(Object.keys(tabs) as Array<keyof typeof tabs>).map((tab) => (
                                         <ArrowFocusItem id={tab} key={tab}>
                                             {({ tabIndex }) => (
                                                 <Button
                                                     className={twClassNames(
                                                         styles.button.base,
-                                                        { [styles.button.active]: isTabActive },
+                                                        { [styles.button.active]: isActive[tab] },
                                                     )}
-                                                    label={label}
-                                                    role='tab'
-                                                    controls={tab}
+                                                    label={labels[tab]}
                                                     tabIndex={tabIndex}
-                                                    onLeftClick={handleNavigate}
+                                                    {...tabProps[tab]}
+                                                    onLeftClick={changeTab[tab]}
                                                 >
-                                                    <>{tabName}</>
+                                                    {tabNames[tab]}
                                                 </Button>
                                             )}
                                         </ArrowFocusItem>
-                                    );
-                                })}
-                            </TabList>
-                        </ArrowFocusContextProvider>
+                                    ))}
+                                </TabList>
+                            </ArrowFocusContextProvider>
 
-                        {currentTab.tab}
-                    </TabPanel>
-                </HeadingLevel>
-            )}
-        </TabContextProvider>
+                            {currentTab.tab}
+                        </>
+                    )}
+                </TabContextProvider>
+            </TabPanel>
+        </HeadingLevel>
     );
 };

@@ -14,7 +14,7 @@ interface FileInput extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    wrapper: 'relative focus-within:focused',
+    wrapper: 'block relative focus-within:focused',
     input: 'sr-input',
 };
 

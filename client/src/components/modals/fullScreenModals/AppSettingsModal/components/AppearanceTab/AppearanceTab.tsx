@@ -8,14 +8,11 @@ import { ChatExample } from './components';
 
 
 export const AppearanceTab: FC = () => {
-    const { tabs } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
+    const { tabPanelProps } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
     
     return (
         <HeadingLevel>
-            <TabPanel 
-                label='Настройки внешнего вида' 
-                controls={tabs.appearanceTab.identifier}
-            >
+            <TabPanel {...tabPanelProps.appearanceTab}>
                 <TabTitle>
                     <>Внешний вид</>
                 </TabTitle>

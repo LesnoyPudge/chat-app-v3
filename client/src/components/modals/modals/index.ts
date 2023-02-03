@@ -10,3 +10,5 @@ export * from './CreateChannelModal';
 export * from './DeleteRoomModal';
 export * from './CreateRoomModal';
 export * from './LightBoxModal';
+export * from './AddMemberToRoleModal';
+export * from './DeleteRoleModal';

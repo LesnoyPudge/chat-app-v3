@@ -16,7 +16,7 @@ const styles = {
 };
 
 export const Navigation: FC = () => {
-    const { changeTab, isActive, tabs } = useContext(TabContext) as TabContext<AppPageTabs>;
+    const { changeTab, isActive, tabs, tabProps } = useContext(TabContext) as TabContext<AppPageTabs>;
 
     return (
         <TopBar className='px-2 items-center'>
@@ -44,10 +44,9 @@ export const Navigation: FC = () => {
                                     { [styles.button.active]: isActive.onlineFriends },
                                 )}
                                 size='small'
-                                role='tab'
                                 tabIndex={tabIndex}
-                                controls={tabs.onlineFriends.identifier}
                                 isActive={isActive.onlineFriends}
+                                {...tabProps.onlineFriends}
                                 onLeftClick={changeTab.onlineFriends}
                             >
                                 <>В сети</>
@@ -63,10 +62,9 @@ export const Navigation: FC = () => {
                                     { [styles.button.active]: isActive.allFriends },
                                 )}
                                 size='small'
-                                role='tab'
                                 tabIndex={tabIndex}
-                                controls={tabs.allFriends.identifier}
                                 isActive={isActive.allFriends}
+                                {...tabProps.allFriends}
                                 onLeftClick={changeTab.allFriends}
                             >
                                 <>Все</>
@@ -82,10 +80,9 @@ export const Navigation: FC = () => {
                                     { [styles.button.active]: isActive.friendRequests },
                                 )}
                                 size='small'
-                                role='tab'
                                 tabIndex={tabIndex}
-                                controls={tabs.friendRequests.identifier}
                                 isActive={isActive.friendRequests}
+                                {...tabProps.friendRequests}
                                 onLeftClick={changeTab.friendRequests}
                             >
                                 <>Ожидение</>
@@ -101,10 +98,9 @@ export const Navigation: FC = () => {
                                     { [styles.button.active]: isActive.blocked },
                                 )}
                                 size='small'
-                                role='tab'
                                 tabIndex={tabIndex}
-                                controls={tabs.blocked.identifier}
                                 isActive={isActive.blocked}
+                                {...tabProps.blocked}
                                 onLeftClick={changeTab.blocked}
                             >
                                 <>Заблокированные</>

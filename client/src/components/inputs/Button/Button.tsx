@@ -5,6 +5,7 @@ import React, { FC } from 'react';
 
 
 interface Button extends PropsWithChildrenAndClassName {
+    id?: string;
     style?: React.CSSProperties;
     stylingPreset?: 'brand' | 'link' | 'lite' | 'brandNeutral' | 'brandDanger' | 'brandPositive',
     size?: 'small' | 'medium' | 'big';
@@ -78,6 +79,7 @@ const sizes = {
 
 export const Button: FC<Button> = ({
     className = '',
+    id,
     style,
     size,
     stylingPreset,
@@ -161,6 +163,7 @@ export const Button: FC<Button> = ({
                 [size ? sizes[size] : '']: !!size,
                 [className]: !!className,
             })}
+            id={id}
             style={style}
             type={type}
             data-active={isActive}

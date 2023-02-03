@@ -3,8 +3,8 @@ import { ErrorBoundary as ReactErrorBoundary, FallbackProps } from 'react-error-
 import errorBgImage from '@assets/backgrounds/error-boundary-bg.svg';
 import errorImage from '@assets/error-boundary-image.svg';
 import { Button, Image } from '@components';
-import { useIsMounted } from '@hooks';
 import { secondsToMs } from '@utils';
+import { useIsMounted } from 'usehooks-ts';
 
 
 

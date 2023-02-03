@@ -91,14 +91,7 @@ const styles = {
 };
 
 export const Content: FC<Content> = ({ searchValue }) => {
-    const { currentTab, tabs } = useContext(TabContext) as TabContext<AppPageTabs>;
-
-    const tabPanelLabels = {
-        [tabs.onlineFriends.identifier]: 'Друзья в сети',
-        [tabs.allFriends.identifier]: 'Все друзья',
-        [tabs.friendRequests.identifier]: 'Запросы дружбы',
-        [tabs.blocked.identifier]: 'Заблокированные пользователи',
-    };
+    const { currentTab, tabs, tabPanelProps } = useContext(TabContext) as TabContext<AppPageTabs>;
 
     const filterByName = (users: {username: string}[]) => {
         if (!searchValue) return users;
@@ -117,9 +110,8 @@ export const Content: FC<Content> = ({ searchValue }) => {
 
     return (
         <TabPanel 
-            className={styles.tabPanel} 
-            controls={currentTab.identifier}
-            label={tabPanelLabels[currentTab.identifier]}
+            className={styles.tabPanel}
+            {...tabPanelProps[currentTab.identifier]}
         >
             <div className={styles.filtredLength}>
                 <>Показано — {listToShow.length}</>
