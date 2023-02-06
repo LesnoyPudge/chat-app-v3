@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalTabs, Icon, Separator, TabContext, TabList } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalTabs, DeleteChannelModal, Icon, OverlayContextProvider, Separator, TabContext, TabList } from '@components';
 import { NavigationHeading, NavigationItem } from '../../../components';
 
 
@@ -103,20 +103,30 @@ export const Navigation: FC = () => {
 
             <Separator spacing={16}/>
 
-            <Button
-                className={styles.button}
-                label='Удалить канал'
-                onLeftClick={() => console.log('delete channel')}
-            >
-                <NavigationItem>
-                    <>Удалить канал</>
+            <OverlayContextProvider>
+                {({ openOverlay, isOverlayExist }) => (
+                    <>
+                        <Button
+                            className={styles.button}
+                            label='Удалить канал'
+                            hasPopup='dialog'
+                            isActive={isOverlayExist}
+                            onLeftClick={openOverlay}
+                        >
+                            <NavigationItem>
+                                <>Удалить канал</>
 
-                    <Icon
-                        className={styles.deleteChannelIcon}
-                        iconId='garbage-can-icon'
-                    />
-                </NavigationItem>
-            </Button>
+                                <Icon
+                                    className={styles.deleteChannelIcon}
+                                    iconId='garbage-can-icon'
+                                />
+                            </NavigationItem>
+                        </Button>
+
+                        <DeleteChannelModal/>
+                    </>
+                )}
+            </OverlayContextProvider>
         </div>
     );
 };

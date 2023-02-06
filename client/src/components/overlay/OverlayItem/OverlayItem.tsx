@@ -30,8 +30,8 @@ export const OverlayItem: FC<OverlayItem> = ({
     const isBlocked = () => {
         const wrapper = wrapperRef.current;
         const overlayItems = [...getHTML().overlay.childNodes] as HTMLDivElement[];
-        const filtredItems = overlayItems.filter(node => node === wrapper || node.dataset.blocking === 'true');
-        return wrapper !== filtredItems[filtredItems.length - 1];
+        const filteredItems = overlayItems.filter(node => node === wrapper || node.dataset.blocking === 'true');
+        return wrapper !== filteredItems[filteredItems.length - 1];
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {

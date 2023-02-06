@@ -25,3 +25,4 @@ export * from './isRGBLight';
 export * from './rgbToHex';
 export * from './hexToRgb';
 export * from './isHEXLight';
+export * from './objectKeys';

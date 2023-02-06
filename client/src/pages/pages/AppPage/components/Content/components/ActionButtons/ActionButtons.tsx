@@ -31,7 +31,7 @@ export const ActionButtons: FC<ActionButtons> = ({
     const handleRejectFriendRequest = () => console.log('reject', userId);
     const handleRevokeFriendRequest = () => console.log('revoke', userId);
     const handleUnblock = () => console.log('unblock', userId);
-    const isIncomingRequest = getRandomNumber(1, 2) % 2 === 0;
+    const isIncomingRequest = !!getRandomNumber(0, 1);
 
     return (
         <>

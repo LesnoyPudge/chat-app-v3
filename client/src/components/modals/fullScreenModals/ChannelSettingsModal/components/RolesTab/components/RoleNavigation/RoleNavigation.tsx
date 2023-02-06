@@ -1,17 +1,19 @@
 import { FC, useContext } from 'react';
-import { RefContextProvider, ArrowFocusContextProvider, Button, Icon, ArrowFocusItem, TabList, Tooltip, TabContext } from '@components';
+import { RefContextProvider, ArrowFocusContextProvider, Button, Icon, ArrowFocusItem, TabList, Tooltip, TabContext, Scrollable } from '@components';
 import { TabTitle } from '../../../../../components';
 import { twClassNames } from '@utils';
 
 
 
 const styles = {
-    wrapper: 'flex flex-col h-full shrink-0 max-w-[232px] w-full pt-[60px] border-r-2 border-primary-100',
-    header: 'flex justify-between gap-2 mb-6 pl-6 pr-4',
-    listWrapper: 'scrollbar-primary scrollbar-with-gutter h-full overflow-y-auto',
-    list: 'flex flex-col gap-0.5 pl-8 pr-2 pb-[60px]',
+    wrapper: 'sticky top-0 h-screen max-w-[231px] w-full flex flex-col pt-[60px]',
+    header: 'flex justify-between gap-2 mb-6 pr-4 pl-6',
+    title: 'mb-0',
+    createRoleButton: 'w-6 h-6 p-1 fill-icon-100',
+    createRoleIcon: 'w-full h-full',
+    list: 'flex flex-col gap-1 pl-10 pb-24 pr-2',
     roleItem: {
-        base: `flex items-center w-full gap-2 py-1.5 px-2.5 rounded-md 
+        base: `flex items-center w-full gap-2 py-1.5 px-2.5 rounded 
         hover:bg-primary-hover focus-visible:bg-primary-hover`,
         active: 'bg-primary-hover',
     },
@@ -33,18 +35,18 @@ export const RoleNavigation: FC = () => {
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
-                <TabTitle className='m-0'>
+                <TabTitle className={styles.title}>
                     <>Роли</>
                 </TabTitle>
 
                 <RefContextProvider>
                     <Button
-                        className='w-6 h-6 p-1 fill-icon-100'
+                        className={styles.createRoleButton}
                         label='Создать роль'
                         onLeftClick={handleCreateRole}
                     >
                         <Icon
-                            className='w-full h-full'
+                            className={styles.createRoleIcon}
                             iconId='plus-icon'
                         />
                     </Button>
@@ -59,16 +61,16 @@ export const RoleNavigation: FC = () => {
                 </RefContextProvider>
             </div>
 
-            <ArrowFocusContextProvider 
-                list={tabs} 
-                orientation='vertical'
-            >
-                <TabList 
-                    className={styles.listWrapper}
-                    label='Список ролей' 
+            <Scrollable>
+                <ArrowFocusContextProvider 
+                    list={tabs} 
                     orientation='vertical'
                 >
-                    <div className={styles.list}>
+                    <TabList 
+                        className={styles.list}
+                        label='Список ролей' 
+                        orientation='vertical'
+                    >
                         {roles.map(({ id, color, name }) => (
                             <ArrowFocusItem id={id} key={id}>
                                 {({ tabIndex }) => (
@@ -96,9 +98,9 @@ export const RoleNavigation: FC = () => {
                                 )}
                             </ArrowFocusItem>
                         ))}
-                    </div>
-                </TabList>
-            </ArrowFocusContextProvider>
+                    </TabList>
+                </ArrowFocusContextProvider>
+            </Scrollable>
         </div>
     );
 };

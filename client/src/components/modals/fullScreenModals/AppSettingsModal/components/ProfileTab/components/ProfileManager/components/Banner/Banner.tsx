@@ -72,7 +72,7 @@ export const Banner: FC = () => {
                                                 >
                                                     <div 
                                                         role='dialog' 
-                                                        aira-label='Выберите цвет баннера'
+                                                        aria-label='Выберите цвет баннера'
                                                     >
                                                         <FormikColorPicker
                                                             name='bannerColor'

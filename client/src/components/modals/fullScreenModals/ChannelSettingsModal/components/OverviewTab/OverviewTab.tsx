@@ -6,6 +6,7 @@ import { TabTitle } from '../../../components';
 
 
 const styles = {
+    wrapper: 'pt-[60px] pl-10',
     firstSection: 'grid grid-cols-2 gap-5',
     sectionSide: 'flex gap-5',
     removeFile: 'w-full mt-1.5',
@@ -29,7 +30,10 @@ export const OverviewTab: FC = () => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
     
     return (
-        <TabPanel {...tabPanelProps.overviewTab}>
+        <TabPanel 
+            className={styles.wrapper}
+            {...tabPanelProps.overviewTab}
+        >
             <TabTitle>
                 <>Обзор канала</>
             </TabTitle>

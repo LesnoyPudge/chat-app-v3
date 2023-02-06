@@ -5,12 +5,10 @@ import { FC } from 'react';
 
 interface AddMemberToRoleModal {
     roleId: string;
-    onMemberAdd: (memberId: string) => void;
 }
 
 export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
     roleId,
-    onMemberAdd,
 }) => {
     return (
         <ModalWindow 
@@ -20,7 +18,7 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
             <div>
                 wow: {roleId}
 
-                <button onClick={() => onMemberAdd('2')}>
+                <button onClick={() => console.log('add member')}>
                     add
                 </button>
             </div>

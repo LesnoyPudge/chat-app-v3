@@ -1,6 +1,7 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
 import { createContext, ReactNode, useState } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
+import { objectKeys } from '@utils';
 
 
 
@@ -42,7 +43,7 @@ export const TabContext = createContext<TabContext<never> | undefined>(undefined
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProvider<T>) => {
     const { tabs, initialTab, onTabChange, children } = props;
-    const tabsArray = Object.keys(tabs) as (keyof T)[];
+    const tabsArray = objectKeys(tabs);
     
     const getCurrentTab = (identifier: keyof T): Tab<T> => ({
         identifier: identifier.toString(),

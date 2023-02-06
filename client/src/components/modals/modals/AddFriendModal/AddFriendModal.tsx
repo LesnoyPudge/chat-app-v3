@@ -28,7 +28,7 @@ const AddFriendModalInner: FC = () => {
         return {
             id: index.toString(),
             username: `user ${index}`,
-            avatar: `https://i.pravatar.cc/${50 + index}`,
+            avatar: `https://i.pravatar.cc/${50}`,
         } as IUserPreview;
     });
 

@@ -7,7 +7,7 @@ import { RoleContent, RoleNavigation } from './components';
 
 
 const styles = {
-    wrapper: 'flex absolute inset-0 max-w-[calc(740px+56px)] pr-[56px] overflow-hidden',
+    wrapper: 'flex',
 };
 
 const roles = Array(32).fill('').map((_, index) => ({
@@ -17,7 +17,7 @@ const roles = Array(32).fill('').map((_, index) => ({
 }));
 
 export const RolesTab: FC = () => {
-    const { tabs, tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
     const { dirty } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
     const { triggerScreenShake } = useContext(ScreenShakeContext) as ScreenShakeContext;
     

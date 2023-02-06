@@ -1,11 +1,14 @@
 import { FC, useContext } from 'react';
-import { Image, CheckBoxIndicator, Conditional, SearchBar, Separator, TabContext, TabPanel } from '@components';
-import { useSearch } from '@hooks';
+import { Image, CheckBoxIndicator, Conditional, Separator, TabContext, TabPanel } from '@components';
 import { FormikCheckBox, Heading, HeadingLevel } from '@libs';
-import roleNotFoundImage from '@assets/role-not-found-image.svg';
+import permissionNotFoundImage from '@assets/permission-not-found-image.svg';
 import { RoleContentTabs } from '../..';
 
 
+
+interface RolePermissionsTab {
+    searchValue: string;
+}
 
 const permissionGroups = [
     {
@@ -67,23 +70,20 @@ const permissionGroups = [
 
 const styles = {
     wrapper: 'flex flex-col flex-1',
-    searchBar: 'mb-8',
-    roleNotFoundWrapper: 'flex flex-col items-center gap-4',
-    roleNotFoundImage: 'w-[85px] h-[85px]',
-    roleNotFoundText: 'text-sm text-color-secondary',
-    listWrapper: 'flex-1 overflow-y-scroll scrollbar-primary',
-    list: 'h-fit pr-4 pb-[60px]',
+    permissionNotFoundWrapper: 'flex flex-col items-center gap-4',
+    permissionNotFoundImage: 'w-[85px] h-[85px]',
+    permissionNotFoundText: 'text-sm text-color-secondary',
+    list: 'pr-4 pb-[60px]',
     permissionGroupTitle: 'block text-xs text-color-secondary uppercase font-bold mb-5',
     permissionCheckBox: 'flex justify-between gap-2 mb-2',
     permissionTitle: 'text-color-primary font-medium',
     permissionDescription: 'text-color-secondary text-sm',
 };
 
-export const RolePermissionsTab: FC = () => {
+export const RolePermissionsTab: FC<RolePermissionsTab> = ({ searchValue }) => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
-    const { searchValue, handleChange, handleReset } = useSearch();
     
-    const filtredPermissionGroups = permissionGroups.filter((group) => {
+    const filteredPermissionGroups = permissionGroups.filter((group) => {
         return !!group.permissions.filter((permission) => {
             const matchInTitle = permission.title.toLowerCase().includes(searchValue.toLowerCase());
             const matchInDescription = permission.description.toLowerCase().includes(searchValue.toLowerCase());
@@ -91,81 +91,70 @@ export const RolePermissionsTab: FC = () => {
         }).length;
     });
 
-    const showPermissions = !!filtredPermissionGroups.length;
-
+    const showPermissions = !!filteredPermissionGroups.length;
+    
     return (
         <HeadingLevel>
             <TabPanel
-                className={styles.wrapper}
+                className={styles.wrapper + ' relative'}
                 {...tabPanelProps.permissions}
             >
-                <SearchBar
-                    className={styles.searchBar}
-                    value={searchValue}
-                    label='Поиск по правам'
-                    placeholder='Поиск по правам'
-                    onChange={handleChange}
-                    onReset={handleReset}
-                />
-
                 <Conditional isRendered={!showPermissions}>
-                    <div className={styles.roleNotFoundWrapper}>
+                    <div className={styles.permissionNotFoundWrapper}>
                         <Image
-                            className={styles.roleNotFoundImage}
-                            src={roleNotFoundImage}
+                            className={styles.permissionNotFoundImage}
+                            src={permissionNotFoundImage}
                         />
 
-                        <div className={styles.roleNotFoundText}>
+                        <div className={styles.permissionNotFoundText}>
                             <>Права не найдены</>
                         </div>
                     </div>
                 </Conditional>
 
                 <Conditional isRendered={showPermissions}>
-                    <div className={styles.listWrapper}>
-                        <div className={styles.list}>
-                            {filtredPermissionGroups.map((group, groupIndex) => (
-                                <div key={group.name}>
-                                    <Heading className={styles.permissionGroupTitle}>
-                                        {group.name}
-                                    </Heading>
+                    <div className={styles.list}>
+                        {filteredPermissionGroups.map((group, groupIndex) => (
+                            <div key={group.name}>
+                                <Heading className={styles.permissionGroupTitle}>
+                                    {group.name}
+                                </Heading>
             
-                                    {group.permissions.map((premission, premissionIndex) => {
-                                        const isLastGroup = groupIndex === permissionGroups.length - 1;
-                                        const isLastItem = premissionIndex === group.permissions.length - 1;
-                                        const showSeparator = !(isLastGroup && isLastItem);
+                                {group.permissions.map((premission, premissionIndex) => {
+                                    const isLastGroup = groupIndex === permissionGroups.length - 1;
+                                    const isLastItem = premissionIndex === group.permissions.length - 1;
+                                    const showSeparator = !(isLastGroup && isLastItem);
 
-                                        return (
-                                            <div key={premission.name}>
-                                                <FormikCheckBox 
-                                                    className={styles.permissionCheckBox}
-                                                    name={premission.name}
-                                                    label={premission.title}
-                                                >
-                                                    {({ checked }) => (
-                                                        <>
-                                                            <div className={styles.permissionTitle}>
-                                                                {premission.title}
-                                                            </div>
+                                    return (
+                                        <div key={premission.name}>
+                                            <FormikCheckBox 
+                                                className={styles.permissionCheckBox}
+                                                name={premission.name}
+                                                label={premission.title}
+                                            >
+                                                {({ checked }) => (
+                                                    <>
+                                                        <div className={styles.permissionTitle}>
+                                                            {premission.title}
+                                                        </div>
         
-                                                            <CheckBoxIndicator checked={checked}/>
-                                                        </>
-                                                    )}
-                                                </FormikCheckBox>
+                                                        <CheckBoxIndicator checked={checked}/>
+                                                    </>
+                                                )}
+                                            </FormikCheckBox>
         
-                                                <div className={styles.permissionDescription}>
-                                                    {premission.description}
-                                                </div>
-                                        
-                                                <Conditional isRendered={showSeparator}>
-                                                    <Separator spacing={20}/>
-                                                </Conditional>
+                                            <div className={styles.permissionDescription}>
+                                                {premission.description}
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            ))}
-                        </div>
+                                        
+                                            <Conditional isRendered={showSeparator}>
+                                                <Separator spacing={20}/>
+                                            </Conditional>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ))}
                     </div>
                 </Conditional>
             </TabPanel>

@@ -158,7 +158,7 @@ export const RoleColor: FC<PropsWithClassName> = ({
                                                         >
                                                             <div 
                                                                 role='dialog' 
-                                                                aira-label='Выберите пользовательский цвет'
+                                                                aria-label='Выберите пользовательский цвет'
                                                             >
                                                                 <FormikColorPicker name='roleColorHEX'/>
                                                             </div>

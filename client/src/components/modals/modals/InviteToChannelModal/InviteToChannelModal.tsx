@@ -26,12 +26,12 @@ export const InviteToChannelModal: FC = () => {
         };
     });
 
-    const filtredPrivateChats = privateChats.filter((privateChat) => {
+    const filteredPrivateChats = privateChats.filter((privateChat) => {
         return privateChat.users[0].username.includes(searchValue);
     });
 
     const haveFriends = !!privateChats.length;
-    const notEmptyList = !!filtredPrivateChats.length;
+    const notEmptyList = !!filteredPrivateChats.length;
     const copyButtonText = conditional('Скопировано!', 'Копировать', isThrottling);
 
     const handleCopyInvitation = () => {
@@ -65,7 +65,7 @@ export const InviteToChannelModal: FC = () => {
 
                         <Conditional isRendered={notEmptyList}>
                             <ul className='flex flex-col gap-1 max-h-[200px] overflow-y-auto scrollbar-primary'>
-                                {filtredPrivateChats.map((privateChat) => {
+                                {filteredPrivateChats.map((privateChat) => {
                                     const user = privateChat.users[0];
 
                                     return (

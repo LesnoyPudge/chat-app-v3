@@ -58,11 +58,11 @@ export const AddWhiteListTab: FC = () => {
         if (!isChecked(field, roleOrUser)) return setFieldValue(field, [...values[field], roleOrUser]);
         
         if (field === 'allowedRoles') {
-            const filtredRoles = values.allowedRoles.filter((role) => role.id !== roleOrUser.id);
-            setFieldValue(field, filtredRoles);
+            const filteredRoles = values.allowedRoles.filter((role) => role.id !== roleOrUser.id);
+            setFieldValue(field, filteredRoles);
         } else {
-            const filtredUsers = values.allowedUsers.filter((user) => user.id !== roleOrUser.id);
-            setFieldValue(field, filtredUsers);
+            const filteredUsers = values.allowedUsers.filter((user) => user.id !== roleOrUser.id);
+            setFieldValue(field, filteredUsers);
         }
     };
 
@@ -74,8 +74,8 @@ export const AddWhiteListTab: FC = () => {
         }
     };
 
-    const filtredRoles = roles.filter((role) => role.name.includes(searchValue));
-    const filtredMembers = members.filter((member) => member.username.includes(searchValue));
+    const filteredRoles = roles.filter((role) => role.name.includes(searchValue));
+    const filteredMembers = members.filter((member) => member.username.includes(searchValue));
 
     return (
         <>
@@ -100,7 +100,7 @@ export const AddWhiteListTab: FC = () => {
                         <>Роли</>
                     </Heading>
 
-                    <Conditional isRendered={!!filtredRoles.length}>
+                    <Conditional isRendered={!!filteredRoles.length}>
                         <ul className={styles.list}>
                             {roles.map((role) => {
                                 const handleRoleCheck = () => handleCheck('allowedRoles', role);
@@ -152,7 +152,7 @@ export const AddWhiteListTab: FC = () => {
                         </div>
                     </Conditional>
 
-                    <Conditional isRendered={!!roles.length && !filtredRoles.length}>
+                    <Conditional isRendered={!!roles.length && !filteredRoles.length}>
                         <div className={styles.itemNotFound}>
                             <>Роли не найдены</>
                         </div>
@@ -164,9 +164,9 @@ export const AddWhiteListTab: FC = () => {
                         <>Участники</>
                     </Heading>
 
-                    <Conditional isRendered={!!filtredMembers.length}>
+                    <Conditional isRendered={!!filteredMembers.length}>
                         <ul className={styles.list}>
-                            {filtredMembers.map((member) => {
+                            {filteredMembers.map((member) => {
                                 const handleRoleCheck = () => handleCheck('allowedUsers', member);
                                 const isRoleChecked = isChecked('allowedUsers', member);
 
@@ -216,7 +216,7 @@ export const AddWhiteListTab: FC = () => {
                         </div>
                     </Conditional>
 
-                    <Conditional isRendered={!!members.length && !filtredMembers.length}>
+                    <Conditional isRendered={!!members.length && !filteredMembers.length}>
                         <div className={styles.itemNotFound}>
                             <>Участники не найдены</>
                         </div>

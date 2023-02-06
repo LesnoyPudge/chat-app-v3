@@ -1,8 +1,10 @@
-import { TabPanel, Separator, UserAvatar, TabContext, Conditional, ArrowFocusContextProvider, ArrowFocusItem } from '@components';
+import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, ArrowFocusContextProvider, ArrowFocusItem } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { FC, useContext } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { ActionButtons } from './components';
+import { getRandomNumber } from '@utils';
+import friendsNotFoundImage from '@assets/friendsNotFound.svg';
 
 
 
@@ -10,7 +12,7 @@ interface Content {
     searchValue: string;
 }
 
-const friends: IUserPreview[] = [
+const allFriends: IUserPreview[] = [
     {
         id: 'weifoerjf',
         username: 'friend 1',
@@ -69,15 +71,22 @@ const friends: IUserPreview[] = [
     },
 ];
 
-const onlineFriends = [...friends].filter((friend) => {
+const onlineFriends = [...allFriends].filter((friend) => {
     return friend.status === 'online' && friend.extraStatus !== 'invisible';
 });
-const blockedUsers = [...friends].slice(2, 5);
-const friendRequests = [...friends];
+const blocked = [...allFriends].slice(2, 5);
+const friendRequests = [...allFriends];
+
+const friends = {
+    allFriends,
+    onlineFriends,
+    blocked,
+    friendRequests,
+};
 
 const styles = {
     tabPanel: 'flex flex-col h-full overflow-hidden',
-    filtredLength: 'text-xs uppercase font-semibold text-color-secondary mx-2.5',
+    filteredLength: 'text-xs uppercase font-semibold text-color-secondary mx-2.5',
     separator: 'mx-2.5',
     listWrapper: 'h-full overflow-y-scroll scrollbar-primary',
     list: 'flex flex-col gap-0.5 py-2',
@@ -87,78 +96,100 @@ const styles = {
     infoWrapper: 'overflow-hidden',
     username: 'text-color-primary font-semibold truncate',
     extraInfo: 'text-sm text-color-secondary font-medium truncate',
-    buttonsContainer: 'flex gap-2.5 ml-auto',
+    buttonsContainer: 'flex shrink-0 gap-2.5 ml-auto',
+    notFoundWrapper: 'm-auto w-full max-w-[420px]',
+    notFoundImage: 'mb-10 max-h-[220px]',
+    notFoundText: 'text-color-secondary text-center',
 };
 
 export const Content: FC<Content> = ({ searchValue }) => {
-    const { currentTab, tabs, tabPanelProps } = useContext(TabContext) as TabContext<AppPageTabs>;
+    const { currentTab, tabs, tabPanelProps, isActive } = useContext(TabContext) as TabContext<AppPageTabs>;
 
-    const filterByName = (users: {username: string}[]) => {
-        if (!searchValue) return users;
+    const filterByName = (users: {username: string}[]): IUserPreview[] => {
+        if (!searchValue) return users as IUserPreview[];
 
-        return users.filter((user) => user.username.includes(searchValue));
+        return users.filter((user) => user.username.includes(searchValue)) as IUserPreview[];
     };
 
-    const filters = {
-        [tabs.onlineFriends.identifier]: () => filterByName(onlineFriends),
-        [tabs.allFriends.identifier]: () => filterByName(friends),
-        [tabs.friendRequests.identifier]: () => filterByName(friendRequests),
-        [tabs.blocked.identifier]: () => filterByName(blockedUsers),
+    const filters: Record<keyof typeof tabs, () => ReturnType<typeof filterByName>> = {
+        allFriends: () => filterByName(friends.allFriends),
+        blocked: () => filterByName(friends.blocked),
+        friendRequests: () => filterByName(friends.friendRequests),
+        onlineFriends: () => filterByName(friends.onlineFriends),
     };
 
-    const listToShow = filters[currentTab.identifier]() as IUserPreview[];
+    const listToShow = filters[currentTab.identifier]();
 
     return (
         <TabPanel 
             className={styles.tabPanel}
             {...tabPanelProps[currentTab.identifier]}
         >
-            <div className={styles.filtredLength}>
+            <div className={styles.filteredLength}>
                 <>Показано — {listToShow.length}</>
             </div>
 
             <Separator className={styles.separator} spacing={12}/>
             
-            <ArrowFocusContextProvider list={listToShow} orientation='both'>
-                <div className={styles.listWrapper}>
-                    <ul className={styles.list}>
-                        {listToShow.map((user) => (
-                            <ArrowFocusItem id={user.id} key={user.id}>
-                                {({ tabIndex }) => (
-                                    <li className={styles.listItem} >
-                                        <UserAvatar
-                                            className={styles.avatar}
-                                            avatar={user.avatar}
-                                            username={user.username}
-                                            status={user.status}
-                                            extraStatus={user.extraStatus}
-                                        />
+            <Conditional isRendered={!!listToShow.length}>
+                <ArrowFocusContextProvider list={listToShow} orientation='both'>
+                    <div className={styles.listWrapper}>
+                        <ul className={styles.list}>
+                            {listToShow.map((user) => (
+                                <ArrowFocusItem id={user.id} key={user.id}>
+                                    {({ tabIndex }) => (
+                                        <li className={styles.listItem} >
+                                            <UserAvatar
+                                                className={styles.avatar}
+                                                avatar={user.avatar}
+                                                username={user.username}
+                                                status={user.status}
+                                                extraStatus={user.extraStatus}
+                                            />
 
-                                        <div className={styles.infoWrapper}>
-                                            <div className={styles.username}>
-                                                {user.username}
+                                            <div className={styles.infoWrapper}>
+                                                <div className={styles.username}>
+                                                    {user.username}
+                                                </div>
+
+                                                <Conditional isRendered={isActive.friendRequests}>
+                                                    <div className={styles.extraInfo}>
+                                                        {
+                                                            getRandomNumber(0, 1) 
+                                                                ? 'Исходящий запрос дружбы' 
+                                                                : 'Входящий запрос дружбы'
+                                                        }
+                                                    </div>
+                                                </Conditional>
                                             </div>
 
-                                            <Conditional isRendered={true}>
-                                                <div className={styles.extraInfo}>
-                                                    <>some info</>
-                                                </div>
-                                            </Conditional>
-                                        </div>
+                                            <div className={styles.buttonsContainer}>
+                                                <ActionButtons 
+                                                    userId={user.id} 
+                                                    tabIndex={tabIndex}
+                                                />
+                                            </div>
+                                        </li>
+                                    )}
+                                </ArrowFocusItem>
+                            ))}
+                        </ul>
+                    </div>
+                </ArrowFocusContextProvider>
+            </Conditional>
 
-                                        <div className={styles.buttonsContainer}>
-                                            <ActionButtons 
-                                                userId={user.id} 
-                                                tabIndex={tabIndex}
-                                            />
-                                        </div>
-                                    </li>
-                                )}
-                            </ArrowFocusItem>
-                        ))}
-                    </ul>
+            <Conditional isRendered={!listToShow.length}>
+                <div className={styles.notFoundWrapper}>
+                    <Image
+                        className={styles.notFoundImage}
+                        src={friendsNotFoundImage}
+                    />
+
+                    <div className={styles.notFoundText}>
+                        <>Вампус внимательно искал, но не нашёл никого с таким именем.</>
+                    </div>
                 </div>
-            </ArrowFocusContextProvider>
+            </Conditional>
         </TabPanel>
     );
 };
