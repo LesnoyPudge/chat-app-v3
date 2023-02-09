@@ -78,7 +78,7 @@ export const withEmoji = (editor: CustomEditor) => {
             if (!isEmoji) return onChange();
 
             const moveOperations = editor.operations.filter(operation => operation.type === 'set_selection');
-            const moveOperation = moveOperations[moveOperations.length - 1];
+            const moveOperation = moveOperations.at(-1);
 
             if (!moveOperation || moveOperation.type !== 'set_selection') return onChange();
 

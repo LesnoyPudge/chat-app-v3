@@ -7,10 +7,6 @@ import { checker } from 'vite-plugin-checker';
 
 
 
-// interface IEnv {
-//     CUSTOM_CLIENT_PORT: number;
-// }
-
 // https://vitejs.dev/config/
 export default defineConfig(() => {
     // const { CUSTOM_CLIENT_PORT } = process.env as unknown as IEnv;

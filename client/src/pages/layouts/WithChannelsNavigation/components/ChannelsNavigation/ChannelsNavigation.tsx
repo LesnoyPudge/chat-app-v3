@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Image, ArrowFocusContextProvider, ArrowFocusItem } from '@components';
+import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Image, ArrowFocusContextProvider, ArrowFocusItem, Scrollable } from '@components';
 import { WrapperWithBullet } from './components';
 import { useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -87,8 +87,14 @@ export const ChannelsNavigation: FC = () => {
                 <Separator className='w-1/2' spacing={0}/>
 
                 <ArrowFocusContextProvider list={channels} orientation='vertical'>
-                    <div className={styles.focusableListWrapper}>
+                    {/* <div className={styles.focusableListWrapper}>
                         <ul className={styles.channelList}>
+                            
+                        </ul>
+                    </div> */}
+
+                    <Scrollable scrollbarHidden>
+                        <ul className='flex flex-col gap-2'>
                             {channels.map((channel) => {
                                 const isInChannel = myLocationIs.channel(channel.id);
                                 const formatedChannelName = channel.name.split(' ').map(word => word.charAt(0)).join('');
@@ -141,7 +147,7 @@ export const ChannelsNavigation: FC = () => {
                                 );
                             })}
                         </ul>
-                    </div>
+                    </Scrollable>
                 </ArrowFocusContextProvider>
 
                 <Separator className='w-1/2' spacing={0}/>

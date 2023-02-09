@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, ScrollableV2 } from '@components';
 import { EncodedFile } from '@types';
 import { twClassNames } from '@utils';
 import { FC, PropsWithChildren, useEffect, useReducer, useRef, useState } from 'react';
@@ -96,16 +96,16 @@ const ImageV2: FC<ImageV2> = ({
     );
 };
 
+
+
 const PlaygroundInner: FC = () => {
     const [isRendered, toggleIsRendered] = useToggle(true);
 
     return (
         <>
             <OverlayContextProvider isOverlayExistInitial={true}>
-                <ChannelSettingsModal/>
                 {/* <AppSettingsModal/> */}
             </OverlayContextProvider>
-
 
             <Conditional isRendered={false}>
                 <div>
@@ -127,6 +127,18 @@ const PlaygroundInner: FC = () => {
                 /> */}
                 </div>
             </Conditional>
+
+            
+
+            <ScrollableV2 className='h-full' autoHide>
+                <div className='flex flex-col gap-5'>
+                    {[...Array(310)].map((_, index, arr) => (
+                        <div key={index} className='bg-primary-hover'>
+                            {index === 0 ? 'first' : index === arr.length - 1 ? 'last' : `wow ${index}`}
+                        </div>
+                    ))}
+                </div>
+            </ScrollableV2>
         </>
     );
 };

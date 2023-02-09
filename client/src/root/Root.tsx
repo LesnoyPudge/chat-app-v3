@@ -1,4 +1,4 @@
-import { FC, lazy, Suspense } from 'react';
+import { FC, lazy, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, Loader, Masks } from './components';
 import { useAuthorization, useDebug, usePageVisibility, usePreventDefault, useThemeSwitcher } from './hooks';
 import { Playground } from './playground';
@@ -9,7 +9,7 @@ import './styles/main.scss';
 
 const Router = lazy(() => import('./router'));
 
-export const Root: FC = () => {
+const RootInner: FC = () => {
     usePageVisibility();
     usePreventDefault();
     // useAuthorization();
@@ -36,5 +36,13 @@ export const Root: FC = () => {
                 </Playground>
             </HeadingLevel>
         </>
+    );
+};
+
+export const Root: FC = () => {
+    return (
+        <StrictMode>
+            <RootInner/>
+        </StrictMode>
     );
 };

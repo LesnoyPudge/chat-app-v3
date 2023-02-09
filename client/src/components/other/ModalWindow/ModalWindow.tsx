@@ -45,8 +45,13 @@ export const ModalWindow: FC<ModalWindow> = ({
                     focused
                 >
                     <animated.div 
-                        className={styles.wrapper}
+                        className={twClassNames(
+                            styles.wrapper,
+                            { 'pointer-events-auto': isOverlayExist },
+                        )}
                         style={style}
+                        role='dialog'
+                        aria-label={label}
                     >
                         <Conditional isRendered={withBackdrop}>
                             <div
@@ -57,17 +62,9 @@ export const ModalWindow: FC<ModalWindow> = ({
                             ></div>
                         </Conditional>
                         
-                        <div 
-                            className={twClassNames(
-                                { 'pointer-events-auto': isOverlayExist },
-                            )}
-                            role='dialog'
-                            aria-label={label}
-                        >
-                            <ChildrenAsNodeOrFunction args={overlayValues}>
-                                {children}
-                            </ChildrenAsNodeOrFunction>
-                        </div>
+                        <ChildrenAsNodeOrFunction args={overlayValues}>
+                            {children}
+                        </ChildrenAsNodeOrFunction>
                     </animated.div>
                 </OverlayItem>
             )}   

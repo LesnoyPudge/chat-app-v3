@@ -12,3 +12,4 @@ export * from './CreateRoomModal';
 export * from './LightBoxModal';
 export * from './AddMemberToRoleModal';
 export * from './DeleteRoleModal';
+export * from './UnbanUserModal';

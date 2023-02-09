@@ -31,7 +31,7 @@ export const OverlayItem: FC<OverlayItem> = ({
         const wrapper = wrapperRef.current;
         const overlayItems = [...getHTML().overlay.childNodes] as HTMLDivElement[];
         const filteredItems = overlayItems.filter(node => node === wrapper || node.dataset.blocking === 'true');
-        return wrapper !== filteredItems[filteredItems.length - 1];
+        return wrapper !== filteredItems.at(-1);
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {

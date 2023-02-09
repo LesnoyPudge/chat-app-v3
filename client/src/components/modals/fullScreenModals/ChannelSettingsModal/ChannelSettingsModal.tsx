@@ -10,6 +10,7 @@ import { Form, Formik } from 'formik';
 export type ChannelSettingsModalTabs = typeof tabs;
 
 export interface ChannelSettingsModalFormValues {
+    channelId: string;
     channelName: string,
     channelImage: string | null,
     channelIsPrivate: boolean,
@@ -36,26 +37,28 @@ const tabs = {
     bannedTab: <BannedTab/>,
 };
 
-const initialValues: ChannelSettingsModalFormValues = {
-    channelName: 'coolChannel',
-    channelImage: null,
-    channelIsPrivate: false,
-    roleId: 'id1',
-    roleName: 'roleName',
-    roleColorHEX: '#fff',
-    roleImage: null,
-    roleBanMember: true,
-    roleChannelControl: true,
-    roleCreateInvitation: false,
-    roleIsAdministrator: false,
-    roleKickMember: false,
-    roleRoomControl: false,
-    roleSendMessage: false,
-    roleMembers: Array(29).fill('').map((_, index) => index.toString()),
-};
-
 export const ChannelSettingsModal: FC = () => {
     const isDirtyRef = useRef(false);
+
+
+    const initialValues: ChannelSettingsModalFormValues = {
+        channelId: 'someChannelID',
+        channelName: 'coolChannel',
+        channelImage: null,
+        channelIsPrivate: false,
+        roleId: 'id1',
+        roleName: 'roleName',
+        roleColorHEX: '#fff',
+        roleImage: null,
+        roleBanMember: true,
+        roleChannelControl: true,
+        roleCreateInvitation: false,
+        roleIsAdministrator: false,
+        roleKickMember: false,
+        roleRoomControl: false,
+        roleSendMessage: false,
+        roleMembers: Array(29).fill('').map((_, index) => index.toString()),
+    };
 
     return (
         <ModalWindow 
