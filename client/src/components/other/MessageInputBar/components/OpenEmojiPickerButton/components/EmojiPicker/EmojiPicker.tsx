@@ -1,4 +1,4 @@
-import { Button, Emoji, emojiList, SearchBar } from '@components';
+import { Button, Emoji, emojiList, Scrollable, SearchBar } from '@components';
 import { useSearch } from '@hooks';
 import { useSlateAddEmoji } from '@libs';
 import { PropsWithClassName } from '@types';
@@ -12,8 +12,7 @@ const styles = {
     max-h-[40vh] w-[min(300px,100vw)] rounded-md
     shadow-elevation-high`,
     searchBar: 'h-[30px] m-3 w-auto',
-    emojiList: `my-3 py-2 pl-2 grid grid-cols-5 gap-3 
-    overflow-auto custom-scrollbar-variant-primary`,
+    emojiList: 'my-3 py-2 pl-2 grid grid-cols-5 gap-3',
     emojiListButton: `h-10 w-10 flex rounded-lg
     hover:bg-primary-100 focus-visible:bg-primary-100
     transition-all duration-75`,
@@ -49,33 +48,35 @@ export const EmojiPicker: FC<PropsWithClassName> = ({
                 onReset={handleReset}
             />
 
-            <ul className={styles.emojiList}>
-                {
-                    emojiListToRender.map((emoji) => {
-                        const emojiCode = emoji.code[0];
+            <Scrollable>
+                <ul className={styles.emojiList}>
+                    {
+                        emojiListToRender.map((emoji) => {
+                            const emojiCode = emoji.code[0];
 
-                        const changeCurrentEmoji = () => setCurrentEmoji(emoji);
-                        const handleClick = () => addEmoji(emojiCode);
+                            const changeCurrentEmoji = () => setCurrentEmoji(emoji);
+                            const handleClick = () => addEmoji(emojiCode);
 
-                        return (
-                            <li key={emojiCode}>
-                                <Button
-                                    className={styles.emojiListButton}
-                                    onLeftClick={handleClick}
-                                    onMouseEnter={changeCurrentEmoji}
-                                    onFocus={changeCurrentEmoji}
-                                >
-                                    <Emoji 
-                                        className={styles.emojiListEmoji}
-                                        code={emojiCode}
-                                    />
-                                </Button>
-                            </li>
-                        );
-                    })
-                }
-            </ul>
-
+                            return (
+                                <li key={emojiCode}>
+                                    <Button
+                                        className={styles.emojiListButton}
+                                        onLeftClick={handleClick}
+                                        onMouseEnter={changeCurrentEmoji}
+                                        onFocus={changeCurrentEmoji}
+                                    >
+                                        <Emoji 
+                                            className={styles.emojiListEmoji}
+                                            code={emojiCode}
+                                        />
+                                    </Button>
+                                </li>
+                            );
+                        })
+                    }
+                </ul>
+            </Scrollable>
+            
             <div className={styles.previewWrapper}>
                 <Emoji 
                     className={styles.previewEmoji}

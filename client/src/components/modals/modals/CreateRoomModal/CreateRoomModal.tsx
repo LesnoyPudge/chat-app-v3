@@ -44,15 +44,15 @@ export const CreateRoomModal: FC = () => {
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
             >
-                <Form>
-                    <ModalContainer>
+                <ModalContainer>
+                    <Form>
                         <TabContextProvider tabs={tabs}>
                             {({ currentTab }) => (
                                 <>{currentTab.tab}</>
                             )}
                         </TabContextProvider>
-                    </ModalContainer>
-                </Form>
+                    </Form>
+                </ModalContainer>
             </Formik>
         </ModalWindow>
     );

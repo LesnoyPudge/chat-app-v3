@@ -1,4 +1,4 @@
-import { ArrowFocusContextProvider } from '@components';
+import { ArrowFocusContextProvider, Scrollable } from '@components';
 import { FC } from 'react';
 import { RoomListItem } from './components';
 
@@ -30,12 +30,16 @@ const rooms: IRoom[] = [
 
 export const RoomList: FC = () => {
     return (
-        <div className='mt-4 h-full overflow-y-scroll scrollbar-primary scrollbar-with-gutters'>
-            <ul className='grid gap-1'>
+        <Scrollable 
+            className='mt-4' 
+            withOppositeGutter
+            small
+        >
+            <ul className='flex flex-col gap-1'>
                 {rooms.map((room) => (
                     <RoomListItem room={room} key={room.id}/>
                 ))}
             </ul>
-        </div>
+        </Scrollable>
     );
 };

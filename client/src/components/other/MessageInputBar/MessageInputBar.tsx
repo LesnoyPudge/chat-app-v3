@@ -14,9 +14,7 @@ interface IMessageInputBar {
 const styles = {
     wrapper: `flex min-h-[44px] max-h-[50vh] mt-auto 
     mb-6 mx-4 rounded-lg bg-primary-100`,
-    editor: `w-full px-2 h-full py-[11px]
-    placeholder:text-color-placeholder min-h-[44px] max-h-[50vh] 
-    overflow-y-auto overflow-x-hidden`,
+    editor: 'w-full px-2 h-full py-[11px] min-h-[44px] max-h-[50vh] bg-red-600',
     button: `h-11 fill-icon-200 hover:fill-icon-300 
     focus-visible:fill-icon-300`,
     icon: 'h-6 w-6',

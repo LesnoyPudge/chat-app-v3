@@ -1,4 +1,4 @@
-import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, ArrowFocusContextProvider, ArrowFocusItem } from '@components';
+import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, ArrowFocusContextProvider, ArrowFocusItem, Scrollable } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { FC, useContext } from 'react';
 import { IUserPreview } from '@backendTypes';
@@ -88,7 +88,6 @@ const styles = {
     tabPanel: 'flex flex-col h-full overflow-hidden',
     filteredLength: 'text-xs uppercase font-semibold text-color-secondary mx-2.5',
     separator: 'mx-2.5',
-    listWrapper: 'h-full overflow-y-scroll scrollbar-primary',
     list: 'flex flex-col gap-0.5 py-2',
     listItem: `flex items-center gap-3 h-[60px] py-2 px-2.5 mr-1 rounded-lg 
     hover:bg-primary-hover focus-within:bg-primary-hover`,
@@ -119,6 +118,7 @@ export const Content: FC<Content> = ({ searchValue }) => {
     };
 
     const listToShow = filters[currentTab.identifier]();
+    const showList = !!listToShow.length;
 
     return (
         <TabPanel 
@@ -131,9 +131,9 @@ export const Content: FC<Content> = ({ searchValue }) => {
 
             <Separator className={styles.separator} spacing={12}/>
             
-            <Conditional isRendered={!!listToShow.length}>
+            <Conditional isRendered={showList}>
                 <ArrowFocusContextProvider list={listToShow} orientation='both'>
-                    <div className={styles.listWrapper}>
+                    <Scrollable>
                         <ul className={styles.list}>
                             {listToShow.map((user) => (
                                 <ArrowFocusItem id={user.id} key={user.id}>
@@ -174,11 +174,11 @@ export const Content: FC<Content> = ({ searchValue }) => {
                                 </ArrowFocusItem>
                             ))}
                         </ul>
-                    </div>
+                    </Scrollable>
                 </ArrowFocusContextProvider>
             </Conditional>
 
-            <Conditional isRendered={!listToShow.length}>
+            <Conditional isRendered={!showList}>
                 <div className={styles.notFoundWrapper}>
                     <Image
                         className={styles.notFoundImage}

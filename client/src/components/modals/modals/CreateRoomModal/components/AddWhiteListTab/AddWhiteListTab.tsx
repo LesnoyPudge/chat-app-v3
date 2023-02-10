@@ -1,20 +1,26 @@
 import { FC, useContext } from 'react';
-import { Button, Conditional, CreateRoomFormValues, CreateRoomModalTabs, Icon, SearchBar, TabContext, UserAvatar } from '@components';
+import { Button, Conditional, CreateRoomFormValues, CreateRoomModalTabs, Icon, Scrollable, SearchBar, TabContext, UserAvatar, Image } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../../../components';
 import { conditional, twClassNames } from '@utils';
 import { IRole, IUserPreview } from '@backendTypes';
 import { FormikContextType, useFormikContext } from 'formik';
 import { Heading } from '@libs';
 import { useSearch } from '@hooks';
+import notFoundImage from '@assets/not-found-image.svg';
 
 
 
 const styles = {
     title: 'text-heading-l self-start font-medium',
     content: 'gap-3',
-    contentBlock: 'flex flex-col h-[150px]',
-    listTitle: 'text-xs uppercase font-bold mb-2',
-    list: 'flex flex-col gap-1 h-full overflow-y-scroll scrollbar-primary',
+    searchBar: 'h-8',
+    scrollLimiter: 'h-[300px]',
+    notFoundWrapper: 'flex flex-col h-full justify-center items-center',
+    notFoundImage: 'w-[85px] h-[85px] mb-4',
+    notFoundText: 'text-sm text-color-secondary',
+    scrollInner: 'flex flex-col gap-2',
+    listTitle: 'text-xs uppercase font-bold',
+    list: 'flex flex-col gap-1',
     listItem: {
         base: `flex w-full items-center py-2 px-1.5 rounded 
         hover:bg-primary-hover focus-visible:bg-primary-hover`,
@@ -77,6 +83,9 @@ export const AddWhiteListTab: FC = () => {
     const filteredRoles = roles.filter((role) => role.name.includes(searchValue));
     const filteredMembers = members.filter((member) => member.username.includes(searchValue));
 
+    const showRoles = !!filteredRoles.length;
+    const showMembers = !!filteredMembers.length;
+
     return (
         <>
             <ModalHeader>
@@ -87,7 +96,7 @@ export const AddWhiteListTab: FC = () => {
 
             <ModalContent className={styles.content}>
                 <SearchBar
-                    className='h-8'
+                    className={styles.searchBar}
                     placeholder='Название роли или имя пользователя'
                     label='Название роли или имя пользователя'
                     value={searchValue}
@@ -95,130 +104,135 @@ export const AddWhiteListTab: FC = () => {
                     onReset={handleReset}
                 />
 
-                <div className={styles.contentBlock}>
-                    <Heading className={styles.listTitle}>
-                        <>Роли</>
-                    </Heading>
+                <div className={styles.scrollLimiter}>
+                    <Conditional isRendered={showRoles || showMembers}>
+                        <Scrollable>
+                            <div className={styles.scrollInner}>
+                                <Heading className={styles.listTitle}>
+                                    <>Роли</>
+                                </Heading>
 
-                    <Conditional isRendered={!!filteredRoles.length}>
-                        <ul className={styles.list}>
-                            {roles.map((role) => {
-                                const handleRoleCheck = () => handleCheck('allowedRoles', role);
-                                const isRoleChecked = isChecked('allowedRoles', role);
+                                <Conditional isRendered={showRoles}>
+                                    <div className={styles.list}>
+                                        {filteredRoles.map((role) => {
+                                            const handleRoleCheck = () => handleCheck('allowedRoles', role);
+                                            const isRoleChecked = isChecked('allowedRoles', role);
 
-                                return (
-                                    <li key={role.id}>
-                                        <Button
-                                            className={twClassNames(
-                                                styles.listItem.base,
-                                                { [styles.listItem.active]: isRoleChecked },
-                                            )}
-                                            label={`Добавить роль ${role.name}`}
-                                            isActive={isRoleChecked}
-                                            onLeftClick={handleRoleCheck}
-                                        >
-                                            <div className={twClassNames(
-                                                styles.checkBox.base,
-                                                { [styles.checkBox.active]: isRoleChecked },
-                                            )}>
-                                                <Icon
-                                                    className={twClassNames(
-                                                        styles.checkBoxIcon.base,
-                                                        { [styles.checkBoxIcon.active]: !isRoleChecked },
-                                                    )}
-                                                    iconId='check-icon'
-                                                />
-                                            </div>
+                                            return (
+                                                <div key={role.id}>
+                                                    <Button
+                                                        className={twClassNames(
+                                                            styles.listItem.base,
+                                                            { [styles.listItem.active]: isRoleChecked },
+                                                        )}
+                                                        label={`Добавить роль ${role.name}`}
+                                                        isActive={isRoleChecked}
+                                                        onLeftClick={handleRoleCheck}
+                                                    >
+                                                        <div className={twClassNames(
+                                                            styles.checkBox.base,
+                                                            { [styles.checkBox.active]: isRoleChecked },
+                                                        )}>
+                                                            <Icon
+                                                                className={twClassNames(
+                                                                    styles.checkBoxIcon.base,
+                                                                    { [styles.checkBoxIcon.active]: !isRoleChecked },
+                                                                )}
+                                                                iconId='check-icon'
+                                                            />
+                                                        </div>
 
-                                            <Icon
-                                                className={styles.itemImage}
-                                                style={{ fill: role.color }}
-                                                iconId='role-shield-icon'
-                                            />
+                                                        <Icon
+                                                            className={styles.itemImage}
+                                                            style={{ fill: role.color }}
+                                                            iconId='role-shield-icon'
+                                                        />
 
-                                            <div className={styles.itemName}>
-                                                {role.name}
-                                            </div>
-                                        </Button>
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                                                        <div className={styles.itemName}>
+                                                            {role.name}
+                                                        </div>
+                                                    </Button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </Conditional>
+
+                                <Conditional isRendered={!showRoles}>
+                                    <div className={styles.itemNotFound}>
+                                        <>Роли не найдены</>
+                                    </div>
+                                </Conditional>                                        
+
+                                <Heading className={styles.listTitle}>
+                                    <>Участники</>
+                                </Heading>
+
+                                <Conditional isRendered={showMembers}>
+                                    <div className={styles.list}>
+                                        {filteredMembers.map((member) => {
+                                            const handleRoleCheck = () => handleCheck('allowedUsers', member);
+                                            const isRoleChecked = isChecked('allowedUsers', member);
+
+                                            return (
+                                                <div key={member.id}>
+                                                    <Button
+                                                        className={twClassNames(
+                                                            styles.listItem.base,
+                                                            { [styles.listItem.active]: isRoleChecked },
+                                                        )}
+                                                        label={`Добавить участника ${member.username}`}
+                                                        isActive={isRoleChecked}
+                                                        onLeftClick={handleRoleCheck}
+                                                    >
+                                                        <div className={twClassNames(
+                                                            styles.checkBox.base,
+                                                            { [styles.checkBox.active]: isRoleChecked },
+                                                        )}>
+                                                            <Icon
+                                                                className={twClassNames(
+                                                                    styles.checkBoxIcon.base,
+                                                                    { [styles.checkBoxIcon.active]: !isRoleChecked },
+                                                                )}
+                                                                iconId='check-icon'
+                                                            />
+                                                        </div>
+
+                                                        <UserAvatar
+                                                            className={styles.itemImage}
+                                                            avatar={member.avatar}
+                                                            username={member.username}
+                                                        />
+
+                                                        <div className={styles.itemName}>
+                                                            {member.username}
+                                                        </div>
+                                                    </Button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </Conditional>
+
+                                <Conditional isRendered={!showMembers}>
+                                    <div className={styles.itemNotFound}>
+                                        <>Участники не найдены</>
+                                    </div>
+                                </Conditional> 
+                            </div>
+                        </Scrollable>
                     </Conditional>
 
-                    <Conditional isRendered={!roles.length}>
-                        <div className={styles.itemNotFound}>
-                            <>Вы ещё не создали ни одной роли</>
-                        </div>
-                    </Conditional>
+                    <Conditional isRendered={!showRoles && !showMembers}>
+                        <div className={styles.notFoundWrapper}>
+                            <Image
+                                className={styles.notFoundImage}
+                                src={notFoundImage}
+                            />
 
-                    <Conditional isRendered={!!roles.length && !filteredRoles.length}>
-                        <div className={styles.itemNotFound}>
-                            <>Роли не найдены</>
-                        </div>
-                    </Conditional>
-                </div>
-
-                <div className={styles.contentBlock}>
-                    <Heading className={styles.listTitle}>
-                        <>Участники</>
-                    </Heading>
-
-                    <Conditional isRendered={!!filteredMembers.length}>
-                        <ul className={styles.list}>
-                            {filteredMembers.map((member) => {
-                                const handleRoleCheck = () => handleCheck('allowedUsers', member);
-                                const isRoleChecked = isChecked('allowedUsers', member);
-
-                                return (
-                                    <li key={member.id}>
-                                        <Button
-                                            className={twClassNames(
-                                                styles.listItem.base,
-                                                { [styles.listItem.active]: isRoleChecked },
-                                            )}
-                                            label={`Добавить участника ${member.username}`}
-                                            isActive={isRoleChecked}
-                                            onLeftClick={handleRoleCheck}
-                                        >
-                                            <div className={twClassNames(
-                                                styles.checkBox.base,
-                                                { [styles.checkBox.active]: isRoleChecked },
-                                            )}>
-                                                <Icon
-                                                    className={twClassNames(
-                                                        styles.checkBoxIcon.base,
-                                                        { [styles.checkBoxIcon.active]: !isRoleChecked },
-                                                    )}
-                                                    iconId='check-icon'
-                                                />
-                                            </div>
-
-                                            <UserAvatar
-                                                className={styles.itemImage}
-                                                avatar={member.avatar}
-                                                username={member.username}
-                                            />
-
-                                            <div className={styles.itemName}>
-                                                {member.username}
-                                            </div>
-                                        </Button>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </Conditional>
-
-                    <Conditional isRendered={!members.length}>
-                        <div className={styles.itemNotFound}>
-                            <>Вы ещё никого не пригласили</>
-                        </div>
-                    </Conditional>
-
-                    <Conditional isRendered={!!members.length && !filteredMembers.length}>
-                        <div className={styles.itemNotFound}>
-                            <>Участники не найдены</>
+                            <div className={styles.notFoundText}>
+                                <>Роли и участники не найдены</>
+                            </div>
                         </div>
                     </Conditional>
                 </div>

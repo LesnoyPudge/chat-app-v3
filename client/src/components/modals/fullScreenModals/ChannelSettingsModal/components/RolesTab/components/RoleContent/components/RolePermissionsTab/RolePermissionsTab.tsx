@@ -1,7 +1,7 @@
 import { FC, useContext } from 'react';
 import { Image, CheckBoxIndicator, Conditional, Separator, TabContext, TabPanel } from '@components';
 import { FormikCheckBox, Heading, HeadingLevel } from '@libs';
-import permissionNotFoundImage from '@assets/permission-not-found-image.svg';
+import permissionNotFoundImage from '@assets/not-found-image.svg';
 import { RoleContentTabs } from '../..';
 
 

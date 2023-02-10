@@ -1,5 +1,5 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { ArrowFocusContextProvider, ArrowFocusItem } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, Scrollable } from '@components';
 import { Heading } from '@libs';
 import { FC } from 'react';
 import { PrivateChatItem } from './components';
@@ -266,11 +266,9 @@ const privateChats: IPrivateChats[] = [
 ];
 
 const styles = {
-    section: 'flex flex-col overflow-hidden h-full mt-6',
+    section: 'flex flex-col h-full mt-6',
     heading: 'mx-3.5 mb-4 uppercase font-semibold text-xs text-color-base',
-    wrapper: `w-full h-full overflow-y-scroll scrollbar-with-gutters 
-    scrollbar-primary scrollbar-auto-hidden`,
-    list: 'flex flex-col gap-[3px] w-full pt-1 pb-4',
+    list: 'flex flex-col gap-[3px] pt-1 pb-4',
 };
 
 export const PrivateChatList: FC = () => {
@@ -281,20 +279,26 @@ export const PrivateChatList: FC = () => {
             </Heading>
 
             <ArrowFocusContextProvider list={privateChats} orientation='vertical'>
-                <div className={styles.wrapper}>
+                <Scrollable 
+                    withOppositeGutter 
+                    autoHide 
+                    small
+                >
                     <ul className={styles.list}>
                         {privateChats.map((privateChat) => (
-                            <ArrowFocusItem id={privateChat.id} key={privateChat.id}>
-                                {({ tabIndex }) => (
-                                    <PrivateChatItem 
-                                        privateChat={privateChat}
-                                        tabIndex={tabIndex}
-                                    />
-                                )}
-                            </ArrowFocusItem>
+                            <li key={privateChat.id}>
+                                <ArrowFocusItem id={privateChat.id}>
+                                    {({ tabIndex }) => (
+                                        <PrivateChatItem 
+                                            privateChat={privateChat}
+                                            tabIndex={tabIndex}
+                                        />
+                                    )}
+                                </ArrowFocusItem>
+                            </li>
                         ))}
                     </ul>
-                </div>
+                </Scrollable>
             </ArrowFocusContextProvider>
         </div>
     );

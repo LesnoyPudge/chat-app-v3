@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Button, Conditional, FieldLabel, Icon, Id, ModalWindow, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
+import { Button, Conditional, FieldLabel, Icon, Id, ModalWindow, Scrollable, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
 import { ModalContainer, ModalContent, ModalHeader, ModalTitle } from '../../components';
 import { conditional, copyToClipboard } from '@utils';
 import { useSearch, useThrottle } from '@hooks';
@@ -64,41 +64,43 @@ export const InviteToChannelModal: FC = () => {
                         <Separator spacing={16}/>
 
                         <Conditional isRendered={notEmptyList}>
-                            <ul className='flex flex-col gap-1 max-h-[200px] overflow-y-auto scrollbar-primary'>
-                                {filteredPrivateChats.map((privateChat) => {
-                                    const user = privateChat.users[0];
+                            <Scrollable className='max-h-[200px]'>
+                                <ul className='flex flex-col gap-1'>
+                                    {filteredPrivateChats.map((privateChat) => {
+                                        const user = privateChat.users[0];
 
-                                    return (
-                                        <li 
-                                            className='flex justify-between gap-4 p-2 h-11 w-full hover:bg-primary-hover focus-within:bg-primary-hover items-center'
-                                            key={privateChat.id}
-                                        >
-                                            <div className='flex gap-2.5 items-center'>
-                                                <UserAvatar
-                                                    className='h-8 w-8'
-                                                    avatar={user.avatar}
-                                                    username={user.username}
-                                                />
+                                        return (
+                                            <li 
+                                                className='flex justify-between gap-4 p-2 h-11 w-full hover:bg-primary-hover focus-within:bg-primary-hover items-center'
+                                                key={privateChat.id}
+                                            >
+                                                <div className='flex gap-2.5 items-center'>
+                                                    <UserAvatar
+                                                        className='h-8 w-8'
+                                                        avatar={user.avatar}
+                                                        username={user.username}
+                                                    />
 
-                                                <span className='truncated font-medium'>
-                                                    {user.username}
-                                                </span>
-                                            </div>
+                                                    <span className='truncated font-medium'>
+                                                        {user.username}
+                                                    </span>
+                                                </div>
 
-                                            <Button
-                                                className='h-full aspect-square p-1.5 rounded-full bg-primary-400 hover:bg-primary-300
+                                                <Button
+                                                    className='h-full aspect-square p-1.5 rounded-full bg-primary-400 hover:bg-primary-300
                                             focus-visible:bg-primary-300 fill-icon-300 hover:fill-icon-100
                                             focus-visible:fill-icon-100'
-                                            >
-                                                <Icon
-                                                    className='w-full h-full'
-                                                    iconId='plus-icon'
-                                                />
-                                            </Button>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+                                                >
+                                                    <Icon
+                                                        className='w-full h-full'
+                                                        iconId='plus-icon'
+                                                    />
+                                                </Button>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </Scrollable>
                         </Conditional>
 
                         <Conditional isRendered={!notEmptyList}>

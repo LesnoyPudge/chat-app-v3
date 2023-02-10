@@ -61,7 +61,7 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({
     const handleHideChat = () => console.log('chat hidden');
 
     return (
-        <li className={styles.wrapper}>
+        <div className={styles.wrapper}>
             <Button 
                 className={twClassNames(
                     styles.userInfo.base,
@@ -109,6 +109,6 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({
                     <>Срыть</>
                 </Tooltip>
             </RefContextProvider>
-        </li>
+        </div>
     );
 };

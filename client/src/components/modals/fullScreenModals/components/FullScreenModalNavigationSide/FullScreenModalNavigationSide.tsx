@@ -1,22 +1,22 @@
+import { Scrollable } from '@components';
 import { FC, PropsWithChildren } from 'react';
 
 
 
 const styles = {
     wrapper: 'grow shrink-0 basis-[218px] bg-primary-300',
-    inner: `flex h-full justify-end overflow-x-hidden 
-    overflow-y-scroll scrollbar-primary `,
-    content: 'w-60 py-[60px] pl-5 pr-1.5 h-fit',
+    inner: 'h-full',
+    content: 'ml-auto w-[240px] py-[60px] pl-5 pr-1.5',
 };
 
 export const FullScreenModalNavigationSide: FC<PropsWithChildren> = ({ children }) => {
     return (
         <div className={styles.wrapper}>
-            <div className={styles.inner}>
+            <Scrollable className={styles.inner}>
                 <div className={styles.content}>
                     {children}
                 </div>
-            </div>
+            </Scrollable>
         </div>
     );
 };

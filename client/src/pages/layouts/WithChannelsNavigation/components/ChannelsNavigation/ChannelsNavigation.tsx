@@ -27,7 +27,9 @@ const channels = [
 ];
 
 const styles = {
-    wrapper: 'flex flex-col shrink-0 gap-2 h-screen w-[72px] py-3 bg-primary-500',
+    wrapper: 'h-screen w-[72px] bg-primary-500',
+    scrollbar: 'h-full',
+    inner: 'flex flex-col gap-2',
     button: {
         base: `w-12 h-12 mx-auto flex justify-center items-center bg-primary-300 
         rounded-3xl overflow-hidden transition-all ease-linear
@@ -46,146 +48,154 @@ const styles = {
         fill-icon-200 hover:fill-white focus-visible:fill-white`,
         active: 'bg-brand fill-white',
     },
-    focusableListWrapper: 'overflow-y-scroll scrollbar-hidden',
-    channelList: 'flex flex-col h-fit gap-2',
+    list: 'flex flex-col gap-2',
+    separator: 'w-1/2',
+    sticky: 'grid gap-2 sticky z-10 bg-primary-500',
+    header: 'top-0 pt-3',
+    footer: 'bottom-0 pb-3',
     channelName: 'font-bold truncated px-1.5',
 };
 
 export const ChannelsNavigation: FC = () => {
     const { myLocationIs, navigateTo } = useNavigator();
     const isInAppOrPrivateChatPage = myLocationIs.app || myLocationIs.anyPrivateChat;
+    const showChannels = !!channels.length;
 
     return (
         <div className={styles.wrapper}>
-            <WrapperWithBullet isActive={isInAppOrPrivateChatPage}>
-                <RefContextProvider>
-                    <Button
-                        className={twClassNames(
-                            styles.button.base,
-                            styles.brandButton.base,
-                            { 
-                                [styles.button.active]: isInAppOrPrivateChatPage,
-                                [styles.brandButton.active]: isInAppOrPrivateChatPage, 
-                            },
-                        )}
-                        label='Перейти на главную страницу'
-                        onLeftClick={navigateTo.app}
-                    >
-                        <Icon 
-                            className={styles.icon}
-                            iconId='discord-logo'
-                        />
-                    </Button>
+            <Scrollable className={styles.scrollbar} hidden>
+                <div className={styles.inner}>
+                    <div className={twClassNames(styles.sticky, styles.header)} >
+                        <WrapperWithBullet isActive={isInAppOrPrivateChatPage}>
+                            <RefContextProvider>
+                                <Button
+                                    className={twClassNames(
+                                        styles.button.base,
+                                        styles.brandButton.base,
+                                        { 
+                                            [styles.button.active]: isInAppOrPrivateChatPage,
+                                            [styles.brandButton.active]: isInAppOrPrivateChatPage, 
+                                        },
+                                    )}
+                                    label='Перейти на главную страницу'
+                                    onLeftClick={navigateTo.app}
+                                >
+                                    <Icon 
+                                        className={styles.icon}
+                                        iconId='discord-logo'
+                                    />
+                                </Button>
 
-                    <Tooltip preferredAligment='right'>
-                        <>Главная страница</>
-                    </Tooltip>
-                </RefContextProvider>
-            </WrapperWithBullet>
+                                <Tooltip preferredAligment='right'>
+                                    <>Главная страница</>
+                                </Tooltip>
+                            </RefContextProvider>
+                        </WrapperWithBullet>
+                
+                        <Conditional isRendered={showChannels}>
+                            <Separator className={styles.separator} spacing={0}/>
+                        </Conditional>
+                    </div>
 
-            <Conditional isRendered={!!channels.length}>
-                <Separator className='w-1/2' spacing={0}/>
-
-                <ArrowFocusContextProvider list={channels} orientation='vertical'>
-                    {/* <div className={styles.focusableListWrapper}>
-                        <ul className={styles.channelList}>
+                    <Conditional isRendered={showChannels}>
+                        <ArrowFocusContextProvider list={channels} orientation='vertical'>
+                            <ul className={styles.list}>
+                                {channels.map((channel) => {
+                                    const isInChannel = myLocationIs.channel(channel.id);
+                                    const formatedChannelName = channel.name.split(' ').map(word => word.charAt(0)).join('');
                             
-                        </ul>
-                    </div> */}
+                                    const handleNavigateToChannel = () => navigateTo.channel(channel.id);
 
-                    <Scrollable scrollbarHidden>
-                        <ul className='flex flex-col gap-2'>
-                            {channels.map((channel) => {
-                                const isInChannel = myLocationIs.channel(channel.id);
-                                const formatedChannelName = channel.name.split(' ').map(word => word.charAt(0)).join('');
-                            
-                                const handleNavigateToChannel = () => navigateTo.channel(channel.id);
+                                    return (
+                                        <ArrowFocusItem id={channel.id} key={channel.id} >
+                                            {({ tabIndex }) => (
+                                                <WrapperWithBullet isActive={isInChannel}>
+                                                    <RefContextProvider>
+                                                        <Button
+                                                            className={twClassNames(
+                                                                styles.button.base, 
+                                                                styles.brandButton.base,
+                                                                { 
+                                                                    [styles.button.active]: isInChannel,
+                                                                    [styles.brandButton.active]: isInChannel, 
+                                                                },
+                                                            )}
+                                                            tabIndex={tabIndex}
+                                                            label={channel.name}
+                                                            onLeftClick={handleNavigateToChannel}
+                                                        >
+                                                            <Conditional isRendered={!channel.avatar}>
+                                                                <span className={styles.channelName}>
+                                                                    {formatedChannelName}
+                                                                </span>
+                                                            </Conditional>
 
-                                return (
-                                    <ArrowFocusItem id={channel.id} key={channel.id} >
-                                        {({ tabIndex }) => (
-                                            <WrapperWithBullet isActive={isInChannel}>
-                                                <RefContextProvider>
-                                                    <Button
-                                                        className={twClassNames(
-                                                            styles.button.base, 
-                                                            styles.brandButton.base,
-                                                            { 
-                                                                [styles.button.active]: isInChannel,
-                                                                [styles.brandButton.active]: isInChannel, 
-                                                            },
-                                                        )}
-                                                        tabIndex={tabIndex}
-                                                        label={channel.name}
-                                                        onLeftClick={handleNavigateToChannel}
-                                                    >
-                                                        <Conditional isRendered={!channel.avatar}>
-                                                            <span className={styles.channelName}>
-                                                                {formatedChannelName}
-                                                            </span>
-                                                        </Conditional>
+                                                            <Conditional isRendered={!!channel.avatar}>
+                                                                <Image
+                                                                    src={channel.avatar}
+                                                                    alt={`Значок канала '${channel.name}'`}
+                                                                />
+                                                            </Conditional>
+                                                        </Button>
 
-                                                        <Conditional isRendered={!!channel.avatar}>
-                                                            <Image
-                                                                src={channel.avatar}
-                                                                alt={`Значок канала '${channel.name}'`}
-                                                            />
-                                                        </Conditional>
-                                                    </Button>
+                                                        <Tooltip preferredAligment='right'>
+                                                            <>{channel.name}</>
+                                                        </Tooltip>
 
-                                                    <Tooltip preferredAligment='right'>
-                                                        <>{channel.name}</>
-                                                    </Tooltip>
+                                                        <ContextMenu preferredAligment='right'>
+                                                            <>menu</>
+                                                        </ContextMenu>
+                                                    </RefContextProvider>
+                                                </WrapperWithBullet>
+                                            )}
+                                        </ArrowFocusItem>
+                                    );
+                                })}
+                            </ul>
+                        </ArrowFocusContextProvider>
+                    </Conditional>
 
-                                                    <ContextMenu preferredAligment='right'>
-                                                        <>menu</>
-                                                    </ContextMenu>
-                                                </RefContextProvider>
-                                            </WrapperWithBullet>
-                                        )}
-                                    </ArrowFocusItem>
-                                );
-                            })}
-                        </ul>
-                    </Scrollable>
-                </ArrowFocusContextProvider>
+                    <div className={twClassNames(styles.sticky, styles.footer)}>
+                        <Conditional isRendered={showChannels}>
+                            <Separator className={styles.separator} spacing={0}/>
+                        </Conditional>
 
-                <Separator className='w-1/2' spacing={0}/>
-            </Conditional>
-            
-            <OverlayContextProvider>
-                {({ openOverlay, isOverlayExist }) => (
-                    <WrapperWithBullet isActive={isOverlayExist}>
-                        <RefContextProvider>
-                            <Button
-                                className={twClassNames(
-                                    styles.button.base, 
-                                    styles.addChannelButton.base,
-                                    { 
-                                        [styles.button.active]: isOverlayExist,
-                                        [styles.addChannelButton.active]: isOverlayExist, 
-                                    },
-                                )}
-                                hasPopup='dialog'
-                                isActive={isOverlayExist}
-                                label='Добавить канал'
-                                onLeftClick={openOverlay}
-                            >
-                                <Icon 
-                                    className={styles.icon}
-                                    iconId='add-channel-navigation-icon'
-                                />
-                            </Button>
+                        <OverlayContextProvider>
+                            {({ openOverlay, isOverlayExist }) => (
+                                <WrapperWithBullet isActive={isOverlayExist}>
+                                    <RefContextProvider>
+                                        <Button
+                                            className={twClassNames(
+                                                styles.button.base, 
+                                                styles.addChannelButton.base,
+                                                { 
+                                                    [styles.button.active]: isOverlayExist,
+                                                    [styles.addChannelButton.active]: isOverlayExist, 
+                                                },
+                                            )}
+                                            hasPopup='dialog'
+                                            isActive={isOverlayExist}
+                                            label='Добавить канал'
+                                            onLeftClick={openOverlay}
+                                        >
+                                            <Icon 
+                                                className={styles.icon}
+                                                iconId='add-channel-navigation-icon'
+                                            />
+                                        </Button>
 
-                            <CreateChannelModal/>
+                                        <CreateChannelModal/>
 
-                            <Tooltip preferredAligment='right'>
-                                <>Добавить канал</>
-                            </Tooltip>
-                        </RefContextProvider>
-                    </WrapperWithBullet>  
-                )}
-            </OverlayContextProvider>
+                                        <Tooltip preferredAligment='right'>
+                                            <>Добавить канал</>
+                                        </Tooltip>
+                                    </RefContextProvider>
+                                </WrapperWithBullet>  
+                            )}
+                        </OverlayContextProvider>
+                    </div>
+                </div>
+            </Scrollable>
         </div>
     );
 };

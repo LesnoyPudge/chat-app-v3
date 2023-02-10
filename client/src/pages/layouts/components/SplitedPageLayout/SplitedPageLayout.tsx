@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import { Outlet } from 'react-router-dom';
 import { UserToolBar } from './components';
 

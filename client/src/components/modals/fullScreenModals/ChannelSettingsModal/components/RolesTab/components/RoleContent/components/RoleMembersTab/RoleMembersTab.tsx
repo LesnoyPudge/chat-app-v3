@@ -12,7 +12,6 @@ interface RoleMembersTab {
 const styles = {
     wrapper: 'flex flex-col flex-1',
     membersNotFound: 'flex flex-col items-center text-sm text-color-muted font-bold',
-    listWrapper: 'flex-1 overflow-y-scroll scrollbar-primary',
     list: 'flex flex-col gap-1 h-fit pb-[60px] pr-1',
     item: 'flex gap-2 p-2 rounded hover:bg-primary-hover focus-within:bg-primary-hover group',
     avatar: 'w-6 h-6',
@@ -74,41 +73,39 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
             </Conditional>
 
             <Conditional isRendered={!!filteredMembers.length}>
-                <div className={styles.listWrapper}>
-                    <ul className={styles.list}>
-                        {filteredMembers.map((member) => {
-                            const handleRemoveMember = () => removeMember(member.id);
+                <ul className={styles.list}>
+                    {filteredMembers.map((member) => {
+                        const handleRemoveMember = () => removeMember(member.id);
 
-                            return (
-                                <li 
-                                    className={styles.item}
-                                    key={member.id}
+                        return (
+                            <li 
+                                className={styles.item}
+                                key={member.id}
+                            >
+                                <UserAvatar
+                                    className={styles.avatar}
+                                    avatar={member.avatar}
+                                    username={member.name}
+                                />
+
+                                <div className={styles.username}>
+                                    {member.name}
+                                </div>
+
+                                <Button
+                                    className={styles.removeButton}
+                                    label={`Удалить пользователя ${member.name} из списка`}
+                                    onLeftClick={handleRemoveMember}
                                 >
-                                    <UserAvatar
-                                        className={styles.avatar}
-                                        avatar={member.avatar}
-                                        username={member.name}
+                                    <Icon
+                                        className={styles.removeButtonIcon}
+                                        iconId='cross-icon'
                                     />
-
-                                    <div className={styles.username}>
-                                        {member.name}
-                                    </div>
-
-                                    <Button
-                                        className={styles.removeButton}
-                                        label={`Удалить пользователя ${member.name} из списка`}
-                                        onLeftClick={handleRemoveMember}
-                                    >
-                                        <Icon
-                                            className={styles.removeButtonIcon}
-                                            iconId='cross-icon'
-                                        />
-                                    </Button>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
+                                </Button>
+                            </li>
+                        );
+                    })}
+                </ul>
             </Conditional>
         </TabPanel>
     );

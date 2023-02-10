@@ -1,7 +1,9 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, ScrollableV2 } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal } from '@components';
 import { EncodedFile } from '@types';
 import { twClassNames } from '@utils';
 import { FC, PropsWithChildren, useEffect, useReducer, useRef, useState } from 'react';
+import { OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
+import { EmojiPicker } from 'src/components/other/MessageInputBar/components/OpenEmojiPickerButton/components';
 import { useEventListener, useToggle } from 'usehooks-ts';
 
 
@@ -101,11 +103,45 @@ const ImageV2: FC<ImageV2> = ({
 const PlaygroundInner: FC = () => {
     const [isRendered, toggleIsRendered] = useToggle(true);
 
+    const ref = useRef<any>(null);
+
+    const handleClick = () => {
+        if (!ref.current) return;
+        const target = ref.current.contentWrapperEl as HTMLDivElement;
+        target.scrollTo({ top: target.scrollHeight, behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        if (!ref.current) return;
+        const element = ref.current.contentWrapperEl as HTMLDivElement;
+        const handleScroll = (e: Event) => {
+            const target = e.target as HTMLDivElement;
+            console.log('scroll');
+        };
+
+        element.addEventListener('scroll', handleScroll);
+        return () => {
+            element.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
         <>
             <OverlayContextProvider isOverlayExistInitial={true}>
-                {/* <AppSettingsModal/> */}
             </OverlayContextProvider>
+
+            <button onClick={handleClick}>click</button>
+
+            <Scrollable className='h-full' scrollableRef={(el) => ref.current = el}>
+                <div className='flex flex-col gap-5'>
+                    {[...Array(60)].map((_, i) => (
+                        <div key={i}>
+                        wow
+                        </div>
+                    ))}
+                </div>
+            </Scrollable>
+
 
             <Conditional isRendered={false}>
                 <div>
@@ -127,23 +163,11 @@ const PlaygroundInner: FC = () => {
                 /> */}
                 </div>
             </Conditional>
-
-            
-
-            <ScrollableV2 className='h-full' autoHide>
-                <div className='flex flex-col gap-5'>
-                    {[...Array(310)].map((_, index, arr) => (
-                        <div key={index} className='bg-primary-hover'>
-                            {index === 0 ? 'first' : index === arr.length - 1 ? 'last' : `wow ${index}`}
-                        </div>
-                    ))}
-                </div>
-            </ScrollableV2>
         </>
     );
 };
 
-const enabled = !!1;
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

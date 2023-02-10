@@ -11,9 +11,29 @@
         --scrollbar-transition: opacity 0.2s ease-in-out;
     }
 
+    &.scrollbar-small {
+
+        &,
+        *,
+        *::before,
+        *::after {
+            --scrollbar-thickness: 10px;
+            --track-thickness: 6px;
+            --thumb-thickness: 6px;
+        }
+    }
+
+    .simplebar-content-wrapper {
+        position: absolute;
+        inset: 0;
+    }
+
+    .simplebar-content {
+        height: 100%;
+    }
+
     &.scrollbar-auto-hide {
         &:not(.scrollbar-is-alive, :hover, :focus, :focus-visible, :focus-within) {
-
             .simplebar-scrollbar {
                 &::before {
                     @apply opacity-0;
@@ -40,12 +60,14 @@
         }
     }
 
-    &.simplebar-scrollable-y {
-        padding-right: var(--scrollbar-thickness);
-
-        &.scrollbar-with-opposite-gutter {
+    &.scrollbar-with-opposite-gutter {
+        .simplebar-content-wrapper {
             padding-left: var(--scrollbar-thickness);
         }
+    }
+
+    .simplebar-content-wrapper {
+        padding-right: var(--scrollbar-thickness);
     }
 
     .simplebar-track {

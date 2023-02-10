@@ -2,7 +2,7 @@ import { IMessage } from '@backendTypes';
 import { FC, useEffect, useRef, useState } from 'react';
 import { getRandomNumber } from '@utils';
 import { useAutoScroll } from '@hooks';
-import { ArrowFocusContextProvider, ArrowFocusItem, MessageItem } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, MessageItem, Scrollable } from '@components';
 
 
 
@@ -60,12 +60,38 @@ export const MessageList: FC = () => {
                     </button>
                 </div>
 
+                <Scrollable className='block h-full' scrollableRef={setScrollbarRef}>
+                    <ol className='flex flex-col justify-end min-h-full'>
+                        {messages.map((message, index) => {
+                            const tmpHead = !!parseInt(message.user);
+                            const isFirst = index === 0;
+
+                            return (
+                                <li key={message.id}>
+                                    <ArrowFocusItem id={message.id}>
+                                        {({ tabIndex }) => (
+                                            <MessageItem 
+                                                message={message}
+                                                isHeadless={tmpHead}
+                                                isFirst={isFirst}
+                                                tabIndex={tabIndex}
+                                            />
+                                        )}
+                                    </ArrowFocusItem>
+                                </li>
+                            );
+                        })}
+                    </ol>
+
+                    <div ref={setAutoScrollTriggerRef}></div>
+                </Scrollable>
+
                 <div 
                     className='h-full w-full overflow-y-scroll 
-                    scrollbar-with-gutter scrollbar-primary' 
+                    scrollbar-with-gutter scrollbar-primary bg-rose-400 hidden' 
                     ref={setScrollbarRef}
                 >
-                    <ol className='flex flex-col justify-end min-h-full overflow-hidden'>
+                    <ol className='flex flex-col justify-end min-h-full'>
                         {messages.map((message, index) => {
                             const tmpHead = !!parseInt(message.user);
                             const isFirst = index === 0;

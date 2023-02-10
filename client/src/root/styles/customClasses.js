@@ -24,6 +24,10 @@ const scrollbarClasses = {
     'scrollbar-is-alive': {
         '7': {},
     },
+
+    '.scrollbar-small': {
+        '8': {},
+    },
 };
 
 const focusClasses = {
