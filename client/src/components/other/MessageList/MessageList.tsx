@@ -25,7 +25,7 @@ const getMessages = ((size = 20) => {
 
 export const MessageList: FC = () => {
     const [messages, setMessages] = useState(getMessages(0));
-    const { setAutoScrollTriggerRef, setScrollbarRef } = useAutoScroll({ 
+    const { setAutoScrollTriggerRef, scrollableRef } = useAutoScroll({ 
         startFromBottom: true,
         autoScrollDependency: [messages],
     });
@@ -60,7 +60,7 @@ export const MessageList: FC = () => {
                     </button>
                 </div>
 
-                <Scrollable className='block h-full' scrollableRef={setScrollbarRef}>
+                <Scrollable className='block h-full' scrollableRef={scrollableRef}>
                     <ol className='flex flex-col justify-end min-h-full'>
                         {messages.map((message, index) => {
                             const tmpHead = !!parseInt(message.user);
@@ -86,10 +86,10 @@ export const MessageList: FC = () => {
                     <div ref={setAutoScrollTriggerRef}></div>
                 </Scrollable>
 
-                <div 
+                {/* <div 
                     className='h-full w-full overflow-y-scroll 
                     scrollbar-with-gutter scrollbar-primary bg-rose-400 hidden' 
-                    ref={setScrollbarRef}
+                    ref={scrollableRef}
                 >
                     <ol className='flex flex-col justify-end min-h-full'>
                         {messages.map((message, index) => {
@@ -114,7 +114,7 @@ export const MessageList: FC = () => {
                     </ol>
                         
                     <div ref={setAutoScrollTriggerRef}></div>
-                </div>
+                </div> */}
             </>
         </ArrowFocusContextProvider>
     );

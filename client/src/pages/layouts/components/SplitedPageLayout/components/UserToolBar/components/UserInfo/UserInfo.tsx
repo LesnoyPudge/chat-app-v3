@@ -45,7 +45,7 @@ export const UserInfo: FC = () => {
 
                     <Tooltip 
                         className={twClassNames({ [styles.tooltipActive]: isThrottling })}
-                        preferredAligment='top'
+                        preferredAlignment='top'
                         dependencyList={[isThrottling]}
                     >
                         {copyUsernameTooltipText}
@@ -53,7 +53,7 @@ export const UserInfo: FC = () => {
                 </RefContextProvider>
             </div>
 
-            <ContextMenu preferredAligment='top'>
+            <ContextMenu preferredAlignment='top'>
                 {({ closeOverlay }) => (
                     <div className='flex flex-col'>
                         <Button onLeftClick={closeOverlay}>change status</Button>

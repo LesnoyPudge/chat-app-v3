@@ -37,6 +37,7 @@
             "@layouts": ["src/pages/layouts/index"],
             "@libs": ["src/libs/index"],
             "@reExport": ["src/reExport"],
+            "@typeGuards": ["src/typeGuards"],
         },
     },
     "include": [

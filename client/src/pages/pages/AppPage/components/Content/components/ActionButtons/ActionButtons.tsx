@@ -49,7 +49,7 @@ export const ActionButtons: FC<ActionButtons> = ({
                         />
                     </Button>
 
-                    <Tooltip preferredAligment='top'>
+                    <Tooltip preferredAlignment='top'>
                         <>Сообщение</>
                     </Tooltip>
                 </RefContextProvider>
@@ -67,7 +67,7 @@ export const ActionButtons: FC<ActionButtons> = ({
                         />
                     </Button>
 
-                    <Tooltip preferredAligment='top'>
+                    <Tooltip preferredAlignment='top'>
                         <>Удалить из друзей</>
                     </Tooltip>
                 </RefContextProvider>
@@ -87,7 +87,7 @@ export const ActionButtons: FC<ActionButtons> = ({
                         />
                     </Button>
 
-                    <Tooltip preferredAligment='top'>
+                    <Tooltip preferredAlignment='top'>
                         <>Принять</>
                     </Tooltip>
                 </RefContextProvider>
@@ -105,7 +105,7 @@ export const ActionButtons: FC<ActionButtons> = ({
                         />
                     </Button>
 
-                    <Tooltip preferredAligment='top'>
+                    <Tooltip preferredAlignment='top'>
                         <>Отклонить</>
                     </Tooltip>
                 </RefContextProvider>
@@ -125,7 +125,7 @@ export const ActionButtons: FC<ActionButtons> = ({
                         />
                     </Button>
 
-                    <Tooltip preferredAligment='top'>
+                    <Tooltip preferredAlignment='top'>
                         <>Отозвать</>
                     </Tooltip>
                 </RefContextProvider>
@@ -145,7 +145,7 @@ export const ActionButtons: FC<ActionButtons> = ({
                         />
                     </Button>
 
-                    <Tooltip preferredAligment='top'>
+                    <Tooltip preferredAlignment='top'>
                         <>Разблокировать</>
                     </Tooltip>
                 </RefContextProvider>

@@ -1,10 +1,10 @@
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
-import { CSSProperties, FC } from 'react';
+import { CSSProperties, FC, MutableRefObject } from 'react';
 import { useThrottle } from '@hooks';
-import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
-import SimpleBarCore from 'simplebar-core';
+import { SimpleBarCore } from '@reExport';
+import SimpleBar from 'simplebar-react';
 
 
 
@@ -13,7 +13,8 @@ interface Scrollable extends PropsWithChildrenAndClassName {
     hidden?: boolean;
     withOppositeGutter?: boolean;
     small?: boolean;
-    scrollableRef?: (ref: HTMLDivElement) => void;
+    scrollableRef?: MutableRefObject<HTMLDivElement | null>;
+    simpleBarRef?: MutableRefObject<SimpleBarCore | null>;
 }
 
 const styles = {
@@ -40,20 +41,27 @@ export const Scrollable: FC<Scrollable> = ({
     withOppositeGutter = false,
     small = false,
     scrollableRef,
+    simpleBarRef,
     children,
 }) => {
-    const { throttle, isThrottling: isAlive } = useThrottle();  
+    const { throttle, isThrottling: isAlive } = useThrottle();
 
-    const handlePoinerMove = () => {
+    const handlePointerMove = () => {
         if (!autoHide) return;
         
         throttle(() => {}, 3000)();
     };
 
-    const getScrollableElementRef = (ref: SimpleBarCore) => {
-        if (!scrollableRef) return;
+    const getRef = (ref: SimpleBarCore | null) => {
         if (!ref) return;
-        scrollableRef(ref.getScrollElement() as HTMLDivElement);
+        
+        if (simpleBarRef) {
+            simpleBarRef.current = ref;
+        }
+
+        if (scrollableRef) {
+            scrollableRef.current = ref.getScrollElement() as HTMLDivElement;
+        }
     };
 
     return (
@@ -75,8 +83,8 @@ export const Scrollable: FC<Scrollable> = ({
                 forceVisible
                 autoHide={false}
                 clickOnTrack
-                onPointerMove={handlePoinerMove}
-                ref={getScrollableElementRef}
+                onPointerMove={handlePointerMove}
+                ref={getRef}
             >
                 {children}
             </SimpleBar>

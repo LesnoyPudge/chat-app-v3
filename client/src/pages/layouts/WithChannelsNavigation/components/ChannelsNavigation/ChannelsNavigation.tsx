@@ -86,7 +86,7 @@ export const ChannelsNavigation: FC = () => {
                                     />
                                 </Button>
 
-                                <Tooltip preferredAligment='right'>
+                                <Tooltip preferredAlignment='right'>
                                     <>Главная страница</>
                                 </Tooltip>
                             </RefContextProvider>
@@ -138,11 +138,11 @@ export const ChannelsNavigation: FC = () => {
                                                             </Conditional>
                                                         </Button>
 
-                                                        <Tooltip preferredAligment='right'>
+                                                        <Tooltip preferredAlignment='right'>
                                                             <>{channel.name}</>
                                                         </Tooltip>
 
-                                                        <ContextMenu preferredAligment='right'>
+                                                        <ContextMenu preferredAlignment='right'>
                                                             <>menu</>
                                                         </ContextMenu>
                                                     </RefContextProvider>
@@ -186,7 +186,7 @@ export const ChannelsNavigation: FC = () => {
 
                                         <CreateChannelModal/>
 
-                                        <Tooltip preferredAligment='right'>
+                                        <Tooltip preferredAlignment='right'>
                                             <>Добавить канал</>
                                         </Tooltip>
                                     </RefContextProvider>

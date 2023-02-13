@@ -111,7 +111,7 @@ export const RoleContent: FC = () => {
                                                 </Button>
     
                                                 <Tooltip 
-                                                    preferredAligment='top'
+                                                    preferredAlignment='top'
                                                     spacing={8}
                                                     boundsSize={0}
                                                 >

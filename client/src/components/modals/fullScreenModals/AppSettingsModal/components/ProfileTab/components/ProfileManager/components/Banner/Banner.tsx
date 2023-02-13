@@ -66,7 +66,7 @@ export const Banner: FC = () => {
                                         >
                                             <animated.div style={style}>
                                                 <RelativelyPositioned 
-                                                    preferredAligment='left'
+                                                    preferredAlignment='left'
                                                     spacing={10}
                                                     targetRefOrRect={targetRef}
                                                 >
@@ -85,7 +85,7 @@ export const Banner: FC = () => {
                                     )}
                                 </AnimatedTransition>
 
-                                <Tooltip preferredAligment='top'>
+                                <Tooltip preferredAlignment='top'>
                                     <>Изменить цвет баннера</>
                                 </Tooltip>
                             </>

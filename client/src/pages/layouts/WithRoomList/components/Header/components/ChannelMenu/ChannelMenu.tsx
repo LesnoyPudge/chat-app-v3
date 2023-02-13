@@ -48,7 +48,7 @@ export const ChannelMenu: FC = () => {
                     closeOnClickOutside
                 >
                     <RelativelyPositioned
-                        preferredAligment='bottom'
+                        preferredAlignment='bottom'
                         centered
                         targetRefOrRect={targetRef}
                         spacing={10}

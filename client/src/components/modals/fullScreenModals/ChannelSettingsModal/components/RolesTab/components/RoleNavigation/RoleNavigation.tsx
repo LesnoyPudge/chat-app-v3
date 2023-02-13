@@ -52,7 +52,7 @@ export const RoleNavigation: FC = () => {
                     </Button>
 
                     <Tooltip
-                        preferredAligment='top'
+                        preferredAlignment='top'
                         spacing={5}
                         boundsSize={0}
                     >

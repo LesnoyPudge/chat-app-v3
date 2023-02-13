@@ -1,10 +1,30 @@
 import { FC } from 'react';
-import { Button, Conditional, FieldLabel, Icon, Id, ModalWindow, Scrollable, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
+import { Button, Conditional, FieldLabel, Icon, Id, List, ModalWindow, Scrollable, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
 import { ModalContainer, ModalContent, ModalHeader, ModalTitle } from '../../components';
 import { conditional, copyToClipboard } from '@utils';
 import { useSearch, useThrottle } from '@hooks';
 
 
+
+const styles = {
+    title: 'text-start font-medium text-base truncated',
+    searchBar: 'h-8',
+    content: 'flex justify-center items-center h-[200px]',
+    scrollable: 'h-full',
+    list: 'flex flex-col gap-1',
+    item: `flex justify-between gap-4 p-2 h-11 w-full hover:bg-primary-hover 
+    focus-within:bg-primary-hover items-center`,
+    userInfo: 'flex gap-2.5 items-center',
+    userAvatar: 'h-8 w-8',
+    userName: 'truncated font-medium',
+    addButton: `h-full aspect-square p-1.5 rounded-full bg-primary-400 
+    hover:bg-primary-300 focus-visible:bg-primary-300 fill-icon-300 
+    hover:fill-icon-100 focus-visible:fill-icon-100`,
+    addIcon: 'w-full h-full',
+    notFound: 'text-center text-heading-m uppercase font-semibold',
+    share: 'mb-3 text-sm',
+    copyButton: 'h-8 my-auto mx-1.5',
+};
 
 export const InviteToChannelModal: FC = () => {
     const { searchValue, handleChange, handleReset } = useSearch();
@@ -13,7 +33,7 @@ export const InviteToChannelModal: FC = () => {
     const channelName = 'лошок111';
     const invitationCode = 'https://wow.ru/123';
 
-    const privateChats = Array(5).fill('').map((_, index) => {
+    const privateChats = Array(15).fill('').map((_, index) => {
         return {
             id: index.toString(),
             users: [
@@ -46,7 +66,7 @@ export const InviteToChannelModal: FC = () => {
         >
             <ModalContainer>
                 <ModalHeader>
-                    <ModalTitle className='text-start font-medium text-base truncated'>
+                    <ModalTitle className={styles.title}>
                         <>Пригласить друзей на канал <strong>{channelName}</strong></>
                     </ModalTitle>
                 </ModalHeader>
@@ -54,8 +74,9 @@ export const InviteToChannelModal: FC = () => {
                 <ModalContent>
                     <Conditional isRendered={haveFriends}>
                         <SearchBar
-                            className='h-8'
+                            className={styles.searchBar}
                             label='Поиск друзей по имени'
+                            placeholder='Поиск друзей по имени'
                             value={searchValue}
                             onChange={handleChange}
                             onReset={handleReset}
@@ -63,92 +84,87 @@ export const InviteToChannelModal: FC = () => {
 
                         <Separator spacing={16}/>
 
-                        <Conditional isRendered={notEmptyList}>
-                            <Scrollable className='max-h-[200px]'>
-                                <ul className='flex flex-col gap-1'>
-                                    {filteredPrivateChats.map((privateChat) => {
-                                        const user = privateChat.users[0];
+                        <div className={styles.content}>
+                            <Conditional isRendered={notEmptyList}>
+                                <Scrollable className={styles.scrollable}>
+                                    <ul className={styles.list}>
+                                        <List list={filteredPrivateChats}>
+                                            {(privateChat) => {
+                                                const user = privateChat.users[0];
 
-                                        return (
-                                            <li 
-                                                className='flex justify-between gap-4 p-2 h-11 w-full hover:bg-primary-hover focus-within:bg-primary-hover items-center'
-                                                key={privateChat.id}
-                                            >
-                                                <div className='flex gap-2.5 items-center'>
-                                                    <UserAvatar
-                                                        className='h-8 w-8'
-                                                        avatar={user.avatar}
-                                                        username={user.username}
-                                                    />
+                                                return (
+                                                    <li className={styles.item}>
+                                                        <div className={styles.userInfo}>
+                                                            <UserAvatar
+                                                                className={styles.userAvatar}
+                                                                avatar={user.avatar}
+                                                                username={user.username}
+                                                            />
 
-                                                    <span className='truncated font-medium'>
-                                                        {user.username}
-                                                    </span>
-                                                </div>
+                                                            <span className={styles.userName}>
+                                                                {user.username}
+                                                            </span>
+                                                        </div>
 
-                                                <Button
-                                                    className='h-full aspect-square p-1.5 rounded-full bg-primary-400 hover:bg-primary-300
-                                            focus-visible:bg-primary-300 fill-icon-300 hover:fill-icon-100
-                                            focus-visible:fill-icon-100'
-                                                >
-                                                    <Icon
-                                                        className='w-full h-full'
-                                                        iconId='plus-icon'
-                                                    />
-                                                </Button>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </Scrollable>
-                        </Conditional>
+                                                        <Button className={styles.addButton}>
+                                                            <Icon
+                                                                className={styles.addIcon}
+                                                                iconId='plus-icon'
+                                                            />
+                                                        </Button>
+                                                    </li>
+                                                );
+                                            }}
+                                        </List>
+                                    </ul>
+                                </Scrollable>
+                            </Conditional>
 
-                        <Conditional isRendered={!notEmptyList}>
-                            <p className='text-center text-heading-m uppercase font-semibold'>
-                                <>Никого не найдено</>
-                            </p>
-                        </Conditional>
+                            <Conditional isRendered={!notEmptyList}>
+                                <p className={styles.notFound}>
+                                    <>Никого не найдено</>
+                                </p>
+                            </Conditional>
+                        </div>
 
                         <Separator spacing={16}/>
                     </Conditional>
 
                     <Conditional isRendered={!haveFriends}>
-                        <p className='mb-3 text-sm'>
+                        <p className={styles.share}>
                             <>Поделитесь ссылкой-приглашением, чтобы предоставить доступ к этому каналу!</>
                         </p>
                     </Conditional>
 
-                    <div>
-                        <Id>
-                            {({ id }) => (
-                                <>
-                                    <Conditional isRendered={haveFriends}>
-                                        <FieldLabel htmlFor={id}>
-                                            <>Или отправьте другу ссылку-приглашение на канал</>
-                                        </FieldLabel>
-                                    </Conditional>
+                    <Id>
+                        {({ id }) => (
+                            <div>
+                                <Conditional isRendered={haveFriends}>
+                                    <FieldLabel htmlFor={id}>
+                                        <>Или отправьте другу ссылку-приглашение на канал</>
+                                    </FieldLabel>
+                                </Conditional>
 
-                                    <TextInputWrapper>
-                                        <TextInput
-                                            name='invitationCode'
-                                            label='Ссылка-приглашение на канал'
-                                            value={invitationCode}
-                                            id={id}
-                                            readOnly
-                                        />
+                                <TextInputWrapper>
+                                    <TextInput
+                                        name='invitationCode'
+                                        label='Ссылка-приглашение на канал'
+                                        value={invitationCode}
+                                        id={id}
+                                        readOnly
+                                    />
 
-                                        <Button 
-                                            className='h-8 my-auto mx-1.5'
-                                            stylingPreset='brand'
-                                            onLeftClick={handleCopyInvitation}
-                                        >
-                                            {copyButtonText}
-                                        </Button>
-                                    </TextInputWrapper>
-                                </>
-                            )}
-                        </Id>
-                    </div>
+                                    <Button 
+                                        className={styles.copyButton}
+                                        stylingPreset='brand'
+                                        onLeftClick={handleCopyInvitation}
+                                    >
+                                        {copyButtonText}
+                                    </Button>
+                                </TextInputWrapper>
+                            </div>
+                        )}
+                    </Id>
                 </ModalContent>
             </ModalContainer>
         </ModalWindow>

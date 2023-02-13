@@ -1,10 +1,15 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal } from '@components';
-import { EncodedFile } from '@types';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal } from '@components';
+import { useInView } from '@react-spring/web';
+import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { twClassNames } from '@utils';
-import { FC, PropsWithChildren, useEffect, useReducer, useRef, useState } from 'react';
+import { FC, PropsWithChildren, useDeferredValue, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
 import { EmojiPicker } from 'src/components/other/MessageInputBar/components/OpenEmojiPickerButton/components';
-import { useEventListener, useToggle } from 'usehooks-ts';
+import { useEventListener, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { VariableSizeList } from 'react-window';
+import { useSearch } from '@hooks';
+import { ViewportList } from 'react-viewport-list';
+import SimpleBarCore from 'simplebar-core';
 
 
 
@@ -99,6 +104,185 @@ const ImageV2: FC<ImageV2> = ({
 };
 
 
+interface Virtual extends PropsWithChildrenAsNodeOrFunction<{i: string}> {
+    list: {id: string}[]
+}
+
+const Virtual: FC<Virtual> = ({ 
+    list,
+    children, 
+}) => {
+    const listLength = list.length;
+    const height = 937;
+    const itemHeight = 45;
+    const overflowItems = 10;
+    const itemsInView = Math.floor(Math.min((height / itemHeight) + overflowItems, listLength));
+
+    const [renderRange, setRenderRange] = useState({ start: 0, finish: itemsInView });
+
+    const handleInView = (index: number, position: 'top' | 'bottom' | null) => {
+        console.log('trigger', index, position);
+        if (!position) return;
+        if (renderRange.start === 0 && position === 'top') return;
+        if (renderRange.finish === listLength && position === 'bottom') return;
+
+        console.log(`item ${index} in view!`);
+        
+        // setRenderRange(prevRange => ({
+        //     start: Math.max(prevRange.start - overflowItems, 0),
+        //     finish: Math.min(prevRange.finish + overflowItems, list.length - 1),
+        // }));
+
+        const posTop = position === 'top';
+
+        setRenderRange((prevRange) => ({
+            start: Math.min(Math.max(prevRange.start + (posTop ? -5 : 5), 0), listLength - 30),
+            finish: Math.min(Math.max(prevRange.finish + (posTop ? -5 : 5), 30), listLength),
+        }));
+    };
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setRenderRange(prev => ({ ...prev, finish: prev.finish + 10 }));
+    //     }, 2000);
+    // }, []);
+
+    const listToRender = list.slice(renderRange.start, renderRange.finish);
+
+    const heightBefore = renderRange.start * itemHeight;
+    const heightAfter = (listLength - renderRange.finish) * itemHeight;
+
+    const [topRef, inViewTop] = useInView();
+    const [bottomRef, inViewBottom] = useInView();
+
+    
+
+    const ref1 = useRef<HTMLDivElement>(null);
+    const ref2 = useRef<HTMLDivElement>(null);
+    const renderRangeRef = useRef(renderRange);
+    useEffect(() => {
+        if (!ref1.current || !ref2.current) return;
+
+        const obs1 = new IntersectionObserver(([entry]: IntersectionObserverEntry[]) => {
+            if (!entry.isIntersecting) return;
+            if (renderRangeRef.current.start === 0) return;
+            
+            console.log('top');
+            
+            const newRange = {
+                start: Math.min(Math.max(renderRangeRef.current.start - 5, 0), listLength - 30),
+                finish: Math.min(Math.max(renderRangeRef.current.finish - 5, 30), listLength),
+            };
+
+            setRenderRange(newRange);
+            renderRangeRef.current = newRange;
+        });
+        const obs2 = new IntersectionObserver(([entry]: IntersectionObserverEntry[]) => {
+            if (!entry.isIntersecting) return;
+            if (renderRange.finish === listLength) return;
+        
+            console.log('trigger bottom');
+
+            const newRange = {
+                start: Math.min(Math.max(renderRangeRef.current.start + 5, 0), listLength - 30),
+                finish: Math.min(Math.max(renderRangeRef.current.finish + 5, 30), listLength),
+            };
+
+            setRenderRange(newRange);
+            renderRangeRef.current = newRange;
+        });
+
+        // const target1 = ref1.current;
+        // const target2 = ref2.current;
+
+        obs1.observe(ref1.current);
+        obs2.observe(ref2.current);
+
+        return () => {
+            obs1.disconnect();
+            obs2.disconnect();
+        };
+    }, []);
+
+
+    useEffect(() => {
+        if (!inViewTop) return;
+        if (renderRange.start === 0 && inViewTop) return;
+        
+        console.log('trigger top');
+        setRenderRange((prevRange) => ({
+            start: Math.min(Math.max(prevRange.start - 5, 0), listLength - 30),
+            finish: Math.min(Math.max(prevRange.finish - 5, 30), listLength),
+        }));
+        // console.log(renderRange);
+    }, [inViewTop]);
+
+    useEffect(() => {
+        if (!inViewBottom) return;
+        if (renderRange.finish === listLength && inViewBottom) return;
+
+        console.log('trigger bottom');
+        setRenderRange((prevRange) => ({
+            start: Math.min(Math.max(prevRange.start + 5, 0), listLength - 30),
+            finish: Math.min(Math.max(prevRange.finish + 5, 30), listLength),
+        }));
+    }, [inViewBottom]);
+    
+    const docRef = useRef(document);
+
+    useEventListener('scroll', () => {
+        console.log('scroll!');
+    }, docRef);
+
+    return (
+        <>
+            <div style={{ height: heightBefore }} ref={ref1}></div>
+
+            {/* <div className='w-px h-px bg-red-600' ref={topRef}></div> */}
+
+            {listToRender.map((item, index) => {
+                return (
+                    <ChildrenAsNodeOrFunction args={{ i: item.id }} key={item.id}>
+                        {children}
+                    </ChildrenAsNodeOrFunction>
+                );
+            })}
+
+            {/* <div className='w-px h-px bg-red-600' ref={bottomRef}></div> */}
+
+            <div style={{ height: heightAfter }} ref={ref2}></div>
+        </>
+    );
+};
+
+interface Item extends PropsWithChildren {
+    observe: boolean;
+    onInView: () => void;
+}
+
+const Item: FC<Item> = ({ 
+    observe,
+    children,
+    onInView,
+}) => {
+    const [ref, inView] = useInView({});
+    const isTriggeredRef = useRef(false);
+    
+    useUpdateEffect(() => {
+        if (!observe) return;
+        if (!inView) return;
+        // if (isTriggeredRef.current) return;
+
+        // isTriggeredRef.current = true;
+        onInView();
+    }, [inView, onInView]);
+
+    return (
+        <div ref={ref}>
+            {children}
+        </div>
+    );
+};
 
 const PlaygroundInner: FC = () => {
     const [isRendered, toggleIsRendered] = useToggle(true);
@@ -125,22 +309,44 @@ const PlaygroundInner: FC = () => {
         };
     }, []);
 
+    const list = [...Array(600)].map((_, i) => ({
+        id: i.toString(),
+    }));
+
     return (
         <>
             <OverlayContextProvider isOverlayExistInitial={true}>
             </OverlayContextProvider>
 
-            <button onClick={handleClick}>click</button>
+            {/* <button onClick={handleClick}>click</button> */}
 
-            <Scrollable className='h-full' scrollableRef={(el) => ref.current = el}>
+            <div 
+                className='h-full overflow-y-scroll' 
+            // scrollableRef={(el) => ref.current = el}
+            >
                 <div className='flex flex-col gap-5'>
-                    {[...Array(60)].map((_, i) => (
-                        <div key={i}>
-                        wow
-                        </div>
-                    ))}
+                    <Virtual list={list}>
+                        {({ i }) => (
+                            <div>
+                                <>wow {i}</>
+                            </div>
+                        )}
+                    </Virtual>
+
+                    {/* <VariableSizeList 
+                        height={978} 
+                        itemCount={list.length}
+                        width='100%'
+                        itemSize={() => 45}
+                    >
+                        {({ index, style }) => (
+                            <div style={style}>
+                                <>wow {index}</>
+                            </div>
+                        )}
+                    </VariableSizeList> */}
                 </div>
-            </Scrollable>
+            </div>
 
 
             <Conditional isRendered={false}>
@@ -167,7 +373,98 @@ const PlaygroundInner: FC = () => {
     );
 };
 
-const enabled = !!0;
+const list = [...Array(9)].map((_, i) => ({ id: `key ${i}`, some: `some ${i}` }));
+
+const PlaygroundInner2: FC = () => {
+    
+
+    const { deferredSearchValue, searchValue, handleChange, handleReset } = useSearch();
+
+    // const filteredList = useFilter(list, (item, index, arr) => {
+    //     return item.some.includes(searchValue);
+    // }, 500);
+
+    const createdList = useMemo(() => (
+        Array(500000).fill('').map((_, index) => {
+            return {
+                id: index.toString(), 
+                some: `${deferredSearchValue} ${index}`,
+            };
+        })
+    ), [deferredSearchValue]);
+    
+    // useEffect(() => console.log('update', filteredList2.length), [filteredList2]);
+    const ref = useRef<HTMLDivElement | null>(null);
+    return (
+        <>
+            <SearchBar
+                value={searchValue}
+                label=''
+                onChange={handleChange}
+                onReset={handleReset}
+            />
+
+            <Scrollable className='h-[800px]' scrollableRef={ref}>
+                {/* <List list={createdList}>
+                    {({ some }) => (
+                        <div>
+                            {some}
+                        </div>
+                    )}
+                </List> */}
+                <div className='relative flex flex-col space-y-5'>
+                    <ViewportList
+                        viewportRef={ref}
+                        items={createdList}
+                        overscan={5}
+                    >
+                        {(item) => (
+                            <div key={item.id}>
+                                {item.some}
+                            </div>
+                        )}
+                    </ViewportList>
+                </div>
+            </Scrollable>
+
+            {/* <List list={filteredList}>
+                {(item, index, array) => (
+                    <div>
+                        {item.some}
+                    </div>
+                )}
+            </List> */}
+
+            {/* <Scrollable className='h-full' scrollableRef={(el) => ref.current = el}>
+                <div className='flex flex-col'>
+                    <ViewportList
+                        viewportRef={ref}
+                        items={filteredList}
+                        overscan={5}
+                    >
+                        {(item) => (
+                            <div key={item.id}>
+                                {item.some}
+                            </div>
+                        )}
+                    </ViewportList>
+                </div>
+            </Scrollable> */}
+        </>
+    );
+};
+
+const PlaygroundInner3: FC = () => {
+    return (
+        <>
+            <OverlayContextProvider isOverlayExistInitial={true}>
+                <BanMemberModal memberId='' channelId=''/>
+            </OverlayContextProvider>
+        </>
+    );
+};
+
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -177,7 +474,9 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </Conditional>
 
             <Conditional isRendered={enabled}>
-                <PlaygroundInner/>
+                {/* <PlaygroundInner/> */}
+                {/* <PlaygroundInner2/> */}
+                <PlaygroundInner3/>
             </Conditional>
         </>
     );

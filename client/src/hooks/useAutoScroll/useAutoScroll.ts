@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { MutableRefObject, useCallback, useLayoutEffect, useRef } from 'react';
 import { useResizeObserver } from '@hooks';
 import { useInView } from 'react-intersection-observer';
 import { useIsFirstRender } from 'usehooks-ts';
@@ -10,10 +10,10 @@ interface IOptions {
     autoScrollDependency?: unknown[];
 }
 
-type SetRefType = (node: HTMLElement | null) => void;
+type SetRefType = (node: HTMLDivElement | null) => void;
 
 interface IReturn {
-    setScrollbarRef: SetRefType;
+    scrollableRef: MutableRefObject<HTMLDivElement | null>;
     setAutoScrollTriggerRef: SetRefType;
 }
 
@@ -26,27 +26,27 @@ const defaultOptions: Required<IOptions> = {
 
 export const useAutoScroll: UseAutoScroll = (options) => {
     const isFirstRender = useIsFirstRender();
-    const scrollbarRef = useRef<HTMLElement | null>(null);
+    const scrollableRef = useRef<HTMLDivElement | null>(null);
     const [setAutoScrollTriggerRef, isAutoScroll] = useInView({ threshold: 0 });
     const {
         startFromBottom,
         autoScrollDependency,
     } = Object.assign(defaultOptions, options);
 
-    const setScrollbarRef: SetRefType = (node) => {
-        scrollbarRef.current = node;
-    };
+    // const setScrollbarRef: SetRefType = (node) => {
+    //     scrollableRef.current = node;
+    // };
 
     const scrollToBottom = useCallback(() => {
-        if (!scrollbarRef.current) return;
-        scrollbarRef.current.scrollTop = scrollbarRef.current.scrollHeight;
+        if (!scrollableRef.current) return;
+        scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
     }, []);
 
     const autoScroll = useCallback(() => {
         if (isAutoScroll) scrollToBottom();
     }, [isAutoScroll, scrollToBottom]);
 
-    useResizeObserver(scrollbarRef.current, autoScroll);
+    useResizeObserver(scrollableRef.current, autoScroll);
 
     useLayoutEffect(() => {
         if (isFirstRender && startFromBottom) scrollToBottom();
@@ -56,7 +56,7 @@ export const useAutoScroll: UseAutoScroll = (options) => {
     useLayoutEffect(() => autoScroll(), [...autoScrollDependency]);
 
     return {
-        setScrollbarRef,
+        scrollableRef,
         setAutoScrollTriggerRef,
     };
 };

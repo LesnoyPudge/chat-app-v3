@@ -1,9 +1,9 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 
 
-interface IChildrenAsNodeOrFunction extends PropsWithChildrenAsNodeOrFunction {
+interface IChildrenAsNodeOrFunction extends PropsWithChildrenAsNodeOrFunction<any> {
     args: any;
 }
 
@@ -12,8 +12,12 @@ export const ChildrenAsNodeOrFunction: FC<IChildrenAsNodeOrFunction> = ({
     children,
 }) => {
     const content = children instanceof Function 
-        ? children(args) 
+        ? Array.isArray(args) 
+            ? children(...args)
+            : children(args) 
         : children;
     
-    return <>{content}</>;
+    return (
+        <>{content}</>
+    );
 };

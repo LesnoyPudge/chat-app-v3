@@ -41,7 +41,7 @@ export const UserToolBar: FC = () => {
                 </Button>
 
                 <Tooltip 
-                    preferredAligment='top'
+                    preferredAlignment='top'
                     dependencyList={[isVoiceMuted]}
                 >
                     {voiceTooltip}
@@ -62,7 +62,7 @@ export const UserToolBar: FC = () => {
                 </Button>
 
                 <Tooltip 
-                    preferredAligment='top'
+                    preferredAlignment='top'
                     dependencyList={[isSoundMuted]}
                 >
                     {soundTooltip}
@@ -86,7 +86,7 @@ export const UserToolBar: FC = () => {
                                 />
                             </Button>
 
-                            <Tooltip preferredAligment='top'>
+                            <Tooltip preferredAlignment='top'>
                                 <>Настройки</>
                             </Tooltip>
                         </RefContextProvider>

@@ -13,3 +13,7 @@ export * from './LightBoxModal';
 export * from './AddMemberToRoleModal';
 export * from './DeleteRoleModal';
 export * from './UnbanUserModal';
+export * from './BlockUserModal';
+export * from './BanMemberModal';
+export * from './KickMemberModal';
+export * from './ChangeChannelOwnerModal';

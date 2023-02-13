@@ -152,7 +152,7 @@ export const RoleColor: FC<PropsWithClassName> = ({
                                                 >
                                                     <animated.div style={style}>
                                                         <RelativelyPositioned 
-                                                            preferredAligment='right'
+                                                            preferredAlignment='right'
                                                             spacing={10}
                                                             targetRefOrRect={targetRef}
                                                         >

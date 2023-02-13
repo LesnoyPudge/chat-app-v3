@@ -1,7 +1,7 @@
 import { FC, useContext, useState } from 'react';
 import { AnimatedTransition, ChildrenAsNodeOrFunction, OverlayContext, OverlayContextProvider, OverlayItem, RefContext, RelativelyPositioned } from '@components';
 import { animated } from '@react-spring/web';
-import { Aligment, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
+import { Alignment, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
 import { useEventListener } from 'usehooks-ts';
 
@@ -13,7 +13,7 @@ type TargetRect = Omit<DOMRect, 'x' | 'y' | 'toJSON'>
 interface ContextMenu extends 
 PropsWithClassName,
 PropsWithChildrenAsNodeOrFunction<OverlayContext> {
-    preferredAligment: Aligment;
+    preferredAlignment: Alignment;
 }
 
 const transitionOptions = getTransitionOptions.defaultContextMenu({});
@@ -22,7 +22,7 @@ const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-color-bas
 
 const ContextMenuInner: FC<ContextMenu> = ({
     className = '',
-    preferredAligment,
+    preferredAlignment,
     children,
 }) => {
     const contextValues = useContext(OverlayContext) as OverlayContext;
@@ -77,11 +77,11 @@ const ContextMenuInner: FC<ContextMenu> = ({
                     focused
                 >
                     <RelativelyPositioned
-                        preferredAligment={preferredAligment}
+                        preferredAlignment={preferredAlignment}
                         targetRefOrRect={targetRect}
                         spacing={15}
                         boundsSize={20}
-                        swapableAligment
+                        swapableAlignment
                     >
                         <animated.div 
                             className={twClassNames(baseClassName, className)}

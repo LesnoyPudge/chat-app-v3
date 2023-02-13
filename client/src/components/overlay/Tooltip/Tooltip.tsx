@@ -2,13 +2,13 @@ import { FC, useContext, useState } from 'react';
 import { OverlayPortal, Conditional, RelativelyPositioned, RefContext, AnimatedTransition } from '@components';
 import { animated, to } from '@react-spring/web';
 import { useEventListener } from 'usehooks-ts';
-import { Aligment, PropsWithChildrenAndClassName } from '@types';
+import { Alignment, PropsWithChildrenAndClassName } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
 
 
 
 interface Tooltip extends PropsWithChildrenAndClassName {
-    preferredAligment: Aligment;
+    preferredAlignment: Alignment;
     boundsSize?: number;
     spacing?: number;
     dependencyList?: unknown[];
@@ -34,7 +34,7 @@ py-[5px] px-2.5 rounded-md w-max max-w-[300px] shadow-elevation-low`;
 
 export const Tooltip: FC<Tooltip> = ({
     className,
-    preferredAligment,
+    preferredAlignment,
     boundsSize = 20,
     spacing = 20,
     dependencyList,
@@ -67,11 +67,11 @@ export const Tooltip: FC<Tooltip> = ({
                     <OverlayPortal>
                         <div className='overlay-item-wrapper'>
                             <RelativelyPositioned
-                                preferredAligment={preferredAligment} 
+                                preferredAlignment={preferredAlignment} 
                                 targetRefOrRect={targetRef}
                                 boundsSize={boundsSize}
                                 spacing={spacing}
-                                swapableAligment
+                                swapableAlignment
                                 centered
                                 dependencyList={dependencyList}
                             >

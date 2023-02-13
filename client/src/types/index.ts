@@ -6,19 +6,17 @@ export type PropsWithClassName = {
     className?: string;
 }
 
+export type PropsWithChildrenAsNodeOrFunction<T> = {
+    children?: 
+        ReactNode | 
+        (
+            T extends (...args: never) => ReactNode 
+                ? T 
+                : (args: T) => ReactNode
+        );
+};
+
 export type PropsWithChildrenAndClassName = PropsWithChildren & PropsWithClassName;
-
-export type ChildrenAsFunction<ARGS> = (args: ARGS) => JSX.Element;
-
-export type ChildrenAsNodeOrFunction<ARGS = any> = ChildrenAsFunction<ARGS> | ReactNode;
-
-export type PropsWithChildrenAsNodeOrFunction<ARGS = any> = {
-    children?: ChildrenAsNodeOrFunction<ARGS>;
-}
-
-export type PropsWithChildrenAsFunction<ARGS = any> = {
-    children: ChildrenAsFunction<ARGS>;
-}
 
 export interface EncodedFile {
     name: string;
@@ -28,7 +26,7 @@ export interface EncodedFile {
     base64: string;
 }
 
-export type Aligment = 'top' | 'bottom' | 'left' | 'right';
+export type Alignment = 'top' | 'bottom' | 'left' | 'right';
 
 export interface RGB {
     r: number;

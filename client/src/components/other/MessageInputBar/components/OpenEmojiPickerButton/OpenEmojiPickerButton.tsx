@@ -57,7 +57,7 @@ export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
                                         >
                                             <animated.div style={style}>
                                                 <RelativelyPositioned 
-                                                    preferredAligment='top' 
+                                                    preferredAlignment='top' 
                                                     targetRefOrRect={targetRef}
                                                 >
                                                     <EmojiPicker/>

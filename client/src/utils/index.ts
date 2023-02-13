@@ -13,7 +13,6 @@ export * from './tryParseJSONObject';
 export * from './getHTML';
 export * from './getOneOf';
 export * from './getRandomNumber';
-export * from './isRef';
 export * from './secondsToMs';
 export * from './conditional';
 export * from './getTransitionOptions';

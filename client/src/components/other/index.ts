@@ -14,3 +14,4 @@ export * from './TabList';
 export * from './TabPanel';
 export * from './ArrowFocusItem';
 export * from './Scrollable';
+export * from './List';

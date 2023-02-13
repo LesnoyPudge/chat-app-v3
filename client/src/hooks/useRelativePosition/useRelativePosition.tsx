@@ -1,7 +1,7 @@
 import { RefObject, useCallback, useLayoutEffect, useState } from 'react';
 import { useResizeObserver } from '@hooks';
-import { isRef } from '@utils';
-import { Aligment } from '@types';
+import { isRef } from '@typeGuards';
+import { Alignment } from '@types';
 import { useWindowSize } from 'usehooks-ts';
 
 
@@ -23,24 +23,24 @@ interface WrapperRect {
 interface GetRelativePositionReturn {
     top: number;
     left: number;
-    aligment: Aligment;
+    aligment: Alignment;
 }
 
 type GetRelativePosition = (args: {
     boundsSize?: number;
     spacing?: number;
-    swapableAligment?: boolean;
-    preferredAligment: Aligment;
+    swapableAlignment?: boolean;
+    preferredAlignment: Alignment;
     targetRect: TargetRect;
     wrapperRect: WrapperRect;
     centered?: boolean;
 }) => GetRelativePositionReturn;
 
 interface UseRelativePositionArgs {
-    preferredAligment: Aligment;
+    preferredAlignment: Alignment;
     targetRefOrRect?: RefObject<HTMLElement> | TargetRect;
     wrapperRefOrRect?: RefObject<HTMLElement> | WrapperRect;
-    swapableAligment?: boolean;
+    swapableAlignment?: boolean;
     boundsSize?: number;
     spacing?: number;
     centered?: boolean;
@@ -48,10 +48,10 @@ interface UseRelativePositionArgs {
 }
 
 export const useRelativePosition = ({
-    preferredAligment,
+    preferredAlignment,
     targetRefOrRect,
     wrapperRefOrRect,
-    swapableAligment,
+    swapableAlignment,
     boundsSize,
     spacing,
     centered,
@@ -61,7 +61,7 @@ export const useRelativePosition = ({
     const [position, setPosition] = useState<GetRelativePositionReturn>({ 
         top: boundsSize || 0, 
         left: boundsSize || 0, 
-        aligment: preferredAligment, 
+        aligment: preferredAlignment, 
     });
 
     const setNewPosition = useCallback(() => {
@@ -82,19 +82,19 @@ export const useRelativePosition = ({
         );
         
         const newPosition = getRelativePosition({
-            preferredAligment,
+            preferredAlignment,
             targetRect,
             wrapperRect,
             boundsSize,
             spacing,
-            swapableAligment,
+            swapableAlignment,
             centered,
         });
 
         setPosition(newPosition);
     }, [
-        boundsSize, centered, preferredAligment, 
-        spacing, swapableAligment, targetRefOrRect, 
+        boundsSize, centered, preferredAlignment, 
+        spacing, swapableAlignment, targetRefOrRect, 
         wrapperRefOrRect,
     ]);
 
@@ -116,8 +116,8 @@ export const useRelativePosition = ({
 const getRelativePosition: GetRelativePosition = ({
     boundsSize = 0,
     spacing = 0,
-    swapableAligment = false,
-    preferredAligment,
+    swapableAlignment = false,
+    preferredAlignment,
     targetRect,
     wrapperRect,
     centered = false,
@@ -184,7 +184,7 @@ const getRelativePosition: GetRelativePosition = ({
         };
     };
 
-    const getAvailableAligments = () => {
+    const getAvailableAlignments = () => {
         return {
             top: unboundedPositions.top.top > bounds.top,
             bottom: unboundedPositions.bottom.top < bounds.bottom,
@@ -196,21 +196,21 @@ const getRelativePosition: GetRelativePosition = ({
     const positions = positionsInBounds();
     
     const defaultResult: GetRelativePositionReturn = {
-        ...positions[preferredAligment],
-        aligment: preferredAligment,
+        ...positions[preferredAlignment],
+        aligment: preferredAlignment,
     };
 
-    if (!swapableAligment) return defaultResult;
+    if (!swapableAlignment) return defaultResult;
 
-    const availableAligments = getAvailableAligments();
+    const availableAlignments = getAvailableAlignments();
 
-    if (availableAligments[preferredAligment]) return defaultResult;
+    if (availableAlignments[preferredAlignment]) return defaultResult;
 
     const noSpaceAvailable = (
-        !availableAligments.top && 
-        !availableAligments.bottom && 
-        !availableAligments.left && 
-        !availableAligments.right
+        !availableAlignments.top && 
+        !availableAlignments.bottom && 
+        !availableAlignments.left && 
+        !availableAlignments.right
     );
 
     if (noSpaceAvailable) return defaultResult;
@@ -234,30 +234,30 @@ const getRelativePosition: GetRelativePosition = ({
     
     const alternativeAlignmentOptions = {
         top: (
-            (availableAligments.bottom && bottomResult) || 
-            (availableAligments.left && leftResult) || 
-            (availableAligments.right && rightResult) || 
+            (availableAlignments.bottom && bottomResult) || 
+            (availableAlignments.left && leftResult) || 
+            (availableAlignments.right && rightResult) || 
             topResult
         ),
         bottom: (
-            (availableAligments.top && topResult) ||
-            (availableAligments.left && leftResult) || 
-            (availableAligments.right && rightResult) || 
+            (availableAlignments.top && topResult) ||
+            (availableAlignments.left && leftResult) || 
+            (availableAlignments.right && rightResult) || 
             bottomResult
         ),
         left: (
-            (availableAligments.right && rightResult) ||
-            (availableAligments.top && topResult) || 
-            (availableAligments.bottom && bottomResult) || 
+            (availableAlignments.right && rightResult) ||
+            (availableAlignments.top && topResult) || 
+            (availableAlignments.bottom && bottomResult) || 
             leftResult
         ),
         right: (
-            (availableAligments.left && leftResult) ||
-            (availableAligments.top && topResult) || 
-            (availableAligments.bottom && bottomResult) || 
+            (availableAlignments.left && leftResult) ||
+            (availableAlignments.top && topResult) || 
+            (availableAlignments.bottom && bottomResult) || 
             rightResult
         ),
     };
 
-    return alternativeAlignmentOptions[preferredAligment];
+    return alternativeAlignmentOptions[preferredAlignment];
 };
