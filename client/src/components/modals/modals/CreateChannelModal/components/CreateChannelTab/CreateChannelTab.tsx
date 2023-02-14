@@ -51,7 +51,7 @@ export const CreateChannelTab: FC = () => {
                     >
                         {({ value }) => {
                             return (
-                                <div className='peer-focus-visible:focused flex w-20 h-20 bg-primary-300 rounded-full'>
+                                <div className='peer-focus-visible:focused flex w-20 h-20 bg-primary-300 rounded-full pointer-events-none'>
                                     <Conditional isRendered={!!value}>
                                         <Image
                                             className='rounded-full'

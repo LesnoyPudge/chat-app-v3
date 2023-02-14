@@ -1,5 +1,6 @@
-import { Button, ModalWindow, OverlayContext, TextArea } from '@components';
-import { ChangeEvent, FC, useContext, useState } from 'react';
+import { Button, FieldLabel, Id, ModalWindow, OverlayContext, TextArea } from '@components';
+import { useTextInput } from '@hooks';
+import { FC, useContext } from 'react';
 import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../components';
 
 
@@ -9,14 +10,16 @@ interface BanMemberModal {
     channelId: string;
 }
 
+const styles = {
+    title: 'text-base text-color-primary font-semibold',
+};
+
 export const BanMemberModal: FC<BanMemberModal> = ({
     memberId,
     channelId,
 }) => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const [value, setValue] = useState('');
-
-    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setValue(e.target.value);
+    const { value, handleChange } = useTextInput();
 
     const member = {
         id: memberId,
@@ -32,17 +35,30 @@ export const BanMemberModal: FC<BanMemberModal> = ({
         >
             <ModalContainer>
                 <ModalHeader>
-                    <ModalTitle className='text-base text-color-primary font-semibold'>
-                        <>Хотите заблокировать <strong>{member.name}</strong>?</>
+                    <ModalTitle className={styles.title}>
+                        <>Хотите забанить <strong>{member.name}</strong>?</>
                     </ModalTitle>
                 </ModalHeader>
 
                 <ModalContent>
-                    <TextArea
-                        value=''
-                        maxLength={512}
-                        onChange={() => ''}
-                    />
+                    <Id>
+                        {(id) => (
+                            <>
+                                <FieldLabel htmlFor={id}>
+                                    <>Причина бана</>
+                                </FieldLabel>
+
+                                <TextArea
+                                    id={id}
+                                    value={value}
+                                    maxLength={512}
+                                    rows={6}
+                                    placeholder='Введите причину бана или оставьте это поле пустым'
+                                    onChange={handleChange}
+                                />
+                            </>
+                        )}
+                    </Id>
                 </ModalContent>
 
                 <ModalFooter>

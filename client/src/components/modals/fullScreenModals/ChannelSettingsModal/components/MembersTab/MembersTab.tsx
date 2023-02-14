@@ -1,5 +1,5 @@
 import { BanMemberModal, Button, ChangeChannelOwnerModal, ChannelSettingsModalFormValues, ChannelSettingsModalTabs, Icon, KickMemberModal, OverlayContextProvider, RefContextProvider, SearchBar, Separator, TabContext, TabPanel, Tooltip, UserAvatar } from '@components';
-import { useSearch } from '@hooks';
+import { useTextInput } from '@hooks';
 import { twClassNames } from '@utils';
 import { FormikContextType, useFormikContext } from 'formik';
 import { FC, useContext } from 'react';
@@ -25,7 +25,7 @@ const styles = {
 
 export const MembersTab: FC = () => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
-    const { searchValue, handleChange, handleReset } = useSearch();
+    const { value, handleChange, handleReset } = useTextInput();
     const { values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
 
     const members = [...Array(20)].map((_, index) => ({
@@ -34,8 +34,8 @@ export const MembersTab: FC = () => {
         avatar: `https://i.pravatar.cc/${50}`,
     }));
 
-    const filteredMembers = !searchValue ? members : members.filter((member) => {
-        return member.name.includes(searchValue);
+    const filteredMembers = !value ? members : members.filter((member) => {
+        return member.name.includes(value);
     });
 
     return (
@@ -56,7 +56,7 @@ export const MembersTab: FC = () => {
 
                     <SearchBar
                         className={styles.searchBar}
-                        value={searchValue}
+                        value={value}
                         placeholder='Имя или роль участника'
                         label='Поиск по имени или роли участника'
                         onChange={handleChange}

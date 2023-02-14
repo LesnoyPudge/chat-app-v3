@@ -17,3 +17,4 @@ export * from './BlockUserModal';
 export * from './BanMemberModal';
 export * from './KickMemberModal';
 export * from './ChangeChannelOwnerModal';
+export * from './FindChannelModal';

@@ -1,1 +1,2 @@
-export * from './CheckBoxIndicator';
+export * from './CheckBoxIndicatorSlide';
+export * from './CheckBoxIndicatorCheck';

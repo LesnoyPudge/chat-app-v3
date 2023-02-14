@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal } from '@components';
 import { useInView } from '@react-spring/web';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { twClassNames } from '@utils';
@@ -7,7 +7,7 @@ import { OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/comp
 import { EmojiPicker } from 'src/components/other/MessageInputBar/components/OpenEmojiPickerButton/components';
 import { useEventListener, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useSearch } from '@hooks';
+import { useTextInput } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -375,30 +375,61 @@ const PlaygroundInner: FC = () => {
 
 const list = [...Array(9)].map((_, i) => ({ id: `key ${i}`, some: `some ${i}` }));
 
+const createList = (value: string) => [...Array(500000)].map((_, index) => ({
+    id: index.toString(),
+    some: `${value} ${index}`,
+}));
+import { useWorker } from '@koale/useworker';
+import { useAsync, useAsyncFn } from 'react-use';
+// import { createWorkerFactory, useWorker,  } from '@shopify/react-web-worker';
+
+
+
+// const createWorker = createWorkerFactory(createList);
+
 const PlaygroundInner2: FC = () => {
+    const { deferredValue, value, handleChange, handleReset } = useTextInput();
+    const [createListWorker, { status, kill }] = useWorker(createList);
+    // const asyncList = useAsync(createListWorker);
+    // const createdList = useMemo(() => (
+    //     Array(500000).fill('').map((_, index) => {
+    //         return {
+    //             id: index.toString(), 
+    //             some: `${deferredValue} ${index}`,
+    //         };
+    //     })
+    // ), [deferredValue]);
     
 
-    const { deferredSearchValue, searchValue, handleChange, handleReset } = useSearch();
+    const [valueList, setValue] = useState<{id: string, some: string}[]>(() => createList(''));
 
-    // const filteredList = useFilter(list, (item, index, arr) => {
-    //     return item.some.includes(searchValue);
-    // }, 500);
+    useEffect(() => {
+        if (status === 'RUNNING') kill();
+        
+        const dod = async() => {
+            kill();
+            console.log(status);
+            if (status === 'RUNNING') return kill();
+            
+            const v = await createListWorker(deferredValue);
+            setValue(v);
+        };
 
-    const createdList = useMemo(() => (
-        Array(500000).fill('').map((_, index) => {
-            return {
-                id: index.toString(), 
-                some: `${deferredSearchValue} ${index}`,
-            };
-        })
-    ), [deferredSearchValue]);
-    
+        dod();
+
+        return () => {
+            console.log('kill');
+            kill();
+        };
+    }, [createListWorker, deferredValue, kill]);
+
+
     // useEffect(() => console.log('update', filteredList2.length), [filteredList2]);
     const ref = useRef<HTMLDivElement | null>(null);
     return (
         <>
             <SearchBar
-                value={searchValue}
+                value={value}
                 label=''
                 onChange={handleChange}
                 onReset={handleReset}
@@ -415,7 +446,7 @@ const PlaygroundInner2: FC = () => {
                 <div className='relative flex flex-col space-y-5'>
                     <ViewportList
                         viewportRef={ref}
-                        items={createdList}
+                        items={valueList}
                         overscan={5}
                     >
                         {(item) => (
@@ -458,13 +489,14 @@ const PlaygroundInner3: FC = () => {
     return (
         <>
             <OverlayContextProvider isOverlayExistInitial={true}>
-                <BanMemberModal memberId='' channelId=''/>
+                {/* <RoomSettingsModal/> */}
+                <FindChannelModal/>
             </OverlayContextProvider>
         </>
     );
 };
 
-const enabled = !!1;
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

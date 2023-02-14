@@ -20,7 +20,7 @@ export const AuthPage: FC = () => {
                 src={fancyBgSrc}
             />
 
-            <div className='flex flex-col p-8 max-[480px]:px-4 m-auto w-[480px] rounded bg-primary-200 shadow-elevation-high'>
+            <div className='p-8 m-auto w-[480px] rounded bg-primary-200 shadow-elevation-high'>
                 <TabContextProvider tabs={tabs}>
                     {({ currentTab }) => (
                         <>{currentTab.tab}</>

@@ -1,7 +1,7 @@
 import { SearchBar, TabContextProvider } from '@components';
 import { FC } from 'react';
 import { Content, Navigation } from './components';
-import { useSearch } from '@hooks';
+import { useTextInput } from '@hooks';
 
 
 
@@ -20,7 +20,7 @@ const styles = {
 };
 
 export const AppPage: FC = () => {
-    const { searchValue, handleChange, handleReset } = useSearch();
+    const { value, handleChange, handleReset } = useTextInput();
     
     return (
         <TabContextProvider tabs={tabs}>
@@ -31,12 +31,12 @@ export const AppPage: FC = () => {
                     className={styles.searchBar}
                     placeholder='Поиск по имени'
                     label='Имя пользователя'
-                    value={searchValue}
+                    value={value}
                     onChange={handleChange}
                     onReset={handleReset}
                 />
 
-                <Content searchValue={searchValue}/>
+                <Content value={value}/>
             </div>
             
         </TabContextProvider>

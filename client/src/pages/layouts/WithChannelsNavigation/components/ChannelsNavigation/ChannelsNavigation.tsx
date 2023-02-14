@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Image, ArrowFocusContextProvider, ArrowFocusItem, Scrollable } from '@components';
+import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Image, ArrowFocusContextProvider, ArrowFocusItem, Scrollable, FindChannelModal } from '@components';
 import { WrapperWithBullet } from './components';
 import { useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -32,13 +32,13 @@ const styles = {
     inner: 'flex flex-col gap-2',
     button: {
         base: `w-12 h-12 mx-auto flex justify-center items-center bg-primary-300 
-        rounded-3xl overflow-hidden transition-all ease-linear
+        rounded-3xl overflow-hidden transition-all ease-linear duration-75
         hover:rounded-2xl focus-visible:rounded-2xl hover:text-white 
         focus-visible:text-white peer`,
         active: 'rounded-2xl text-white',
     },
-    icon: 'w-7 h-7 transition-all ease-linear',
-    addChannelButton: {
+    icon: 'w-7 h-7 transition-all ease-linear duration-75',
+    actionButton: {
         base: `hover:bg-positive focus-visible:bg-positive 
         fill-positive hover:fill-white focus-visible:fill-white`,
         active: 'bg-positive fill-white',
@@ -167,10 +167,44 @@ export const ChannelsNavigation: FC = () => {
                                         <Button
                                             className={twClassNames(
                                                 styles.button.base, 
-                                                styles.addChannelButton.base,
+                                                styles.actionButton.base,
                                                 { 
                                                     [styles.button.active]: isOverlayExist,
-                                                    [styles.addChannelButton.active]: isOverlayExist, 
+                                                    [styles.actionButton.active]: isOverlayExist, 
+                                                },
+                                            )}
+                                            hasPopup='dialog'
+                                            isActive={isOverlayExist}
+                                            label='Найти публичный канал'
+                                            onLeftClick={openOverlay}
+                                        >
+                                            <Icon 
+                                                className={styles.icon}
+                                                iconId='navigator-icon'
+                                            />
+                                        </Button>
+
+                                        <FindChannelModal/>
+
+                                        <Tooltip preferredAlignment='right'>
+                                            <>Найти публичный канал</>
+                                        </Tooltip>
+                                    </RefContextProvider>
+                                </WrapperWithBullet>  
+                            )}
+                        </OverlayContextProvider>
+
+                        <OverlayContextProvider>
+                            {({ openOverlay, isOverlayExist }) => (
+                                <WrapperWithBullet isActive={isOverlayExist}>
+                                    <RefContextProvider>
+                                        <Button
+                                            className={twClassNames(
+                                                styles.button.base, 
+                                                styles.actionButton.base,
+                                                { 
+                                                    [styles.button.active]: isOverlayExist,
+                                                    [styles.actionButton.active]: isOverlayExist, 
                                                 },
                                             )}
                                             hasPopup='dialog'

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { ModalWindow, TabContextProvider } from '@components';
 import { EnterCodeSlide, EnterNewEmailSlide, RequestCodeSlide } from './slides';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 
 
 
@@ -44,7 +44,9 @@ export const ChangeEmailModal: FC = () => {
                                 initialValues={initialValues}
                                 onSubmit={handleSubmit}
                             >
-                                {currentTab.tab}
+                                <Form>
+                                    {currentTab.tab}
+                                </Form>
                             </Formik>
                         );
                     }}

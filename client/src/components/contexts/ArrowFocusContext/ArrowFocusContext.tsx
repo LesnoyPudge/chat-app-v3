@@ -1,5 +1,5 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import React, { createContext, FC, useEffect, useRef, useState } from 'react';
+import React, { createContext, FC, useEffect, useMemo, useRef, useState } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
 
 
@@ -55,7 +55,7 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
     orientation,
     children,
 }) => {
-    const normalizedList = normalizeList(list);
+    const normalizedList = useMemo(() => normalizeList(list), [list]);
     const focusedWithArrow = useRef<boolean>(false);
     const [focus, setFocus] = useState<Focus>({ 
         focusableId: normalizedList[0]?.id,

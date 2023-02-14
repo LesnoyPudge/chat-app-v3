@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Button, Conditional, FieldLabel, Icon, Id, List, ModalWindow, Scrollable, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
 import { ModalContainer, ModalContent, ModalHeader, ModalTitle } from '../../components';
 import { conditional, copyToClipboard } from '@utils';
-import { useSearch, useThrottle } from '@hooks';
+import { useTextInput, useThrottle } from '@hooks';
 
 
 
@@ -27,7 +27,7 @@ const styles = {
 };
 
 export const InviteToChannelModal: FC = () => {
-    const { searchValue, handleChange, handleReset } = useSearch();
+    const { value, handleChange, handleReset } = useTextInput();
     const { throttle, isThrottling } = useThrottle();
 
     const channelName = 'лошок111';
@@ -47,7 +47,7 @@ export const InviteToChannelModal: FC = () => {
     });
 
     const filteredPrivateChats = privateChats.filter((privateChat) => {
-        return privateChat.users[0].username.includes(searchValue);
+        return privateChat.users[0].username.includes(value);
     });
 
     const haveFriends = !!privateChats.length;
@@ -77,7 +77,7 @@ export const InviteToChannelModal: FC = () => {
                             className={styles.searchBar}
                             label='Поиск друзей по имени'
                             placeholder='Поиск друзей по имени'
-                            value={searchValue}
+                            value={value}
                             onChange={handleChange}
                             onReset={handleReset}
                         />
@@ -137,7 +137,7 @@ export const InviteToChannelModal: FC = () => {
                     </Conditional>
 
                     <Id>
-                        {({ id }) => (
+                        {(id) => (
                             <div>
                                 <Conditional isRendered={haveFriends}>
                                     <FieldLabel htmlFor={id}>

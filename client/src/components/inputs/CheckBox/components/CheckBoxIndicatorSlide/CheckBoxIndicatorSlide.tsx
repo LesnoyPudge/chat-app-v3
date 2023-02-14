@@ -6,7 +6,7 @@ import { useUpdateEffect } from 'usehooks-ts';
 
 
 
-interface CheckBoxIndicator extends PropsWithClassName {
+interface CheckBoxIndicatorSlide extends PropsWithClassName {
     checked: boolean;
 }
 
@@ -24,7 +24,7 @@ const styles = {
     },
 };
 
-export const CheckBoxIndicator: FC<CheckBoxIndicator> = ({
+export const CheckBoxIndicatorSlide: FC<CheckBoxIndicatorSlide> = ({
     className = '',
     checked,
 }) => {

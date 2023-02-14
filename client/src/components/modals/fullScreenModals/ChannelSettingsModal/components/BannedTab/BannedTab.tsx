@@ -3,7 +3,7 @@ import { Heading, HeadingLevel } from '@libs';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
 import banhummer from '@assets/banhummer.svg';
-import { useNavigator, useSearch } from '@hooks';
+import { useNavigator, useTextInput } from '@hooks';
 import { FormikContextType, useFormikContext } from 'formik';
 
 
@@ -25,7 +25,7 @@ const styles = {
 export const BannedTab: FC = () => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
     const { values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
-    const { handleChange, handleReset, searchValue } = useSearch();
+    const { handleChange, handleReset, value } = useTextInput();
 
     const bannedUsers = [...Array(20)].map((_, i) => ({
         id: i.toString(),
@@ -33,8 +33,8 @@ export const BannedTab: FC = () => {
         avatar: `https://i.pravatar.cc/${50}`,
     }));
 
-    const filteredBannedUsers = !searchValue ? bannedUsers : bannedUsers.filter((user) => {
-        return user.name.includes(searchValue);
+    const filteredBannedUsers = !value ? bannedUsers : bannedUsers.filter((user) => {
+        return user.name.includes(value);
     });
 
     return (
@@ -56,7 +56,7 @@ export const BannedTab: FC = () => {
                         className={styles.searchBar}
                         label='Поиск по имени'
                         placeholder='Введите имя пользователя'
-                        value={searchValue}
+                        value={value}
                         onChange={handleChange}
                         onReset={handleReset}
                     />

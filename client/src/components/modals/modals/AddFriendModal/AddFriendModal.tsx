@@ -1,5 +1,5 @@
-import { Button, Conditional, Icon, ModalWindow, OverlayContext, SearchBar, UserAvatar } from '@components';
-import { useSearch } from '@hooks';
+import { Button, Conditional, Icon, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
+import { useTextInput } from '@hooks';
 import { getRandomNumber } from '@utils';
 import { FC, useContext } from 'react';
 import { IUserPreview } from '@backendTypes';
@@ -7,8 +7,9 @@ import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalSubtitle, 
 
 
 
-const style = {
-    resultWrapper: 'mt-4',
+const styles = {
+    resultWrapper: 'mt-4 h-[250px] flex justify-center items-center',
+    scrollable: 'h-full',
     list: 'flex flex-col gap-2',
     item: 'flex justify-between items-center gap-2 px-2 py-1',
     userInfo: 'flex gap-2',
@@ -20,20 +21,25 @@ const style = {
     addButtonIcon: 'w-full h-full',
 };
 
+const users = Array(20).fill('').map((_, index) => {
+    return {
+        id: index.toString(),
+        username: `user ${index}`,
+        avatar: `https://i.pravatar.cc/${50}`,
+    } as IUserPreview;
+});
+
 const AddFriendModalInner: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const { searchValue, handleChange, handleReset } = useSearch();
+    const { value, handleChange, handleReset } = useTextInput();
 
-    const foundUsers = Array(getRandomNumber(1, 10)).fill('').map((_, index) => {
-        return {
-            id: index.toString(),
-            username: `user ${index}`,
-            avatar: `https://i.pravatar.cc/${50}`,
-        } as IUserPreview;
-    });
+    const usersToShow = users.filter((user) => {
+        return user.username.includes(value);
+    });    
 
-    const showUserList = !!foundUsers.length && !!searchValue;
-    const noUsersFound = !foundUsers.length && !!searchValue;
+    const emptySearch = !value;
+    const showUserList = !!usersToShow.length && !!value;
+    const noUsersFound = !usersToShow.length && !!value;
 
     return (
         <ModalContainer>
@@ -51,56 +57,68 @@ const AddFriendModalInner: FC = () => {
                 <SearchBar
                     placeholder='Введите имя пользователя'
                     label='Имя пользователя'
-                    value={searchValue}
+                    value={value}
                     onChange={handleChange}
                     onReset={handleReset}
                 />
 
-                <div className={style.resultWrapper}>
-                    <Conditional isRendered={showUserList}>
-                        <ul className={style.list}>
-                            {foundUsers.map(({ avatar, id, username }) => {
-                                const handleAddFriend = () => {
-                                    console.log('add to friends', username);
-                                };
+                <div className={styles.resultWrapper}>
+                    <Conditional isRendered={!emptySearch}>
+                        <Conditional isRendered={showUserList}>
+                            <Scrollable 
+                                className={styles.scrollable} 
+                                small
+                            >
+                                <ul className={styles.list}>
+                                    <List list={usersToShow}>
+                                        {({ username, avatar }) => {
+                                            const handleAddFriend = () => {
+                                                console.log('add to friends', username);
+                                            };
 
-                                return (
-                                    <li 
-                                        className={style.item} 
-                                        key={id}
-                                    >
-                                        <div className={style.userInfo}>
-                                            <UserAvatar
-                                                className={style.avatar}
-                                                avatar={avatar}
-                                                username={username}
-                                            />
+                                            return (
+                                                <li className={styles.item}>
+                                                    <div className={styles.userInfo}>
+                                                        <UserAvatar
+                                                            className={styles.avatar}
+                                                            avatar={avatar}
+                                                            username={username}
+                                                        />
 
-                                            <span className={style.username}>
-                                                {username}
-                                            </span>
-                                        </div>
+                                                        <span className={styles.username}>
+                                                            {username}
+                                                        </span>
+                                                    </div>
 
-                                        <Button
-                                            className={style.addButton}
-                                            label={`Добавить ${username} в друзья`}
-                                            onLeftClick={handleAddFriend}
-                                        >
-                                            <Icon
-                                                className={style.addButtonIcon}
-                                                iconId='plus-icon'
-                                            />
-                                        </Button>
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                                                    <Button
+                                                        className={styles.addButton}
+                                                        label={`Добавить ${username} в друзья`}
+                                                        onLeftClick={handleAddFriend}
+                                                    >
+                                                        <Icon
+                                                            className={styles.addButtonIcon}
+                                                            iconId='plus-icon'
+                                                        />
+                                                    </Button>
+                                                </li>
+                                            );
+                                        }}
+                                    </List>
+                                </ul>
+                            </Scrollable>
+                        </Conditional>
+
+                        <Conditional isRendered={noUsersFound}>
+                            <div>
+                                <>Пользователи не найдены</>
+                            </div>
+                        </Conditional>
                     </Conditional>
 
-                    <Conditional isRendered={noUsersFound}>
-                        <span>
-                            <>Пользователи не найдены</>
-                        </span>
+                    <Conditional isRendered={emptySearch}>
+                        <div>
+                            <>Начните вводить имя</>
+                        </div>
                     </Conditional>
                 </div>
             </ModalContent>

@@ -74,7 +74,6 @@ export const ChannelSettingsModal: FC = () => {
 
                     return (
                         <TabContextProvider
-                            initialTab='membersTab'
                             tabs={tabs} 
                             onTabChange={onTabChange}
                         >

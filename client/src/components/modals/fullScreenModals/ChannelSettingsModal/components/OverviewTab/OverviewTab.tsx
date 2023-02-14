@@ -1,4 +1,4 @@
-import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicator, FieldLabel, Separator, TabContext, TabPanel, TextInput, Icon } from '@components';
+import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput, Icon } from '@components';
 import { FormikCheckBox, FormikFileInput, FormikTextInput } from '@libs';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
@@ -139,7 +139,7 @@ export const OverviewTab: FC = () => {
                             <>Не отображать канал в поиске, вход только по приглашениям.</>
                         </div>
 
-                        <CheckBoxIndicator checked={checked}/>
+                        <CheckBoxIndicatorSlide checked={checked}/>
                     </>
                 )}
             </FormikCheckBox>

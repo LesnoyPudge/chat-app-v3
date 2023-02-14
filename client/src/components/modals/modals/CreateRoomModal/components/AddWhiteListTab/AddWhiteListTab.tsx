@@ -1,12 +1,13 @@
 import { FC, useContext } from 'react';
-import { Button, Conditional, CreateRoomFormValues, CreateRoomModalTabs, Icon, Scrollable, SearchBar, TabContext, UserAvatar, Image } from '@components';
+import { Button, Conditional, CreateRoomFormValues, CreateRoomModalTabs, Icon, Scrollable, SearchBar, TabContext, UserAvatar, Image , CheckBoxIndicatorCheck } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../../../components';
 import { conditional, twClassNames } from '@utils';
 import { IRole, IUserPreview } from '@backendTypes';
 import { FormikContextType, useFormikContext } from 'formik';
 import { Heading } from '@libs';
-import { useSearch } from '@hooks';
+import { useTextInput } from '@hooks';
 import notFoundImage from '@assets/not-found-image.svg';
+
 
 
 
@@ -14,6 +15,7 @@ const styles = {
     title: 'text-heading-l self-start font-medium',
     content: 'gap-3',
     searchBar: 'h-8',
+    scroll: 'h-full',
     scrollLimiter: 'h-[300px]',
     notFoundWrapper: 'flex flex-col h-full justify-center items-center',
     notFoundImage: 'w-[85px] h-[85px] mb-4',
@@ -26,14 +28,7 @@ const styles = {
         hover:bg-primary-hover focus-visible:bg-primary-hover`,
         active: 'bg-primary-selected',
     },
-    checkBox: {
-        base: 'mr-4 w-5 h-5 rounded border-2 border-brand',
-        active: 'bg-brand',
-    },
-    checkBoxIcon: {
-        base: 'w-full h-full fill-white',
-        active: 'hidden',
-    },
+    checkBoxIndicator: 'mr-4',
     itemImage: 'w-5 h-5',
     itemName: 'ml-2 text-sm font-medium truncate',
     itemNotFound: 'flex justify-center items-center h-full font-medium text-sm',
@@ -55,33 +50,29 @@ const members = Array(15).fill('').map((_, index) => ({
 export const AddWhiteListTab: FC = () => {
     const { changeTab } = useContext(TabContext) as TabContext<CreateRoomModalTabs>;
     const { values, setFieldValue } = useFormikContext() as FormikContextType<CreateRoomFormValues>;
-    const { searchValue, handleChange, handleReset } = useSearch();
+    const { value, handleChange, handleReset } = useTextInput();
 
-    const isAnyChecked = !!values.allowedRoles.length || !!values.allowedUsers.length;
+    const isAnyChecked = !!values.allowedRoles.size || !!values.allowedUsers.size;
     const submitButtonText = conditional('Создать комнату', 'Пропустить', isAnyChecked);
 
-    const handleCheck = (field: 'allowedRoles' | 'allowedUsers', roleOrUser: IRole | IUserPreview) => {
-        if (!isChecked(field, roleOrUser)) return setFieldValue(field, [...values[field], roleOrUser]);
+    const handleCheck = (field: 'allowedRoles' | 'allowedUsers', roleOrUserId: string) => {
+        const newValue = new Set(values[field]);
         
-        if (field === 'allowedRoles') {
-            const filteredRoles = values.allowedRoles.filter((role) => role.id !== roleOrUser.id);
-            setFieldValue(field, filteredRoles);
+        if (isChecked(field, roleOrUserId)) {
+            newValue.delete(roleOrUserId);
         } else {
-            const filteredUsers = values.allowedUsers.filter((user) => user.id !== roleOrUser.id);
-            setFieldValue(field, filteredUsers);
+            newValue.add(roleOrUserId);
         }
+
+        setFieldValue(field, newValue);
     };
 
-    const isChecked = (field: 'allowedRoles' | 'allowedUsers', roleOrUser: IRole | IUserPreview) => {
-        if (field === 'allowedRoles') {
-            return !!values.allowedRoles.find((role) => role.id === roleOrUser.id);
-        } else {
-            return !!values.allowedUsers.find((user) => user.id === roleOrUser.id);
-        }
+    const isChecked = (field: 'allowedRoles' | 'allowedUsers', roleOrUserId: string) => {
+        return !!values[field].has(roleOrUserId);
     };
 
-    const filteredRoles = roles.filter((role) => role.name.includes(searchValue));
-    const filteredMembers = members.filter((member) => member.username.includes(searchValue));
+    const filteredRoles = roles.filter((role) => role.name.includes(value));
+    const filteredMembers = members.filter((member) => member.username.includes(value));
 
     const showRoles = !!filteredRoles.length;
     const showMembers = !!filteredMembers.length;
@@ -99,14 +90,14 @@ export const AddWhiteListTab: FC = () => {
                     className={styles.searchBar}
                     placeholder='Название роли или имя пользователя'
                     label='Название роли или имя пользователя'
-                    value={searchValue}
+                    value={value}
                     onChange={handleChange}
                     onReset={handleReset}
                 />
 
                 <div className={styles.scrollLimiter}>
                     <Conditional isRendered={showRoles || showMembers}>
-                        <Scrollable>
+                        <Scrollable className={styles.scroll}>
                             <div className={styles.scrollInner}>
                                 <Heading className={styles.listTitle}>
                                     <>Роли</>
@@ -115,8 +106,8 @@ export const AddWhiteListTab: FC = () => {
                                 <Conditional isRendered={showRoles}>
                                     <div className={styles.list}>
                                         {filteredRoles.map((role) => {
-                                            const handleRoleCheck = () => handleCheck('allowedRoles', role);
-                                            const isRoleChecked = isChecked('allowedRoles', role);
+                                            const handleRoleCheck = () => handleCheck('allowedRoles', role.id);
+                                            const isRoleChecked = isChecked('allowedRoles', role.id);
 
                                             return (
                                                 <div key={role.id}>
@@ -129,18 +120,10 @@ export const AddWhiteListTab: FC = () => {
                                                         isActive={isRoleChecked}
                                                         onLeftClick={handleRoleCheck}
                                                     >
-                                                        <div className={twClassNames(
-                                                            styles.checkBox.base,
-                                                            { [styles.checkBox.active]: isRoleChecked },
-                                                        )}>
-                                                            <Icon
-                                                                className={twClassNames(
-                                                                    styles.checkBoxIcon.base,
-                                                                    { [styles.checkBoxIcon.active]: !isRoleChecked },
-                                                                )}
-                                                                iconId='check-icon'
-                                                            />
-                                                        </div>
+                                                        <CheckBoxIndicatorCheck
+                                                            className={styles.checkBoxIndicator}
+                                                            checked={isRoleChecked}
+                                                        />
 
                                                         <Icon
                                                             className={styles.itemImage}
@@ -171,8 +154,8 @@ export const AddWhiteListTab: FC = () => {
                                 <Conditional isRendered={showMembers}>
                                     <div className={styles.list}>
                                         {filteredMembers.map((member) => {
-                                            const handleRoleCheck = () => handleCheck('allowedUsers', member);
-                                            const isRoleChecked = isChecked('allowedUsers', member);
+                                            const handleRoleCheck = () => handleCheck('allowedUsers', member.id);
+                                            const isRoleChecked = isChecked('allowedUsers', member.id);
 
                                             return (
                                                 <div key={member.id}>
@@ -185,18 +168,10 @@ export const AddWhiteListTab: FC = () => {
                                                         isActive={isRoleChecked}
                                                         onLeftClick={handleRoleCheck}
                                                     >
-                                                        <div className={twClassNames(
-                                                            styles.checkBox.base,
-                                                            { [styles.checkBox.active]: isRoleChecked },
-                                                        )}>
-                                                            <Icon
-                                                                className={twClassNames(
-                                                                    styles.checkBoxIcon.base,
-                                                                    { [styles.checkBoxIcon.active]: !isRoleChecked },
-                                                                )}
-                                                                iconId='check-icon'
-                                                            />
-                                                        </div>
+                                                        <CheckBoxIndicatorCheck
+                                                            className={styles.checkBoxIndicator}
+                                                            checked={isRoleChecked}
+                                                        />
 
                                                         <UserAvatar
                                                             className={styles.itemImage}

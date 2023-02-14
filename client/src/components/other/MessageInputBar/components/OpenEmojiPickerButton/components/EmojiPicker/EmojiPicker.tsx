@@ -1,5 +1,5 @@
 import { Button, Emoji, emojiList, Scrollable, SearchBar } from '@components';
-import { useSearch } from '@hooks';
+import { useTextInput } from '@hooks';
 import { useSlateAddEmoji } from '@libs';
 import { PropsWithClassName } from '@types';
 import { conditional, getRandomNumber, twClassNames } from '@utils';
@@ -26,14 +26,14 @@ export const EmojiPicker: FC<PropsWithClassName> = ({
     className = '',
 }) => {
     const { addEmoji } = useSlateAddEmoji();
-    const { searchValue, handleChange, handleReset } = useSearch();
+    const { value, handleChange, handleReset } = useTextInput();
     const [currentEmoji, setCurrentEmoji] = useState(emojiList[getRandomNumber(0, emojiList.length - 1)]);
 
     const filteredList = useMemo(() => emojiList.filter((emoji) => {
-        return !!emoji.code.filter((code) => code.match(searchValue.toLowerCase())).length;
-    }), [searchValue]);
+        return !!emoji.code.filter((code) => code.match(value.toLowerCase())).length;
+    }), [value]);
 
-    const emojiListToRender = conditional(filteredList, emojiList, !!searchValue);
+    const emojiListToRender = conditional(filteredList, emojiList, !!value);
     const emojiCode = currentEmoji.code[0];
     const emojiCodes = currentEmoji.code.join(' ');
 
@@ -43,7 +43,7 @@ export const EmojiPicker: FC<PropsWithClassName> = ({
                 className={styles.searchBar}
                 label='Поиск эмоджи'
                 placeholder={emojiCodes}
-                value={searchValue}
+                value={value}
                 onChange={handleChange}
                 onReset={handleReset}
             />

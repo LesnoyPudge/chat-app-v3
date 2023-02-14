@@ -9,7 +9,7 @@ import friendsNotFoundImage from '@assets/friendsNotFound.svg';
 
 
 interface Content {
-    searchValue: string;
+    value: string;
 }
 
 const allFriends: IUserPreview[] = [
@@ -101,13 +101,13 @@ const styles = {
     notFoundText: 'text-color-secondary text-center',
 };
 
-export const Content: FC<Content> = ({ searchValue }) => {
+export const Content: FC<Content> = ({ value }) => {
     const { currentTab, tabs, tabPanelProps, isActive } = useContext(TabContext) as TabContext<AppPageTabs>;
 
     const filterByName = (users: {username: string}[]): IUserPreview[] => {
-        if (!searchValue) return users as IUserPreview[];
+        if (!value) return users as IUserPreview[];
 
-        return users.filter((user) => user.username.includes(searchValue)) as IUserPreview[];
+        return users.filter((user) => user.username.includes(value)) as IUserPreview[];
     };
 
     const filters: Record<keyof typeof tabs, () => ReturnType<typeof filterByName>> = {

@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicator, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput, CreateRoomModalTabs } from '@components';
+import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput, CreateRoomModalTabs } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { FormikContextType, useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
@@ -140,7 +140,7 @@ export const CreateRoomTab: FC = () => {
                                     <span>Приватная комната</span>
                                 </div>
 
-                                <CheckBoxIndicator checked={checked}/>
+                                <CheckBoxIndicatorSlide checked={checked}/>
                             </div>
                         )}
                     </FormikCheckBox>

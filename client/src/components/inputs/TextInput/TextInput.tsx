@@ -1,5 +1,6 @@
-import { FC, RefObject, useId } from 'react';
+import { FC, RefObject } from 'react';
 import { conditional, twClassNames } from '@utils';
+import { Id } from '@components';
 
 
 
@@ -49,40 +50,43 @@ export const TextInput: FC<TextInput> = ({
     inputRef,
     onChange,
 }) => {
-    const errorId = useId();
     const autoCompleteValue = conditional('on', 'off', autoComplete);
 
     return (
-        <>
-            <input
-                className={twClassNames(styles.input, className)}
-                name={name}
-                id={id}
-                type={type}
-                placeholder={placeholder}
-                minLength={minLength}
-                maxLength={maxLength}
-                spellCheck={spellCheck}
-                inputMode={inputMode}
-                required={required}
-                readOnly={readOnly}
-                disabled={disabled}
-                autoComplete={autoCompleteValue}
-                value={value}
-                aria-label={label}
-                aria-invalid={!!error}
-                aria-describedby={errorId}
-                ref={inputRef}
-                onChange={onChange}
-            />
+        <Id>
+            {(errorId) => (
+                <>
+                    <input
+                        className={twClassNames(styles.input, className)}
+                        name={name}
+                        id={id}
+                        type={type}
+                        placeholder={placeholder}
+                        minLength={minLength}
+                        maxLength={maxLength}
+                        spellCheck={spellCheck}
+                        inputMode={inputMode}
+                        required={required}
+                        readOnly={readOnly}
+                        disabled={disabled}
+                        autoComplete={autoCompleteValue}
+                        value={value}
+                        aria-label={label}
+                        aria-invalid={!!error}
+                        aria-describedby={errorId}
+                        ref={inputRef}
+                        onChange={onChange}
+                    />
 
-            <span
-                className={styles.error}
-                id={errorId}
-                aria-live='assertive'
-            >
-                {error}
-            </span>
-        </>
+                    <span
+                        className={styles.error}
+                        id={errorId}
+                        aria-live='assertive'
+                    >
+                        {error}
+                    </span>
+                </>
+            )}
+        </Id>
     );
 };

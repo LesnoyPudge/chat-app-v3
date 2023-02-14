@@ -6,7 +6,7 @@ import { FormikContextType, useFormikContext } from 'formik';
 
 
 interface RoleMembersTab {
-    searchValue: string;
+    value: string;
 }
 
 const styles = {
@@ -22,7 +22,7 @@ const styles = {
 };
 
 export const RoleMembersTab: FC<RoleMembersTab> = ({
-    searchValue,
+    value,
 }) => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
     const { values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
@@ -37,8 +37,8 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
         return values.roleMembers.includes(anyMember.id);
     });
 
-    const filteredMembers = !searchValue ? membersToFilter : membersToFilter.filter((member) => {
-        return member.name.includes(searchValue);
+    const filteredMembers = !value ? membersToFilter : membersToFilter.filter((member) => {
+        return member.name.includes(value);
     });
 
     const removeMember = (memberIdToRemove: string) => console.log('remove role', memberIdToRemove);

@@ -11,16 +11,16 @@ export interface CreateRoomFormValues {
     roomType: 'text' | 'voice';
     name: string;
     isPrivate: boolean;
-    allowedRoles: IRole[];
-    allowedUsers: IUserPreview[];
+    allowedRoles: Set<string>;
+    allowedUsers: Set<string>;
 }
 
 const initialValues: CreateRoomFormValues = {
     roomType: 'text',
     name: '',
     isPrivate: false,
-    allowedRoles: [],
-    allowedUsers: [],
+    allowedRoles: new Set([]),
+    allowedUsers: new Set([]),
 };
 
 const tabs = {
@@ -44,15 +44,15 @@ export const CreateRoomModal: FC = () => {
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
             >
-                <ModalContainer>
-                    <Form>
+                <Form>
+                    <ModalContainer>
                         <TabContextProvider tabs={tabs}>
                             {({ currentTab }) => (
                                 <>{currentTab.tab}</>
                             )}
                         </TabContextProvider>
-                    </Form>
-                </ModalContainer>
+                    </ModalContainer>
+                </Form>
             </Formik>
         </ModalWindow>
     );

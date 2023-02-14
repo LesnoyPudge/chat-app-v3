@@ -178,6 +178,7 @@ export const Button: FC<Button> = ({
             aria-haspopup={hasPopup}
             aria-controls={controls}
             aria-hidden={hidden}
+            aria-disabled={isDisabled}
             role={role}
             onKeyDown={handleLeftClickWithKeyboard}
             onClick={handleLeftClick}

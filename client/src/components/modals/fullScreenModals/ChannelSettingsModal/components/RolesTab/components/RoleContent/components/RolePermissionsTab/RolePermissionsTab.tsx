@@ -1,5 +1,5 @@
-import { FC, useContext } from 'react';
-import { Image, CheckBoxIndicator, Conditional, Separator, TabContext, TabPanel } from '@components';
+import { FC, useContext, useMemo } from 'react';
+import { Image, CheckBoxIndicatorSlide, Conditional, Separator, TabContext, TabPanel } from '@components';
 import { FormikCheckBox, Heading, HeadingLevel } from '@libs';
 import permissionNotFoundImage from '@assets/not-found-image.svg';
 import { RoleContentTabs } from '../..';
@@ -7,7 +7,7 @@ import { RoleContentTabs } from '../..';
 
 
 interface RolePermissionsTab {
-    searchValue: string;
+    value: string;
 }
 
 const permissionGroups = [
@@ -80,16 +80,19 @@ const styles = {
     permissionDescription: 'text-color-secondary text-sm',
 };
 
-export const RolePermissionsTab: FC<RolePermissionsTab> = ({ searchValue }) => {
+export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
     
-    const filteredPermissionGroups = permissionGroups.filter((group) => {
-        return !!group.permissions.filter((permission) => {
-            const matchInTitle = permission.title.toLowerCase().includes(searchValue.toLowerCase());
-            const matchInDescription = permission.description.toLowerCase().includes(searchValue.toLowerCase());
-            return matchInTitle || matchInDescription; 
-        }).length;
-    });
+    const filteredPermissionGroups = useMemo(() => {
+        return permissionGroups.filter((group) => {
+            console.log(value);
+            return !!group.permissions.filter((permission) => {
+                const matchInTitle = permission.title.toLowerCase().includes(value.toLowerCase());
+                const matchInDescription = permission.description.toLowerCase().includes(value.toLowerCase());
+                return matchInTitle || matchInDescription; 
+            }).length;
+        });
+    }, [value]);
 
     const showPermissions = !!filteredPermissionGroups.length;
     
@@ -120,31 +123,31 @@ export const RolePermissionsTab: FC<RolePermissionsTab> = ({ searchValue }) => {
                                     {group.name}
                                 </Heading>
             
-                                {group.permissions.map((premission, premissionIndex) => {
+                                {group.permissions.map((permission, permissionIndex) => {
                                     const isLastGroup = groupIndex === permissionGroups.length - 1;
-                                    const isLastItem = premissionIndex === group.permissions.length - 1;
+                                    const isLastItem = permissionIndex === group.permissions.length - 1;
                                     const showSeparator = !(isLastGroup && isLastItem);
 
                                     return (
-                                        <div key={premission.name}>
+                                        <div key={permission.name}>
                                             <FormikCheckBox 
                                                 className={styles.permissionCheckBox}
-                                                name={premission.name}
-                                                label={premission.title}
+                                                name={permission.name}
+                                                label={permission.title}
                                             >
                                                 {({ checked }) => (
                                                     <>
                                                         <div className={styles.permissionTitle}>
-                                                            {premission.title}
+                                                            {permission.title}
                                                         </div>
         
-                                                        <CheckBoxIndicator checked={checked}/>
+                                                        <CheckBoxIndicatorSlide checked={checked}/>
                                                     </>
                                                 )}
                                             </FormikCheckBox>
         
                                             <div className={styles.permissionDescription}>
-                                                {premission.description}
+                                                {permission.description}
                                             </div>
                                         
                                             <Conditional isRendered={showSeparator}>

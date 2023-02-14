@@ -1,9 +1,9 @@
 import { AddMemberToRoleModal, ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal, Icon, OverlayContextProvider, RefContextProvider, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip } from '@components';
-import { useSearch } from '@hooks';
+import { useTextInput } from '@hooks';
 import { HeadingLevel, Heading } from '@libs';
 import { objectKeys, twClassNames } from '@utils';
 import { FormikContextType, useFormikContext } from 'formik';
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext, useEffect, useMemo } from 'react';
 import { RoleMembersTab, RoleAppearanceTab, RolePermissionsTab } from './components';
 
 
@@ -41,15 +41,15 @@ const styles = {
         active: 'text-color-primary border-icon-200',
     },
     permissionsSearchBar: 'h-9 mb-4',
-    memberssSearchWrapper: 'flex gap-4 mb-7',
-    memberssSearch: 'h-8',
+    membersSearchWrapper: 'flex gap-4 mb-7',
+    membersSearch: 'h-8',
 };
 
 export const RoleContent: FC = () => {
     const { currentTab, tabPanelProps } = useContext(TabContext) as TabContext<Record<string, string>>;
     const { values, resetForm } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
-    const permissionsSearch = useSearch();
-    const memberssSearch = useSearch();
+    const permissionsSearch = useTextInput();
+    const membersSearch = useTextInput();
 
     const roles = Array(32).fill('').map((_, index) => ({
         id: index.toString(),
@@ -62,8 +62,8 @@ export const RoleContent: FC = () => {
 
     const providedTabs: RoleContentTabs = {
         appearance: <RoleAppearanceTab/>,
-        permissions: <RolePermissionsTab searchValue={permissionsSearch.searchValue}/>,
-        members: <RoleMembersTab searchValue={memberssSearch.searchValue}/>,
+        permissions: <RolePermissionsTab value={permissionsSearch.value}/>,
+        members: <RoleMembersTab value={membersSearch.value}/>,
     };
 
     useEffect(() => {
@@ -159,7 +159,7 @@ export const RoleContent: FC = () => {
                                 <Conditional isRendered={isActive.permissions}>
                                     <SearchBar
                                         className={styles.permissionsSearchBar}
-                                        value={permissionsSearch.searchValue}
+                                        value={permissionsSearch.value}
                                         label='Поиск по правам'
                                         placeholder='Поиск по правам'
                                         onChange={permissionsSearch.handleChange}
@@ -168,14 +168,14 @@ export const RoleContent: FC = () => {
                                 </Conditional>
 
                                 <Conditional isRendered={isActive.members}>
-                                    <div className={styles.memberssSearchWrapper}>
+                                    <div className={styles.membersSearchWrapper}>
                                         <SearchBar
-                                            className={styles.memberssSearch}
-                                            value={memberssSearch.searchValue}
+                                            className={styles.membersSearch}
+                                            value={membersSearch.value}
                                             label='Поиск участников'
                                             placeholder='Поиск участников'
-                                            onChange={memberssSearch.handleChange}
-                                            onReset={memberssSearch.handleReset}
+                                            onChange={membersSearch.handleChange}
+                                            onReset={membersSearch.handleReset}
                                         />
                                     
                                         <OverlayContextProvider>
@@ -199,7 +199,7 @@ export const RoleContent: FC = () => {
                                 </Conditional>
                             </div>
 
-                            {currentTab.tab}
+                            {providedTabs[currentTab.identifier]}
                         </>
                     )}
                 </TabContextProvider>

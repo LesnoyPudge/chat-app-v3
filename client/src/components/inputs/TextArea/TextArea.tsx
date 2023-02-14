@@ -6,6 +6,7 @@ import { FC } from 'react';
 
 interface TextArea extends PropsWithClassName {
     value: string;
+    id?: string;
     placeholder?: string;
     maxLength?: number;
     rows?: number;
@@ -22,6 +23,7 @@ const styles = {
 export const TextArea: FC<TextArea> = ({
     className = '',
     value,
+    id,
     placeholder = '',
     maxLength = 128,
     rows = 6,
@@ -33,6 +35,7 @@ export const TextArea: FC<TextArea> = ({
         <div className={twClassNames(styles.wrapper, className)}>
             <textarea
                 className={styles.textarea}
+                id={id}
                 value={value}
                 rows={rows}
                 maxLength={maxLength}

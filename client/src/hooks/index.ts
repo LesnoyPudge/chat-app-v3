@@ -10,4 +10,4 @@ export * from './useResizeObserver';
 export * from './useRelativePosition';
 export * from './useMousePosition';
 export * from './useFileDrop';
-export * from './useSearch';
+export * from './useTextInput';
