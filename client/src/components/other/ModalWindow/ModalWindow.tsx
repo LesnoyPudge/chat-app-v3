@@ -12,7 +12,7 @@ interface ModalWindow extends PropsWithChildrenAsNodeOrFunction<OverlayContext> 
     label: string;
 }
 
-const defaultTransitionOptions = getTransitionOptions.defaultModal({});
+const defaultTransitionOptions = getTransitionOptions.defaultModal();
 
 const styles = {
     wrapper: `grid place-items-center fixed w-screen 

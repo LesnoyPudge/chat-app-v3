@@ -19,7 +19,7 @@ const styles = {
     text: 'font-medium truncate mr-auto',
 };
 
-const transitionOptions = getTransitionOptions.inOut({});
+const transitionOptions = getTransitionOptions.inOut();
 
 export const FormConfirmationBar: FC = () => {
     const { dirty } = useFormikContext();

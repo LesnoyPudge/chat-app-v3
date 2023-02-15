@@ -13,7 +13,7 @@ type AnimatedTransition<T extends UseTransitionProps<boolean>> = PropsWithChildr
     transitionOptions?: T;
 }
 
-const defaultTransitionOptions = getTransitionOptions.withOpacity({});
+const defaultTransitionOptions = getTransitionOptions.withOpacity();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const AnimatedTransition = <T extends UseTransitionProps<boolean> | object>(props: AnimatedTransition<T>) => {

@@ -28,7 +28,7 @@ export interface ChannelSettingsModalFormValues {
     roleMembers: string[];
 }
 
-const transitionOptions = getTransitionOptions.fullScreenModal({});
+const transitionOptions = getTransitionOptions.fullScreenModal();
 
 const tabs = {
     overviewTab: <OverviewTab/>,

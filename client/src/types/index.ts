@@ -1,3 +1,4 @@
+import { deepMerge } from '@reExport';
 import { PropsWithChildren, ReactNode } from 'react';
 
 
@@ -33,3 +34,5 @@ export interface RGB {
     g: number;
     b: number;
 }
+
+export type Merge<T extends object[]> = ReturnType<typeof deepMerge<T>>;

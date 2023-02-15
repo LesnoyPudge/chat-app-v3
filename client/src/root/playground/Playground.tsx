@@ -496,7 +496,7 @@ const PlaygroundInner3: FC = () => {
     );
 };
 
-const enabled = !!0;
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
