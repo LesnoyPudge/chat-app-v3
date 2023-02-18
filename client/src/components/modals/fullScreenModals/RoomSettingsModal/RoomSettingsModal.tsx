@@ -9,19 +9,21 @@ export const RoomSettingsModal: FC = () => {
     return (
         <ModalWindow label='Настройки комнаты'>
             <ScreenShake>
-                <Formik initialValues={{}} onSubmit={() => {}}>
-                    <Form>
-                        <FullScreenModalWrapper>
-                            <FullScreenModalNavigationSide>
-                                <>navigation</>
-                            </FullScreenModalNavigationSide>
+                {({ triggerScreenShake }) => (
+                    <Formik initialValues={{}} onSubmit={() => {}}>
+                        <Form>
+                            <FullScreenModalWrapper>
+                                <FullScreenModalNavigationSide>
+                                    <>navigation</>
+                                </FullScreenModalNavigationSide>
 
-                            <FullScreenModalContentSide>
-                                <>content</>
-                            </FullScreenModalContentSide>
-                        </FullScreenModalWrapper>
-                    </Form>
-                </Formik>
+                                <FullScreenModalContentSide>
+                                    <>content</>
+                                </FullScreenModalContentSide>
+                            </FullScreenModalWrapper>
+                        </Form>
+                    </Formik>
+                )}
             </ScreenShake>
         </ModalWindow>
     );

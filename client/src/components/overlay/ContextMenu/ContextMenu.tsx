@@ -81,7 +81,7 @@ const ContextMenuInner: FC<ContextMenu> = ({
                         targetRefOrRect={targetRect}
                         spacing={15}
                         boundsSize={20}
-                        swapableAlignment
+                        swappableAlignment
                     >
                         <animated.div 
                             className={twClassNames(baseClassName, className)}

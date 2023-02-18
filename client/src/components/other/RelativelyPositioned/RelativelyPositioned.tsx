@@ -22,7 +22,7 @@ PropsWithChildrenAsNodeOrFunction<{aligment: Alignment}> {
     targetRefOrRect?: RefObject<HTMLElement> | TargetRect;
     boundsSize?: number;
     spacing?: number;
-    swapableAlignment?: boolean;
+    swappableAlignment?: boolean;
     alligmentClassNames?: {
         top?: string;
         bottom?: string;
@@ -46,7 +46,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     targetRefOrRect,
     boundsSize = 20,
     spacing = 20,
-    swapableAlignment = false,
+    swappableAlignment = false,
     alligmentClassNames = defaultAlligmentClassNames,
     centered = false,
     dependencyList,
@@ -59,7 +59,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
         wrapperRefOrRect: wrapperRef,
         boundsSize,
         spacing,
-        swapableAlignment,
+        swappableAlignment,
         centered,
         dependencyList,
     });

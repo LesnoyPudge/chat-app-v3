@@ -38,9 +38,6 @@ const tabs = {
 };
 
 export const ChannelSettingsModal: FC = () => {
-    const isDirtyRef = useRef(false);
-
-
     const initialValues: ChannelSettingsModalFormValues = {
         channelId: 'someChannelID',
         channelName: 'coolChannel',
@@ -66,50 +63,42 @@ export const ChannelSettingsModal: FC = () => {
             transitionOptions={transitionOptions}
         >
             <ScreenShake>
-                {({ resetShakeStacks, triggerScreenShake }) => {
-                    const onTabChange = () => {
-                        if (isDirtyRef.current) triggerScreenShake();
-                        return !isDirtyRef.current;
-                    };
-
-                    return (
-                        <TabContextProvider
-                            tabs={tabs} 
-                            onTabChange={onTabChange}
-                        >
-                            {({ currentTab }) => (
-                                <Formik
-                                    initialValues={initialValues}
-                                    onSubmit={(values) => {
-                                        resetShakeStacks();
-                                        console.log(values);
-                                    }}
-                                    onReset={resetShakeStacks}
-                                    enableReinitialize
-                                >
-                                    {({ dirty }) => {
-                                        isDirtyRef.current = dirty;
-                                        if (!dirty) resetShakeStacks();
-
-                                        return (
-                                            <Form>
-                                                <FullScreenModalWrapper>
-                                                    <FullScreenModalNavigationSide>
-                                                        <Navigation/>
-                                                    </FullScreenModalNavigationSide>
-                
-                                                    <FullScreenModalContentSide>
-                                                        {currentTab.tab}
-                                                    </FullScreenModalContentSide>
-                                                </FullScreenModalWrapper>
-                                            </Form>
-                                        );
-                                    }}
-                                </Formik>
-                            )}
-                        </TabContextProvider>
-                    );
-                }}
+                {({ triggerScreenShake, resetShakeStacks }) => (
+                    <Formik
+                        initialValues={initialValues}
+                        onSubmit={(values) => {
+                            resetShakeStacks();
+                            console.log(values);
+                        }}
+                        onReset={resetShakeStacks}
+                        enableReinitialize
+                    >
+                        {({ dirty }) => (
+                            <TabContextProvider 
+                                tabs={tabs} 
+                                onTabChange={(prevent) => {
+                                    if (!dirty) return;
+                                    prevent();
+                                    triggerScreenShake();
+                                }}
+                            >
+                                {({ currentTab }) => (
+                                    <Form>
+                                        <FullScreenModalWrapper>
+                                            <FullScreenModalNavigationSide>
+                                                <Navigation/>
+                                            </FullScreenModalNavigationSide>
+    
+                                            <FullScreenModalContentSide>
+                                                {currentTab.tab}
+                                            </FullScreenModalContentSide>
+                                        </FullScreenModalWrapper>
+                                    </Form>
+                                )}
+                            </TabContextProvider>
+                        )}
+                    </Formik>
+                )}
             </ScreenShake>
         </ModalWindow>
     );

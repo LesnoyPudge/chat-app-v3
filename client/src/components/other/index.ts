@@ -15,3 +15,5 @@ export * from './TabPanel';
 export * from './ArrowFocusItem';
 export * from './Scrollable';
 export * from './List';
+export * from './ChannelAvatar';
+export * from './EmojiPicker';

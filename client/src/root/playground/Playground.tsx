@@ -1,10 +1,9 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker } from '@components';
 import { useInView } from '@react-spring/web';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { twClassNames } from '@utils';
 import { FC, PropsWithChildren, useDeferredValue, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
-import { EmojiPicker } from 'src/components/other/MessageInputBar/components/OpenEmojiPickerButton/components';
 import { useEventListener, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useTextInput } from '@hooks';
@@ -381,6 +380,7 @@ const createList = (value: string) => [...Array(500000)].map((_, index) => ({
 }));
 import { useWorker } from '@koale/useworker';
 import { useAsync, useAsyncFn } from 'react-use';
+import { MessageV2 } from 'src/components/other/MessageV2/MessageV2';
 // import { createWorkerFactory, useWorker,  } from '@shopify/react-web-worker';
 
 
@@ -488,10 +488,12 @@ const PlaygroundInner2: FC = () => {
 const PlaygroundInner3: FC = () => {
     return (
         <>
-            <OverlayContextProvider isOverlayExistInitial={true}>
-                {/* <RoomSettingsModal/> */}
-                <FindChannelModal/>
-            </OverlayContextProvider>
+            {/* <OverlayContextProvider isOverlayExistInitial={true}>
+                <RoomSettingsModal/>
+            </OverlayContextProvider> */}
+            <MessageV2
+                
+            />
         </>
     );
 };

@@ -30,7 +30,7 @@ export const SerializedSlateContent: FC<SerializedSlateContent> = ({
             
             switch (node.type) {
             case 'paragraph':
-                return <p key={key}>{serialized}</p>;
+                return <span key={key}>{serialized}</span>;
 
             case 'emoji':
                 return <Emoji code={node.code} key={key}/>;

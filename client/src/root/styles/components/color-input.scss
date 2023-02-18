@@ -1,29 +1,35 @@
-.color-picker {
-    .react-colorful {
-        @apply w-full;
+@tailwind components;
 
-        &__saturation {
-            @apply rounded-sm cursor-crosshair mb-2 w-full h-[150px];
-        }
 
-        &__saturation-pointer {
-            @apply w-2 h-2;
-        }
 
-        &__hue {
-            @apply rounded-sm h-2;
-        }
+@layer components {
+    .color-picker {
+        .react-colorful {
+            @apply w-full;
 
-        &__hue-pointer {
-            @apply w-2 h-4 rounded-md border-none bg-white cursor-ew-resize;
-        }
+            &__saturation {
+                @apply rounded-sm cursor-crosshair mb-2 w-full h-[150px];
+            }
 
-        &__pointer-fill {
-            @apply hidden;
-        }
+            &__saturation-pointer {
+                @apply w-2 h-2;
+            }
 
-        &__last-control {
-            @apply rounded-none;
+            &__hue {
+                @apply rounded-sm h-2;
+            }
+
+            &__hue-pointer {
+                @apply w-2 h-4 rounded-md border-none bg-white cursor-ew-resize;
+            }
+
+            &__pointer-fill {
+                @apply hidden;
+            }
+
+            &__last-control {
+                @apply rounded-none;
+            }
         }
     }
 }

@@ -30,16 +30,6 @@ const scrollbarClasses = {
     },
 };
 
-const focusClasses = {
-    '.focused': {
-        '@apply outline outline-focus outline-[3px]': {},
-    },
-
-    '.focus-hidden': {
-        '@apply outline-none focus-visible:outline-none focus-within:outline-none': {},
-    },
-};
-
 const colorPickerClasses = {
     '.color-picker': {
         '3': {},
@@ -68,11 +58,23 @@ const otherClasses = {
     '.sr-input': {
         '@apply absolute inset-0 opacity-0 text-0 cursor-pointer': {},
     },
+
+    '.focused': {
+        '@apply outline outline-focus outline-[3px]': {},
+    },
+
+    '.focus-hidden': {
+        '@apply outline-none focus-visible:outline-none focus-within:outline-none': {},
+    },
+
+    '.message-font-size': {
+        'font-size': 'var(--message-font-size)',
+        'line-height': 1,
+    },
 };
 
 const customClasses = {
     ...scrollbarClasses,
-    ...focusClasses,
     ...sliderInputClasses,
     ...colorPickerClasses,
     ...otherClasses,

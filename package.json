@@ -42,9 +42,11 @@
         "@reach/observe-rect": "^1.2.0",
         "concurrently": "^7.6.0",
         "cross-env": "^7.0.3",
+        "is-odd": "^3.0.1",
         "node-fetch": "^3.3.0"
     },
     "devDependencies": {
+        "@types/is-odd": "^3.0.1",
         "@typescript-eslint/eslint-plugin": "^5.50.0",
         "@typescript-eslint/parser": "^5.50.0",
         "eslint": "^8.33.0",

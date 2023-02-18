@@ -23,54 +23,50 @@ const initialValues = {
 };
 
 export const AppSettingsModal: FC = () => {
-    const isDirtyRef = useRef(false);
-
     return (
         <ModalWindow 
             label='Настройки приложения'
             transitionOptions={transitionOptions}
         >
             <ScreenShake>
-                {({ resetShakeStacks, triggerScreenShake }) => {
-                    const onTabChange = () => {
-                        if (isDirtyRef.current) triggerScreenShake();
-                        return !isDirtyRef.current;
-                    };
-
-                    return (
-                        <TabContextProvider tabs={tabs} onTabChange={onTabChange}>
-                            {({ currentTab }) => (
-                                <Formik
-                                    initialValues={initialValues}
-                                    onSubmit={(values) => {
-                                        resetShakeStacks();
-                                        console.log(values);
+                {({ resetShakeStacks, triggerScreenShake }) => (
+                    <Formik
+                        initialValues={initialValues}
+                        onSubmit={(values) => {
+                            resetShakeStacks();
+                            console.log(values);
+                        }}
+                        onReset={resetShakeStacks}
+                    >
+                        {({ dirty }) => {
+                            return (
+                                <TabContextProvider 
+                                    tabs={tabs} 
+                                    onTabChange={(prevent) => {
+                                        if (!dirty) return;
+                                        prevent();
+                                        triggerScreenShake();
                                     }}
-                                    onReset={resetShakeStacks}
                                 >
-                                    {({ dirty }) => {
-                                        isDirtyRef.current = dirty;
-                                        if (!dirty) resetShakeStacks();
+                                    {({ currentTab }) => (
+                                        <Form>
+                                            <FullScreenModalWrapper>
+                                                <FullScreenModalNavigationSide>
+                                                    <Navigation/>
+                                                </FullScreenModalNavigationSide>
 
-                                        return (
-                                            <Form>
-                                                <FullScreenModalWrapper>
-                                                    <FullScreenModalNavigationSide>
-                                                        <Navigation/>
-                                                    </FullScreenModalNavigationSide>
-                
-                                                    <FullScreenModalContentSide>
-                                                        {currentTab.tab}
-                                                    </FullScreenModalContentSide>
-                                                </FullScreenModalWrapper>
-                                            </Form>
-                                        );
-                                    }}
-                                </Formik>
-                            )}
-                        </TabContextProvider>
-                    );
-                }}
+                                                <FullScreenModalContentSide>
+                                                    {currentTab.tab}
+                                                </FullScreenModalContentSide>
+                                            </FullScreenModalWrapper>
+                                        </Form>
+                                    )}
+                                </TabContextProvider>
+                                            
+                            );
+                        }}
+                    </Formik>
+                )}
             </ScreenShake>
         </ModalWindow>
     );

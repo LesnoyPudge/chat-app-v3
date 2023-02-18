@@ -1,9 +1,9 @@
-import { AnimatedTransition, Button, Emoji, OverlayContextProvider, OverlayItem, RefContextProvider, RelativelyPositioned, uniqueEmojiCodeList } from '@components';
+import { AnimatedTransition, Button, Emoji, OverlayContextProvider, OverlayItem, RefContextProvider, RelativelyPositioned, uniqueEmojiCodeList, EmojiPicker } from '@components';
+import { useSlateAddEmoji } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { getOneOf, twClassNames } from '@utils';
 import { FC, useState } from 'react';
-import { EmojiPicker } from './components';
 
 
 
@@ -22,6 +22,7 @@ export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
 }) => {
     const [emojiCode, setEmojiCode] = useState(getOneOf(uniqueEmojiCodeList));
     const changeEmojiCode = () => setEmojiCode(getOneOf(uniqueEmojiCodeList));
+    const { addEmoji } = useSlateAddEmoji();
 
     return (
         <OverlayContextProvider>
@@ -60,7 +61,7 @@ export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
                                                     preferredAlignment='top' 
                                                     targetRefOrRect={targetRef}
                                                 >
-                                                    <EmojiPicker/>
+                                                    <EmojiPicker onEmojiAdd={addEmoji}/>
                                                 </RelativelyPositioned>
                                             </animated.div>
                                         </OverlayItem>

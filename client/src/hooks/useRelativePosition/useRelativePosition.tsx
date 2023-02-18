@@ -29,7 +29,7 @@ interface GetRelativePositionReturn {
 type GetRelativePosition = (args: {
     boundsSize?: number;
     spacing?: number;
-    swapableAlignment?: boolean;
+    swappableAlignment?: boolean;
     preferredAlignment: Alignment;
     targetRect: TargetRect;
     wrapperRect: WrapperRect;
@@ -40,7 +40,7 @@ interface UseRelativePositionArgs {
     preferredAlignment: Alignment;
     targetRefOrRect?: RefObject<HTMLElement> | TargetRect;
     wrapperRefOrRect?: RefObject<HTMLElement> | WrapperRect;
-    swapableAlignment?: boolean;
+    swappableAlignment?: boolean;
     boundsSize?: number;
     spacing?: number;
     centered?: boolean;
@@ -51,7 +51,7 @@ export const useRelativePosition = ({
     preferredAlignment,
     targetRefOrRect,
     wrapperRefOrRect,
-    swapableAlignment,
+    swappableAlignment,
     boundsSize,
     spacing,
     centered,
@@ -87,14 +87,14 @@ export const useRelativePosition = ({
             wrapperRect,
             boundsSize,
             spacing,
-            swapableAlignment,
+            swappableAlignment,
             centered,
         });
 
         setPosition(newPosition);
     }, [
         boundsSize, centered, preferredAlignment, 
-        spacing, swapableAlignment, targetRefOrRect, 
+        spacing, swappableAlignment, targetRefOrRect, 
         wrapperRefOrRect,
     ]);
 
@@ -116,7 +116,7 @@ export const useRelativePosition = ({
 const getRelativePosition: GetRelativePosition = ({
     boundsSize = 0,
     spacing = 0,
-    swapableAlignment = false,
+    swappableAlignment = false,
     preferredAlignment,
     targetRect,
     wrapperRect,
@@ -200,7 +200,7 @@ const getRelativePosition: GetRelativePosition = ({
         aligment: preferredAlignment,
     };
 
-    if (!swapableAlignment) return defaultResult;
+    if (!swappableAlignment) return defaultResult;
 
     const availableAlignments = getAvailableAlignments();
 

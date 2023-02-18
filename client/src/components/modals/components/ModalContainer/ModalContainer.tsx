@@ -4,16 +4,17 @@ import { FC } from 'react';
 
 
 
-const baseClassName = `flex flex-col justify-between 
-max-h-[calc(100vh-40px)] w-[min(440px,calc(100vw-40px))] shadow-elevation-high 
-bg-primary-200 rounded`;
+const styles = {
+    wrapper: `flex flex-col justify-between max-h-screen w-[min(440px,100vw)] 
+    shadow-elevation-high bg-primary-200 rounded overflow-y-auto`,
+};
 
 export const ModalContainer: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {
     return (
-        <div className={twClassNames(baseClassName, className)}>
+        <div className={twClassNames(styles.wrapper, className)}>
             {children}
         </div>
     );

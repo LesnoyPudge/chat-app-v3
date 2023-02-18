@@ -35,7 +35,7 @@ export interface TabContext<VALUES extends ProvidedTabs> {
 interface TabContextProvider<VALUES extends ProvidedTabs> extends PropsWithChildrenAsNodeOrFunction<TabContext<VALUES>> {
     tabs: VALUES;
     initialTab?: keyof VALUES;
-    onTabChange?: () => boolean;
+    onTabChange?: (prevent: () => void) => void;
 }
 
 export const TabContext = createContext<TabContext<never> | undefined>(undefined);
@@ -58,7 +58,17 @@ export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProv
         ...acc, 
         [key]: () => {
             if (key === currentTab.identifier) return;
-            if (!onTabChange || onTabChange()) setCurrentTab(getCurrentTab(key));
+            if (!onTabChange) return setCurrentTab(getCurrentTab(key));
+            
+            let isPrevented = false;
+
+            const prevent = () => {
+                isPrevented = true;
+            };
+
+            onTabChange(prevent);
+            
+            if (!isPrevented) setCurrentTab(getCurrentTab(key));
         }, 
     }), {}) as Record<keyof T, () => void>;
 

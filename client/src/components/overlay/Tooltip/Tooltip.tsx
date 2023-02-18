@@ -71,7 +71,7 @@ export const Tooltip: FC<Tooltip> = ({
                                 targetRefOrRect={targetRef}
                                 boundsSize={boundsSize}
                                 spacing={spacing}
-                                swapableAlignment
+                                swappableAlignment
                                 centered
                                 dependencyList={dependencyList}
                             >

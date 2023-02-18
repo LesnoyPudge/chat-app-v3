@@ -1,86 +1,91 @@
-.slider-input {
-    @apply grid h-16 items-center;
+@tailwind components;
 
-    --track-size: 8px;
-    --handle-width: 10px;
-    --handle-height: 24px;
-    --marker-size: 24px;
-    --horizontal-spacing: 10px;
 
-    .noUi {
-        &-target {
-            @apply bg-neutral border-none shadow-none rounded-none;
-        }
+@layer components {
+    .slider-input {
+        @apply grid h-16 items-center;
 
-        &-horizontal {
-            height: var(--track-size);
+        --track-size: 8px;
+        --handle-width: 10px;
+        --handle-height: 24px;
+        --marker-size: 24px;
+        --horizontal-spacing: 10px;
 
-            .noUi-handle {
-                width: var(--handle-width);
-                height: var(--handle-height);
-                top: calc(0px - (var(--handle-height) - var(--track-size)) / 2);
-                right: calc(0px - var(--handle-width) / 2);
+        .noUi {
+            &-target {
+                @apply bg-neutral border-none shadow-none rounded-none;
             }
-        }
 
-        &-marker-normal {
-            @apply hidden;
-        }
+            &-horizontal {
+                height: var(--track-size);
 
-        &-connect {
-            @apply bg-brand;
-        }
-
-        &-connects {
-            @apply rounded-md;
-
-            width: calc(100% + var(--horizontal-spacing) * 2);
-            left: calc(0px - var(--horizontal-spacing));
-        }
-
-        &-marker-large {
-            @apply bg-neutral;
-        }
-
-        &-marker-horizontal {
-            &.noUi-marker-large {
-                @apply top-0;
-
-                height: var(--marker-size);
+                .noUi-handle {
+                    width: var(--handle-width);
+                    height: var(--handle-height);
+                    top: calc(0px - (var(--handle-height) - var(--track-size)) / 2);
+                    right: calc(0px - var(--handle-width) / 2);
+                }
             }
-        }
 
-        &-handle {
-            @apply cursor-ew-resize;
-
-            &::before,
-            &::after {
+            &-marker-normal {
                 @apply hidden;
             }
-        }
 
-        &-value {
-            @apply text-color-muted text-xs font-bold;
-        }
+            &-connect {
+                @apply bg-brand;
+            }
 
-        &-value-horizontal {
-            @apply cursor-pointer -top-1 -translate-x-1/2 -translate-y-full;
-        }
+            &-connects {
+                @apply rounded-md;
 
-        &-pips-horizontal {
-            @apply p-0 w-auto;
+                width: calc(100% + var(--horizontal-spacing) * 2);
+                left: calc(0px - var(--horizontal-spacing));
+            }
 
-            top: calc(0px - (var(--marker-size) - var(--track-size)) / 2);
-            height: var(--marker-size);
-            left: var(--horizontal-spacing);
-            right: var(--horizontal-spacing);
-        }
+            &-marker-large {
+                @apply bg-neutral;
+            }
 
-        &-base {
-            @apply w-auto absolute;
+            &-marker-horizontal {
+                &.noUi-marker-large {
+                    @apply top-0;
 
-            left: var(--horizontal-spacing);
-            right: var(--horizontal-spacing);
+                    height: var(--marker-size);
+                }
+            }
+
+            &-handle {
+                @apply cursor-ew-resize;
+
+                &::before,
+                &::after {
+                    @apply hidden;
+                }
+            }
+
+            &-value {
+                @apply text-color-muted text-xs font-bold;
+            }
+
+            &-value-horizontal {
+                @apply cursor-pointer -top-1 -translate-x-1/2 -translate-y-full;
+            }
+
+            &-pips-horizontal {
+                @apply p-0 w-auto;
+
+                top: calc(0px - (var(--marker-size) - var(--track-size)) / 2);
+                height: var(--marker-size);
+                left: var(--horizontal-spacing);
+                right: var(--horizontal-spacing);
+            }
+
+            &-base {
+                @apply w-auto absolute;
+
+                left: var(--horizontal-spacing);
+                right: var(--horizontal-spacing);
+            }
         }
     }
 }

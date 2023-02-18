@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Image, ArrowFocusContextProvider, ArrowFocusItem, Scrollable, FindChannelModal } from '@components';
+import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, ArrowFocusContextProvider, ArrowFocusItem, Scrollable, FindChannelModal, ChannelAvatar } from '@components';
 import { WrapperWithBullet } from './components';
 import { useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -37,6 +37,7 @@ const styles = {
         focus-visible:text-white peer`,
         active: 'rounded-2xl text-white',
     },
+    channelAvatar: 'w-full h-full rounded-none',
     icon: 'w-7 h-7 transition-all ease-linear duration-75',
     actionButton: {
         base: `hover:bg-positive focus-visible:bg-positive 
@@ -53,7 +54,6 @@ const styles = {
     sticky: 'grid gap-2 sticky z-10 bg-primary-500',
     header: 'top-0 pt-3',
     footer: 'bottom-0 pb-3',
-    channelName: 'font-bold truncated px-1.5',
 };
 
 export const ChannelsNavigation: FC = () => {
@@ -99,11 +99,9 @@ export const ChannelsNavigation: FC = () => {
 
                     <Conditional isRendered={showChannels}>
                         <ArrowFocusContextProvider list={channels} orientation='vertical'>
-                            <ul className={styles.list}>
+                            <div className={styles.list}>
                                 {channels.map((channel) => {
                                     const isInChannel = myLocationIs.channel(channel.id);
-                                    const formatedChannelName = channel.name.split(' ').map(word => word.charAt(0)).join('');
-                            
                                     const handleNavigateToChannel = () => navigateTo.channel(channel.id);
 
                                     return (
@@ -124,18 +122,11 @@ export const ChannelsNavigation: FC = () => {
                                                             label={channel.name}
                                                             onLeftClick={handleNavigateToChannel}
                                                         >
-                                                            <Conditional isRendered={!channel.avatar}>
-                                                                <span className={styles.channelName}>
-                                                                    {formatedChannelName}
-                                                                </span>
-                                                            </Conditional>
-
-                                                            <Conditional isRendered={!!channel.avatar}>
-                                                                <Image
-                                                                    src={channel.avatar}
-                                                                    alt={`Значок канала '${channel.name}'`}
-                                                                />
-                                                            </Conditional>
+                                                            <ChannelAvatar
+                                                                className={styles.channelAvatar}
+                                                                avatar={channel.avatar}
+                                                                name={channel.name}
+                                                            />
                                                         </Button>
 
                                                         <Tooltip preferredAlignment='right'>
@@ -151,7 +142,7 @@ export const ChannelsNavigation: FC = () => {
                                         </ArrowFocusItem>
                                     );
                                 })}
-                            </ul>
+                            </div>
                         </ArrowFocusContextProvider>
                     </Conditional>
 
