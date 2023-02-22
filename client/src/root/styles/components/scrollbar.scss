@@ -28,13 +28,17 @@
             }
         }
 
+        .simplebar-placeholder {
+            display: none;
+        }
+
         .simplebar-content-wrapper {
-            position: absolute;
-            inset: 0;
+            // position: absolute;
+            // inset: 0;
         }
 
         .simplebar-content {
-            height: 100%;
+            // height: 100%;
         }
 
         &.scrollbar-auto-hide {

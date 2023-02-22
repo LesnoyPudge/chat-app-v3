@@ -1,3 +1,4 @@
+import '@total-typescript/ts-reset';
 import { FC, lazy, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, Loader, Masks } from './components';
 import { useAuthorization, useDebug, usePageVisibility, usePreventDefault, useThemeSwitcher } from './hooks';

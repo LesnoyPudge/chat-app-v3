@@ -9,5 +9,6 @@ type ObjectWithId = {
 
 export const isObjectWithId = (obj: unknown): obj is ObjectWithId => {
     if (!isObject(obj)) return false;
-    return (obj as ObjectWithId).id !== undefined;
+    // return (obj as ObjectWithId).id !== undefined;
+    return 'id' in obj;
 };

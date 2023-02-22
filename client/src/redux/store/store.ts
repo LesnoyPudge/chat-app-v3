@@ -35,8 +35,8 @@ const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
 
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(rootApi.middleware),
+    // @ts-ignore
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(rootApi.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

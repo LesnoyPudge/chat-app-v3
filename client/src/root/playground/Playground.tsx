@@ -486,14 +486,15 @@ const PlaygroundInner2: FC = () => {
 };
 
 const PlaygroundInner3: FC = () => {
+    // console.log(twClassNames(''));
     return (
         <>
             {/* <OverlayContextProvider isOverlayExistInitial={true}>
                 <RoomSettingsModal/>
             </OverlayContextProvider> */}
-            <MessageV2
-                
-            />
+            <Scrollable className='h-full'>
+                <MessageV2/>
+            </Scrollable>
         </>
     );
 };

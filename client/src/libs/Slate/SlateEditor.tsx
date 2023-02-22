@@ -8,18 +8,36 @@ import { SlateEmoji, SlateLink, SlateParagraph } from './components';
 
 interface SlateEditor {
     className?: string;
+    label: string;
     placeholder?: string;
-    onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
     rest?: Omit<EditableProps, keyof SlateEditor>;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
 const baseClassName = 'w-full break-all h-fit';
 
+const renderElement = ({ attributes, children, element }: RenderElementProps) => {
+    switch (element.type) {
+    case 'paragraph':
+        return <SlateParagraph attributes={attributes}>{children}</SlateParagraph>;
+
+    case 'emoji':
+        return <SlateEmoji code={element.code} attributes={attributes}>{children}</SlateEmoji>;
+
+    case 'link': 
+        return <SlateLink url={element.url} attributes={attributes}>{children}</SlateLink>;
+
+    default:
+        return <>{children}</>;
+    }
+};
+
 export const SlateEditor: FC<SlateEditor> = ({
     className = '',
     placeholder = 'Введите текст',
-    onKeyDown,
+    label,
     rest,
+    onKeyDown,
 }) => {
     const editor = useSlateStatic();
     
@@ -30,29 +48,14 @@ export const SlateEditor: FC<SlateEditor> = ({
         prevFocusedElem && prevFocusedElem.focus();
     }, [editor]);
 
-    const renderElement = ({ attributes, children, element }: RenderElementProps) => {
-        switch (element.type) {
-        case 'paragraph':
-            return <SlateParagraph attributes={attributes}>{children}</SlateParagraph>;
-    
-        case 'emoji':
-            return <SlateEmoji code={element.code} attributes={attributes}>{children}</SlateEmoji>;
-    
-        case 'link': 
-            return <SlateLink url={element.url} attributes={attributes}>{children}</SlateLink>;
-    
-        default:
-            return <>{children}</>;
-        }
-    };
-
     return (
         <Editable
             className={twClassNames(baseClassName, className)}
-            onKeyDown={onKeyDown}
             placeholder={placeholder}
-            renderElement={renderElement}
             suppressContentEditableWarning
+            renderElement={renderElement}
+            onKeyDown={onKeyDown}
+            aria-label={label}
             {...rest}
         />
     );

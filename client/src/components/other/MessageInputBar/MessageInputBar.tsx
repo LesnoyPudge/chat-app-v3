@@ -38,6 +38,7 @@ export const MessageInputBar: FC<IMessageInputBar> = ({
                     <SlateEditor
                         className={styles.editor}
                         placeholder={placeholder}
+                        label='Введите сообщение'
                     />
                 
                     <OpenEmojiPickerButton className='h-11'/>

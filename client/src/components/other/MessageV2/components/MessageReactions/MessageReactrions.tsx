@@ -12,7 +12,7 @@ interface MessageReactions extends PropsWithClassName {
 }
 
 const styles = {
-    wrapper: 'flex flex-wrap gap-1 my-1',
+    wrapper: 'flex flex-wrap gap-1',
     emojiButton: {
         base: `flex items-center py-0.5 px-1.5 rounded-md 
         text-sm transition-all duration-100 hover:bg-primary-hover`,
@@ -68,6 +68,7 @@ export const MessageReactions: FC<MessageReactions> = ({
                                 className={styles.tooltip}
                                 preferredAlignment='top' 
                                 spacing={5}
+                                dependencyList={[isActive]}
                             >
                                 {label}
                             </Tooltip>

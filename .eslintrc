@@ -74,6 +74,7 @@
         "no-empty-pattern": "warn",
         "import/no-unresolved": "warn",
         "no-empty": "warn",
+        "@typescript-eslint/ban-ts-comment": "warn"
         // "import/order": [
         //     1,
         //     {

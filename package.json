@@ -47,9 +47,9 @@
     },
     "devDependencies": {
         "@types/is-odd": "^3.0.1",
-        "@typescript-eslint/eslint-plugin": "^5.50.0",
-        "@typescript-eslint/parser": "^5.50.0",
-        "eslint": "^8.33.0",
+        "@typescript-eslint/eslint-plugin": "^5.52.0",
+        "@typescript-eslint/parser": "^5.52.0",
+        "eslint": "^8.34.0",
         "eslint-plugin-import": "^2.27.5",
         "husky": "^8.0.3",
         "rimraf": "^4.1.2",

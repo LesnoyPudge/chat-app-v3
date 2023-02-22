@@ -4,7 +4,7 @@ import { Descendant } from 'slate';
 import { Button, Time, EmojiCode, uniqueEmojiCodeList } from '@components';
 import { Heading, SerializedSlateContent } from '@libs';
 import { twClassNames } from '@utils';
-import { MessageControlBar, MessageImages, MessageReactions } from './components';
+import { MessageControlBar, MessageImages, MessageReactions, MessageRedactor } from './components';
 
 
 
@@ -40,7 +40,7 @@ const message: MessageV2 = {
     modified: false,
     modificationDate: null,
     deleted: false,
-    attachments: [],
+    attachments: [...Array(3)].map(() => 'https://via.placeholder.com/150'),
     reactions: [...Array(5)].map((_, i) => ({ code: uniqueEmojiCodeList[i], users: [...Array(i)].fill(i.toString()) } satisfies {code: EmojiCode, users: string[]})),
     inModificationMode: false,
     onModificationSubmit: () => {},
@@ -57,7 +57,7 @@ const { timestampId, contentId, usernameId } = q;
 
 const isHeadless = false;
 
-const tabIndex = 1;
+const tabIndex = 0;
 
 export const MessageV2: FC = () => {
     return (
@@ -73,7 +73,7 @@ export const MessageV2: FC = () => {
 const CozyMessage: FC = () => {
     return (
         <article 
-            className='p-2 group hover:bg-primary-hover focus-within:bg-primary-hover'
+            className='flex flex-col p-2 group hover:bg-primary-hover focus-within:bg-primary-hover'
             aria-labelledby={`${timestampId} ${usernameId} ${contentId}`}
         >
             <Heading 
@@ -154,15 +154,18 @@ const CompactMessage: FC = () => {
                         </p>
                     </div>
 
-                    <div>
-                        redactor
-                    </div>
+                    <MessageRedactor
+                        className='my-2'
+                        content={message.content}
+                    />
 
-                    <div className='mt-1'>
-                        <MessageImages/>
-                    </div>
-
+                    <MessageImages 
+                        className='my-2' 
+                        images={message.attachments.slice(0,0)}
+                    />
+                        
                     <MessageReactions 
+                        className='mb-1'
                         reactions={message.reactions}
                         onReactionAdd={handleAddReaction}
                     />
@@ -170,6 +173,7 @@ const CompactMessage: FC = () => {
             </div>
 
             <MessageControlBar 
+                className='my-1'
                 tabIndex={tabIndex} 
                 onReactionAdd={handleAddReaction}
             />

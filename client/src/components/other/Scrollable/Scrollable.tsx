@@ -9,6 +9,7 @@ import SimpleBar from 'simplebar-react';
 
 
 interface Scrollable extends PropsWithChildrenAndClassName {
+    label?: string;
     autoHide?: boolean;
     hidden?: boolean;
     withOppositeGutter?: boolean;
@@ -36,6 +37,7 @@ const wrapperStyle: CSSProperties = {
 
 export const Scrollable: FC<Scrollable> = ({
     className = '',
+    label,
     autoHide = false,
     hidden = false,
     withOppositeGutter = false,
@@ -49,7 +51,7 @@ export const Scrollable: FC<Scrollable> = ({
     const handlePointerMove = () => {
         if (!autoHide) return;
         
-        throttle(() => {}, 3000)();
+        throttle(() => {}, 1000)();
     };
 
     const getRef = (ref: SimpleBarCore | null) => {
@@ -83,6 +85,7 @@ export const Scrollable: FC<Scrollable> = ({
                 forceVisible
                 autoHide={false}
                 clickOnTrack
+                ariaLabel={label}
                 onPointerMove={handlePointerMove}
                 ref={getRef}
             >

@@ -13,9 +13,14 @@ type UpdatableKeysType =
 
 const get = (key: string) => {
     const value = localStorage.getItem(key);
-    try {
-        if (!value) return undefined;
-        return JSON.parse(value);
+    if (!value) return undefined;
+
+    try {    
+        const parsed = JSON.parse(value);
+        
+        if (typeof parsed === 'string') return parsed;
+
+        return value;
     } catch (error) {
         return value;
     }
