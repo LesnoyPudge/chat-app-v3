@@ -1,15 +1,11 @@
-import { AnimatedTransition, Button, Emoji, EmojiCode, EmojiPicker, Icon, List, OverlayContextProvider, OverlayItem, RefContextProvider, RelativelyPositioned, Tooltip } from '@components';
+import { AnimatedTransition, Button, Emoji, EmojiPicker, Icon, List, OverlayContextProvider, OverlayItem, RefContextProvider, RelativelyPositioned, Tooltip } from '@components';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { conditional, twClassNames } from '@utils';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
+import { MessageContext } from '../../MessageV2';
 
 
-
-interface MessageReactions extends PropsWithClassName {
-    reactions: {code: EmojiCode, users: string[]}[];
-    onReactionAdd: (code: EmojiCode) => void;
-}
 
 const styles = {
     wrapper: 'flex flex-wrap gap-1',
@@ -24,18 +20,18 @@ const styles = {
     tooltip: 'text-sm',
 };
 
-export const MessageReactions: FC<MessageReactions> = ({
+export const MessageReactions: FC<PropsWithClassName> = ({
     className = '',
-    reactions,
-    onReactionAdd,
 }) => {
+    const { message, handleAddReaction } = useContext(MessageContext) as MessageContext;
+
     return (
         <div 
             className={twClassNames(styles.wrapper, className)}
             role='group'
             aria-label='Реакции'
         >
-            <List list={reactions}>
+            <List list={message.reactions}>
                 {({ code, users }) => {
                     const isActive = users.includes('3');
                     const label = conditional(
@@ -43,7 +39,6 @@ export const MessageReactions: FC<MessageReactions> = ({
                         `Добавить эмодзи ${code}`,
                         isActive,
                     );
-                    const handleAddReaction = () => onReactionAdd(code);
 
                     return (
                         <RefContextProvider>
@@ -54,7 +49,7 @@ export const MessageReactions: FC<MessageReactions> = ({
                                 )}
                                 label={label}
                                 isActive={isActive}
-                                onLeftClick={handleAddReaction}
+                                onLeftClick={() => handleAddReaction(code)}
                             >
                                 <Emoji
                                     className={styles.emoji}
@@ -122,7 +117,7 @@ export const MessageReactions: FC<MessageReactions> = ({
                                                     preferredAlignment='right'
                                                     swappableAlignment
                                                 >
-                                                    <EmojiPicker onEmojiAdd={onReactionAdd}/>
+                                                    <EmojiPicker onEmojiAdd={handleAddReaction}/>
                                                 </RelativelyPositioned>
                                             </animated.div>
                                         </OverlayItem>

@@ -1,8 +1,9 @@
 import { twClassNames } from '@utils';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { PropsWithClassName } from '@types';
 import { Grid1, Grid2, Grid3, Grid4, Grid5, Grid6, Grid7, Grid8, Grid9 } from './components';
 import { Conditional } from '@components';
+import { MessageContext } from '../../MessageV2';
 
 
 
@@ -10,19 +11,13 @@ const styles = {
     wrapper: 'flex flex-col gap-1 max-w-[550px]',
 };
 
-
-interface MessageImages extends PropsWithClassName {
-    images: string[];
-}
-
-export const MessageImages: FC<MessageImages> = ({
+export const MessageImages: FC<PropsWithClassName> = ({
     className = '',
-    images,
 }) => {
-    images = images.length > 9 ? images.slice(0, 9) : images;
+    const { message } = useContext(MessageContext) as MessageContext;
 
-    const imageCount = images.length;
-    const imageList = images.map((src, index) => ({
+    const imageCount = message.attachments.length;
+    const imageList = message.attachments.map((src, index) => ({
         src,
         index,
     }));
@@ -40,7 +35,7 @@ export const MessageImages: FC<MessageImages> = ({
     };
     
     return (
-        <Conditional isRendered={!!images.length}>
+        <Conditional isRendered={!!imageCount}>
             <div className={twClassNames(styles.wrapper, className)}>
                 {grids[imageCount as keyof typeof grids]}
             </div>

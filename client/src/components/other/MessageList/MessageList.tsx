@@ -13,7 +13,7 @@ const getMessages = ((size = 20) => {
             chat: Math.random().toString(),
             user: getRandomNumber(0, 1).toString(),
             content: 'amazing message ' + Date.now(),
-            atttachments: Array(getRandomNumber(0, 3)).fill(''),
+            attachments: Array(getRandomNumber(0, 3)).fill(''),
             isChanged: false,
             isDeleted: false,
             respondOn: [],

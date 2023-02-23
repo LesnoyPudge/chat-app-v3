@@ -14,10 +14,10 @@ interface IMessageController {
 
 export const MessageController: IMessageController = {
     async create(req, res) {
-        const { chatId, atttachments, content, respondOn } = req.body;
+        const { chatId, attachments, content, respondOn } = req.body;
         const { id } = req.auth.user;
         
-        const message = await MessageService.create({ userId: id, chatId, atttachments, content, respondOn });
+        const message = await MessageService.create({ userId: id, chatId, attachments, content, respondOn });
 
         res.json(message);
     },

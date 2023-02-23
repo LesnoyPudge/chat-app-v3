@@ -17,7 +17,7 @@ interface IMessageService {
 }
 
 export const MessageService: IMessageService = {
-    async create({ userId, chatId, content = '', atttachments, respondOn }) {
+    async create({ userId, chatId, content = '', attachments, respondOn }) {
         return transactionContainer(
             async({ queryOptions }) => {
                 const message = new MessageModel({
@@ -27,17 +27,17 @@ export const MessageService: IMessageService = {
                     respondOn,
                 });
 
-                message.atttachments = [];
+                message.attachments = [];
 
-                if (atttachments.length) {
-                    await Promise.all(atttachments.map(async(atttachment) => {
+                if (attachments.length) {
+                    await Promise.all(attachments.map(async(atttachment) => {
                         const { id } = await FileServiceHelpers.create({
                             base64url: atttachment.base64url,
                             filename: atttachment.filename,
                             type: 'attachment',
                         });
 
-                        message.atttachments.push(id);
+                        message.attachments.push(id);
                     }));
                 }
 
@@ -125,7 +125,7 @@ export const MessageService: IMessageService = {
                     messageId,
                     { 
                         $set: { isChanged: true },
-                        $pull: { atttachments: attachmentId }, 
+                        $pull: { attachments: attachmentId }, 
                     },
                     queryOptions({ new: true }),
                 );

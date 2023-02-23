@@ -64,9 +64,9 @@ export const MessageItem: FC<IMessageItem> = ({
                     <SerializedSlateContent nodes={message.content}/>
                 </div>
 
-                <Conditional isRendered={!!message.atttachments.length}>
+                <Conditional isRendered={!!message.attachments.length}>
                     <ul className='flex flex-col w-full gap-2'>
-                        {message.atttachments.map((atttachment, index) => {
+                        {message.attachments.map((atttachment, index) => {
                             return (
                                 <li className='' key={index}>
                                     atttachment #{index}

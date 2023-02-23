@@ -1,5 +1,5 @@
 import { Emoji, Link } from '@components';
-import { tryParseJSONObject } from '@utils';
+import { parseSlateContent } from '@utils';
 import { FC, useRef, ReactElement, useCallback } from 'react';
 import { Descendant, Text } from 'slate';
 
@@ -44,9 +44,7 @@ export const SerializedSlateContent: FC<SerializedSlateContent> = ({
         });
     }, []);
 
-    const validNodes = tryParseJSONObject(nodes);
-
-    const value = validNodes ? serialize(validNodes as Descendant[]) : nodes;
+    const value = serialize(parseSlateContent(nodes));
     
     return (
         <>{value}</>

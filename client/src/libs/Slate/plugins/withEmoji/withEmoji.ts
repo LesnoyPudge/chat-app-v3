@@ -61,7 +61,7 @@ export const withEmoji = (editor: CustomEditor) => {
 
             normalizeNode(entry);
         } catch (error) {
-            console.log('error cautgh emoji normalize');
+            console.log('error caught emoji normalize', error);
             normalizeNode(entry);
         }
     };
@@ -96,7 +96,7 @@ export const withEmoji = (editor: CustomEditor) => {
         
             onChange();
         } catch (error) {
-            console.log('error cautgh emoji onchange', error);
+            console.log('error caught emoji onchange', error);
             onChange();
         }
     };

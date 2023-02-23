@@ -1,15 +1,11 @@
 import { animated } from '@react-spring/web';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { Tooltip, OverlayItem, AnimatedTransition, Button, EmojiPicker, Icon, OverlayContextProvider, RefContextProvider, RelativelyPositioned, EmojiCode } from '@components';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
+import { MessageContext } from '../../MessageV2';
 
 
-
-interface MessageControlBar extends PropsWithClassName {
-    tabIndex: number;
-    onReactionAdd: (code: EmojiCode) => void;
-}
 
 const styles = {
     buttonsWrapper: `flex absolute top-0 right-0 -translate-y-[25px] 
@@ -22,11 +18,11 @@ const styles = {
     tooltip: 'text-sm',
 };
 
-export const MessageControlBar: FC<MessageControlBar> = ({
+export const MessageControlBar: FC<PropsWithClassName> = ({
     className = '',
-    tabIndex,
-    onReactionAdd,
 }) => {
+    const { tabIndex, handleAddReaction, toggleIsInRedactorMode } = useContext(MessageContext) as MessageContext;
+
     return (
         <div 
             className={twClassNames(styles.buttonsWrapper, className)}
@@ -80,7 +76,7 @@ export const MessageControlBar: FC<MessageControlBar> = ({
                                                         swappableAlignment
                                                         targetRefOrRect={targetRef}
                                                     >
-                                                        <EmojiPicker onEmojiAdd={onReactionAdd}/>
+                                                        <EmojiPicker onEmojiAdd={handleAddReaction}/>
                                                     </RelativelyPositioned>
                                                 </animated.div>
                                             </OverlayItem>
@@ -92,6 +88,28 @@ export const MessageControlBar: FC<MessageControlBar> = ({
                     </>
                 )}
             </OverlayContextProvider>
+
+            <RefContextProvider>
+                <Button 
+                    className={styles.button}
+                    label='Редактировать сообщение'
+                    tabIndex={tabIndex}
+                    onLeftClick={toggleIsInRedactorMode}
+                >
+                    <Icon
+                        className={styles.buttonIcon}
+                        iconId='pen-icon'
+                    />
+                </Button>
+
+                <Tooltip 
+                    className={styles.tooltip}
+                    preferredAlignment='top' 
+                    spacing={5}
+                >
+                    <>Редактировать сообщение</>
+                </Tooltip>
+            </RefContextProvider>
 
             <RefContextProvider>
                 <Button 

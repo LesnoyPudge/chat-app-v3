@@ -24,19 +24,19 @@ const messageValidators: IMessageValidators = {
             isPermittedToSendMessageByChatId({ fieldName: 'chatId' }),
         ],
 
-        atttachments: [
-            nullable({ fieldName: 'atttachments' }),
-            sanitizeInput({ fieldName: 'atttachments' }),
-            notEmpty({ fieldName: 'atttachments' }),
+        attachments: [
+            nullable({ fieldName: 'attachments' }),
+            sanitizeInput({ fieldName: 'attachments' }),
+            notEmpty({ fieldName: 'attachments' }),
 
-            sanitizeInput({ fieldName: 'atttachments.*' }),
-            notEmpty({ fieldName: 'atttachments.*' }),
+            sanitizeInput({ fieldName: 'attachments.*' }),
+            notEmpty({ fieldName: 'attachments.*' }),
 
-            sanitizeInput({ fieldName: 'atttachments.*.*' }),
-            notEmpty({ fieldName: 'atttachments.*.*' }),
-            toString({ fieldName: 'atttachments.*.*' }),
+            sanitizeInput({ fieldName: 'attachments.*.*' }),
+            notEmpty({ fieldName: 'attachments.*.*' }),
+            toString({ fieldName: 'attachments.*.*' }),
 
-            isBase64Url({ fieldName: 'atttachments.*.base64url' }),
+            isBase64Url({ fieldName: 'attachments.*.base64url' }),
         ],
 
         content: [

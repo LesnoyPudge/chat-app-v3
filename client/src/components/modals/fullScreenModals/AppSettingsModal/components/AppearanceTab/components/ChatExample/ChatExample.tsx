@@ -44,7 +44,7 @@ const messages: IMessage[] = messagesContent.map((content, index) => {
         chat: '',
         user: '',
         content: JSON.stringify(content),
-        atttachments: [],
+        attachments: [],
         respondOn: [],
         isChanged: false,
         isDeleted: false,

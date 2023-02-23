@@ -17,3 +17,5 @@ export * from './Scrollable';
 export * from './List';
 export * from './ChannelAvatar';
 export * from './EmojiPicker';
+export * from './EmojiSwitcher';
+export * from './UserName';

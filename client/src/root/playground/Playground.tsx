@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode } from '@components';
 import { useInView } from '@react-spring/web';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { twClassNames } from '@utils';
@@ -379,8 +379,7 @@ const createList = (value: string) => [...Array(500000)].map((_, index) => ({
     some: `${value} ${index}`,
 }));
 import { useWorker } from '@koale/useworker';
-import { useAsync, useAsyncFn } from 'react-use';
-import { MessageV2 } from 'src/components/other/MessageV2/MessageV2';
+import { Message } from 'src/components/other/MessageV2/MessageV2';
 // import { createWorkerFactory, useWorker,  } from '@shopify/react-web-worker';
 
 
@@ -493,7 +492,27 @@ const PlaygroundInner3: FC = () => {
                 <RoomSettingsModal/>
             </OverlayContextProvider> */}
             <Scrollable className='h-full'>
-                <MessageV2/>
+                <Message
+                    displayMode='compact'
+                    isHeadless={false}
+                    tabIndex={1}
+                    message={{
+                        user: 'userId',
+                        content: JSON.stringify([{ type: 'paragraph', children: [{ text: 'amazing message' }] }]),
+                        createdAt: Date.now().toString(),
+                        isChanged: false,
+                        updatedAt: '',
+                        isDeleted: false,
+                        attachments: [...Array(3)].map(() => 'https://via.placeholder.com/150'),
+                        reactions: [...Array(5)].map((_, i) => ({ 
+                            code: uniqueEmojiCodeList[i], 
+                            users: [...Array(i)].fill(i.toString()), 
+                        } satisfies {code: EmojiCode, users: string[]})),
+                        id: 'message-id',
+                        chat: 'chat-id',
+                        respondOn: [''],
+                    }}
+                />
             </Scrollable>
         </>
     );
