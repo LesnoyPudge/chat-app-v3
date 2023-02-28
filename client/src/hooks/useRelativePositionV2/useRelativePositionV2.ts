@@ -1,8 +1,13 @@
-import { RefObject, useCallback, useLayoutEffect, useState } from 'react';
-import { useResizeObserver } from '@hooks';
-import { isRef } from '@typeGuards';
 import { Alignment } from '@types';
-import { useWindowSize } from 'usehooks-ts';
+import { RefObject, useCallback, useEffect } from 'react';
+import { useIntersectionObserver } from 'react-intersection-observer-hook';
+import { useEventListener, useIsFirstRender } from 'usehooks-ts';
+import useResizeObserver from '@react-hook/resize-observer';
+// import useIntersectionObserver from '@react-hook/intersection-observer';
+import getScrollableParent from 'scrollparent';
+// import { throttle } from '@utils';
+import { useThrottle } from '@hooks';
+import { fpsToMs } from '@utils';
 
 
 
@@ -31,15 +36,15 @@ type GetRelativePosition = (args: {
     spacing?: number;
     swappableAlignment?: boolean;
     preferredAlignment: Alignment;
-    targetRect: TargetRect;
-    wrapperRect: WrapperRect;
+    targetRect: TargetRect | null;
+    wrapperRect: WrapperRect | null;
     centered?: boolean;
 }) => GetRelativePositionReturn;
 
 interface UseRelativePositionArgs {
     preferredAlignment: Alignment;
-    targetRefOrRect?: RefObject<HTMLElement> | TargetRect;
-    wrapperRefOrRect?: RefObject<HTMLElement> | WrapperRect;
+    relativeElementRef: RefObject<HTMLElement>;
+    absoluteElementRef: RefObject<HTMLElement>;
     swappableAlignment?: boolean;
     boundsSize?: number;
     spacing?: number;
@@ -47,70 +52,79 @@ interface UseRelativePositionArgs {
     dependencyList?: unknown[]
 }
 
-export const useRelativePosition = ({
+interface UseRelativePositionReturn extends GetRelativePositionReturn {
+    isRelativeElementVisible: boolean;
+}
+
+export const useRelativePositionV2 = ({
     preferredAlignment,
-    targetRefOrRect,
-    wrapperRefOrRect,
+    relativeElementRef,
+    absoluteElementRef,
     swappableAlignment,
     boundsSize,
     spacing,
     centered,
     dependencyList = [],
-}: UseRelativePositionArgs) => {
-    const windowSize = useWindowSize();
-    const [position, setPosition] = useState<GetRelativePositionReturn>({ 
-        top: boundsSize || 0, 
-        left: boundsSize || 0, 
-        alignment: preferredAlignment, 
-    });
+}: UseRelativePositionArgs): UseRelativePositionReturn => {
+    const isFirstRender = useIsFirstRender();
+    const { throttle } = useThrottle();
 
-    const setNewPosition = useCallback(() => {
-        if (!targetRefOrRect) return;
-        if (!wrapperRefOrRect) return;
-        if (isRef(targetRefOrRect) && !targetRefOrRect.current) return;
-        if (isRef(wrapperRefOrRect) && !wrapperRefOrRect.current) return;
+    // const relativeElementIntersectionEntity = useIntersectionObserver(relativeElementRef);
+    // const absoluteElementIntersectionEntity = useIntersectionObserver(absoluteElementRef);
+
+    const [relativeRecalculate, { entry: relativeElementIntersectionEntity }] = useIntersectionObserver();
+    const [absoluteRecalculate, { entry: absoluteElementIntersectionEntity }] = useIntersectionObserver();
+
+    useEffect(() => {
+        if (relativeElementIntersectionEntity || absoluteElementIntersectionEntity) return;
+
+        relativeRecalculate(relativeElementRef.current);
+        absoluteRecalculate(absoluteElementRef.current);
+    }, [
+        absoluteElementIntersectionEntity, absoluteElementRef, absoluteRecalculate, 
+        relativeElementIntersectionEntity, relativeElementRef, relativeRecalculate,
+    ]);
+    
+    const recalculateOnUpdate = useCallback(() => throttle(() => {
+        if (isFirstRender) return;
+
+        relativeRecalculate(relativeElementRef.current);
+        absoluteRecalculate(absoluteElementRef.current);
+    }, fpsToMs(30))(), [absoluteElementRef, absoluteRecalculate, isFirstRender, relativeElementRef, relativeRecalculate, throttle]);
+
+    useResizeObserver(relativeElementRef, recalculateOnUpdate);
+    useResizeObserver(absoluteElementRef, recalculateOnUpdate);
+
+    useEffect(() => {
+        if (!relativeElementRef.current) return;
+
+        const scrollableParent = getScrollableParent(relativeElementRef.current);
         
-        const targetRect = (
-            isRef(targetRefOrRect) 
-                ? targetRefOrRect.current!.getBoundingClientRect() 
-                : targetRefOrRect
-        );
-        const wrapperRect = (
-            isRef(wrapperRefOrRect) 
-                ? wrapperRefOrRect.current!.getBoundingClientRect() 
-                : wrapperRefOrRect
-        );
-        
-        const newPosition = getRelativePosition({
+        if (!scrollableParent) return;
+
+        scrollableParent.addEventListener('scroll', recalculateOnUpdate);
+
+        return () => {
+            scrollableParent.removeEventListener('scroll', recalculateOnUpdate);
+        };
+    }, [recalculateOnUpdate, relativeElementRef]);
+
+    useEffect(() => {
+        console.log(relativeElementIntersectionEntity?.boundingClientRect, absoluteElementIntersectionEntity?.boundingClientRect);
+    }, [absoluteElementIntersectionEntity?.boundingClientRect, relativeElementIntersectionEntity?.boundingClientRect]);
+
+    return {
+        isRelativeElementVisible: relativeElementIntersectionEntity?.isIntersecting || false,
+        ...getRelativePosition({
             preferredAlignment,
-            targetRect,
-            wrapperRect,
+            targetRect: relativeElementIntersectionEntity?.boundingClientRect || null,
+            wrapperRect: absoluteElementIntersectionEntity?.boundingClientRect || null,
+            swappableAlignment,
             boundsSize,
             spacing,
-            swappableAlignment,
             centered,
-        });
-
-        setPosition(newPosition);
-    }, [
-        boundsSize, centered, preferredAlignment, 
-        spacing, swappableAlignment, targetRefOrRect, 
-        wrapperRefOrRect,
-    ]);
-
-    const resizeableWrapper = isRef(wrapperRefOrRect) ? wrapperRefOrRect.current : null;
-    useResizeObserver(resizeableWrapper, setNewPosition);
-
-    const resizeableTarget = isRef(targetRefOrRect) ? targetRefOrRect.current : null;
-    useResizeObserver(resizeableTarget, setNewPosition);
-
-    useLayoutEffect(() => setNewPosition(), [
-        setNewPosition, windowSize,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        ...dependencyList,
-    ]);
-
-    return position;
+        }),
+    };
 };
 
 const getRelativePosition: GetRelativePosition = ({
@@ -122,6 +136,12 @@ const getRelativePosition: GetRelativePosition = ({
     wrapperRect,
     centered = false,
 }) => {
+    if (!wrapperRect || !targetRect) return {
+        alignment: preferredAlignment,
+        left: boundsSize,
+        top: boundsSize,
+    };
+
     const centering = {
         vertical: (
             centered 

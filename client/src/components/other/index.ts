@@ -19,3 +19,4 @@ export * from './ChannelAvatar';
 export * from './EmojiPicker';
 export * from './EmojiSwitcher';
 export * from './UserName';
+export * from './Message';

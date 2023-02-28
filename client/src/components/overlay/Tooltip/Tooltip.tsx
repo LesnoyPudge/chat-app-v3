@@ -75,8 +75,8 @@ export const Tooltip: FC<Tooltip> = ({
                                 centered
                                 dependencyList={dependencyList}
                             >
-                                {({ aligment }) => {
-                                    const aligmentStyles = {
+                                {({ alignment }) => {
+                                    const alignmentStyles = {
                                         top: {
                                             translateY: to([style.offset], (offset) => `-${offset}px`),
                                         },
@@ -93,7 +93,7 @@ export const Tooltip: FC<Tooltip> = ({
     
                                     const styleWithOffset = {
                                         opacity: style.opacity,
-                                        ...aligmentStyles[aligment],
+                                        ...alignmentStyles[alignment],
                                     };
       
                                     return (

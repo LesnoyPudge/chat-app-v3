@@ -17,7 +17,7 @@ interface TargetRect {
 
 interface RelativelyPositioned extends 
 PropsWithClassName, 
-PropsWithChildrenAsNodeOrFunction<{aligment: Alignment}> {
+PropsWithChildrenAsNodeOrFunction<{alignment: Alignment}> {
     preferredAlignment: Alignment;
     targetRefOrRect?: RefObject<HTMLElement> | TargetRect;
     boundsSize?: number;
@@ -53,7 +53,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     children,
 }) => {
     const wrapperRef = useRef<HTMLDivElement | null>(null);
-    const { aligment, left, top } = useRelativePosition({
+    const { alignment: alignment, left, top } = useRelativePosition({
         preferredAlignment,
         targetRefOrRect,
         wrapperRefOrRect: wrapperRef,
@@ -66,11 +66,11 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     
     return (
         <div 
-            className={twClassNames('fixed', alligmentClassNames[aligment], className)}
+            className={twClassNames('fixed', alligmentClassNames[alignment], className)}
             style={{ top, left }}
             ref={wrapperRef}
         >
-            <ChildrenAsNodeOrFunction args={{ aligment }}>
+            <ChildrenAsNodeOrFunction args={{ alignment }}>
                 {children}
             </ChildrenAsNodeOrFunction>
         </div>

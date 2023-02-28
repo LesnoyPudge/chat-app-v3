@@ -1,12 +1,12 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message } from '@components';
 import { useInView } from '@react-spring/web';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
-import { twClassNames } from '@utils';
+import { throttle, twClassNames } from '@utils';
 import { FC, PropsWithChildren, useDeferredValue, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
-import { useEventListener, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useElementSize, useEventListener, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useTextInput } from '@hooks';
+import { useTextInput, useThrottle } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -379,7 +379,8 @@ const createList = (value: string) => [...Array(500000)].map((_, index) => ({
     some: `${value} ${index}`,
 }));
 import { useWorker } from '@koale/useworker';
-import { Message } from 'src/components/other/MessageV2/MessageV2';
+
+
 // import { createWorkerFactory, useWorker,  } from '@shopify/react-web-worker';
 
 
@@ -484,35 +485,222 @@ const PlaygroundInner2: FC = () => {
     );
 };
 
+const messages = [
+    {
+        displayMode: 'cozy',
+        isHeadless: false,
+        tabIndex: 0,
+        message: {
+            user: 'userId-1',
+            content: JSON.stringify([{ type: 'paragraph', children: [{ text: 'amazing message 1' }] }]),
+            createdAt: Date.now(),
+            isChanged: false,
+            updatedAt: Date.now(),
+            isDeleted: false,
+            attachments: [...Array(0)].map(() => 'https://via.placeholder.com/150'),
+            reactions: [...Array(0)].map((_, i) => ({ 
+                code: uniqueEmojiCodeList[i], 
+                users: [...Array(i)].fill(i.toString()), 
+            } satisfies {code: EmojiCode, users: string[]})),
+            id: 'message-id-1',
+            chat: 'chat-id-1',
+            respondOn: [''],
+        },
+    },
+    {
+        displayMode: 'cozy',
+        isHeadless: true,
+        tabIndex: 0,
+        message: {
+            user: 'userId-2',
+            content: JSON.stringify([{ type: 'paragraph', children: [{ text: 'amazing message 2' }] }]),
+            createdAt: Date.now(),
+            isChanged: false,
+            updatedAt: Date.now(),
+            isDeleted: false,
+            attachments: [...Array(3)].map(() => 'https://via.placeholder.com/150'),
+            reactions: [...Array(0)].map((_, i) => ({ 
+                code: uniqueEmojiCodeList[i], 
+                users: [...Array(i)].fill(i.toString()), 
+            } satisfies {code: EmojiCode, users: string[]})),
+            id: 'message-id-2',
+            chat: 'chat-id-2',
+            respondOn: [''],
+        },
+    },
+    {
+        displayMode: 'cozy',
+        isHeadless: false,
+        tabIndex: 0,
+        message: {
+            user: 'userId-3',
+            content: JSON.stringify([{ type: 'paragraph', children: [{ text: 'amazing message 3' }] }]),
+            createdAt: Date.now(),
+            isChanged: false,
+            updatedAt: Date.now(),
+            isDeleted: false,
+            attachments: [...Array(0)].map(() => 'https://via.placeholder.com/150'),
+            reactions: [...Array(4)].map((_, i) => ({ 
+                code: uniqueEmojiCodeList[i], 
+                users: [...Array(i)].fill(i.toString()), 
+            } satisfies {code: EmojiCode, users: string[]})),
+            id: 'message-id-3',
+            chat: 'chat-id-3',
+            respondOn: [''],
+        },
+    },
+    {
+        displayMode: 'cozy',
+        isHeadless: false,
+        tabIndex: 0,
+        message: {
+            user: 'userId-4',
+            content: JSON.stringify([{ type: 'paragraph', children: [{ text: 'amazing message 4' }] }]),
+            createdAt: Date.now(),
+            isChanged: false,
+            updatedAt: Date.now(),
+            isDeleted: false,
+            attachments: [...Array(3)].map(() => 'https://via.placeholder.com/150'),
+            reactions: [...Array(4)].map((_, i) => ({ 
+                code: uniqueEmojiCodeList[i], 
+                users: [...Array(i)].fill(i.toString()), 
+            } satisfies {code: EmojiCode, users: string[]})),
+            id: 'message-id-4',
+            chat: 'chat-id-4',
+            respondOn: [''],
+        },
+    },
+    {
+        displayMode: 'cozy',
+        isHeadless: false,
+        tabIndex: 0,
+        message: {
+            user: 'userId-5',
+            content: JSON.stringify([{ type: 'paragraph', children: [{ text: 'amazing message 5' }] }]),
+            createdAt: Date.now(),
+            isChanged: true,
+            updatedAt: Date.now(),
+            isDeleted: false,
+            attachments: [...Array(2)].map(() => 'https://via.placeholder.com/150'),
+            reactions: [...Array(2)].map((_, i) => ({ 
+                code: uniqueEmojiCodeList[i], 
+                users: [...Array(i)].fill(i.toString()), 
+            } satisfies {code: EmojiCode, users: string[]})),
+            id: 'message-id-5',
+            chat: 'chat-id-5',
+            respondOn: [''],
+        },
+    },
+];
+
+
+const get = async(target: HTMLElement): Promise<DOMRectReadOnly> => {
+    return new Promise((resolve, reject) => {
+        const obs = new IntersectionObserver(([e]) => {
+            resolve(e.boundingClientRect);
+            obs.unobserve(target);
+            // console.log('wow', e.boundingClientRect);
+        });
+
+        obs.observe(target);
+    });
+};
+
+import getScrollableParent from 'scrollparent';
+import { useIntersectionObserver } from 'react-intersection-observer-hook';
+import { useMeasure } from 'react-use';
+import { useRelativePositionV2 } from 'src/hooks/useRelativePositionV2/useRelativePositionV2';
+
+
+
 const PlaygroundInner3: FC = () => {
     // console.log(twClassNames(''));
+    // const { throttle } = useThrottle();
+
+    const [getRef, { entry }] = useIntersectionObserver();
+    const ref = useRef<HTMLDivElement | null>(null);
+    const chRef = useRef<HTMLDivElement | null>(null);
+    
+    const pos = useRelativePositionV2({
+        preferredAlignment: 'top',
+        relativeElementRef: ref,
+        absoluteElementRef: chRef,
+        swappableAlignment: true,
+    });
+
+    useEffect(() => console.log(pos), [pos]);
+
+    // const [q, w] = useMeasure();
+
+    // useEffect(() => {
+    //     getRef(ref.current);
+    // }, [getRef]);
+
+    // useEffect(() => {
+    //     if (!entry) return;
+
+
+    //     console.log(entry.boundingClientRect);
+    // }, [entry]);
+
+    // useEventListener('focusin', (e) => {
+    //     // console.log(e.target);
+    // });
+
+    
+    const counterRef = useRef(0);
+    // useEffect(() => {
+    //     if (!ref.current) return;
+
+    //     const target = ref.current;
+            
+    //     const scrollableParent = getScrollableParent(target);
+
+    //     // const loop = () => {
+    //     //     counterRef.current++;
+    //     //     get(target).then((v) => {
+    //     //         console.log(v);
+    //     //         console.log(counterRef.current);
+    //     //     });
+    //     //     requestAnimationFrame(loop);
+    //     // };
+    //     // loop();
+
+    //     const handleScroll = throttle(() => {
+    //         get(target).then((v) => {
+    //             console.log('scroll', v);
+    //         });
+    //     }, 505);
+
+    //     scrollableParent && scrollableParent.addEventListener('scroll', handleScroll);
+        
+
+    //     return () => {
+    //         scrollableParent && scrollableParent.removeEventListener('scroll', handleScroll);
+    //     };
+    // }, []);
+
     return (
         <>
-            {/* <OverlayContextProvider isOverlayExistInitial={true}>
-                <RoomSettingsModal/>
-            </OverlayContextProvider> */}
             <Scrollable className='h-full'>
-                <Message
-                    displayMode='compact'
-                    isHeadless={false}
-                    tabIndex={1}
-                    message={{
-                        user: 'userId',
-                        content: JSON.stringify([{ type: 'paragraph', children: [{ text: 'amazing message' }] }]),
-                        createdAt: Date.now().toString(),
-                        isChanged: false,
-                        updatedAt: '',
-                        isDeleted: false,
-                        attachments: [...Array(3)].map(() => 'https://via.placeholder.com/150'),
-                        reactions: [...Array(5)].map((_, i) => ({ 
-                            code: uniqueEmojiCodeList[i], 
-                            users: [...Array(i)].fill(i.toString()), 
-                        } satisfies {code: EmojiCode, users: string[]})),
-                        id: 'message-id',
-                        chat: 'chat-id',
-                        respondOn: [''],
-                    }}
-                />
+                <div className='mt-20 bg-zinc-700' ref={ref}>
+                    <>wow</>
+
+                    
+                    <div className='fixed' ref={chRef} style={{
+                        top: pos.top,
+                        left: pos.left,
+                    }}>
+                        <>amazing</>
+                    </div>
+                </div>
+
+                <List list={messages}>
+                    {(message) => (
+                        // @ts-ignore
+                        <Message {...message}/>
+                    )}
+                </List>
             </Scrollable>
         </>
     );

@@ -10,8 +10,8 @@ export interface IMessage {
     isChanged: boolean;
     isDeleted: boolean;
     respondOn: string[];
-    createdAt: string;
-    updatedAt: string;
+    createdAt: number;
+    updatedAt: number;
 }
 
 export interface ICreateMessageRequest {

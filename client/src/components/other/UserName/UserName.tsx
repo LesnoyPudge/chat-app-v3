@@ -3,15 +3,12 @@ import { FC } from 'react';
 
 
 
-interface UserName extends PropsWithClassName {
-    userId: string;
-    channelId: string;
-}
+type UserName = PropsWithClassName
 
 export const UserName: FC<UserName> = ({
     className = '',
-    channelId,
-    userId,
+    // channelId,
+    // userId,
 }) => {
 
 

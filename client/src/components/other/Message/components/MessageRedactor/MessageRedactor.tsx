@@ -7,18 +7,19 @@ import { parseSlateContent } from '@utils';
 import { FC, useContext, useRef, useState } from 'react';
 import { Descendant } from 'slate';
 import { ReactEditor, useSlateStatic } from 'slate-react';
-import { MessageContext } from '../../MessageV2';
+import { useEventListener } from 'usehooks-ts';
+import { MessageContext } from '../../Message';
 
 
 
 export const MessageRedactor: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { message, isInRedactorMode, handleSaveRedactedMessage } = useContext(MessageContext) as MessageContext;
+    const { message, isInEditMode, handleSaveRedactedMessage } = useContext(MessageContext) as MessageContext;
     const [redactorValue, setRedactorValue] = useState<Descendant[]>(() => (parseSlateContent(message.content)));
 
     return (
-        <Conditional isRendered={isInRedactorMode}>
+        <Conditional isRendered={isInEditMode}>
             <SlateContainer
                 value={redactorValue} 
                 onChange={setRedactorValue}
@@ -49,7 +50,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
     className = '',
     onSave,
 }) => {
-    const { toggleIsInRedactorMode } = useContext(MessageContext) as MessageContext;
+    const { toggleIsInEditMode, handleSaveRedactedMessage } = useContext(MessageContext) as MessageContext;
     const { addEmoji } = useSlateAddEmoji();
     const editor = useSlateStatic();
     const editorWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +59,18 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
         if (!editorWrapperRef.current) return;
         editorWrapperRef.current.style.height = entry.borderBoxSize[0].blockSize + 'px';
     });
+
+    useEventListener('keydown', (e) => {
+        if (e.key === 'Escape') toggleIsInEditMode();
+    });
+
+    const handleEnter = (e: React.KeyboardEvent) => {
+        if (!(e.key === 'Enter' && !e.shiftKey)) return;
+        
+        e.preventDefault();
+        handleSaveRedactedMessage(editor.children);
+        
+    };
 
     return (
         <div className={className}>
@@ -75,6 +88,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                         className={styles.editor}
                         placeholder='Введите отредактированное сообщение'
                         label='Редактируемое сообщение'
+                        onKeyDown={handleEnter}
                     />
                 </Scrollable>
 
@@ -142,7 +156,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                     className={styles.controlButton}
                     stylingPreset='link'
                     label='Отменить редактирование'
-                    onLeftClick={toggleIsInRedactorMode}
+                    onLeftClick={toggleIsInEditMode}
                 >
                     <>отмены</>
                 </Button>

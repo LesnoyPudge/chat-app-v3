@@ -3,7 +3,7 @@ import { FC, useContext } from 'react';
 import { Tooltip, OverlayItem, AnimatedTransition, Button, EmojiPicker, Icon, OverlayContextProvider, RefContextProvider, RelativelyPositioned, EmojiCode } from '@components';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
-import { MessageContext } from '../../MessageV2';
+import { MessageContext } from '../../Message';
 
 
 
@@ -21,7 +21,7 @@ const styles = {
 export const MessageControlBar: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { tabIndex, handleAddReaction, toggleIsInRedactorMode } = useContext(MessageContext) as MessageContext;
+    const { tabIndex, handleAddReaction, toggleIsInEditMode } = useContext(MessageContext) as MessageContext;
 
     return (
         <div 
@@ -94,7 +94,7 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                     className={styles.button}
                     label='Редактировать сообщение'
                     tabIndex={tabIndex}
-                    onLeftClick={toggleIsInRedactorMode}
+                    onLeftClick={toggleIsInEditMode}
                 >
                     <Icon
                         className={styles.buttonIcon}

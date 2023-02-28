@@ -17,8 +17,8 @@ const getMessages = ((size = 20) => {
             isChanged: false,
             isDeleted: false,
             respondOn: [],
-            createdAt: Date.now().toString(),
-            updatedAt: '',
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
         }
     ));
 });

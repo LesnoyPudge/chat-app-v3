@@ -3,7 +3,7 @@ import { FC, useContext } from 'react';
 import { PropsWithClassName } from '@types';
 import { Grid1, Grid2, Grid3, Grid4, Grid5, Grid6, Grid7, Grid8, Grid9 } from './components';
 import { Conditional } from '@components';
-import { MessageContext } from '../../MessageV2';
+import { MessageContext } from '../../Message';
 
 
 

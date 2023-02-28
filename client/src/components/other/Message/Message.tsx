@@ -17,20 +17,23 @@ interface MessageComponent extends PropsWithClassName {
     tabIndex?: number;
 }
 
+interface Ids {
+    timestampId: string,
+    usernameId: string;
+    contentId: string;
+    editTimestampId: string;
+}
+
 export interface MessageContext extends Required<Omit<MessageComponent, 'className' | 'displayMode'>> {
-    ids: {
-        timestampId: string,
-        usernameId: string;
-        contentId: string;
-    };
-    isInRedactorMode: boolean;
+    ids: Ids;
+    isInEditMode: boolean;
     handleAddReaction: (code: EmojiCode) => void;
     handleSaveRedactedMessage: (value: Descendant[]) => void;
-    toggleIsInRedactorMode: () => void;
+    toggleIsInEditMode: () => void;
 }
 
 const styles = {
-    wrapper: `relative mt-14 pl-2 pr-12 py-1 group bg-primary-200 
+    wrapper: `relative mt-14 pr-12 py-1 group bg-primary-200 
     hover:bg-primary-300 focus-within:bg-primary-300`,
     heading: 'sr-only',
 };
@@ -42,17 +45,27 @@ export const Message: FC<MessageComponent> = ({
     message,
     displayMode,
     isHeadless,
-    tabIndex = 1,
+    tabIndex = 0,
 }) => {
-    const [isInRedactorMode, toggleIsInRedactorMode] = useToggle(false);
+    const [isInEditMode, toggleIsInEditMode] = useToggle(false);
 
     const isCompact = displayMode === 'compact';
     const isCozy = displayMode === 'cozy';
 
-    const ids = {
+    const ids: Ids = {
         timestampId: `timestampId-${message.id}`,
         usernameId: `usernameId-${message.id}`,
         contentId: `contentId-${message.id}`,
+        editTimestampId: `editTimestampId-${message.id}`,
+    };
+
+    const handleSaveRedactedMessage = (value: Descendant[]) => {
+        console.log('save', value);
+        toggleIsInEditMode();
+    };
+
+    const handleAddReaction = (code: EmojiCode) => {
+        console.log('add reaction', code);
     };
 
     const contextValues: MessageContext = {
@@ -60,17 +73,17 @@ export const Message: FC<MessageComponent> = ({
         message,
         tabIndex,
         ids,
-        isInRedactorMode,
-        handleSaveRedactedMessage: () => console.log('save'),
-        handleAddReaction: () => console.log('add reaction'),
-        toggleIsInRedactorMode,
+        isInEditMode,
+        handleSaveRedactedMessage,
+        handleAddReaction,
+        toggleIsInEditMode,
     };
 
     return (
         <MessageContext.Provider value={contextValues}>
             <article 
                 className={twClassNames(styles.wrapper, className)}
-                aria-labelledby={`${ids.timestampId} ${ids.usernameId} ${ids.contentId}`}
+                aria-labelledby={`${ids.timestampId} ${ids.usernameId} ${ids.contentId} ${ids.editTimestampId}`}
             >
                 <Heading 
                     className={styles.heading} 

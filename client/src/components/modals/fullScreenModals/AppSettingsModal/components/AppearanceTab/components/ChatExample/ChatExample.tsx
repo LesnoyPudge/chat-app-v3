@@ -48,8 +48,8 @@ const messages: IMessage[] = messagesContent.map((content, index) => {
         respondOn: [],
         isChanged: false,
         isDeleted: false,
-        createdAt: Date.now().toString(),
-        updatedAt: '',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
     };
 });
 
