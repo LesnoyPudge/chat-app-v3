@@ -69,7 +69,12 @@ const otherClasses = {
 
     '.message-font-size': {
         'font-size': 'var(--message-font-size)',
-        'line-height': 1,
+        'line-height': 'var(--message-line-height)',
+    },
+
+    '.message-y-padding': {
+        'padding-top': 'var(--message-y-padding)',
+        'padding-bottom': 'var(--message-y-padding)',
     },
 };
 

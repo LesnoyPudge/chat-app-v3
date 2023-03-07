@@ -51,7 +51,9 @@ export const EmojiSwitcher: FC<EmojiSwitcher> = ({
 
     const [currentEmojiCode, setCurrentEmojiCode] = useState(() => (getRandomEmojiCode()));
     
-    const switchEmojiCode = () => setCurrentEmojiCode(getRandomEmojiCode());
+    const switchEmojiCode = () => {
+        if (!isActive) setCurrentEmojiCode(getRandomEmojiCode());
+    };
 
     const content = (
         <div className={twClassNames(styles.wrapper, className)}>
@@ -64,11 +66,9 @@ export const EmojiSwitcher: FC<EmojiSwitcher> = ({
         </div>
     );
 
-    const wrapperClassName = 'group/emojiSwitcher';
-
     const childrenArgs: ChildrenArgs = {
         content,
-        wrapperClassName,
+        wrapperClassName: 'group/emojiSwitcher',
         switchEmojiCode,
     };
 

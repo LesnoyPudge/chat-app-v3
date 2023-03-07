@@ -23,7 +23,7 @@ PropsWithChildrenAsNodeOrFunction<{alignment: Alignment}> {
     boundsSize?: number;
     spacing?: number;
     swappableAlignment?: boolean;
-    alligmentClassNames?: {
+    alignmentClassNames?: {
         top?: string;
         bottom?: string;
         left?: string;
@@ -47,7 +47,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     boundsSize = 20,
     spacing = 20,
     swappableAlignment = false,
-    alligmentClassNames = defaultAlligmentClassNames,
+    alignmentClassNames = defaultAlligmentClassNames,
     centered = false,
     dependencyList,
     children,
@@ -66,7 +66,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     
     return (
         <div 
-            className={twClassNames('fixed', alligmentClassNames[alignment], className)}
+            className={twClassNames('fixed', alignmentClassNames[alignment], className)}
             style={{ top, left }}
             ref={wrapperRef}
         >

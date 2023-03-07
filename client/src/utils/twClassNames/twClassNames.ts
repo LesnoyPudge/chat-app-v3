@@ -23,7 +23,9 @@ const customTwMerge = createTailwindMerge(getDefaultConfig, (config) =>
                 'text-heading-m',
                 'text-heading-s',
                 'text-2xs',
+                'message-font-size',
             ],
+            'py': ['message-y-padding'],
         },
 
         conflictingClassGroups: {

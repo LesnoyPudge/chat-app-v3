@@ -20,3 +20,4 @@ export * from './EmojiPicker';
 export * from './EmojiSwitcher';
 export * from './UserName';
 export * from './Message';
+export * from './MessageEditorWrapper';

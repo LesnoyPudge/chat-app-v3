@@ -1,10 +1,10 @@
-import { PropsWithChildrenAndClassName } from '@types';
+import { PropsWithChildrenAndClassName, PropsWithInnerRef } from '@types';
 import { conditional, twClassNames } from '@utils';
-import React, { FC } from 'react';
+import React, { ComponentPropsWithRef, FC, PropsWithRef } from 'react';
 
 
 
-interface Button extends PropsWithChildrenAndClassName {
+interface Button extends PropsWithChildrenAndClassName, PropsWithInnerRef<HTMLButtonElement> {
     id?: string;
     style?: React.CSSProperties;
     stylingPreset?: 'brand' | 'link' | 'lite' | 'brandNeutral' | 'brandDanger' | 'brandPositive',
@@ -93,13 +93,14 @@ export const Button: FC<Button> = ({
     hasPopup,
     role = 'button',
     hidden = false,
+    children,
+    innerRef,
     onAnyClick,
     onLeftClick,
     onMiddleClick,
     onRightClick,
     onMouseEnter,
     onFocus,
-    children,
 }) => {
     // if (!size && !!stylingPreset) size = 'small';
 
@@ -180,6 +181,7 @@ export const Button: FC<Button> = ({
             aria-hidden={hidden}
             aria-disabled={isDisabled}
             role={role}
+            ref={innerRef}
             onKeyDown={handleLeftClickWithKeyboard}
             onClick={handleLeftClick}
             onContextMenu={handleRightClick}

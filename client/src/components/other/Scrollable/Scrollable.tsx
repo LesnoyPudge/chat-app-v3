@@ -1,6 +1,6 @@
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
-import { CSSProperties, FC, MutableRefObject } from 'react';
+import { CSSProperties, FC, MutableRefObject, useEffect, useRef } from 'react';
 import { useThrottle } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
 import { SimpleBarCore } from '@reExport';
@@ -14,6 +14,7 @@ interface Scrollable extends PropsWithChildrenAndClassName {
     hidden?: boolean;
     withOppositeGutter?: boolean;
     small?: boolean;
+    focusable?: boolean;
     scrollableRef?: MutableRefObject<HTMLDivElement | null>;
     simpleBarRef?: MutableRefObject<SimpleBarCore | null>;
 }
@@ -42,20 +43,22 @@ export const Scrollable: FC<Scrollable> = ({
     hidden = false,
     withOppositeGutter = false,
     small = false,
+    focusable = false,
     scrollableRef,
     simpleBarRef,
     children,
 }) => {
     const { throttle, isThrottling: isAlive } = useThrottle();
+    const mySimpleBarRef = useRef<SimpleBarCore | null>(null);
 
     const handlePointerMove = () => {
-        if (!autoHide) return;
-        
-        throttle(() => {}, 1000)();
+        if (autoHide) throttle(() => {}, 1000)();  
     };
 
     const getRef = (ref: SimpleBarCore | null) => {
         if (!ref) return;
+
+        mySimpleBarRef.current = ref;
         
         if (simpleBarRef) {
             simpleBarRef.current = ref;
@@ -65,6 +68,13 @@ export const Scrollable: FC<Scrollable> = ({
             scrollableRef.current = ref.getScrollElement() as HTMLDivElement;
         }
     };
+
+    useEffect(() => {
+        if (!mySimpleBarRef.current) return;
+        if (!mySimpleBarRef.current.contentWrapperEl) return;
+
+        mySimpleBarRef.current.contentWrapperEl.tabIndex = focusable ? 0 : -1;        
+    }, [focusable]);
 
     return (
         <div 

@@ -37,7 +37,7 @@ export const ChannelAvatar: FC<ChannelAvatar> = ({
             <Conditional isRendered={!avatar}>
                 <div className={styles.nameWrapper}>
                     <div className={styles.name}>
-                        {formattedName}{formattedName}{formattedName}
+                        {formattedName}
                     </div>
                 </div>
             </Conditional>

@@ -40,7 +40,6 @@ interface MessageRedactorInner extends PropsWithClassName {
 const styles = {
     editorWrapper: 'flex items-start rounded-md bg-primary-100 min-h-[44px] max-h-[50vh]',
     scrollable: 'h-full',
-    editor: 'min-h-full p-2',
     emojiSwitcher: 'w-11 h-11 p-2',
     controlWrapper: 'text-xs text-color-primary mt-1',
     controlButton: 'inline',
@@ -64,14 +63,6 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
         if (e.key === 'Escape') toggleIsInEditMode();
     });
 
-    const handleEnter = (e: React.KeyboardEvent) => {
-        if (!(e.key === 'Enter' && !e.shiftKey)) return;
-        
-        e.preventDefault();
-        handleSaveRedactedMessage(editor.children);
-        
-    };
-
     return (
         <div className={className}>
             <div 
@@ -85,10 +76,9 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                     autoHide
                 >
                     <SlateEditor
-                        className={styles.editor}
                         placeholder='Введите отредактированное сообщение'
                         label='Редактируемое сообщение'
-                        onKeyDown={handleEnter}
+                        onSubmit={handleSaveRedactedMessage}
                     />
                 </Scrollable>
 
@@ -107,7 +97,6 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                                                 label='Выбрать эмодзи'
                                                 hasPopup='dialog'
                                                 isActive={isOverlayExist}
-                                                onFocus={switchEmojiCode}
                                                 onMouseEnter={switchEmojiCode}
                                                 onLeftClick={openOverlay}
                                             >

@@ -11,3 +11,4 @@ export * from './useRelativePosition';
 export * from './useMousePosition';
 export * from './useFileDrop';
 export * from './useTextInput';
+export * from './useFocus';

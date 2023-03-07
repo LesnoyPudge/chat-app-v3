@@ -1,13 +1,13 @@
 import { Alignment } from '@types';
-import { RefObject, useCallback, useEffect } from 'react';
+import { RefObject, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
 import { useEventListener, useIsFirstRender } from 'usehooks-ts';
 import useResizeObserver from '@react-hook/resize-observer';
 // import useIntersectionObserver from '@react-hook/intersection-observer';
 import getScrollableParent from 'scrollparent';
 // import { throttle } from '@utils';
-import { useThrottle } from '@hooks';
-import { fpsToMs } from '@utils';
+// import { useThrottle } from '@hooks';
+import { fpsToMs, throttle } from '@utils';
 
 
 
@@ -31,15 +31,17 @@ interface GetRelativePositionReturn {
     alignment: Alignment;
 }
 
-type GetRelativePosition = (args: {
+type GetRelativePositionArgs = {
     boundsSize?: number;
     spacing?: number;
     swappableAlignment?: boolean;
     preferredAlignment: Alignment;
-    targetRect: TargetRect | null;
-    wrapperRect: WrapperRect | null;
+    relativeRect: TargetRect | null;
+    absoluteRect: WrapperRect | null;
     centered?: boolean;
-}) => GetRelativePositionReturn;
+}
+
+type GetRelativePosition = (args: GetRelativePositionArgs) => GetRelativePositionReturn;
 
 interface UseRelativePositionArgs {
     preferredAlignment: Alignment;
@@ -65,65 +67,178 @@ export const useRelativePositionV2 = ({
     spacing,
     centered,
     dependencyList = [],
-}: UseRelativePositionArgs): UseRelativePositionReturn => {
+}: UseRelativePositionArgs) => {
+    const [isRelativeInView, setIsRelativeInView] = useState(true);
+    const [alignment, setAlignment] = useState(preferredAlignment);
     const isFirstRender = useIsFirstRender();
-    const { throttle } = useThrottle();
+
+    useLayoutEffect(() => {
+        if (!isFirstRender) return;
+        
+        const { alignment: newAlignment } = recalculate({
+            absoluteElementRef,
+            absoluteRect: absoluteElementRef.current?.getBoundingClientRect() || null,
+            preferredAlignment,
+            relativeRect: relativeElementRef.current?.getBoundingClientRect() || null,
+            boundsSize,
+            centered,
+            spacing,
+            swappableAlignment,
+        });
+
+        if (alignment !== newAlignment) {
+            setAlignment(newAlignment);
+        }
+    }, [absoluteElementRef, alignment, boundsSize, centered, isFirstRender, preferredAlignment, relativeElementRef, spacing, swappableAlignment]);
+
+    useLayoutEffect(() => {
+        if (!relativeElementRef.current || !absoluteElementRef.current) return;
+
+        const relativeElement = relativeElementRef.current;
+        const absoluteElement = absoluteElementRef.current;
+
+        const intObs = new IntersectionObserver(([relativeEntry, absoluteEntry]) => {
+            if (!relativeEntry || !absoluteEntry) return;
+
+            const { alignment: newAlignment } = recalculate({
+                absoluteElementRef,
+                absoluteRect: absoluteEntry.boundingClientRect,
+                preferredAlignment,
+                relativeRect: relativeEntry.boundingClientRect,
+                boundsSize,
+                centered,
+                spacing,
+                swappableAlignment,
+            });
+
+            if (alignment !== newAlignment) {
+                setAlignment(newAlignment);
+            }
+
+            if (isRelativeInView !== relativeEntry.isIntersecting) {
+                setIsRelativeInView(relativeEntry.isIntersecting);
+            }
+        });
+
+        const reobserve = throttle(() => {
+            intObs.unobserve(relativeElement);
+            intObs.unobserve(absoluteElement);
+
+            intObs.observe(relativeElement);
+            intObs.observe(absoluteElement);
+        }, fpsToMs(60));
+
+        const resObs = new ResizeObserver(reobserve);
+
+        intObs.observe(relativeElement);
+        intObs.observe(absoluteElement);
+ 
+        resObs.observe(relativeElement);
+        resObs.observe(absoluteElement);
+
+        const scrollableParent = getScrollableParent(relativeElement);
+
+        scrollableParent && scrollableParent.addEventListener('scroll', reobserve);
+
+        return () => {
+            scrollableParent && scrollableParent.removeEventListener('scroll', reobserve);
+            
+            intObs.disconnect();
+            resObs.disconnect();
+        };
+    }, [absoluteElementRef, alignment, boundsSize, centered, isRelativeInView, preferredAlignment, relativeElementRef, spacing, swappableAlignment]);
+
+    return {
+        isRelativeInView,
+        alignment,
+    };
 
     // const relativeElementIntersectionEntity = useIntersectionObserver(relativeElementRef);
     // const absoluteElementIntersectionEntity = useIntersectionObserver(absoluteElementRef);
 
-    const [relativeRecalculate, { entry: relativeElementIntersectionEntity }] = useIntersectionObserver();
-    const [absoluteRecalculate, { entry: absoluteElementIntersectionEntity }] = useIntersectionObserver();
+    // const [relativeRecalculate, { entry: relativeElementIntersectionEntity }] = useIntersectionObserver();
+    // const [absoluteRecalculate, { entry: absoluteElementIntersectionEntity }] = useIntersectionObserver();
 
-    useEffect(() => {
-        if (relativeElementIntersectionEntity || absoluteElementIntersectionEntity) return;
+    // useEffect(() => {
+    //     if (relativeElementIntersectionEntity || absoluteElementIntersectionEntity) return;
 
-        relativeRecalculate(relativeElementRef.current);
-        absoluteRecalculate(absoluteElementRef.current);
-    }, [
-        absoluteElementIntersectionEntity, absoluteElementRef, absoluteRecalculate, 
-        relativeElementIntersectionEntity, relativeElementRef, relativeRecalculate,
-    ]);
+    //     relativeRecalculate(relativeElementRef.current);
+    //     absoluteRecalculate(absoluteElementRef.current);
+    // }, [
+    //     absoluteElementIntersectionEntity, absoluteElementRef, absoluteRecalculate, 
+    //     relativeElementIntersectionEntity, relativeElementRef, relativeRecalculate,
+    // ]);
     
-    const recalculateOnUpdate = useCallback(() => throttle(() => {
-        if (isFirstRender) return;
+    // const recalculateOnUpdate = useCallback(() => throttle(() => {
+    //     if (isFirstRender) return;
 
-        relativeRecalculate(relativeElementRef.current);
-        absoluteRecalculate(absoluteElementRef.current);
-    }, fpsToMs(30))(), [absoluteElementRef, absoluteRecalculate, isFirstRender, relativeElementRef, relativeRecalculate, throttle]);
+    //     relativeRecalculate(relativeElementRef.current);
+    //     absoluteRecalculate(absoluteElementRef.current);
+    // }, fpsToMs(30))(), [absoluteElementRef, absoluteRecalculate, isFirstRender, relativeElementRef, relativeRecalculate, throttle]);
 
-    useResizeObserver(relativeElementRef, recalculateOnUpdate);
-    useResizeObserver(absoluteElementRef, recalculateOnUpdate);
+    // useResizeObserver(relativeElementRef, recalculateOnUpdate);
+    // useResizeObserver(absoluteElementRef, recalculateOnUpdate);
 
-    useEffect(() => {
-        if (!relativeElementRef.current) return;
+    // useEffect(() => {
+    //     if (!relativeElementRef.current) return;
 
-        const scrollableParent = getScrollableParent(relativeElementRef.current);
+    //     const scrollableParent = getScrollableParent(relativeElementRef.current);
         
-        if (!scrollableParent) return;
+    //     if (!scrollableParent) return;
 
-        scrollableParent.addEventListener('scroll', recalculateOnUpdate);
+    //     scrollableParent.addEventListener('scroll', recalculateOnUpdate);
 
-        return () => {
-            scrollableParent.removeEventListener('scroll', recalculateOnUpdate);
-        };
-    }, [recalculateOnUpdate, relativeElementRef]);
+    //     return () => {
+    //         scrollableParent.removeEventListener('scroll', recalculateOnUpdate);
+    //     };
+    // }, [recalculateOnUpdate, relativeElementRef]);
 
-    useEffect(() => {
-        console.log(relativeElementIntersectionEntity?.boundingClientRect, absoluteElementIntersectionEntity?.boundingClientRect);
-    }, [absoluteElementIntersectionEntity?.boundingClientRect, relativeElementIntersectionEntity?.boundingClientRect]);
+    // useEffect(() => {
+    //     console.log(relativeElementIntersectionEntity?.boundingClientRect, absoluteElementIntersectionEntity?.boundingClientRect);
+    // }, [absoluteElementIntersectionEntity?.boundingClientRect, relativeElementIntersectionEntity?.boundingClientRect]);
+
+    // return {
+    // isRelativeElementVisible: relativeElementIntersectionEntity?.isIntersecting || false,
+    // ...getRelativePosition({
+    //     preferredAlignment,
+    //     relativeRect: relativeElementIntersectionEntity?.boundingClientRect || null,
+    //     absoluteRect: absoluteElementIntersectionEntity?.boundingClientRect || null,
+    //     swappableAlignment,
+    //     boundsSize,
+    //     spacing,
+    //     centered,
+    // }),
+    // };
+};
+
+const recalculate = ({
+    preferredAlignment,
+    relativeRect,
+    absoluteRect,
+    boundsSize,
+    centered,
+    spacing,
+    swappableAlignment,
+    absoluteElementRef,
+}: GetRelativePositionArgs & {absoluteElementRef: RefObject<HTMLElement>}) => {
+    const { alignment, left, top } = getRelativePosition({
+        preferredAlignment,
+        relativeRect,
+        absoluteRect,
+        swappableAlignment,
+        boundsSize,
+        spacing,
+        centered,
+    });
+    
+    if (absoluteElementRef.current) {
+        const absoluteElement = absoluteElementRef.current;
+        absoluteElement.style.top = top + 'px';
+        absoluteElement.style.left = left + 'px';
+    }
 
     return {
-        isRelativeElementVisible: relativeElementIntersectionEntity?.isIntersecting || false,
-        ...getRelativePosition({
-            preferredAlignment,
-            targetRect: relativeElementIntersectionEntity?.boundingClientRect || null,
-            wrapperRect: absoluteElementIntersectionEntity?.boundingClientRect || null,
-            swappableAlignment,
-            boundsSize,
-            spacing,
-            centered,
-        }),
+        alignment,
     };
 };
 
@@ -132,11 +247,11 @@ const getRelativePosition: GetRelativePosition = ({
     spacing = 0,
     swappableAlignment = false,
     preferredAlignment,
-    targetRect,
-    wrapperRect,
+    relativeRect,
+    absoluteRect,
     centered = false,
 }) => {
-    if (!wrapperRect || !targetRect) return {
+    if (!absoluteRect || !relativeRect) return {
         alignment: preferredAlignment,
         left: boundsSize,
         top: boundsSize,
@@ -145,39 +260,39 @@ const getRelativePosition: GetRelativePosition = ({
     const centering = {
         vertical: (
             centered 
-                ? (wrapperRect.height - targetRect.height) / 2 
+                ? (absoluteRect.height - relativeRect.height) / 2 
                 : 0
         ),
         horizontal: (
             centered 
-                ? (wrapperRect.width - targetRect.width) / 2 
+                ? (absoluteRect.width - relativeRect.width) / 2 
                 : 0
         ),
     };
 
     const bounds = {
         top: boundsSize,
-        bottom: window.innerHeight - boundsSize - wrapperRect.height,
+        bottom: window.innerHeight - boundsSize - absoluteRect.height,
         left: boundsSize,
-        right: window.innerWidth - boundsSize - wrapperRect.width,
+        right: window.innerWidth - boundsSize - absoluteRect.width,
     };
 
     const unboundedPositions = {
         top: {
-            top: targetRect.top - wrapperRect.height - spacing,
-            left: targetRect.left - centering.horizontal,
+            top: relativeRect.top - absoluteRect.height - spacing,
+            left: relativeRect.left - centering.horizontal,
         },
         bottom: {
-            top: targetRect.bottom + spacing,
-            left: targetRect.left - centering.horizontal,
+            top: relativeRect.bottom + spacing,
+            left: relativeRect.left - centering.horizontal,
         },
         left: {
-            top: targetRect.top - centering.vertical,
-            left: targetRect.left - wrapperRect.width - spacing,
+            top: relativeRect.top - centering.vertical,
+            left: relativeRect.left - absoluteRect.width - spacing,
         },
         right: {
-            top: targetRect.top - centering.vertical,
-            left: targetRect.right + spacing,
+            top: relativeRect.top - centering.vertical,
+            left: relativeRect.right + spacing,
         },
     };
 

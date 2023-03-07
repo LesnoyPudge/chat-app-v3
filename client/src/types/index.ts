@@ -1,5 +1,5 @@
 import { deepMerge } from '@reExport';
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode, RefObject } from 'react';
 
 
 
@@ -36,3 +36,7 @@ export interface RGB {
 }
 
 export type Merge<T extends object[]> = ReturnType<typeof deepMerge<T>>;
+
+export type PropsWithInnerRef<T extends HTMLElement> = {
+    innerRef?: RefObject<T>;
+}

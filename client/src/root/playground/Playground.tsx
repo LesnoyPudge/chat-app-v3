@@ -1,10 +1,10 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button } from '@components';
 import { useInView } from '@react-spring/web';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { throttle, twClassNames } from '@utils';
-import { FC, PropsWithChildren, useDeferredValue, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { FC, PropsWithChildren, useContext, useDeferredValue, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
-import { useElementSize, useEventListener, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useTextInput, useThrottle } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
@@ -610,8 +610,28 @@ import getScrollableParent from 'scrollparent';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
 import { useMeasure } from 'react-use';
 import { useRelativePositionV2 } from 'src/hooks/useRelativePositionV2/useRelativePositionV2';
+import { useFocus } from 'src/hooks/useFocus/useFocus';
 
 
+
+const RelativelyPositionedV2: FC<PropsWithChildren> = ({ children }) => {
+    const absoluteElementRef = useRef<HTMLDivElement | null>(null);
+    const { targetRef: relativeElementRef } = useContext(RefContext) as RefContext;
+    const { alignment, isRelativeInView } = useRelativePositionV2({
+        preferredAlignment: 'top',
+        relativeElementRef,
+        absoluteElementRef,
+        swappableAlignment: true,
+        centered: true,
+        spacing: 20,
+    });
+
+    return (
+        <div className='fixed z-10' ref={absoluteElementRef}>
+            {alignment}
+        </div>
+    );
+};
 
 const PlaygroundInner3: FC = () => {
     // console.log(twClassNames(''));
@@ -621,14 +641,9 @@ const PlaygroundInner3: FC = () => {
     const ref = useRef<HTMLDivElement | null>(null);
     const chRef = useRef<HTMLDivElement | null>(null);
     
-    const pos = useRelativePositionV2({
-        preferredAlignment: 'top',
-        relativeElementRef: ref,
-        absoluteElementRef: chRef,
-        swappableAlignment: true,
-    });
+    
 
-    useEffect(() => console.log(pos), [pos]);
+    // useEffect(() => console.log(pos), [pos]);
 
     // const [q, w] = useMeasure();
 
@@ -680,20 +695,25 @@ const PlaygroundInner3: FC = () => {
     //     };
     // }, []);
 
+    const [isActive, setIsActive] = useState(false);
+
     return (
         <>
             <Scrollable className='h-full'>
-                <div className='mt-20 bg-zinc-700' ref={ref}>
-                    <>wow</>
+                <RefContextProvider>
+                    <div 
+                        className='mt-80 bg-zinc-700' 
+                        onClick={() => setIsActive((prev) => !prev)}
+                    >
+                        <>wow</>
 
-                    
-                    <div className='fixed' ref={chRef} style={{
-                        top: pos.top,
-                        left: pos.left,
-                    }}>
-                        <>amazing</>
+                        <Conditional isRendered={isActive}>
+                            <RelativelyPositionedV2>
+                                
+                            </RelativelyPositionedV2>
+                        </Conditional>
                     </div>
-                </div>
+                </RefContextProvider>
 
                 <List list={messages}>
                     {(message) => (
@@ -706,7 +726,23 @@ const PlaygroundInner3: FC = () => {
     );
 };
 
-const enabled = !!1;
+const PlaygroundInner4: FC = () => {
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const isFocused = useFocus(buttonRef);
+    const isHovered = useHover(buttonRef);
+
+    useEffect(() => {
+        console.log(`focused: ${isFocused} hovered: ${isHovered}`);
+    }, [isFocused, isHovered]);
+
+    return (
+        <Button innerRef={buttonRef}>
+            <>button</>
+        </Button>
+    );
+};
+
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -719,6 +755,7 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner/> */}
                 {/* <PlaygroundInner2/> */}
                 <PlaygroundInner3/>
+                {/* <PlaygroundInner4/> */}
             </Conditional>
         </>
     );
