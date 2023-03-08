@@ -12,8 +12,8 @@ interface SlateEmoji extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    wrapper: 'inline-block mx-0.5',
-    emoji: 'inline-block w-6 h-6',
+    wrapper: 'inline-block message-emoji-size',
+    emoji: 'inline-block w-full h-full',
 };
 
 export const SlateEmoji: FC<SlateEmoji> = ({ 

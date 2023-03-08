@@ -4,6 +4,7 @@ import { Button, Conditional, TabContext, Image, Icon, CreateChannelModalTabs, F
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { EncodedFile } from '@types';
 import { FormikFileInput, FormikTextInput } from '@libs';
+import { MBToBytes } from '@utils';
 
 
 
@@ -28,7 +29,6 @@ export const CreateChannelTab: FC = () => {
         <Formik
             initialValues={initialValues}
             onSubmit={handleSubmit}
-
         >
             <Form>
                 <ModalHeader>
@@ -48,14 +48,16 @@ export const CreateChannelTab: FC = () => {
                         label='Загрузить значок канала'
                         name='avatar'
                         accept='.jpg,.jpeg,.png'
+                        multiple={false}
+                        sizeLimit={MBToBytes(1)}
                     >
                         {({ value }) => {
                             return (
                                 <div className='peer-focus-visible:focused flex w-20 h-20 bg-primary-300 rounded-full pointer-events-none'>
-                                    <Conditional isRendered={!!value}>
+                                    <Conditional isRendered={!!value.length}>
                                         <Image
                                             className='rounded-full'
-                                            file={value}
+                                            file={value[0]}
                                             alt='Значок канала'
                                         />
                                     </Conditional>

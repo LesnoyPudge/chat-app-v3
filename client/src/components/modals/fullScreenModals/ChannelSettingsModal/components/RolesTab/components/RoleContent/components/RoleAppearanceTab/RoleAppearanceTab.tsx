@@ -4,6 +4,7 @@ import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button, Cond
 import { RoleColor } from './components';
 import { FormikContextType, useFormikContext } from 'formik';
 import { RoleContentTabs } from '../..';
+import { KBToBytes } from '@utils';
 
 
 
@@ -67,14 +68,16 @@ export const RoleAppearanceTab: FC = () => {
                     name='roleImage' 
                     label='Значок роли'
                     accept='image/*'
+                    multiple={false}
+                    sizeLimit={KBToBytes(256)}
                 >
                     {({ value }) => (
                         <div className={styles.firstFileInputWrapper}>
-                            <Conditional isRendered={!!values.roleImage || !!value}>
+                            <Conditional isRendered={!!values.roleImage || !!value.length}>
                                 <Image
                                     className={styles.firstFileInputImage}
                                     src={values.roleImage}
-                                    file={value}
+                                    file={value[0]}
                                     alt='Значок роли'
                                 />
                             </Conditional>

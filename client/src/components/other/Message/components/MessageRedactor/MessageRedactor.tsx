@@ -91,7 +91,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                                         className={styles.emojiSwitcher}
                                         isActive={isOverlayExist}
                                     >
-                                        {({ content, switchEmojiCode, wrapperClassName }) => (
+                                        {({ emojiComponent, switchEmojiCode, wrapperClassName }) => (
                                             <Button 
                                                 className={wrapperClassName}
                                                 label='Выбрать эмодзи'
@@ -100,7 +100,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                                                 onMouseEnter={switchEmojiCode}
                                                 onLeftClick={openOverlay}
                                             >
-                                                {content}
+                                                {emojiComponent}
                                             </Button>
                                         )}
                                     </EmojiSwitcher>

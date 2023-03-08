@@ -6,7 +6,7 @@ import { ChildrenAsNodeOrFunction, Emoji, uniqueEmojiCodeList } from '@component
 
 
 interface ChildrenArgs {
-    content: ReactNode;
+    emojiComponent: ReactNode;
     wrapperClassName: string;
     switchEmojiCode: () => void;
 }
@@ -16,12 +16,11 @@ interface EmojiSwitcher extends PropsWithClassName, PropsWithChildrenAsNodeOrFun
 }
 
 const styles = {
-    wrapper: 'w-10 h-10 p-1.5',
     emoji: {
-        base: `w-full h-full scale-75 grayscale transition-all duration-300
-        group-focus-visible/emojiSwitcher:scale-100 group-focus-visible/emojiSwitcher:grayscale-0
-        group-hover/emojiSwitcher:scale-100 group-hover/emojiSwitcher:grayscale-0`,
-        active: 'scale-100 grayscale-0',
+        base: `w-full h-full grayscale transition-all duration-300
+        group-focus-visible/emojiSwitcher:scale-[1.14] group-focus-visible/emojiSwitcher:grayscale-0
+        group-hover/emojiSwitcher:scale-[1.14] group-hover/emojiSwitcher:grayscale-0`,
+        active: 'scale-[1.14] grayscale-0',
     },
 };
 
@@ -55,19 +54,19 @@ export const EmojiSwitcher: FC<EmojiSwitcher> = ({
         if (!isActive) setCurrentEmojiCode(getRandomEmojiCode());
     };
 
-    const content = (
-        <div className={twClassNames(styles.wrapper, className)}>
-            <Emoji
-                className={twClassNames(styles.emoji.base, {
-                    [styles.emoji.active]: isActive,
-                })}
-                code={currentEmojiCode}
-            />
-        </div>
+    const emojiComponent = (
+        <Emoji
+            className={twClassNames(
+                styles.emoji.base, 
+                { [styles.emoji.active]: isActive },
+                className,
+            )}
+            code={currentEmojiCode}
+        />
     );
 
     const childrenArgs: ChildrenArgs = {
-        content,
+        emojiComponent,
         wrapperClassName: 'group/emojiSwitcher',
         switchEmojiCode,
     };

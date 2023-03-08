@@ -1,23 +1,20 @@
 import { ChildrenAsNodeOrFunction, FileInput } from '@components';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { encodeFiles } from '@utils';
+import { encodeFiles, EncodeFilesOptions, EncodeFilesResult, MBToBytes } from '@utils';
 import { useField, useFormikContext } from 'formik';
 import { FC } from 'react';
 
 
 
-type ReturnValue<MULTIPLE extends boolean> = MULTIPLE extends false ? EncodedFile | null : EncodedFile[] | null;
-
-interface ChildrenArgs<MULTIPLE extends boolean> {
-    value: ReturnValue<MULTIPLE>
+interface ChildrenArgs {
+    value: EncodedFile[];
 }
 
-interface FormikFileInput<MULTIPLE extends boolean = false> extends 
+interface FormikFileInput extends 
 PropsWithClassName,
-PropsWithChildrenAsNodeOrFunction<ChildrenArgs<MULTIPLE>> {
+PropsWithChildrenAsNodeOrFunction<ChildrenArgs>,
+EncodeFilesOptions {
     name: string;
-    accept?: string;
-    multiple?: MULTIPLE;
     label: string; 
     hidden?: boolean;
 }
@@ -25,20 +22,25 @@ PropsWithChildrenAsNodeOrFunction<ChildrenArgs<MULTIPLE>> {
 export const FormikFileInput: FC<FormikFileInput> = ({
     className = '',
     name,
-    accept,
+    accept = '*',
     multiple = false,
+    sizeLimit = MBToBytes(1),
     label,
     hidden = false,
     children,
 }) => {
-    const [{ value }] = useField(name);
+    const [{ value }] = useField<EncodedFile[]>(name);
     const { setFieldValue } = useFormikContext();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || !e.target.files.length) return;
         
-        encodeFiles(Object.values(e.target.files)).then((encodedFiles) => {
-            setFieldValue(name, encodedFiles); 
+        encodeFiles(Object.values(e.target.files), {
+            accept,
+            multiple,
+            sizeLimit,
+        }).then((encodedFiles) => {
+            setFieldValue(name, encodedFiles.ok); 
         });
     };
 

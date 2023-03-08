@@ -36,4 +36,9 @@ const customTwMerge = createTailwindMerge(getDefaultConfig, (config) =>
     }),
 );
 
-export const twClassNames = (...args: Argument[]) => customTwMerge(classNames(args));
+export const twClassNames = (...args: Argument[]): string => {
+    if (args.length === 0) return '';
+    if (args.length === 1 && typeof args[0] === 'string') return args[0];
+
+    return customTwMerge(classNames(args));
+};

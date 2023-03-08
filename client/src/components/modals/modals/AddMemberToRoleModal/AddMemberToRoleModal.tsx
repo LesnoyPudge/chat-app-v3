@@ -41,7 +41,7 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
     roleId,
 }) => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const [membersId, membersIdHelpers] = useSet<string>(new Set([]));
+    const [membersId, membersIdHelpers] = useSet<string>();
     const { value, deferredValue, handleChange, handleReset } = useTextInput();
 
     const role = {

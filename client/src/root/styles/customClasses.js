@@ -76,6 +76,11 @@ const otherClasses = {
         'padding-top': 'var(--message-y-padding)',
         'padding-bottom': 'var(--message-y-padding)',
     },
+
+    '.message-emoji-size': {
+        'height': 'var(--message-emoji-size)!important',
+        'width': 'var(--message-emoji-size)!important',
+    },
 };
 
 const customClasses = {

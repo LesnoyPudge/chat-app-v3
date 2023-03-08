@@ -1,6 +1,18 @@
-import { EncodedFile } from '@types';
+import { EncodedFile, InvalidEncodedFile } from '@types';
+import { MBToBytes } from '@utils';
 
 
+ 
+export interface EncodeFilesResult {
+    ok: EncodedFile[];
+    bad: InvalidEncodedFile[];
+}
+
+export interface EncodeFilesOptions {
+    multiple?: boolean;
+    accept?: string;
+    sizeLimit?: number;
+}
 
 const toBase64 = async(file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -11,18 +23,45 @@ const toBase64 = async(file: File): Promise<string> => {
     });
 };
 
-export const encodeFiles = async(files: File[], multiple = false) => {
-    const encodeFiles = await Promise.all(files.map(async(file): Promise<EncodedFile> => {
+export const encodeFiles = async(files: File[], options: EncodeFilesOptions = {}): Promise<EncodeFilesResult> => {
+    const {
+        multiple = true,
+        accept = '*',
+        sizeLimit = MBToBytes(1),
+    } = options;
+
+    const result: EncodeFilesResult = {
+        ok: [],
+        bad: [],
+    };
+
+    await Promise.all(files.map(async(file) => {
+        const isAcceptable = new RegExp(accept.replace('*', '.*')).test(file.type);
+        const isInLimit = file.size <= sizeLimit;
+
+        if (!isAcceptable || !isInLimit) {
+            result.bad.push({
+                reason: !isAcceptable ? 'type' : 'size',
+                name: file.name,
+                size: file.size,
+                type: file.type,
+            });
+            
+            return;
+        }
+
+        if (!multiple && !!result.ok.length) return;
+
         const base64 = await toBase64(file);
-    
-        return {
+
+        result.ok.push({
             name: file.name,
             size: file.size,
             type: file.type,
             lastModified: file.lastModified,
             base64,
-        };
+        });
     }));
 
-    return multiple ? encodeFiles : encodeFiles[0];
+    return result;
 };

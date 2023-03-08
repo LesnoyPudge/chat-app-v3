@@ -27,6 +27,10 @@ export interface EncodedFile {
     base64: string;
 }
 
+export interface InvalidEncodedFile extends Pick<EncodedFile, 'name' | 'size' | 'type'> {
+    reason: 'type' | 'size';
+}
+
 export type Alignment = 'top' | 'bottom' | 'left' | 'right';
 
 export interface RGB {

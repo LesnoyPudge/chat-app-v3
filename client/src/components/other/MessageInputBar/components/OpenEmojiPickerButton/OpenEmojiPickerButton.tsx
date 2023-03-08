@@ -9,7 +9,6 @@ import { FC } from 'react';
 
 
 const styles = {
-    button: 'shrink-0 h-11 w-11',
     switcher: 'w-full h-full',
 };
 export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
@@ -27,17 +26,17 @@ export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
                                 className={styles.switcher}
                                 isActive={isOverlayExist}
                             >
-                                {({ content, switchEmojiCode, wrapperClassName }) => {
+                                {({ emojiComponent, switchEmojiCode, wrapperClassName }) => {
                                     return (
                                         <Button
-                                            className={twClassNames(wrapperClassName, styles.button, className)}
+                                            className={twClassNames(wrapperClassName, className)}
                                             label='Выбрать эмодзи'
                                             hasPopup='dialog'
                                             isActive={isOverlayExist}
                                             onMouseEnter={switchEmojiCode}
                                             onLeftClick={openOverlay}
                                         >
-                                            {content}
+                                            {emojiComponent}
                                         </Button>
                                     );
                                 }}

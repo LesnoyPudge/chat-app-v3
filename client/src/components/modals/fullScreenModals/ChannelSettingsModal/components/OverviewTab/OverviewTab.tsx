@@ -1,5 +1,6 @@
 import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput, Icon } from '@components';
 import { FormikCheckBox, FormikFileInput, FormikTextInput } from '@libs';
+import { MBToBytes } from '@utils';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
 
@@ -46,13 +47,15 @@ export const OverviewTab: FC = () => {
                             name='channelImage'
                             label='Сменить значок канала'
                             accept='image/*'
+                            multiple={false}
+                            sizeLimit={MBToBytes(1)}
                         >
                             {({ value }) => (
                                 <>
                                     <Image
                                         className={styles.channelImage}
                                         src='https://picsum.photos/150'
-                                        file={value}
+                                        file={value[0]}
                                         alt='Значок канала'
                                     />
 

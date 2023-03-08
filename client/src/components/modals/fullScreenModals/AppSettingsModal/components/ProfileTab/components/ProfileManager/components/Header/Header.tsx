@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { UserStatus, Image } from '@components';
 import { FormikFileInput } from '@libs';
+import { MBToBytes } from '@utils';
 
 
 
@@ -34,13 +35,15 @@ export const Header: FC = () => {
                         name='avatar' 
                         label='Ваше изображение профиля'
                         accept='image/*'
+                        multiple={false}
+                        sizeLimit={MBToBytes(1)}
                     >
                         {({ value }) => (
                             <>
                                 <Image
                                     className={styles.avatar}
                                     src='https://i.pravatar.cc/52'
-                                    file={value}
+                                    file={value[0]}
                                     alt='Изображение профиля'
                                 />
 

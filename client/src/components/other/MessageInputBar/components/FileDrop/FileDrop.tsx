@@ -1,6 +1,6 @@
 import { useFileDrop } from '@hooks';
 import { animated } from '@react-spring/web';
-import { getHTML, getTransitionOptions, twClassNames } from '@utils';
+import { getHTML, getTransitionOptions, MBToBytes, twClassNames } from '@utils';
 import { FC, useRef } from 'react';
 import { Conditional, AnimatedTransition, OverlayPortal, Image } from '@components';
 import { Heading, HeadingLevel } from '@libs';
@@ -25,16 +25,24 @@ const styles = {
     text: 'text-xs',
 };
 
+const transitionOptions = getTransitionOptions.defaultModal();
+
 export const FileDrop: FC = () => {
     const appRef = useRef(getHTML().app);
-    const { isDragOver } = useFileDrop({ multiple: true }, appRef);
+    const isDragOver = useFileDrop((result) => {
+        console.log(result);
+    }, { 
+        multiple: true,
+        accept: '*',
+        sizeLimit: MBToBytes(5),
+    }, appRef);
 
     const heading = 'Загрузить на #general';
 
     return (
         <AnimatedTransition 
             isExist={isDragOver}
-            transitionOptions={getTransitionOptions.defaultModal()}
+            transitionOptions={transitionOptions}
         >
             {({ isAnimatedExist, style }) => (
                 <Conditional isRendered={isAnimatedExist}>

@@ -1,12 +1,12 @@
 import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button } from '@components';
 import { useInView } from '@react-spring/web';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
-import { throttle, twClassNames } from '@utils';
+import { getHTML, throttle, twClassNames } from '@utils';
 import { FC, PropsWithChildren, useContext, useDeferredValue, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
 import { useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useTextInput, useThrottle } from '@hooks';
+import { useFileDrop, useTextInput, useThrottle } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -727,18 +727,22 @@ const PlaygroundInner3: FC = () => {
 };
 
 const PlaygroundInner4: FC = () => {
-    const buttonRef = useRef<HTMLButtonElement>(null);
-    const isFocused = useFocus(buttonRef);
-    const isHovered = useHover(buttonRef);
+    // const buttonRef = useRef<HTMLButtonElement>(null);
+    // const isFocused = useFocus(buttonRef);
+    // const isHovered = useHover(buttonRef);
 
-    useEffect(() => {
-        console.log(`focused: ${isFocused} hovered: ${isHovered}`);
-    }, [isFocused, isHovered]);
+    // useEffect(() => {
+    //     console.log(`focused: ${isFocused} hovered: ${isHovered}`);
+    // }, [isFocused, isHovered]);
+
+    const isOver = useFileDrop((files) => {
+        console.log(files);
+    }, {}, getHTML().app);
 
     return (
-        <Button innerRef={buttonRef}>
-            <>button</>
-        </Button>
+        <div>
+            <>wow: {String(isOver)}</>
+        </div>
     );
 };
 
@@ -754,8 +758,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             <Conditional isRendered={enabled}>
                 {/* <PlaygroundInner/> */}
                 {/* <PlaygroundInner2/> */}
-                <PlaygroundInner3/>
-                {/* <PlaygroundInner4/> */}
+                {/* <PlaygroundInner3/> */}
+                <PlaygroundInner4/>
             </Conditional>
         </>
     );
