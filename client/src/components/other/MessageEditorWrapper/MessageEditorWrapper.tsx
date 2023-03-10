@@ -1,9 +1,11 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
-import { FC, useRef, useEffect } from 'react';
-import { useFocused, useSlateStatic, ReactEditor } from 'slate-react';
+import { FC, useRef } from 'react';
+import { useSlateStatic } from 'slate-react';
 import { Scrollable } from '@components';
+import { useFocus } from '@hooks';
+import { useGetSlateEditorElementRef } from '@libs';
 
 
 
@@ -13,23 +15,19 @@ const styles = {
         focused: 'focused',
     },
     scrollable: 'h-full',
-    content: 'flex',
 };
 
 export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({ 
     className = '',
     children,
 }) => {
-    const isEditorFocused = useFocused();
     const editor = useSlateStatic();
+    const editorRef = useGetSlateEditorElementRef(editor);
+    const isEditorFocused = useFocus(editorRef);
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const editorRef = useRef<HTMLElement | null>(null);
+    const scrollableContentRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        editorRef.current = ReactEditor.toDOMNode(editor, editor);
-    }, [editor]);
-
-    useResizeObserver(editorRef, (entry) => {
+    useResizeObserver(scrollableContentRef, (entry) => {
         if (!wrapperRef.current) return;
         wrapperRef.current.style.height = entry.borderBoxSize[0].blockSize + 'px';
     });
@@ -43,10 +41,12 @@ export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
             )}
             ref={wrapperRef}
         >
-            <Scrollable className={styles.scrollable} small>
-                <div className={styles.content}>
-                    {children}
-                </div>
+            <Scrollable 
+                className={styles.scrollable} 
+                small 
+                scrollableContentRef={scrollableContentRef}
+            >
+                {children}
             </Scrollable>
         </div>
     );

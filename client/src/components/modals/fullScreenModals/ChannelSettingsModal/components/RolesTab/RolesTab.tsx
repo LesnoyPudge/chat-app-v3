@@ -1,5 +1,5 @@
 import { ChannelSettingsModalFormValues, ChannelSettingsModalTabs, TabContext, TabContextProvider, TabPanel } from '@components';
-import { useFormikContext, FormikContextType } from 'formik';
+import { useFormikContext } from 'formik';
 import { FC, useContext } from 'react';
 import { ScreenShakeContext } from '../../../components';
 import { RoleContent, RoleNavigation } from './components';
@@ -18,7 +18,7 @@ const roles = Array(32).fill('').map((_, index) => ({
 
 export const RolesTab: FC = () => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
-    const { dirty } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
+    const { dirty } = useFormikContext<ChannelSettingsModalFormValues>();
     const { triggerScreenShake } = useContext(ScreenShakeContext) as ScreenShakeContext;
     
     const rolesTabs: Record<string, string> = {};

@@ -17,6 +17,7 @@ interface Scrollable extends PropsWithChildrenAndClassName {
     focusable?: boolean;
     scrollableRef?: MutableRefObject<HTMLDivElement | null>;
     simpleBarRef?: MutableRefObject<SimpleBarCore | null>;
+    scrollableContentRef?: MutableRefObject<HTMLDivElement | null>;
 }
 
 const styles = {
@@ -46,6 +47,7 @@ export const Scrollable: FC<Scrollable> = ({
     focusable = false,
     scrollableRef,
     simpleBarRef,
+    scrollableContentRef,
     children,
 }) => {
     const { throttle, isThrottling: isAlive } = useThrottle();
@@ -66,6 +68,10 @@ export const Scrollable: FC<Scrollable> = ({
 
         if (scrollableRef) {
             scrollableRef.current = ref.getScrollElement() as HTMLDivElement;
+        }
+
+        if (scrollableContentRef) {
+            scrollableContentRef.current = ref.getContentElement() as HTMLDivElement;
         }
     };
 

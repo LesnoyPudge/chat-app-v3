@@ -6,26 +6,26 @@ import { CSSProperties, FC } from 'react';
 interface ISeparator {
     className?: string;
     spacing?: number;
-    thikness?: number;
+    thickness?: number;
     height?: number;
     orientation?: 'horizontal' | 'vertical';
 }
 
 const orientations = {
-    vertical: 'h-[var(--height)] w-[var(--thikness)] my-auto mx-[var(--spacing)]',
-    horizontal: 'h-[var(--thikness)] mx-auto my-[var(--spacing)]',
+    vertical: 'h-[var(--height)] w-[var(--thickness)] my-auto mx-[var(--spacing)]',
+    horizontal: 'h-[var(--thickness)] mx-auto my-[var(--spacing)]',
 };
 
 export const Separator: FC<ISeparator> = ({ 
     className = '', 
     spacing = 8, 
-    thikness = 2, 
+    thickness = 2, 
     height = 10,
     orientation = 'horizontal',
 }) => {
     const style = {
         '--spacing': `${spacing}px`,
-        '--thikness': `${thikness}px`,
+        '--thickness': `${thickness}px`,
         '--height': `${height}px`,
     } as CSSProperties;
     

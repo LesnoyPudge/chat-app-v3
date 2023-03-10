@@ -3,7 +3,7 @@ import { FormikColorPicker } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { getTransitionOptions, isHEXLight, twClassNames } from '@utils';
-import { FormikContextType, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { FC } from 'react';
 
 
@@ -61,7 +61,7 @@ const styles = {
 export const RoleColor: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { setFieldValue, values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
+    const { setFieldValue, values } = useFormikContext<ChannelSettingsModalFormValues>();
 
     const setColor = (color: string) => setFieldValue('roleColorHEX', color);
 

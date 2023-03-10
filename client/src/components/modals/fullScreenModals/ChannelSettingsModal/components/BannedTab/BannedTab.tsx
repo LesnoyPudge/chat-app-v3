@@ -4,7 +4,7 @@ import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
 import banhummer from '@assets/banhummer.svg';
 import { useNavigator, useTextInput } from '@hooks';
-import { FormikContextType, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 
 
 
@@ -24,7 +24,7 @@ const styles = {
 
 export const BannedTab: FC = () => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
-    const { values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
+    const { values } = useFormikContext<ChannelSettingsModalFormValues>();
     const { handleChange, handleReset, value } = useTextInput();
 
     const bannedUsers = [...Array(20)].map((_, i) => ({

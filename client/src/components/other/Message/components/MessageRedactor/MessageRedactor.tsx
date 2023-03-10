@@ -1,6 +1,6 @@
 import { AnimatedTransition, Button, Conditional, EmojiPicker, EmojiSwitcher, OverlayContextProvider, OverlayItem, RefContextProvider, RelativelyPositioned, Scrollable } from '@components';
-import { useResizeObserver } from '@hooks';
-import { SlateContainer, SlateEditor, useSlateAddEmoji } from '@libs';
+import { SlateContainer, SlateEditor, useGetSlateEditorElementRef, useSlateAddEmoji } from '@libs';
+import useResizeObserver from '@react-hook/resize-observer';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { parseSlateContent } from '@utils';
@@ -52,9 +52,10 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
     const { toggleIsInEditMode, handleSaveRedactedMessage } = useContext(MessageContext) as MessageContext;
     const { addEmoji } = useSlateAddEmoji();
     const editor = useSlateStatic();
+    const editorRef = useGetSlateEditorElementRef(editor);
     const editorWrapperRef = useRef<HTMLDivElement | null>(null);
 
-    useResizeObserver(() => ReactEditor.toDOMNode(editor, editor), ([entry]) => {
+    useResizeObserver(editorRef, (entry) => {
         if (!editorWrapperRef.current) return;
         editorWrapperRef.current.style.height = entry.borderBoxSize[0].blockSize + 'px';
     });
@@ -73,7 +74,6 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                     className={styles.scrollable}
                     label='Редактируемое сообщение'
                     small
-                    autoHide
                 >
                     <SlateEditor
                         placeholder='Введите отредактированное сообщение'

@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow } from '@components';
 import { useInView } from '@react-spring/web';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { getHTML, throttle, twClassNames } from '@utils';
@@ -735,13 +735,22 @@ const PlaygroundInner4: FC = () => {
     //     console.log(`focused: ${isFocused} hovered: ${isHovered}`);
     // }, [isFocused, isHovered]);
 
-    const isOver = useFileDrop((files) => {
-        console.log(files);
-    }, {}, getHTML().app);
 
     return (
-        <div>
-            <>wow: {String(isOver)}</>
+        <div onClick={() => {}}>
+            <>wow</>
+
+            <OverlayContextProvider>
+                {({}) => {
+                    return (
+                        <ModalWindow label={''}>
+                            <div>
+                                <>modal</>
+                            </div>
+                        </ModalWindow>
+                    );
+                }}
+            </OverlayContextProvider>
         </div>
     );
 };

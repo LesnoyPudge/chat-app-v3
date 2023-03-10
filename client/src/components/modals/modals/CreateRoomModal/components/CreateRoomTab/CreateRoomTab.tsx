@@ -1,7 +1,7 @@
 import { FC, useContext } from 'react';
 import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput, CreateRoomModalTabs } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
-import { FormikContextType, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
 
 
@@ -24,7 +24,7 @@ const styles = {
 export const CreateRoomTab: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
     const { changeTab } = useContext(TabContext) as TabContext<CreateRoomModalTabs>;
-    const { values } = useFormikContext() as FormikContextType<CreateRoomFormValues>;
+    const { values } = useFormikContext<CreateRoomFormValues>();
 
     return (
         <>

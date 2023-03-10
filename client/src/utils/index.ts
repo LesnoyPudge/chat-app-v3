@@ -25,4 +25,5 @@ export * from './hexToRgb';
 export * from './isHEXLight';
 export * from './objectKeys';
 export * from './parseSlateContent';
-export * from './sizeUnirs';
+export * from './sizeUnits';
+export * from './noop';

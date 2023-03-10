@@ -1,3 +1,4 @@
+import { getInitialSlateValue } from '@libs';
 import isObject from 'is-object';
 import { Descendant } from 'slate';
 
@@ -24,10 +25,7 @@ const isDescendantArray = (array: unknown): array is Descendant[] => {
     return isDescendant(array[0]);
 };
 
-const fallbackValue: Descendant[] = [{
-    type: 'paragraph',
-    children: [{ text: '' }], 
-}];
+const fallbackValue = getInitialSlateValue();
 
 export const parseSlateContent = (content: string) => {
     const parsedContent = tryParseJSON(content);

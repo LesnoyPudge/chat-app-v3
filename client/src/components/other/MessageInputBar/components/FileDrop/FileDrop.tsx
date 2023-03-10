@@ -2,11 +2,12 @@ import { useFileDrop } from '@hooks';
 import { animated } from '@react-spring/web';
 import { getHTML, getTransitionOptions, MBToBytes, twClassNames } from '@utils';
 import { FC, useRef } from 'react';
-import { Conditional, AnimatedTransition, OverlayPortal, Image } from '@components';
+import { Conditional, AnimatedTransition, OverlayPortal, Image, MessageInputBarFormValues } from '@components';
 import { Heading, HeadingLevel } from '@libs';
 import fileDropImage1 from '@assets/filedrop-image-1.svg';
 import fileDropImage2 from '@assets/filedrop-image-2.svg';
 import fileDropImage3 from '@assets/filedrop-image-3.svg';
+import { useFormikContext } from 'formik';
 
 
 
@@ -28,6 +29,7 @@ const styles = {
 const transitionOptions = getTransitionOptions.defaultModal();
 
 export const FileDrop: FC = () => {
+    const { } = useFormikContext<MessageInputBarFormValues>();
     const appRef = useRef(getHTML().app);
     const isDragOver = useFileDrop((result) => {
         console.log(result);

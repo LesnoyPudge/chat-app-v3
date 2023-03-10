@@ -1,12 +1,13 @@
 import { ChildrenAsNodeOrFunction } from '@components';
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import { FC, PropsWithChildren, useLayoutEffect, useState } from 'react';
+import { FC, useLayoutEffect, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { Descendant, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import { withReact, Slate } from 'slate-react';
 import { withEmoji, withLink } from './plugins';
 import { CustomEditor } from './types';
+import { getInitialSlateValue } from './utils';
 
 
 
@@ -19,12 +20,8 @@ interface SlateContainer extends PropsWithChildrenAsNodeOrFunction<ChildrenArgs>
     onChange?: (value: Descendant[]) => void;
 }
 
-const initialValue: Descendant[] = [
-    {
-        type: 'paragraph',
-        children: [{ text: '' }],
-    },
-];
+const initialValue = getInitialSlateValue();
+
 
 const createEditorWithPlugins = () => {
     let editor = createEditor();

@@ -1,7 +1,7 @@
 import { BanMemberModal, Button, ChangeChannelOwnerModal, ChannelSettingsModalFormValues, ChannelSettingsModalTabs, Icon, KickMemberModal, OverlayContextProvider, RefContextProvider, SearchBar, Separator, TabContext, TabPanel, Tooltip, UserAvatar } from '@components';
 import { useTextInput } from '@hooks';
 import { twClassNames } from '@utils';
-import { FormikContextType, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
 
@@ -26,7 +26,7 @@ const styles = {
 export const MembersTab: FC = () => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
     const { value, handleChange, handleReset } = useTextInput();
-    const { values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
+    const { values } = useFormikContext<ChannelSettingsModalFormValues>();
 
     const members = [...Array(20)].map((_, index) => ({
         id: index.toString(),

@@ -13,11 +13,30 @@ type TransactionContainerType = <F extends (args: ITransactionCallbackArgs) => R
 export const transactionContainer: TransactionContainerType = async(fn) => {
     const session = await startSession();
 
-    let transactionCounter = 0;
-    let successfullyCommitted = true;
+    const transaction = {
+        depth: 0,
+        ok: false,
+        success: () => {
+            transaction.depth = 0;
+            transaction.ok = true;
+        },
+        fail: () => {
+            transaction.depth = 0;
+            transaction.ok = false;
+        },
+        isSuccessful: () => {
+            return transaction.ok && transaction.depth === 0;
+        },
+        stepIn: () => {
+            transaction.depth++;
+        },
+        stepOut: () => {
+            transaction.depth = Math.max(0, transaction.depth - 1);
+        },
+    };
 
     const onCommit: OnCommitType = (cb) => session.once('ended', async() => {
-        if (successfullyCommitted && transactionCounter === 0) return await cb();
+        if (transaction.isSuccessful()) return await cb();
     });
 
     const queryOptions: QueryOptionsType = (extraOptionsObject = {}) => {
@@ -31,18 +50,18 @@ export const transactionContainer: TransactionContainerType = async(fn) => {
     
     try {
         session.startTransaction();
-        transactionCounter++;
+        transaction.stepIn();
         const data = await fn({ queryOptions, onCommit });
-        transactionCounter--;
+        transaction.stepOut();
         await session.commitTransaction();
         await session.endSession();
-        console.log('tranaction ends without errors');
+        transaction.success();
+        console.log('transaction ends without errors');
 
         return data;
     } catch(error) {
         console.log('aborting transaction');
-        successfullyCommitted = false;
-        transactionCounter--;
+        transaction.fail();
         await session.abortTransaction();
         await session.endSession();
 

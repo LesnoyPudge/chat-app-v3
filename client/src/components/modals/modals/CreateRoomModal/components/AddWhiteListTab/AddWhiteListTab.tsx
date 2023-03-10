@@ -3,7 +3,7 @@ import { Button, Conditional, CreateRoomFormValues, CreateRoomModalTabs, Icon, S
 import { ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../../../components';
 import { conditional, twClassNames } from '@utils';
 import { IRole, IUserPreview } from '@backendTypes';
-import { FormikContextType, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { Heading } from '@libs';
 import { useTextInput } from '@hooks';
 import notFoundImage from '@assets/not-found-image.svg';
@@ -49,7 +49,7 @@ const members = Array(15).fill('').map((_, index) => ({
 
 export const AddWhiteListTab: FC = () => {
     const { changeTab } = useContext(TabContext) as TabContext<CreateRoomModalTabs>;
-    const { values, setFieldValue } = useFormikContext() as FormikContextType<CreateRoomFormValues>;
+    const { values, setFieldValue } = useFormikContext<CreateRoomFormValues>();
     const { value, handleChange, handleReset } = useTextInput();
 
     const isAnyChecked = !!values.allowedRoles.size || !!values.allowedUsers.size;

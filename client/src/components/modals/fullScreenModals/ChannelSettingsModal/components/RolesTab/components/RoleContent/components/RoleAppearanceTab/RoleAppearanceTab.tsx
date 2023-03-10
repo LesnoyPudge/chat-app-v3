@@ -2,7 +2,7 @@ import { FormikFileInput, FormikTextInput } from '@libs';
 import { FC, useContext } from 'react';
 import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button, Conditional, Icon, ChannelSettingsModalFormValues, TabContext, TabPanel } from '@components';
 import { RoleColor } from './components';
-import { FormikContextType, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { RoleContentTabs } from '../..';
 import { KBToBytes } from '@utils';
 
@@ -21,7 +21,7 @@ const styles = {
 };
 
 export const RoleAppearanceTab: FC = () => {
-    const { values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
+    const { values } = useFormikContext<ChannelSettingsModalFormValues>();
     const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
     
     return (

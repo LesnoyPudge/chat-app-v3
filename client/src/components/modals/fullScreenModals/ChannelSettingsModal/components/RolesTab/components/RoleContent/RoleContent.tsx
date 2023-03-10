@@ -2,8 +2,8 @@ import { AddMemberToRoleModal, ArrowFocusContextProvider, ArrowFocusItem, Button
 import { useTextInput } from '@hooks';
 import { HeadingLevel, Heading } from '@libs';
 import { objectKeys, twClassNames } from '@utils';
-import { FormikContextType, useFormikContext } from 'formik';
-import { FC, useContext, useEffect, useMemo } from 'react';
+import { useFormikContext } from 'formik';
+import { FC, useContext, useEffect } from 'react';
 import { RoleMembersTab, RoleAppearanceTab, RolePermissionsTab } from './components';
 
 
@@ -47,7 +47,7 @@ const styles = {
 
 export const RoleContent: FC = () => {
     const { currentTab, tabPanelProps } = useContext(TabContext) as TabContext<Record<string, string>>;
-    const { values, resetForm } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
+    const { values, resetForm } = useFormikContext<ChannelSettingsModalFormValues>();
     const permissionsSearch = useTextInput();
     const membersSearch = useTextInput();
 

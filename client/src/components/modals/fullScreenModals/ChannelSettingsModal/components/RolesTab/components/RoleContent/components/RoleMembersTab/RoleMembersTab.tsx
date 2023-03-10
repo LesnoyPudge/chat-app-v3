@@ -1,7 +1,7 @@
 import { FC, useContext } from 'react';
 import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, Icon, OverlayContextProvider, TabContext, TabPanel, UserAvatar } from '@components';
 import { RoleContentTabs } from '../..';
-import { FormikContextType, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 
 
 
@@ -25,7 +25,7 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
     value,
 }) => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
-    const { values } = useFormikContext() as FormikContextType<ChannelSettingsModalFormValues>;
+    const { values } = useFormikContext<ChannelSettingsModalFormValues>();
 
     const members = Array(29).fill('').map((_, index) => ({
         id: index.toString(),
