@@ -25,7 +25,6 @@ const toBase64 = async(file: File): Promise<string> => {
 
 export const encodeFiles = async(files: File[], options: EncodeFilesOptions = {}): Promise<EncodeFilesResult> => {
     const {
-        multiple = true,
         accept = '*',
         sizeLimit = MBToBytes(1),
     } = options;
@@ -49,8 +48,6 @@ export const encodeFiles = async(files: File[], options: EncodeFilesOptions = {}
             
             return;
         }
-
-        if (!multiple && !!result.ok.length) return;
 
         const base64 = await toBase64(file);
 

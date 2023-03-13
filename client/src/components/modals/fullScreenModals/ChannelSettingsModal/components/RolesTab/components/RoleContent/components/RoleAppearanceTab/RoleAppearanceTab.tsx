@@ -1,4 +1,4 @@
-import { FormikFileInput, FormikTextInput } from '@libs';
+import { FormikFileInput, FormikFileUploadContextProvider, FormikTextInput } from '@libs';
 import { FC, useContext } from 'react';
 import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button, Conditional, Icon, ChannelSettingsModalFormValues, TabContext, TabPanel } from '@components';
 import { RoleColor } from './components';
@@ -63,52 +63,50 @@ export const RoleAppearanceTab: FC = () => {
                 <>ролей, они будут видеть значок высшей из них.</>
             </div>
             
-            <div className={styles.fileInputsArea}>
-                <FormikFileInput 
-                    name='roleImage' 
-                    label='Значок роли'
-                    accept='image/*'
-                    multiple={false}
-                    sizeLimit={KBToBytes(256)}
-                >
-                    {({ value }) => (
-                        <div className={styles.firstFileInputWrapper}>
-                            <Conditional isRendered={!!values.roleImage || !!value.length}>
-                                <Image
-                                    className={styles.firstFileInputImage}
-                                    src={values.roleImage}
-                                    file={value[0]}
-                                    alt='Значок роли'
-                                />
-                            </Conditional>
+            <FormikFileUploadContextProvider 
+                name='roleImage' 
+                label='Значок роли' 
+                options={{
+                    accept: 'image/*',
+                    amountLimit: 1,
+                    sizeLimit: KBToBytes(256),
+                }}
+            >
+                <div className={styles.fileInputsArea}>
+                    <FormikFileInput>
+                        {({ value }) => (
+                            <div className={styles.firstFileInputWrapper}>
+                                <Conditional isRendered={!!values.roleImage || !!value.length}>
+                                    <Image
+                                        className={styles.firstFileInputImage}
+                                        src={values.roleImage}
+                                        file={value[0]}
+                                        alt='Значок роли'
+                                    />
+                                </Conditional>
 
-                            <Conditional isRendered={!values.roleImage && !value}>
-                                <Icon
-                                    className={styles.firstFileInputIcon}
-                                    iconId='add-image-icon'
-                                />
-                            </Conditional>
-                        </div>
-                    )}
-                </FormikFileInput>
+                                <Conditional isRendered={!values.roleImage && !value}>
+                                    <Icon
+                                        className={styles.firstFileInputIcon}
+                                        iconId='add-image-icon'
+                                    />
+                                </Conditional>
+                            </div>
+                        )}
+                    </FormikFileInput>
 
-                <Button
-                    className={styles.secondFileInputWrapper}
-                    stylingPreset='brandNeutral'
-                    size='medium'
-                    hidden   
-                >
-                    <>Выберите изображение</>
+                    <Button
+                        className={styles.secondFileInputWrapper}
+                        stylingPreset='brandNeutral'
+                        size='medium'
+                        hidden   
+                    >
+                        <>Выберите изображение</>
 
-                    <FormikFileInput
-                        className={styles.secondFileInput}
-                        name='roleImage' 
-                        label='Значок роли'
-                        accept='image/*'
-                        hidden
-                    ></FormikFileInput>
-                </Button>
-            </div>
+                        <FormikFileInput className={styles.secondFileInput}/>
+                    </Button>
+                </div>
+            </FormikFileUploadContextProvider>
         </TabPanel>
     );
 };

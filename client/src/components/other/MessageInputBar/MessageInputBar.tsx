@@ -1,10 +1,11 @@
 import { FC } from 'react';
-import { SlateEditor, SlateContainer, FormikFileInput, getInitialSlateValue } from '@libs';
+import { SlateEditor, SlateContainer, FormikFileInput, getInitialSlateValue, FormikFileUploadContextProvider } from '@libs';
 import { Button, Icon, MessageEditorWrapper } from '@components';
-import { FileDrop, OpenEmojiPickerButton, Attachments } from './components';
+import { OpenEmojiPickerButton, Attachments, AttachmentsModals } from './components';
 import { Form, Formik } from 'formik';
 import { Descendant } from 'slate';
 import { EncodedFile } from '@types';
+import { MBToBytes } from '@utils';
 
 
 
@@ -43,53 +44,59 @@ export const MessageInputBar: FC<MessageInputBar> = ({
             initialValues={initialValues} 
             onSubmit={handleSubmit}
         >
-            {({ values, setFieldValue, submitForm }) => (
-                <Form className={className}>
-                    <SlateContainer
-                        value={values.content}
-                        onChange={(value) => setFieldValue('content', value)}
-                    >
-                        <MessageEditorWrapper>
-                            <div>
-                                <Attachments/>
+            {({ values, setValues, submitForm }) => (
+                <FormikFileUploadContextProvider 
+                    name='attachments' 
+                    label='Добавить вложение'
+                    options={{
+                        accept: '*',
+                        amountLimit: 9,
+                        sizeLimit: MBToBytes(8),
+                    }}
+                >
+                    <Form className={className}>
+                        <SlateContainer
+                            value={values.content}
+                            onChange={(value) => setValues({ ...values, content: value })}
+                        >
+                            <MessageEditorWrapper>
+                                <div>
+                                    <Attachments/>
                                 
-                                <div className='flex'>
-                                    <FormikFileInput 
-                                        className={styles.button} 
-                                        label='Вложения' 
-                                        name='attachments'
-                                    >
-                                        <Icon
-                                            className={styles.icon}
-                                            iconId='add-file-icon'
+                                    <div className='flex'>
+                                        <FormikFileInput className={styles.button}>
+                                            <Icon
+                                                className={styles.icon}
+                                                iconId='add-file-icon'
+                                            />
+                                        </FormikFileInput>
+
+                                        <SlateEditor
+                                            placeholder={placeholder}
+                                            label='Введите сообщение'
+                                            onSubmit={submitForm}
                                         />
-                                    </FormikFileInput>
 
-                                    <SlateEditor
-                                        placeholder={placeholder}
-                                        label='Введите сообщение'
-                                        onSubmit={submitForm}
-                                    />
+                                        <OpenEmojiPickerButton className={styles.button}/>
 
-                                    <OpenEmojiPickerButton className={styles.button}/>
-
-                                    <Button 
-                                        className={styles.button}
-                                        type='submit'
-                                        label='Отправить сообщение'
-                                    >
-                                        <Icon
-                                            className={styles.icon}
-                                            iconId='send-message-icon'
-                                        />
-                                    </Button>
+                                        <Button 
+                                            className={styles.button}
+                                            type='submit'
+                                            label='Отправить сообщение'
+                                        >
+                                            <Icon
+                                                className={styles.icon}
+                                                iconId='send-message-icon'
+                                            />
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-                        </MessageEditorWrapper>
-                    </SlateContainer>
+                            </MessageEditorWrapper>
+                        </SlateContainer>
+                    </Form>
 
-                    <FileDrop/>
-                </Form>
+                    <AttachmentsModals/>
+                </FormikFileUploadContextProvider>
             )}
         </Formik>
     );

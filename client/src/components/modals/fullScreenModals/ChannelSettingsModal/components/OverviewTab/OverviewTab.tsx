@@ -1,5 +1,5 @@
 import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput, Icon } from '@components';
-import { FormikCheckBox, FormikFileInput, FormikTextInput } from '@libs';
+import { FormikCheckBox, FormikFileInput, FormikFileUploadContextProvider, FormikTextInput } from '@libs';
 import { MBToBytes } from '@utils';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
@@ -40,77 +40,76 @@ export const OverviewTab: FC = () => {
             </TabTitle>
 
             <div className={styles.firstSection}>
-                <div className={styles.sectionSide}>
-                    <div>
-                        <FormikFileInput 
-                            className={styles.firstFileInput}
-                            name='channelImage'
-                            label='Сменить значок канала'
-                            accept='image/*'
-                            multiple={false}
-                            sizeLimit={MBToBytes(1)}
-                        >
-                            {({ value }) => (
-                                <>
-                                    <Image
-                                        className={styles.channelImage}
-                                        src='https://picsum.photos/150'
-                                        file={value[0]}
-                                        alt='Значок канала'
-                                    />
+                <FormikFileUploadContextProvider 
+                    name='channelImage' 
+                    label='Сменить значок канала' 
+                    options={{
+                        accept: 'image/*',
+                        amountLimit: 1,
+                        sizeLimit: MBToBytes(1),
+                    }}
+                >
+                    {({ removeFiles }) => (
+                        <div className={styles.sectionSide}>
+                            <div>
+                                <FormikFileInput className={styles.firstFileInput}>
+                                    {({ value }) => (
+                                        <>
+                                            <Image
+                                                className={styles.channelImage}
+                                                src='https://picsum.photos/150'
+                                                file={value[0]}
+                                                alt='Значок канала'
+                                            />
 
-                                    <div className={styles.channelImageOverlay}>
-                                        <div className={styles.overlayText}>
-                                            <>Сменить <br/> значок</>
-                                        </div>
-                                    </div>
+                                            <div className={styles.channelImageOverlay}>
+                                                <div className={styles.overlayText}>
+                                                    <>Сменить <br/> значок</>
+                                                </div>
+                                            </div>
 
-                                    <div className={styles.addFileIconWrapper}>
-                                        <Icon
-                                            className={styles.addFileIcon}
-                                            iconId='add-file-icon'
-                                        />
-                                    </div>
-                                </>
-                            )}
-                        </FormikFileInput>
+                                            <div className={styles.addFileIconWrapper}>
+                                                <Icon
+                                                    className={styles.addFileIcon}
+                                                    iconId='add-file-icon'
+                                                />
+                                            </div>
+                                        </>
+                                    )}
+                                </FormikFileInput>
 
-                        <Button
-                            className={styles.removeFile}
-                            stylingPreset='lite'
-                            size='small'
-                            label='Удалить изображение'
-                            onLeftClick={() => console.log('delete')}
-                        >
-                            <>Удалить</>
-                        </Button>
-                    </div>
+                                <Button
+                                    className={styles.removeFile}
+                                    stylingPreset='lite'
+                                    size='small'
+                                    label='Удалить изображение'
+                                    onLeftClick={removeFiles}
+                                >
+                                    <>Удалить</>
+                                </Button>
+                            </div>
 
-                    <div>
-                        <div className={styles.fileRecommendation}>
-                            <>Мы рекомендуем для вашего сервера </>
-                            <>изображение размером не менее 512х512 пикселей.</>
+                            <div>
+                                <div className={styles.fileRecommendation}>
+                                    <>Мы рекомендуем для вашего сервера </>
+                                    <>изображение размером не менее 512х512 пикселей.</>
+                                </div>
+
+
+                                <Button
+                                    className={styles.secondFileInputWrapper}
+                                    stylingPreset='brandNeutral'
+                                    size='medium'
+                                    hidden
+                                >
+                                    <>Загрузить изображение</>
+
+                                    <FormikFileInput className={styles.secondFileInput}/>
+                                </Button>
+                            </div>
                         </div>
-
-
-                        <Button
-                            className={styles.secondFileInputWrapper}
-                            stylingPreset='brandNeutral'
-                            size='medium'
-                            hidden
-                        >
-                            <>Загрузить изображение</>
-
-                            <FormikFileInput
-                                className={styles.secondFileInput}
-                                name='channelImage'
-                                label=''
-                                accept='image/*'
-                                hidden
-                            />
-                        </Button>
-                    </div>
-                </div>
+                    )}
+                </FormikFileUploadContextProvider>
 
                 <FormikTextInput
                     name='channelName'

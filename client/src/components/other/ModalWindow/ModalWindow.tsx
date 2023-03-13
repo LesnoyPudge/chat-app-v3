@@ -7,9 +7,10 @@ import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
 
 interface ModalWindow extends PropsWithChildrenAsNodeOrFunction<OverlayContext> {
+    label: string;
     withBackdrop?: boolean;
     transitionOptions?: UseTransitionProps;
-    label: string;
+    noPointerEvents?: boolean;
 }
 
 const defaultTransitionOptions = getTransitionOptions.defaultModal();
@@ -22,13 +23,15 @@ const styles = {
 };
 
 export const ModalWindow: FC<ModalWindow> = ({
+    label,
     withBackdrop = false,
     transitionOptions = defaultTransitionOptions,
-    label,
+    noPointerEvents = false,
     children,
 }) => {
     const overlayValues = useContext(OverlayContext) as OverlayContext;
     const { closeOverlay, isOverlayExist } = overlayValues;
+    const withPointerEvents = isOverlayExist && !noPointerEvents;
 
     return (
         <AnimatedTransition 
@@ -47,7 +50,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                     <animated.div 
                         className={twClassNames(
                             styles.wrapper,
-                            { 'pointer-events-auto': isOverlayExist },
+                            { 'pointer-events-auto': withPointerEvents },
                         )}
                         style={style}
                         role='dialog'
@@ -56,7 +59,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                         <Conditional isRendered={withBackdrop}>
                             <div
                                 className={twClassNames(styles.backdrop,
-                                    { 'pointer-events-auto': isOverlayExist },
+                                    { 'pointer-events-auto': withPointerEvents },
                                 )}
                                 onClick={closeOverlay}
                             ></div>

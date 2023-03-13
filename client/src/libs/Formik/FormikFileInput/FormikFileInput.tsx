@@ -1,8 +1,7 @@
 import { ChildrenAsNodeOrFunction, FileInput } from '@components';
 import { EncodedFile, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { encodeFiles, EncodeFilesOptions, EncodeFilesResult, MBToBytes } from '@utils';
-import { useField, useFormikContext } from 'formik';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
+import { FormikFileUploadContext } from '@libs';
 
 
 
@@ -12,49 +11,28 @@ interface ChildrenArgs {
 
 interface FormikFileInput extends 
 PropsWithClassName,
-PropsWithChildrenAsNodeOrFunction<ChildrenArgs>,
-EncodeFilesOptions {
-    name: string;
-    label: string; 
+PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
     hidden?: boolean;
 }
 
 export const FormikFileInput: FC<FormikFileInput> = ({
     className = '',
-    name,
-    accept = '*',
-    multiple = false,
-    sizeLimit = MBToBytes(1),
-    label,
     hidden = false,
     children,
 }) => {
-    const [{ value }] = useField<EncodedFile[]>(name);
-    const { setFieldValue } = useFormikContext();
+    const { fileInputProps, value } = useContext(FormikFileUploadContext) as FormikFileUploadContext;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || !e.target.files.length) return;
-        
-        encodeFiles(Object.values(e.target.files), {
-            accept,
-            multiple,
-            sizeLimit,
-        }).then((encodedFiles) => {
-            setFieldValue(name, encodedFiles.ok); 
-        });
+    const childrenArgs: ChildrenArgs = {
+        value,
     };
 
     return (
         <FileInput
             className={className}
-            label={label}
-            name={name}
-            accept={accept}
-            multiple={multiple}
             hidden={hidden}
-            onChange={handleChange}
+            {...fileInputProps}
         >
-            <ChildrenAsNodeOrFunction args={{ value }}>
+            <ChildrenAsNodeOrFunction args={childrenArgs}>
                 {children}
             </ChildrenAsNodeOrFunction>
         </FileInput>

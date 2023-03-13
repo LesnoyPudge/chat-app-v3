@@ -1,18 +1,15 @@
 import { isRef } from '@typeGuards';
-import { encodeFiles, EncodeFilesOptions, EncodeFilesResult } from '@utils';
 import { useState, useRef, RefObject, useEffect, useCallback, useMemo } from 'react';
 
 
 
 type UseFileDrop = (
-    onFileDrop: (files: EncodeFilesResult) => void,
-    options?: EncodeFilesOptions,
+    onFileDrop: (files: FileList | null) => void,
     element?: RefObject<HTMLElement> | HTMLElement,
 ) => boolean;
 
 export const useFileDrop: UseFileDrop = (
     onFileDrop,
-    options = {},
     element,
 ) => {
     const [isDragOver, setIsDragOver] = useState(false);
@@ -52,9 +49,9 @@ export const useFileDrop: UseFileDrop = (
 
             if (!e.dataTransfer?.files) return;
 
-            encodeFiles(Object.values(e.dataTransfer.files), options).then(onFileDrop);
+            onFileDrop(e.dataTransfer.files);
         },
-    }), [changeDragOverState, counterHelpers, onFileDrop, options]);
+    }), [changeDragOverState, counterHelpers, onFileDrop]);
 
     useEffect(() => {
         const target = targetRef.current;
