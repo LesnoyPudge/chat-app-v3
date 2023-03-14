@@ -4,114 +4,129 @@
 
 @layer components {
     .scrollbar {
+        --scrollbar-thickness: 16px;
+        --track-thickness: 8px;
+        --thumb-thickness: 8px;
+        --thumb-min-length: 40px;
+        --track-transition: opacity 0.2s ease-in-out;
 
-        &,
-        *,
-        *::before,
-        *::after {
-            --scrollbar-thickness: 16px;
-            --track-thickness: 8px;
-            --thumb-thickness: 8px;
-            --thumb-min-length: 40px;
-            --scrollbar-transition: opacity 0.2s ease-in-out;
+        &[data-small=true] {
+            --scrollbar-thickness: 10px;
+            --track-thickness: 6px;
+            --thumb-thickness: 6px;
         }
 
-        &.scrollbar-small {
+        &[data-hidden=true] {
+            --scrollbar-thickness: 0px;
+            --track-thickness: 0px;
+            --thumb-thickness: 0px;
+        }
 
-            &,
-            *,
-            *::before,
-            *::after {
-                --scrollbar-thickness: 10px;
-                --track-thickness: 6px;
-                --thumb-thickness: 6px;
+        &[data-direction=vertical] {
+            .simplebar {
+                &-offset {
+                    padding: 0;
+                    padding-right: var(--scrollbar-thickness);
+                }
+
+                &-horizontal {
+                    display: none;
+                }
+
+                &-vertical {
+                    display: block;
+                }
             }
         }
 
-        .simplebar-placeholder {
-            display: none;
+        &[data-direction=horizontal] {
+            .simplebar {
+                &-offset {
+                    padding: 0;
+                    padding-bottom: var(--scrollbar-thickness);
+                }
+
+                &-horizontal {
+                    display: block;
+                }
+
+                &-vertical {
+                    display: none;
+                }
+            }
         }
 
-        .simplebar-content-wrapper {
-            // position: absolute;
-            // inset: 0;
-            min-height: 100%;
+        &[data-with-opposite-gutter=true] {
+            &[data-direction=vertical] {
+                .simplebar-offset {
+                    padding-left: var(--scrollbar-thickness);
+                    padding-top: 0;
+                }
+            }
+
+            &[data-direction=horizontal] {
+                .simplebar-offset {
+                    padding-top: var(--scrollbar-thickness);
+                    padding-left: 0;
+                }
+            }
+        }
+
+        &[data-auto-hide=true] {
+            &:not([data-is-alive=true], :hover, :focus, :focus-visible, :focus-within) {
+                .simplebar-track {
+                    opacity: 0;
+                }
+            }
         }
 
         .simplebar-content {
-            // height: 100%;
-        }
-
-        &.scrollbar-auto-hide {
-            &:not(.scrollbar-is-alive, :hover, :focus, :focus-visible, :focus-within) {
-                .simplebar-scrollbar {
-                    &::before {
-                        @apply opacity-0;
-                    }
-                }
-
-                .simplebar-track {
-                    &::before {
-                        @apply opacity-0;
-                    }
-                }
-            }
-        }
-
-        &.scrollbar-hidden {
-
-            &,
-            *,
-            *::before,
-            *::after {
-                --scrollbar-thickness: 0px;
-                --track-thickness: 0px;
-                --thumb-thickness: 0px;
-            }
-        }
-
-        &.scrollbar-with-opposite-gutter {
-            .simplebar-content-wrapper {
-                padding-left: var(--scrollbar-thickness);
-            }
-        }
-
-        .simplebar-content-wrapper {
-            padding-right: var(--scrollbar-thickness);
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
         }
 
         .simplebar-track {
-            &.simplebar-vertical {
-                width: var(--scrollbar-thickness);
-                background-color: transparent;
-
-                &::before {
-                    @apply bg-primary-300;
-
-                    content: '';
-                    position: absolute;
-                    inset: calc((var(--scrollbar-thickness) - var(--track-thickness)) / 2);
-                    border-radius: var(--track-thickness);
-                    transition: var(--scrollbar-transition);
-                }
-            }
-        }
-
-        .simplebar-scrollbar {
             background-color: transparent;
-            min-height: var(--thumb-min-length);
+            transition: var(--track-transition);
 
             &::before {
-                @apply bg-primary-500;
+                @apply bg-primary-300;
 
-                inset: calc((var(--scrollbar-thickness) - var(--thumb-thickness)) / 2);
-                border-radius: var(--thumb-thickness);
+                content: '';
+                position: absolute;
+                inset: calc((var(--scrollbar-thickness) - var(--track-thickness)) / 2);
+                border-radius: var(--track-thickness);
                 transition: var(--scrollbar-transition);
             }
 
-            &.simplebar-visible {
+            .simplebar-scrollbar {
+                background-color: transparent;
+
                 &::before {
-                    opacity: unset;
+                    @apply bg-primary-600;
+
+                    inset: calc((var(--scrollbar-thickness) - var(--thumb-thickness)) / 2);
+                    border-radius: var(--thumb-thickness);
+                    transition: var(--scrollbar-transition);
+                }
+            }
+
+            &.simplebar-vertical {
+                width: var(--scrollbar-thickness);
+
+                .simplebar-scrollbar {
+                    width: var(--scrollbar-thickness);
+                    min-height: var(--thumb-min-length);
+                }
+            }
+
+            &.simplebar-horizontal {
+                height: var(--scrollbar-thickness);
+
+                .simplebar-scrollbar {
+                    height: var(--scrollbar-thickness);
+                    min-width: var(--thumb-min-length);
                 }
             }
         }

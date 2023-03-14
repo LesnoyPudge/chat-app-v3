@@ -20,7 +20,7 @@ export const AttachmentsModals: FC = () => {
                 }}
             </OverlayContextProvider>
 
-            <OverlayContextProvider isOverlayExistInitial>
+            <OverlayContextProvider>
                 {({ openOverlay }) => {
                     addErrorListener.onSizeLimit(openOverlay);
 

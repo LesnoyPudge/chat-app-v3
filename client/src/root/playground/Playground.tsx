@@ -1,9 +1,9 @@
 import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow } from '@components';
 import { useInView } from '@react-spring/web';
-import { EncodedFile, PropsWithChildrenAsNodeOrFunction } from '@types';
-import { getHTML, throttle, twClassNames } from '@utils';
-import { FC, PropsWithChildren, useContext, useDeferredValue, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
+import { EncodedFile, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction } from '@types';
+import { getHTML, noop, throttle, twClassNames } from '@utils';
+import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
 import { useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useFileDrop, useTextInput, useThrottle } from '@hooks';
@@ -611,6 +611,9 @@ import { useIntersectionObserver } from 'react-intersection-observer-hook';
 import { useMeasure } from 'react-use';
 import { useRelativePositionV2 } from 'src/hooks/useRelativePositionV2/useRelativePositionV2';
 import { useFocus } from 'src/hooks/useFocus/useFocus';
+import { Formik } from 'formik';
+import { FormikFileUploadContextProvider } from '@libs';
+import SimpleBar from 'simplebar-react';
 
 
 
@@ -726,31 +729,19 @@ const PlaygroundInner3: FC = () => {
     );
 };
 
+
 const PlaygroundInner4: FC = () => {
-    // const buttonRef = useRef<HTMLButtonElement>(null);
-    // const isFocused = useFocus(buttonRef);
-    // const isHovered = useHover(buttonRef);
-
-    // useEffect(() => {
-    //     console.log(`focused: ${isFocused} hovered: ${isHovered}`);
-    // }, [isFocused, isHovered]);
-
 
     return (
-        <div onClick={() => {}}>
-            <>wow</>
-
-            <OverlayContextProvider>
-                {({}) => {
-                    return (
-                        <ModalWindow label={''}>
-                            <div>
-                                <>modal</>
-                            </div>
-                        </ModalWindow>
-                    );
-                }}
-            </OverlayContextProvider>
+        <div className='w-[300px] h-[300px] bg-rose-500'>
+            <Scrollable 
+                className='h-full'
+                direction='vertical'
+            >
+                <div className='bg-brand-active'>
+                    <>content</>
+                </div>
+            </Scrollable>
         </div>
     );
 };

@@ -8,37 +8,17 @@ const scrollbarClasses = {
     '.scrollbar': {
         '1': {},
     },
-
-    '.scrollbar-with-opposite-gutter': {
-        '2': {},
-    },
-
-    'scrollbar-hidden': {
-        '5': {},
-    },
-    
-    'scrollbar-auto-hide': {
-        '6': {},
-    },
-
-    'scrollbar-is-alive': {
-        '7': {},
-    },
-
-    '.scrollbar-small': {
-        '8': {},
-    },
 };
 
 const colorPickerClasses = {
     '.color-picker': {
-        '3': {},
+        '2': {},
     },
 };
 
 const sliderInputClasses = {
     '.slider-input': {
-        '4': {},
+        '3': {},
     },
 };
 

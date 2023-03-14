@@ -2,9 +2,9 @@ import { twClassNames } from '@utils';
 import { FC, ReactNode, useContext } from 'react';
 import { Button, Image, OverlayContext } from '@components';
 import { Heading } from '@libs';
-import fileDropImage1 from '@assets/filedrop-image-1.svg';
-import fileDropImage2 from '@assets/filedrop-image-2.svg';
-import fileDropImage3 from '@assets/filedrop-image-3.svg';
+import fileTextImage from '@assets/file-text-image.svg';
+import fileImageImage from '@assets/file-image-image.svg';
+import fileCodeImage from '@assets/file-code-image.svg';
 import { PropsWithClassName } from '@types';
 
 
@@ -44,17 +44,17 @@ export const Content: FC<Content> = ({
                 <div className={styles.imageWrapper}>
                     <Image 
                         className={twClassNames(styles.image, styles.firstImage)}
-                        src={fileDropImage1}
+                        src={fileTextImage}
                     />
 
                     <Image 
                         className={twClassNames(styles.image, styles.secondImage)}
-                        src={fileDropImage2}
+                        src={fileImageImage}
                     />
 
                     <Image 
                         className={twClassNames(styles.image, styles.thirdImage)}
-                        src={fileDropImage3}
+                        src={fileCodeImage}
                     />
                 </div>
 

@@ -1,6 +1,6 @@
 import { PropsWithChildrenAndClassName } from '@types';
-import { twClassNames } from '@utils';
-import { CSSProperties, FC, MutableRefObject, useEffect, useRef } from 'react';
+import { noop, twClassNames } from '@utils';
+import { FC, MutableRefObject, useEffect, useRef } from 'react';
 import { useThrottle } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
 import { SimpleBarCore } from '@reExport';
@@ -8,8 +8,9 @@ import SimpleBar from 'simplebar-react';
 
 
 
-interface Scrollable extends PropsWithChildrenAndClassName {
+export interface Scrollable extends PropsWithChildrenAndClassName {
     label?: string;
+    direction?: 'horizontal' | 'vertical',
     autoHide?: boolean;
     hidden?: boolean;
     withOppositeGutter?: boolean;
@@ -21,25 +22,13 @@ interface Scrollable extends PropsWithChildrenAndClassName {
 }
 
 const styles = {
-    wrapper: 'flex flex-1',
-    inner: 'scrollbar absolute inset-0',
-    modifiers: {
-        withOppositeGutter: 'scrollbar-with-opposite-gutter',
-        hidden: 'scrollbar-hidden',
-        autoHide: 'scrollbar-auto-hide',
-        isAlive: 'scrollbar-is-alive',
-        small: 'scrollbar-small',
-    },
-};
-
-const wrapperStyle: CSSProperties = {
-    position: 'relative',
-    overflow: 'hidden',
+    wrapper: 'flex flex-1 max-h-full scrollbar',
 };
 
 export const Scrollable: FC<Scrollable> = ({
     className = '',
     label,
+    direction = 'vertical',
     autoHide = false,
     hidden = false,
     withOppositeGutter = false,
@@ -53,60 +42,64 @@ export const Scrollable: FC<Scrollable> = ({
     const { throttle, isThrottling: isAlive } = useThrottle();
     const mySimpleBarRef = useRef<SimpleBarCore | null>(null);
 
-    const handlePointerMove = () => {
-        if (autoHide) throttle(() => {}, 1000)();  
+    const dataAttributes = {
+        'data-direction': direction,
+        'data-auto-hide': autoHide,
+        'data-hidden': hidden,
+        'data-with-opposite-gutter': withOppositeGutter,
+        'data-small': small,
+        'data-is-alive': isAlive,
     };
 
-    const getRef = (ref: SimpleBarCore | null) => {
-        if (!ref) return;
-
-        mySimpleBarRef.current = ref;
-        
-        if (simpleBarRef) {
-            simpleBarRef.current = ref;
-        }
-
-        if (scrollableRef) {
-            scrollableRef.current = ref.getScrollElement() as HTMLDivElement;
-        }
-
-        if (scrollableContentRef) {
-            scrollableContentRef.current = ref.getContentElement() as HTMLDivElement;
-        }
+    const handlePointerMove = () => {
+        if (autoHide) throttle(noop, 1000)();  
     };
 
     useEffect(() => {
         if (!mySimpleBarRef.current) return;
-        if (!mySimpleBarRef.current.contentWrapperEl) return;
 
-        mySimpleBarRef.current.contentWrapperEl.tabIndex = focusable ? 0 : -1;        
-    }, [focusable]);
+        const target = mySimpleBarRef.current;
+
+        if (simpleBarRef && !simpleBarRef.current) {
+            simpleBarRef.current = target;
+        }
+
+        if (scrollableRef && !scrollableRef.current) {
+            scrollableRef.current = target.getScrollElement() as HTMLDivElement;
+        }
+
+        if (scrollableContentRef && !scrollableContentRef.current) {
+            scrollableContentRef.current = target.getContentElement() as HTMLDivElement;
+        }
+
+        if (target.contentWrapperEl) {
+            const contentWrapper = target.contentWrapperEl;
+            
+            contentWrapper.tabIndex = focusable ? 0 : -1;
+            
+            // const overflowStyle = {
+            //     vertical: 'hidden scroll',
+            //     horizontal: 'scroll hidden',
+            // };
+            // contentWrapper.style.overflow = overflowStyle[direction];
+        }
+    }, [direction, focusable, scrollableContentRef, scrollableRef, simpleBarRef]);
 
     return (
-        <div 
-            className={twClassNames(styles.wrapper, className)}
-            style={wrapperStyle}
+        <SimpleBar 
+            className={twClassNames(
+                styles.wrapper,
+                className,
+            )}
+            forceVisible
+            autoHide={false}
+            clickOnTrack
+            ariaLabel={label}
+            {...dataAttributes}
+            onPointerMove={handlePointerMove}
+            ref={mySimpleBarRef}
         >
-            <SimpleBar 
-                className={twClassNames(
-                    styles.inner, 
-                    { 
-                        [styles.modifiers.withOppositeGutter]: withOppositeGutter,
-                        [styles.modifiers.hidden]: hidden,
-                        [styles.modifiers.autoHide]: autoHide,
-                        [styles.modifiers.isAlive]: isAlive, 
-                        [styles.modifiers.small]: small,
-                    },
-                )}
-                forceVisible
-                autoHide={false}
-                clickOnTrack
-                ariaLabel={label}
-                onPointerMove={handlePointerMove}
-                ref={getRef}
-            >
-                {children}
-            </SimpleBar>
-        </div>
+            {children}
+        </SimpleBar>
     );
 };
