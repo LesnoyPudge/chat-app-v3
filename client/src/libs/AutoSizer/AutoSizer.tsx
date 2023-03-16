@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import ReactAutoSizer, { AutoSizerProps, SizeType } from '@oyyds/react-auto-sizer';
-import { PropsWithChildrenAsNodeOrFunction } from '@types';
+import ReactAutoSizer, { AutoSizerProps } from '@oyyds/react-auto-sizer';
+import { PropsWithChildrenAsNodeOrFunction, Size } from '@types';
 import { ChildrenAsNodeOrFunction } from '@components';
 
 
 
-type AutoSizer = PropsWithChildrenAsNodeOrFunction<Required<SizeType>> & Omit<AutoSizerProps, 'children'>;
+type AutoSizer = PropsWithChildrenAsNodeOrFunction<Size> & Omit<AutoSizerProps, 'children'>;
 
 export const AutoSizer: FC<AutoSizer> = ({
     children,

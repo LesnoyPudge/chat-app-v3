@@ -1,10 +1,11 @@
-import { PropsWithChildrenAndClassName } from '@types';
-import { noop, twClassNames } from '@utils';
+import { PropsWithChildrenAndClassName, Size } from '@types';
+import { conditional, noop, twClassNames } from '@utils';
 import { FC, MutableRefObject, useEffect, useRef } from 'react';
 import { useThrottle } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
 import { SimpleBarCore } from '@reExport';
 import SimpleBar from 'simplebar-react';
+import useResizeObserver from '@react-hook/resize-observer';
 
 
 
@@ -19,10 +20,12 @@ export interface Scrollable extends PropsWithChildrenAndClassName {
     scrollableRef?: MutableRefObject<HTMLDivElement | null>;
     simpleBarRef?: MutableRefObject<SimpleBarCore | null>;
     scrollableContentRef?: MutableRefObject<HTMLDivElement | null>;
+    onContentResize?: (size: Size) => void;
 }
 
 const styles = {
-    wrapper: 'flex flex-1 max-h-full scrollbar',
+    wrapper: 'flex flex-1 relative max-h-full',
+    scrollable: 'absolute inset-0 scrollbar',
 };
 
 export const Scrollable: FC<Scrollable> = ({
@@ -38,17 +41,29 @@ export const Scrollable: FC<Scrollable> = ({
     simpleBarRef,
     scrollableContentRef,
     children,
+    onContentResize,
 }) => {
     const { throttle, isThrottling: isAlive } = useThrottle();
     const mySimpleBarRef = useRef<SimpleBarCore | null>(null);
+    const contentRef = useRef<HTMLElement | null>(null);
 
     const dataAttributes = {
         'data-direction': direction,
         'data-auto-hide': autoHide,
-        'data-hidden': hidden,
         'data-with-opposite-gutter': withOppositeGutter,
-        'data-small': small,
         'data-is-alive': isAlive,
+    };
+
+    const scrollbarSizes = {
+        '--scrollbar-thickness': small ? 10 : hidden ? 0 : 10,
+        '--track-thickness': small ? 6 : hidden ? 0 : 8,
+        '--thumb-thickness': small ? 6 : hidden ? 0 : 8,
+    };
+
+    const scrollbarStyles: Record<keyof typeof scrollbarSizes, string> = {
+        '--scrollbar-thickness': scrollbarSizes['--scrollbar-thickness'] + 'px',
+        '--track-thickness': scrollbarSizes['--track-thickness'] + 'px',
+        '--thumb-thickness': scrollbarSizes['--thumb-thickness'] + 'px',
     };
 
     const handlePointerMove = () => {
@@ -59,6 +74,10 @@ export const Scrollable: FC<Scrollable> = ({
         if (!mySimpleBarRef.current) return;
 
         const target = mySimpleBarRef.current;
+
+        if (mySimpleBarRef.current.contentEl) {
+            contentRef.current = mySimpleBarRef.current.contentEl;
+        }
 
         if (simpleBarRef && !simpleBarRef.current) {
             simpleBarRef.current = target;
@@ -73,33 +92,61 @@ export const Scrollable: FC<Scrollable> = ({
         }
 
         if (target.contentWrapperEl) {
-            const contentWrapper = target.contentWrapperEl;
-            
-            contentWrapper.tabIndex = focusable ? 0 : -1;
-            
-            // const overflowStyle = {
-            //     vertical: 'hidden scroll',
-            //     horizontal: 'scroll hidden',
-            // };
-            // contentWrapper.style.overflow = overflowStyle[direction];
+            target.contentWrapperEl.tabIndex = focusable ? 0 : -1;
         }
     }, [direction, focusable, scrollableContentRef, scrollableRef, simpleBarRef]);
 
+    useResizeObserver(contentRef, (entry) => {
+        const isHorizontal = direction === 'horizontal';
+        const isVertical = direction === 'vertical';
+        const scrollbarSize = scrollbarSizes['--scrollbar-thickness'];
+        const scrollbarSizeWithGutter = scrollbarSize * 2;
+
+        const padding = {
+            vertical: conditional(
+                conditional(
+                    scrollbarSizeWithGutter,
+                    scrollbarSize,
+                    withOppositeGutter,
+                ),
+                0, 
+                isHorizontal,
+            ),
+            horizontal: conditional(
+                conditional(
+                    scrollbarSizeWithGutter,
+                    scrollbarSize,
+                    withOppositeGutter,
+                ),
+                0, 
+                isVertical,
+            ),
+        };
+
+        onContentResize && onContentResize({
+            width: entry.borderBoxSize[0].inlineSize + padding.horizontal,
+            height: entry.borderBoxSize[0].blockSize + padding.vertical,
+        });
+    });
+
     return (
-        <SimpleBar 
-            className={twClassNames(
-                styles.wrapper,
-                className,
-            )}
-            forceVisible
-            autoHide={false}
-            clickOnTrack
-            ariaLabel={label}
-            {...dataAttributes}
-            onPointerMove={handlePointerMove}
-            ref={mySimpleBarRef}
-        >
-            {children}
-        </SimpleBar>
+        <div className={twClassNames(
+            styles.wrapper,
+            className,
+        )}>
+            <SimpleBar 
+                className={styles.scrollable}
+                style={scrollbarStyles as React.CSSProperties}
+                forceVisible
+                autoHide={false}
+                clickOnTrack
+                ariaLabel={label}
+                {...dataAttributes}
+                onPointerMove={handlePointerMove}
+                ref={mySimpleBarRef}
+            >
+                {children}
+            </SimpleBar>
+        </div>
     );
 };

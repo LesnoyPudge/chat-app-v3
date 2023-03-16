@@ -2,91 +2,105 @@
 
 
 
+/*
+    scrollbar
+        simplebar-wrapper
+            simplebar-mask
+                simplebar-offset
+                    simplebar-content-wrapper
+                        simplebar-content
+    simplebar-track simplebar-horizontal
+        simplebar-scrollbar simplebar-visible
+    simplebar-track simplebar-vertical
+        simplebar-scrollbar simplebar-visible
+*/
+
 @layer components {
     .scrollbar {
-        --scrollbar-thickness: 16px;
-        --track-thickness: 8px;
-        --thumb-thickness: 8px;
         --thumb-min-length: 40px;
         --track-transition: opacity 0.2s ease-in-out;
 
-        &[data-small=true] {
-            --scrollbar-thickness: 10px;
-            --track-thickness: 6px;
-            --thumb-thickness: 6px;
-        }
-
-        &[data-hidden=true] {
-            --scrollbar-thickness: 0px;
-            --track-thickness: 0px;
-            --thumb-thickness: 0px;
-        }
-
         &[data-direction=vertical] {
-            .simplebar {
-                &-offset {
-                    padding: 0;
-                    padding-right: var(--scrollbar-thickness);
-                }
+            & > .simplebar-wrapper {
+                & > .simplebar-mask {
+                    & > .simplebar-offset {
+                        padding-right: var(--scrollbar-thickness);
 
-                &-horizontal {
-                    display: none;
+                        & > .simplebar-content-wrapper {
+                            overflow: hidden scroll !important;
+                        }
+                    }
                 }
+            }
 
-                &-vertical {
-                    display: block;
-                }
+            & > .simplebar-horizontal {
+                display: none;
             }
         }
 
         &[data-direction=horizontal] {
-            .simplebar {
-                &-offset {
-                    padding: 0;
-                    padding-bottom: var(--scrollbar-thickness);
-                }
+            & > .simplebar-wrapper {
+                & > .simplebar-mask {
+                    & > .simplebar-offset {
+                        padding-bottom: var(--scrollbar-thickness);
 
-                &-horizontal {
-                    display: block;
+                        & > .simplebar-content-wrapper {
+                            overflow: scroll hidden !important;
+                        }
+                    }
                 }
+            }
 
-                &-vertical {
-                    display: none;
-                }
+            & > .simplebar-vertical {
+                display: none;
             }
         }
 
         &[data-with-opposite-gutter=true] {
             &[data-direction=vertical] {
-                .simplebar-offset {
-                    padding-left: var(--scrollbar-thickness);
-                    padding-top: 0;
+                & > .simplebar-wrapper {
+                    & > .simplebar-mask {
+                        & > .simplebar-offset {
+                            padding-left: var(--scrollbar-thickness);
+                            padding-top: 0;
+                        }
+                    }
                 }
             }
 
             &[data-direction=horizontal] {
-                .simplebar-offset {
-                    padding-top: var(--scrollbar-thickness);
-                    padding-left: 0;
+                & > .simplebar-wrapper {
+                    & > .simplebar-mask {
+                        & > .simplebar-offset {
+                            padding-top: var(--scrollbar-thickness);
+                        }
+                    }
                 }
             }
         }
 
         &[data-auto-hide=true] {
             &:not([data-is-alive=true], :hover, :focus, :focus-visible, :focus-within) {
-                .simplebar-track {
+                & > .simplebar-track {
                     opacity: 0;
                 }
             }
         }
 
-        .simplebar-content {
-            display: flex;
-            flex-direction: column;
-            min-height: 100%;
+        & > .simplebar-wrapper {
+            & > .simplebar-mask {
+                & > .simplebar-offset {
+                    & > .simplebar-content-wrapper {
+                        & > .simplebar-content {
+                            min-height: 100%;
+                            min-width: fit-content;
+                        }
+                    }
+                }
+            }
         }
 
-        .simplebar-track {
+        & > .simplebar-track {
             background-color: transparent;
             transition: var(--track-transition);
 
@@ -100,8 +114,9 @@
                 transition: var(--scrollbar-transition);
             }
 
-            .simplebar-scrollbar {
+            & > .simplebar-scrollbar {
                 background-color: transparent;
+                opacity: 1;
 
                 &::before {
                     @apply bg-primary-600;
@@ -115,7 +130,7 @@
             &.simplebar-vertical {
                 width: var(--scrollbar-thickness);
 
-                .simplebar-scrollbar {
+                & > .simplebar-scrollbar {
                     width: var(--scrollbar-thickness);
                     min-height: var(--thumb-min-length);
                 }
@@ -124,7 +139,7 @@
             &.simplebar-horizontal {
                 height: var(--scrollbar-thickness);
 
-                .simplebar-scrollbar {
+                & > .simplebar-scrollbar {
                     height: var(--scrollbar-thickness);
                     min-width: var(--thumb-min-length);
                 }

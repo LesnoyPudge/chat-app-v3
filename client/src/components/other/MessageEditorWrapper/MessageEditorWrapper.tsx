@@ -1,5 +1,4 @@
-import useResizeObserver from '@react-hook/resize-observer';
-import { PropsWithChildrenAndClassName } from '@types';
+import { PropsWithChildrenAndClassName, Size } from '@types';
 import { twClassNames } from '@utils';
 import { FC, useRef } from 'react';
 import { useSlateStatic } from 'slate-react';
@@ -27,10 +26,10 @@ export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
     const wrapperRef = useRef<HTMLDivElement>(null);
     const scrollableContentRef = useRef<HTMLDivElement>(null);
 
-    useResizeObserver(scrollableContentRef, (entry) => {
+    const handleSizeChange = (size: Size) => {
         if (!wrapperRef.current) return;
-        wrapperRef.current.style.height = entry.borderBoxSize[0].blockSize + 'px';
-    });
+        wrapperRef.current.style.height = size.height + 'px';
+    };
     
     return (
         <div 
@@ -45,6 +44,9 @@ export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
                 className={styles.scrollable} 
                 small 
                 scrollableContentRef={scrollableContentRef}
+                withOppositeGutter
+                autoHide
+                onContentResize={handleSizeChange}
             >
                 {children}
             </Scrollable>

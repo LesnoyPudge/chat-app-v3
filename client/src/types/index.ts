@@ -44,3 +44,8 @@ export type Merge<T extends object[]> = ReturnType<typeof deepMerge<T>>;
 export type PropsWithInnerRef<T extends HTMLElement> = {
     innerRef?: RefObject<T>;
 }
+
+export interface Size {
+    width: number;
+    height: number;
+}
