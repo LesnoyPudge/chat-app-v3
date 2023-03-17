@@ -49,3 +49,5 @@ export interface Size {
     width: number;
     height: number;
 }
+
+export type AnyFunction = (...args: any[]) => any;

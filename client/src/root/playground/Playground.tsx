@@ -2,11 +2,11 @@ import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSe
 import { useInView } from '@react-spring/web';
 import { EncodedFile, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { getHTML, noop, throttle, twClassNames } from '@utils';
-import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
 import { useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useTextInput, useThrottle } from '@hooks';
+import { useFileDrop, useTextInput, useThrottle, useWebWorker } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -378,7 +378,6 @@ const createList = (value: string) => [...Array(500000)].map((_, index) => ({
     id: index.toString(),
     some: `${value} ${index}`,
 }));
-import { useWorker } from '@koale/useworker';
 
 
 // import { createWorkerFactory, useWorker,  } from '@shopify/react-web-worker';
@@ -389,7 +388,7 @@ import { useWorker } from '@koale/useworker';
 
 const PlaygroundInner2: FC = () => {
     const { deferredValue, value, handleChange, handleReset } = useTextInput();
-    const [createListWorker, { status, kill }] = useWorker(createList);
+    // const [createListWorker, { status, kill }] = useWorker(createList)
     // const asyncList = useAsync(createListWorker);
     // const createdList = useMemo(() => (
     //     Array(500000).fill('').map((_, index) => {
@@ -403,25 +402,25 @@ const PlaygroundInner2: FC = () => {
 
     const [valueList, setValue] = useState<{id: string, some: string}[]>(() => createList(''));
 
-    useEffect(() => {
-        if (status === 'RUNNING') kill();
+    // useEffect(() => {
+    //     if (status === 'RUNNING') kill();
         
-        const dod = async() => {
-            kill();
-            console.log(status);
-            if (status === 'RUNNING') return kill();
+    //     const dod = async() => {
+    //         kill();
+    //         console.log(status);
+    //         if (status === 'RUNNING') return kill();
             
-            const v = await createListWorker(deferredValue);
-            setValue(v);
-        };
+    //         const v = await createListWorker(deferredValue);
+    //         setValue(v);
+    //     };
 
-        dod();
+    //     dod();
 
-        return () => {
-            console.log('kill');
-            kill();
-        };
-    }, [createListWorker, deferredValue, kill]);
+    //     return () => {
+    //         console.log('kill');
+    //         kill();
+    //     };
+    // }, [createListWorker, deferredValue, kill]);
 
 
     // useEffect(() => console.log('update', filteredList2.length), [filteredList2]);
@@ -730,23 +729,45 @@ const PlaygroundInner3: FC = () => {
 };
 
 
+const fibonacci = (n: number): number => {
+    let prev = 0, curr = 1;
+    for (let i = 0; i < n; i++) {
+        const temp = curr;
+        curr += prev;
+        prev = temp;
+    }
+    return prev;
+};
+
 const PlaygroundInner4: FC = () => {
+    const [runWorker, result] = useWebWorker(fibonacci);
+    const [number, setNumber] = useState(1);
+    
+    const handleClick = () => {
+        runWorker(number);
+    };
+
+    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNumber(parseInt(event.target.value));
+    };
 
     return (
-        <div className='w-[300px] h-[300px] bg-rose-500'>
-            <Scrollable 
-                className='h-full'
-                direction='vertical'
-            >
-                <div className='bg-brand-active'>
-                    <>content</>
-                </div>
-            </Scrollable>
+        <div>
+            <label>
+                <>Calculate Fibonacci for:</>
+
+                <input type='number' value={number} onChange={handleNumberChange} />
+            </label>
+            
+            <button onClick={handleClick}>Calculate</button>
+
+            {result.data && <p>The result is: {result.data}</p>}
+            {result.error && <p>An error occurred: {result.error.message}</p>}
         </div>
     );
 };
 
-const enabled = !!0;
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

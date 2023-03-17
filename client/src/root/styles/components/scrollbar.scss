@@ -5,6 +5,7 @@
 /*
     scrollbar
         simplebar-wrapper
+            simplebar-placeholder
             simplebar-mask
                 simplebar-offset
                     simplebar-content-wrapper
@@ -88,6 +89,10 @@
         }
 
         & > .simplebar-wrapper {
+            & > .simplebar-placeholder {
+                display: none;
+            }
+
             & > .simplebar-mask {
                 & > .simplebar-offset {
                     & > .simplebar-content-wrapper {

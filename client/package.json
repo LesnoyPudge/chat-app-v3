@@ -22,13 +22,11 @@
     },
     "dependencies": {
         "@juggle/resize-observer": "^3.4.0",
-        "@koale/useworker": "^4.0.2",
         "@oyyds/react-auto-sizer": "^1.2.11",
         "@react-hook/intersection-observer": "^3.1.1",
         "@react-hook/resize-observer": "^1.2.6",
         "@react-spring/web": "^9.6.1",
         "@reduxjs/toolkit": "^1.9.2",
-        "@shopify/react-web-worker": "^5.0.7",
         "@tailwindcss/container-queries": "^0.1.0",
         "@total-typescript/ts-reset": "^0.3.7",
         "classnames": "^2.3.2",

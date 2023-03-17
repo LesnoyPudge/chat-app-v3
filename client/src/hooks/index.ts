@@ -13,3 +13,4 @@ export * from './useFileDrop';
 export * from './useTextInput';
 export * from './useFocus';
 export * from './useFileUpload';
+export * from './useWebWorker';
