@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { MessageControlBar, MessageImages, MessageReactions, MessageRedactor } from '..';
+import { MessageImages, MessageReactions, MessageRedactor } from '..';
 
 
 
@@ -10,8 +10,6 @@ const styles = {
 export const MessageAdditions: FC = () => {
     return (
         <>
-            <MessageControlBar/>
-
             <MessageRedactor className={styles.gap}/>
 
             <MessageImages className={styles.gap}/>

@@ -37,6 +37,7 @@
         "formik": "^2.2.9",
         "is-object": "^1.0.2",
         "js-cookie": "^3.0.1",
+        "lorem-ipsum": "^2.0.8",
         "nouislider": "^15.7.0",
         "nouislider-react": "^3.4.1",
         "overlayscrollbars": "^2.1.0",

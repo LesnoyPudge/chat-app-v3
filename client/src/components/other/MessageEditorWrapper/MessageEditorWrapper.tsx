@@ -10,7 +10,7 @@ import { useGetSlateEditorElementRef } from '@libs';
 
 const styles = {
     wrapper: {
-        base: 'rounded-lg bg-primary-100 m-4 min-h-[44px] max-h-[50vh]',
+        base: 'rounded-lg bg-primary-100 min-h-[44px] max-h-[50vh]',
         focused: 'focused',
     },
     scrollable: 'h-full',

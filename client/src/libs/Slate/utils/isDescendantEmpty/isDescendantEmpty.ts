@@ -2,7 +2,7 @@ import { Descendant, Text, Element } from 'slate';
 
 
 
-export const isEditorEmpty = (value: Descendant[]): boolean => {
+export const isDescendantEmpty = (value: Descendant[]): boolean => {
     const nonEmptyNodes = value.filter((node) => {
         if (Element.isElement(node) && node.type === 'emoji') {
             return true;
@@ -12,7 +12,7 @@ export const isEditorEmpty = (value: Descendant[]): boolean => {
             return true;
         }
     
-        if (Element.isElement(node) && !isEditorEmpty(node.children)) {
+        if (Element.isElement(node) && !isDescendantEmpty(node.children)) {
             return true;
         }
     

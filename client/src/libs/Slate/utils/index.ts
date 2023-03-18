@@ -1,2 +1,2 @@
 export * from './getInitialSlateValue';
-export * from './isEditorEmpty';
+export * from './isDescendantEmpty';

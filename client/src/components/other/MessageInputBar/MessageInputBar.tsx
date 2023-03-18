@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { SlateEditor, SlateContainer, FormikFileInput, getInitialSlateValue, FormikFileUploadContextProvider, isEditorEmpty } from '@libs';
+import { SlateEditor, SlateContainer, FormikFileInput, getInitialSlateValue, FormikFileUploadContextProvider, isDescendantEmpty } from '@libs';
 import { Button, Icon, MessageEditorWrapper } from '@components';
 import { OpenEmojiPickerButton, Attachments, AttachmentsModals } from './components';
 import { Form, Formik } from 'formik';
@@ -36,7 +36,7 @@ export const MessageInputBar: FC<MessageInputBar> = ({
     placeholder,
 }) => {
     const handleSubmit = (formValues: MessageInputBarFormValues) => {
-        const isEmptyMessage = isEditorEmpty(formValues.content) && !formValues.attachments.length;
+        const isEmptyMessage = isDescendantEmpty(formValues.content) && !formValues.attachments.length;
         if (isEmptyMessage) return console.log('empty message');
 
         console.log('send message', formValues);      
@@ -57,7 +57,7 @@ export const MessageInputBar: FC<MessageInputBar> = ({
                         sizeLimit: MBToBytes(8),
                     }}
                 >
-                    <Form className={className}>
+                    <Form className={className + ' m-4'}>
                         <SlateContainer
                             value={values.content}
                             onChange={(value) => setFieldValue('content', value)}

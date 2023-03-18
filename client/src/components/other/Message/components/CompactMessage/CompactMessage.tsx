@@ -7,7 +7,7 @@ import { MessageContext } from '../../Message';
 
 
 const styles = {
-    wrapper: 'flex items-baseline',
+    wrapper: 'flex items-baseline pl-4',
     content: 'w-full',
     heading: 'sr-only',
     time: {

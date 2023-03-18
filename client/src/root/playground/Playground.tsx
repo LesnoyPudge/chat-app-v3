@@ -1,6 +1,6 @@
 import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow } from '@components';
 import { useInView } from '@react-spring/web';
-import { EncodedFile, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction } from '@types';
+import { AnyFunction, EncodedFile, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { getHTML, noop, throttle, twClassNames } from '@utils';
 import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
@@ -613,6 +613,7 @@ import { useFocus } from 'src/hooks/useFocus/useFocus';
 import { Formik } from 'formik';
 import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
+import { Chat } from 'src/components/other/Chat/Chat';
 
 
 
@@ -729,18 +730,44 @@ const PlaygroundInner3: FC = () => {
 };
 
 
-const fibonacci = (n: number): number => {
-    let prev = 0, curr = 1;
-    for (let i = 0; i < n; i++) {
-        const temp = curr;
-        curr += prev;
-        prev = temp;
-    }
-    return prev;
+// const fibonacci = (n: number): number => {
+//     if (n <= 1) return n;
+//     return fibonacci(n - 1) + fibonacci(n - 2);
+// };
+
+const workerFunction = (n: number) => {
+    const fibonacci = (n: number): number => {
+        if (n <= 1) return n;
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    };
+
+    return fibonacci(n);
+};
+
+
+const workerFunction2 = (n: number) => {
+    const memoizedFibonacci = (() => {
+        const memo: { [key: number]: number } = {};
+        return (n: number): number => {
+            if (n in memo) return memo[n];
+            if (n <= 1) return n;
+            let fib = 1;
+            let prevFib = 1;
+            for (let i = 2; i < n; i++) {
+                const temp = fib;
+                fib += prevFib;
+                prevFib = temp;
+            }
+            memo[n] = fib;
+            return memo[n];
+        };
+    })();
+
+    return memoizedFibonacci(n);
 };
 
 const PlaygroundInner4: FC = () => {
-    const [runWorker, result] = useWebWorker(fibonacci);
+    const [runWorker, result] = useWebWorker(workerFunction2);
     const [number, setNumber] = useState(1);
     
     const handleClick = () => {
@@ -767,6 +794,12 @@ const PlaygroundInner4: FC = () => {
     );
 };
 
+const PlaygroundInner5: FC = () => {
+    return (
+        <Chat/>
+    );
+};
+
 const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
@@ -780,7 +813,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner/> */}
                 {/* <PlaygroundInner2/> */}
                 {/* <PlaygroundInner3/> */}
-                <PlaygroundInner4/>
+                {/* <PlaygroundInner4/> */}
+                <PlaygroundInner5/>
             </Conditional>
         </>
     );

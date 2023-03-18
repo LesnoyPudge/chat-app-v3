@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Time } from '@components';
+import { Conditional, Time } from '@components';
 import { MessageContext } from '../../Message';
 
 
@@ -12,12 +12,14 @@ export const MessageEditTimestamp: FC = () => {
     const { ids, message } = useContext(MessageContext) as MessageContext;
 
     return (
-        <Time 
-            className={styles.wrapper}
-            date={message.updatedAt}
-            id={ids.editTimestampId}
-        >
-            <> (изменено)</>
-        </Time>
+        <Conditional isRendered={message.isChanged}>
+            <Time 
+                className={styles.wrapper}
+                date={message.updatedAt}
+                id={ids.editTimestampId}
+            >
+                <> (изменено)</>
+            </Time>
+        </Conditional>
     );
 };

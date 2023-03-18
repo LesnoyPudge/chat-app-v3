@@ -2,9 +2,9 @@ import { PropsWithClassName } from '@types';
 import { createContext, FC } from 'react';
 import { Descendant } from 'slate';
 import { EmojiCode, Conditional } from '@components';
-import { Heading } from '@libs';
+import { Heading, isDescendantEmpty } from '@libs';
 import { twClassNames } from '@utils';
-import { CompactMessage, CozyMessage } from './components';
+import { CompactMessage, CozyMessage, MessageControlBar } from './components';
 import { IMessage } from '@backendTypes';
 import { useToggle } from 'usehooks-ts';
 
@@ -33,7 +33,7 @@ export interface MessageContext extends Required<Omit<MessageComponent, 'classNa
 }
 
 const styles = {
-    wrapper: `relative mt-14 pr-12 py-1 group bg-primary-200 
+    wrapper: `relative pr-12 py-1 group bg-primary-200 
     hover:bg-primary-300 focus-within:bg-primary-300`,
     heading: 'sr-only',
 };
@@ -60,7 +60,7 @@ export const Message: FC<MessageComponent> = ({
     };
 
     const handleSaveRedactedMessage = (value: Descendant[]) => {
-        console.log('save', value);
+        console.log(`save, isEmpty: ${isDescendantEmpty(value)}`, value);
         toggleIsInEditMode();
     };
 
@@ -96,6 +96,10 @@ export const Message: FC<MessageComponent> = ({
 
                 <Conditional isRendered={isCozy}>
                     <CozyMessage/>
+                </Conditional>
+
+                <Conditional isRendered={!isInEditMode}>
+                    <MessageControlBar/>
                 </Conditional>
             </article>
         </MessageContext.Provider>

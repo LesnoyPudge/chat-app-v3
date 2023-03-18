@@ -61,6 +61,10 @@ const otherClasses = {
         'height': 'var(--message-emoji-size)!important',
         'width': 'var(--message-emoji-size)!important',
     },
+
+    '.message-group-head': {
+        'margin-top': 'var(--message-gap)',
+    },
 };
 
 const customClasses = {
