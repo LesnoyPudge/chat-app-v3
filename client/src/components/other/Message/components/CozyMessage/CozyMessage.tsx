@@ -18,7 +18,7 @@ const styles = {
 };
 
 export const CozyMessage: FC = () => {
-    const { message, isHeadless } = useContext(MessageContext) as MessageContext;
+    const { message, isGroupHead } = useContext(MessageContext) as MessageContext;
     
     const user = {
         id: message.user,
@@ -29,7 +29,7 @@ export const CozyMessage: FC = () => {
     return (
         <div className={styles.wrapper}>
             <div className={styles.firstCol}>
-                <Conditional isRendered={!isHeadless}>
+                <Conditional isRendered={isGroupHead}>
                     <UserAvatar
                         className={styles.avatar}
                         avatar={user.avatar}
@@ -37,7 +37,7 @@ export const CozyMessage: FC = () => {
                     />
                 </Conditional>
 
-                <Conditional isRendered={isHeadless}>
+                <Conditional isRendered={!isGroupHead}>
                     <div>
                         <MessageTimestamp className={styles.headlessCreationTimestamp}/>
                     </div>
@@ -45,7 +45,7 @@ export const CozyMessage: FC = () => {
             </div>
 
             <div className={styles.secondCol}>
-                <Conditional isRendered={!isHeadless}>
+                <Conditional isRendered={isGroupHead}>
                     <div className={styles.infoRow}>
                         <Button
                             label=''

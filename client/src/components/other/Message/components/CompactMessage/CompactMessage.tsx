@@ -19,14 +19,14 @@ const styles = {
 };
 
 export const CompactMessage: FC = () => {
-    const { isHeadless, ids, tabIndex } = useContext(MessageContext) as MessageContext;
+    const { isGroupHead, ids, tabIndex } = useContext(MessageContext) as MessageContext;
 
     return (
         <div className={styles.wrapper}>
             <div>
                 <MessageTimestamp className={twClassNames(
                     styles.time.base,
-                    { [styles.time.headless]: isHeadless },
+                    { [styles.time.headless]: !isGroupHead },
                 )}/>
             </div>
             

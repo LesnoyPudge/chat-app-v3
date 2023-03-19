@@ -9,8 +9,10 @@ import { MessageContext } from '../../Message';
 
 const styles = {
     buttonsWrapper: `flex absolute top-0 right-0 -translate-y-[25px] 
-    mx-3.5 shadow-elevation-low rounded-md bg-primary-300
-    opacity-0 group-hover:opacity-100 group-focus-within:opacity-100`,
+    mx-3.5 shadow-elevation-low rounded-md bg-primary-300 
+    pointer-events-none opacity-0 group-hover:opacity-100 
+    group-focus-within:opacity-100 group-hover:pointer-events-auto
+    group-focus-within:pointer-events-auto`,
     button: `h-8 w-8 p-1.5 rounded-md fill-icon-200 
     hover:fill-icon-100 hover:bg-primary-hover
     focus-visible:fill-icon-100 focus-visible:bg-primary-hover`,

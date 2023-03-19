@@ -12,7 +12,7 @@ import { useToggle } from 'usehooks-ts';
 
 interface MessageComponent extends PropsWithClassName {
     message: IMessage & {reactions: {code: EmojiCode, users: string[]}[]};
-    isHeadless: boolean;
+    isGroupHead: boolean;
     displayMode: 'cozy' | 'compact';
     tabIndex?: number;
 }
@@ -33,7 +33,7 @@ export interface MessageContext extends Required<Omit<MessageComponent, 'classNa
 }
 
 const styles = {
-    wrapper: `relative pr-12 py-1 group bg-primary-200 
+    wrapper: `group relative pr-12 py-1 bg-primary-200 
     hover:bg-primary-300 focus-within:bg-primary-300`,
     heading: 'sr-only',
 };
@@ -44,7 +44,7 @@ export const Message: FC<MessageComponent> = ({
     className = '',
     message,
     displayMode,
-    isHeadless,
+    isGroupHead,
     tabIndex = 0,
 }) => {
     const [isInEditMode, toggleIsInEditMode] = useToggle(false);
@@ -69,7 +69,7 @@ export const Message: FC<MessageComponent> = ({
     };
 
     const contextValues: MessageContext = {
-        isHeadless,
+        isGroupHead,
         message,
         tabIndex,
         ids,
