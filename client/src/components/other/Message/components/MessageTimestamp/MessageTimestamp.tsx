@@ -1,15 +1,21 @@
 import { PropsWithClassName } from '@types';
 import { FC, useContext } from 'react';
-import { Time } from '@components';
-import { MessageContext } from '../../Message';
+import { EmojiCode, Time } from '@components';
+import { Ids, MessageContext } from '../../Message';
+import { IMessage } from '@backendTypes';
 
 
 
-export const MessageTimestamp: FC<PropsWithClassName> = ({
+interface MessageTimestamp extends PropsWithClassName {
+    message: IMessage & {reactions: {code: EmojiCode, users: string[]}[]};
+    ids: Ids;
+}
+
+export const MessageTimestamp: FC<MessageTimestamp> = ({
     className = '',
+    ids,
+    message,
 }) => {
-    const { message, ids } = useContext(MessageContext) as MessageContext;
-
     return (
         <Time
             className={className}
@@ -23,3 +29,22 @@ export const MessageTimestamp: FC<PropsWithClassName> = ({
         </Time>
     );
 };
+
+// export const MessageTimestamp: FC<PropsWithClassName> = ({
+//     className = '',
+// }) => {
+//     const { message, ids } = useContext(MessageContext) as MessageContext;
+
+//     return (
+//         <Time
+//             className={className}
+//             id={ids.timestampId}
+//             date={message.createdAt} 
+//             format='HH:mm'
+//         >
+//             {({ formattedTime }) => (
+//                 <>{formattedTime}</>
+//             )}
+//         </Time>
+//     );
+// };

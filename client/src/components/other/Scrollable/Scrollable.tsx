@@ -97,6 +97,8 @@ export const Scrollable: FC<Scrollable> = ({
     }, [direction, focusable, scrollableContentRef, scrollableRef, simpleBarRef]);
 
     useResizeObserver(contentRef, (entry) => {
+        if (!onContentResize) return;
+
         const isHorizontal = direction === 'horizontal';
         const isVertical = direction === 'vertical';
         const scrollbarSize = scrollbarSizes['--scrollbar-thickness'];
@@ -123,7 +125,7 @@ export const Scrollable: FC<Scrollable> = ({
             ),
         };
 
-        onContentResize && onContentResize({
+        onContentResize({
             width: entry.borderBoxSize[0].inlineSize + padding.horizontal,
             height: entry.borderBoxSize[0].blockSize + padding.vertical,
         });

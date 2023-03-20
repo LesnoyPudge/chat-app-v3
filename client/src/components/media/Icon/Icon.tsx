@@ -12,7 +12,10 @@ interface Icon extends PropsWithClassName {
     style?: React.CSSProperties;
 }
 
-const baseClassName = 'transition-all flex shrink-0';
+const styles = {
+    wrapper: 'relative flex shrink-0 transition-all',
+    svg: 'absolute inset-0',
+};
 
 export const Icon: FC<Icon> = ({ 
     className = '',
@@ -24,18 +27,19 @@ export const Icon: FC<Icon> = ({
     return (
         <Conditional isRendered={!!iconId}>
             <div 
-                className={twClassNames(baseClassName, className)}
+                className={twClassNames(styles.wrapper, className)}
                 style={style}
             >
-                <AutoSizer>
-                    {(size) => (
-                        <SVG
-                            src={src}
-                            cacheRequests
-                            {...size}
-                        />
-                    )}
-                </AutoSizer>
+                {/* <AutoSizer>
+                    {(size) => ( */}
+                <SVG
+                    className={styles.svg}
+                    src={src}
+                    cacheRequests
+                    // {...size}
+                />
+                {/* )} */}
+                {/* </AutoSizer> */}
             </div>
         </Conditional>
     );
