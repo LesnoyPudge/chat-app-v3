@@ -14,7 +14,7 @@ interface MessageControlBar extends PropsWithClassName {
 }
 
 const styles = {
-    buttonsWrapper: `flex absolute top-0 right-0 -translate-y-[25px] 
+    buttonsWrapper: `flex absolute top-0 right-0 -translate-y-2/3 
     mx-3.5 shadow-elevation-low rounded-md bg-primary-300 
     pointer-events-none opacity-0 group-hover:opacity-100 
     group-focus-within:opacity-100 group-hover:pointer-events-auto

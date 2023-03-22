@@ -4,7 +4,7 @@ import { AnyFunction, EncodedFile, PropsWithChildrenAndClassName, PropsWithChild
 import { getHTML, noop, throttle, twClassNames } from '@utils';
 import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
-import { useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useCounter, useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useFileDrop, useTextInput, useThrottle, useWebWorker } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
@@ -614,6 +614,7 @@ import { Formik } from 'formik';
 import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
 import { Chat } from 'src/components/other/Chat/Chat';
+import { sharedResizeObserver } from 'src/utils/observers/observers';
 
 
 
@@ -795,8 +796,50 @@ const PlaygroundInner4: FC = () => {
 };
 
 const PlaygroundInner5: FC = () => {
+    const ref = useRef<HTMLTextAreaElement>(null);
+    const ref2 = useRef<HTMLButtonElement>(null);
+    const { count, increment } = useCounter(0);
+
+    useLayoutEffect(() => {
+        if (!ref.current) return;
+        if (!ref2.current) return;
+
+        const target = ref.current;
+        const target2 = ref2.current;
+
+        const textAreaHandler = () => {
+            console.log('textarea resize');
+        };
+
+        const buttonHandler = () => {
+            console.log('button resize');
+        };
+
+        sharedResizeObserver.observe(target, textAreaHandler);
+        sharedResizeObserver.observe(target2, buttonHandler);
+
+        return () => {
+            sharedResizeObserver.unobserve(target, textAreaHandler);
+            sharedResizeObserver.unobserve(target2, buttonHandler);
+        };
+    }, []);
+
     return (
-        <Chat/>
+        <div>
+            <button onClick={increment} ref={ref2}>
+                {count}
+            </button>
+
+            <textarea 
+                className='bg-lime-800 resize block'
+                name='' 
+                id=''
+                value='wow'
+                onChange={() => {}}
+                ref={ref}
+            ></textarea>
+        </div>
+        // <Chat/>
     );
 };
 

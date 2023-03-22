@@ -6,19 +6,52 @@ import { useIsFirstRender } from 'usehooks-ts';
 
 
 
-export const useAutoScroll = () => {
+export const useAutoScroll = (deps: unknown[] = []) => {
     const isFirstRender = useIsFirstRender();
     // const [autoScrollTriggerRef, isAutoScrollEnabled] = useInView();
     const simpleBarRef = useRef<SimpleBarCore>(null);
-    const resizableContentRef = useRef<HTMLDivElement>(null);
-    const isAutoScrollEnabledRef = useRef(false);
+    const resizableWrapperRef = useRef<HTMLDivElement>(null);
+    const isAutoScrollEnabledRef = useRef(true);
 
     const scrollToBottom = () => {
         const contentWrapper = simpleBarRef.current?.contentWrapperEl;
-        if (!contentWrapper) return;
-        console.log('scroll to bottom');
+        const content = simpleBarRef.current?.contentEl;
+        if (!contentWrapper || !content) return;
+
+        console.log(
+            'scrooool', 
+            // contentWrapper.scrollTop, 
+            // contentWrapper.scrollHeight,
+            // contentWrapper,
+        );
         contentWrapper.scrollTop = contentWrapper.scrollHeight;
+        // content.style.transition = 'all 0s linear';
+        // content.style.transform = 'translateY(56px)';
+        
+        // setTimeout(() => {
+        // content.style.transition = 'all 1s linear';
+        // content.style.transform = 'translateY(0px)';
+            
+        // }, 1000);
+        // content.style.transform = 'translateY(0px)';
+        // contentWrapper.scrollTop = 99999;
+        // contentWrapper.scrollTo({
+        //     top: contentWrapper.scrollHeight,
+        //     behavior: 'smooth',
+        // });
     };
+
+    const onLastElementRender = () => {
+        console.log('last');
+
+        // if (autoScrollTriggerRef.current) scrollToBottom();
+    };
+
+    useLayoutEffect(() => {
+        // console.log('added message', isAutoScrollEnabledRef.current);
+        if (isAutoScrollEnabledRef.current) scrollToBottom();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [...deps]);
 
     // useEffect(() => {
     //     isAutoScrollEnabledRef.current = isAutoScrollEnabled;
@@ -30,14 +63,20 @@ export const useAutoScroll = () => {
     // });
 
     useEffect(() => {
-        if (!resizableContentRef.current) return;
+        const content = simpleBarRef.current?.contentEl;
+
+        if (!resizableWrapperRef.current) return;
+        if (!content) return;
+
+        
 
         const obs = new ResizeObserver(() => {
-            console.log('resize obs');
+            // console.log('resize obs', isAutoScrollEnabledRef.current);
             if (isAutoScrollEnabledRef.current) scrollToBottom();
         });
 
-        obs.observe(resizableContentRef.current);
+        obs.observe(resizableWrapperRef.current);
+        obs.observe(content);
 
         return () => {
             obs.disconnect();
@@ -71,7 +110,7 @@ export const useAutoScroll = () => {
 
         const obs = new IntersectionObserver(([{ isIntersecting }]) => {
             isAutoScrollEnabledRef.current = isIntersecting;
-            console.log('is intersecting', isIntersecting);
+            // console.log('is intersecting', isIntersecting);
         });
 
         obs.observe(autoScrollTriggerRef.current);
@@ -93,7 +132,8 @@ export const useAutoScroll = () => {
 
     return {
         simpleBarRef,
-        resizableContentRef,
+        resizableWrapperRef,
         autoScrollTriggerRef,
+        onLastElementRender,
     };
 };
