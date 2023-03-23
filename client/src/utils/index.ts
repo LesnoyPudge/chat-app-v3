@@ -27,3 +27,4 @@ export * from './objectKeys';
 export * from './parseSlateContent';
 export * from './sizeUnits';
 export * from './noop';
+export * from './observers';

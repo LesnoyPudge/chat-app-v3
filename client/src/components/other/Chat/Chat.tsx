@@ -5,15 +5,11 @@ import { Descendant } from 'slate';
 import { loremIpsum } from 'lorem-ipsum';
 import { getRandomNumber, twClassNames } from '@utils';
 import { PropsWithClassName } from '@types';
-import { isSameDay, differenceInMinutes } from 'date-fns';
-import { DayDivider } from './components';
-// import { useAutoScroll } from '@hooks';
+import { DayDivider, SmoothScroll } from './components';
 import { useAutoScroll } from './hooks';
 import ViewportList from 'react-viewport-list';
 import { useAsync } from 'react-use';
-import { useInView } from 'react-intersection-observer';
-import InfiniteScroll from 'react-infinite-scroller';
-import { useEventListener } from 'usehooks-ts';
+import { useSharedIntersectionObserver } from '@hooks';
 
 
 
@@ -151,7 +147,7 @@ const roomMessages = Array(totalAmountOfMessages).fill(null).map((_, i) => getMe
 
 const getInitialMessagesRequest = (): Promise<Message[]> => {
     const data = roomMessages.slice(-messageChunkSize);
-    console.log('initial messages', data);
+    // console.log('initial messages', data);
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(roomMessages.slice(-messageChunkSize));
@@ -161,7 +157,7 @@ const getInitialMessagesRequest = (): Promise<Message[]> => {
 
 const getEarlierMessages = (before: number): Promise<Message[]> => {
     const data = roomMessages.filter((message) => message.createdAt < before).slice(-messageChunkSize);
-    console.log('earlier messages', before, data);
+    // console.log('earlier messages', before, data);
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(data);
@@ -191,40 +187,14 @@ export const Chat: FC<Chat> = ({
     });
 
     const handleEarlyMessage = () => getEarlierMessages(messageList.at(0)?.createdAt || Date.now()).then((earlierMessages) => {
-        console.log(earlierMessages);
-
         if (earlierMessages.length < messageChunkSize) {
             setIsAtStart(true);
-        }
-     
-        if (simpleBarRef.current?.contentWrapperEl) {
-            const wrapper = simpleBarRef.current.contentWrapperEl;
-            scrollHeightBeforeRecentMessagesRef.current = wrapper.scrollHeight;
         }
 
         setMessageList(prev => [...earlierMessages, ...prev]);
     });
 
     
-
-    // const handleEarlyMessage = () => getEarlierMessages(messagesLoadedRecently.at(0)?.createdAt || messageList.at(0)?.createdAt || Date.now()).then((earlierMessages) => {
-    //     console.log(earlierMessages);
-
-    //     if (earlierMessages.length < messageChunkSize) {
-    //         setIsAtStart(true);
-    //     }
-     
-    //     if (simpleBarRef.current?.contentWrapperEl) {
-    //         const wrapper = simpleBarRef.current.contentWrapperEl;
-    //         scrollHeightBeforeRecentMessagesRef.current = wrapper.scrollHeight;
-    //     }
-
-    //     if (messagesLoadedRecently.length) {
-    //         setMessageList(prev => [...messagesLoadedRecently, ...prev]);
-    //     }
-
-    //     setMessagesLoadedRecently(earlierMessages);
-    // });
 
     const addMessage = () => {
         setMessageList(prev => [...prev, getMessage(prev.length + messagesLoadedRecently.length, Date.now())]);
@@ -234,94 +204,12 @@ export const Chat: FC<Chat> = ({
         autoScrollTriggerRef,
         resizableWrapperRef,
         simpleBarRef,
-        onLastElementRender,
+        isAutoScrollEnabledRef,
     } = useAutoScroll([messageList]);
 
-    const counterRef = useRef(0);
-    const scrollHeightBeforeRecentMessagesRef = useRef(0);
-
-    const [earlierMessagesPlaceholder] = useInView({ onChange(inView, entry) {
-        console.log('?', inView, counterRef.current);
-        if (!inView) return;
-
-        handleEarlyMessage();
-    } });
-
-    useEffect(() => {
-        const wrapper = simpleBarRef.current?.contentWrapperEl;
-        if (!wrapper) return;
-
-        const handleScroll = (e: Event) => {
-            // if (!e.target || !((e.target as HTMLDivElement).scrollHeight)) return;
-            // scrollHeightBeforeRecentMessagesRef.current = (e.target as HTMLDivElement).scrollTop;
-        };
-
-        wrapper.addEventListener('scroll', handleScroll);
-
-        return () => {
-            wrapper.removeEventListener('scroll', handleScroll);
-        };
-    }, [simpleBarRef]);
-
-    // useLayoutEffect(() => {
-    //     if (!simpleBarRef.current?.contentWrapperEl) return;
-        
-    //     const wrapper = simpleBarRef.current.contentWrapperEl;
-    //     console.log(wrapper.scrollTop, wrapper.scrollHeight);
-    //     wrapper.scrollTop = wrapper.scrollTop + (wrapper.scrollHeight - scrollHeightBeforeRecentMessagesRef.current);
-    // }, [messageList, simpleBarRef]);
-
-    useLayoutEffect(() => {
-        const content = simpleBarRef.current?.contentEl;
-        if (!content) return;
-
-        const obs = new ResizeObserver(([{ contentRect }]) => {
-            if (!simpleBarRef.current?.contentWrapperEl) return;
-            console.log(contentRect);
-            const wrapper = simpleBarRef.current.contentWrapperEl;
-            const newScrollTop = wrapper.scrollTop + (contentRect.height - scrollHeightBeforeRecentMessagesRef.current);
-            
-            
-
-            console.log(
-                `scrollTop: ${wrapper.scrollTop}`,
-                `contentRect.height: ${contentRect.height}`,
-                `scrollHeightBeforeRecentMessagesRef.current: ${scrollHeightBeforeRecentMessagesRef.current}`,
-                `newScrollTop: ${newScrollTop}`,
-            );
-
-            console.log(`${wrapper.scrollTop} + ${contentRect.height} - ${scrollHeightBeforeRecentMessagesRef.current} = ${newScrollTop},`, wrapper);
-
-            wrapper.scrollTop = newScrollTop;
-            scrollHeightBeforeRecentMessagesRef.current = contentRect.height;
-        });
-
-        obs.observe(content);
-
-        return () => {
-            obs.disconnect();
-        };
-    }, [simpleBarRef]);
-
-    useLayoutEffect(() => {
-        if (!simpleBarRef.current?.contentWrapperEl) return;
-        
-        const wrapper = simpleBarRef.current.contentWrapperEl;
-        const newScrollTop = wrapper.scrollTop + (wrapper.scrollHeight - scrollHeightBeforeRecentMessagesRef.current);
-        // console.log(`${wrapper.scrollTop} + ${wrapper.scrollHeight} - ${scrollHeightBeforeRecentMessagesRef.current} = ${newScrollTop},`, wrapper);
-        // wrapper.scrollTop = newScrollTop;
-    }, [messageList, simpleBarRef]);
-
-    // useLayoutEffect(() => {
-    //     if (!simpleBarRef.current?.contentWrapperEl) return;
-        
-    //     const wrapper = simpleBarRef.current.contentWrapperEl;
-    //     const newScrollTop = wrapper.scrollTop + (wrapper.scrollHeight - scrollHeightBeforeRecentMessagesRef.current);
-    //     console.log(`${wrapper.scrollTop} + ${wrapper.scrollHeight} - ${scrollHeightBeforeRecentMessagesRef.current} = ${newScrollTop},`, wrapper);
-    //     wrapper.scrollTop = newScrollTop;
-    // }, [messagesLoadedRecently, simpleBarRef]);
-
-    const scrollRef = useRef<HTMLDivElement>(null);
+    const [_, earlierMessagesPlaceholder] = useSharedIntersectionObserver(undefined, ({ isIntersecting }) => {
+        if (isIntersecting) handleEarlyMessage();
+    });
 
     const earlyMessages = messageList.slice(0, 20);
     const virtualMessages = messageList.slice(20, -(20));
@@ -336,7 +224,6 @@ export const Chat: FC<Chat> = ({
                 </button>
 
                 <div>messages: {messageList.length}</div>
-                <div>recently: {messagesLoadedRecently.length}</div>
             </div>
 
             <div 
@@ -347,74 +234,69 @@ export const Chat: FC<Chat> = ({
                     className={styles.scrollable}
                     label='Чат'
                     simpleBarRef={simpleBarRef}
-                    scrollableRef={scrollRef}
-                    // scrollableRef={scrollableRef}
                 >
                     {/* https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/feed_role */}
-                    <div 
-                        className={styles.list}
-                        role='feed'
+                    <SmoothScroll 
+                        deps={[messageList]}
+                        isAutoScrollEnabledRef={isAutoScrollEnabledRef}
                     >
-                        <Conditional isRendered={loading}>
-                            <div>
-                                <>loading...</>
-                            </div>
-                        </Conditional>
-
-                        <Conditional isRendered={!loading}>
-                            <Conditional isRendered={isAtStart}>
-                                <HelloFromRoom 
-                                    className='h-24'
-                                    firstMessageCreationTimestamp={messageList.at(0)?.createdAt}
-                                />
+                        <div 
+                            className={styles.list}
+                            role='feed'
+                        >
+                            <Conditional isRendered={loading}>
+                                <div>
+                                    <>loading...</>
+                                </div>
                             </Conditional>
 
-                            <Conditional isRendered={!!messageList.length}>
-                                <Conditional isRendered={!isAtStart}>
-                                    <div aria-hidden={true} ref={earlierMessagesPlaceholder}>
-                                        <List list={Array(10).fill(null)}>
-                                            <MessagePlaceholder className=''/>
-                                        </List>
-                                    </div>
+                            <Conditional isRendered={!loading}>
+                                <Conditional isRendered={isAtStart}>
+                                    <HelloFromRoom 
+                                        className='h-24'
+                                        firstMessageCreationTimestamp={messageList.at(0)?.createdAt}
+                                    />
                                 </Conditional>
-                            
-                                {/* <List list={messagesLoadedRecently}>
-                                    {(message, index) => (
-                                        <div key={message.id} className={styles.item}>
-                                            {message.content}
-                                        </div>
-                                    )}
-                                </List> */}
 
-                                <List list={earlyMessages}>
-                                    {(message, index) => (
-                                        <div key={message.id} className={styles.item}>
-                                            <>early {message.content}</>
+                                <Conditional isRendered={!!messageList.length}>
+                                    <Conditional isRendered={!isAtStart}>
+                                        <div aria-hidden={true} ref={earlierMessagesPlaceholder}>
+                                            <List list={Array(10).fill(null)}>
+                                                <MessagePlaceholder className=''/>
+                                            </List>
                                         </div>
-                                    )}
-                                </List>
+                                    </Conditional>
 
-                                <ViewportList 
-                                    items={virtualMessages}
-                                    withCache
-                                >
-                                    {(message, index) => (
-                                        <div key={message.id} className={styles.item}>
-                                            <>virtual {message.content}</>
-                                        </div>
-                                    )}
-                                </ViewportList>
+                                    <List list={earlyMessages}>
+                                        {(message, index) => (
+                                            <div key={message.id} className={styles.item}>
+                                                <>early {message.content}</>
+                                            </div>
+                                        )}
+                                    </List>
 
-                                <List list={lastMessages}>
-                                    {(message, index) => (
-                                        <div key={message.id} className={styles.item}>
-                                            <>last {message.content}</>
-                                        </div>
-                                    )}
-                                </List>
+                                    <ViewportList 
+                                        items={virtualMessages}
+                                        withCache
+                                    >
+                                        {(message, index) => (
+                                            <div key={message.id} className={styles.item}>
+                                                <>virtual {message.content}</>
+                                            </div>
+                                        )}
+                                    </ViewportList>
+
+                                    <List list={lastMessages}>
+                                        {(message, index) => (
+                                            <div key={message.id} className={styles.item}>
+                                                <>last {message.content}</>
+                                            </div>
+                                        )}
+                                    </List>
+                                </Conditional>
                             </Conditional>
-                        </Conditional>
-                    </div>
+                        </div>
+                    </SmoothScroll>
                 
                     <div 
                         // className='h-px' 
