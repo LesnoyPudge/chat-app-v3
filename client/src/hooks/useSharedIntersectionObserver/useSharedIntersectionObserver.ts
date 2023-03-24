@@ -14,7 +14,7 @@ type UseSharedIntersectionObserverResult<T extends Element> = [
 }
 
 export const useSharedIntersectionObserver = <T extends Element>(
-    providedTargetRef?: RefObject<T> | T | null, 
+    providedTargetRef?: RefObject<T>, 
     providedListener?: IntersectionObserverListener,
 ): UseSharedIntersectionObserverResult<T> => {
     const intersectionEntryRef = useRef<Partial<IntersectionObserverEntry>>({});
@@ -22,23 +22,22 @@ export const useSharedIntersectionObserver = <T extends Element>(
     const [target, setTarget] = useState(
         providedTargetRef === undefined
             ? null
-            : isRef(providedTargetRef)
-                ? providedTargetRef.current
-                : providedTargetRef,
+            : providedTargetRef,
     );
 
     useLayoutEffect(() => {
-        if (!target) return;
+        const targetElement = isRef(target) ? target.current : target;
+        if (!targetElement) return;
 
         const listener: IntersectionObserverListener = (entry) => {
             intersectionEntryRef.current = entry;
             (savedListenerRef.current || noop)(entry);
         };
 
-        sharedIntersectionObserver.observe(target, listener);
+        sharedIntersectionObserver.observe(targetElement, listener);
 
         return () => {
-            sharedIntersectionObserver.unobserve(target, listener);
+            sharedIntersectionObserver.unobserve(targetElement, listener);
         };
     }, [savedListenerRef, target]);
 

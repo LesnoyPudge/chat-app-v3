@@ -118,7 +118,8 @@
             transition: var(--track-transition);
 
             &::before {
-                @apply bg-primary-300;
+                // @apply bg-primary-300;
+                @apply bg-green-500;
 
                 content: '';
                 position: absolute;
@@ -132,8 +133,10 @@
                 opacity: 1;
 
                 &::before {
-                    @apply bg-primary-600;
+                    // @apply bg-primary-600;
+                    @apply bg-yellow-50;
 
+                    opacity: 1;
                     inset: calc((var(--scrollbar-thickness) - var(--thumb-thickness)) / 2);
                     border-radius: var(--thumb-thickness);
                     transition: var(--scrollbar-transition);

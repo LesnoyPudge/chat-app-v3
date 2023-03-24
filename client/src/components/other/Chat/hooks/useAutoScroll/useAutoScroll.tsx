@@ -1,39 +1,54 @@
 import { useSharedIntersectionObserver, useSharedResizeObserver } from '@hooks';
-import { useLayoutEffect, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import SimpleBarCore from 'simplebar-core';
-import { useIsFirstRender } from 'usehooks-ts';
+import { useAnimationFrame } from 'src/hooks/useAnimationFrame/useAnimationFrame';
 
 
 
 export const useAutoScroll = (deps: unknown[] = []) => {
-    const isFirstRender = useIsFirstRender();
-    const simpleBarRef = useRef<SimpleBarCore>(null);
-    const isAutoScrollEnabledRef = useRef(true);
+    const simpleBarRef = useRef<SimpleBarCore | null>(null);
+    const isAutoScrollEnabledRef = useRef(false);
 
-    const scrollToBottom = () => {
-        const contentWrapper = simpleBarRef.current?.contentWrapperEl;
-        const content = simpleBarRef.current?.contentEl;
-        if (!contentWrapper || !content) return;
+    // useAnimationFrame(() => {
+    //     if (!isAutoScrollEnabledRef.current) return;
+    //     if (!simpleBarRef.current) return;
+        
+    //     const contentWrapper = simpleBarRef.current.contentWrapperEl;
+    //     if (!contentWrapper) return;
+    //     if (contentWrapper.scrollTop === contentWrapper.scrollHeight) return;
 
-        contentWrapper.scrollTop = contentWrapper.scrollHeight;
-    };
+    //     simpleBarRef.current?.contentWrapperEl?.scrollTo({
+    //         top: 99999999,
+    //         behavior: 'auto',
+    //     });
+    // });
+    
 
-    useLayoutEffect(() => {
-        if (isAutoScrollEnabledRef.current && !isFirstRender) scrollToBottom();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [...deps]);
+    const scrollToBottom = useCallback(() => {
+        if (!simpleBarRef.current?.contentWrapperEl) return;
+        
+        simpleBarRef.current.contentWrapperEl.scrollTo({
+            top: 99999999,
+            behavior: 'auto',
+        });
+    }, []);
+
+    // useLayoutEffect(() => {
+    //     if (!isAutoScrollEnabledRef.current) return;
+    //     scrollToBottom();
+        
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [...deps, scrollToBottom]);
+
+    useSharedResizeObserver(simpleBarRef.current?.contentEl, () => {
+        if (!isAutoScrollEnabledRef.current) return;
+        scrollToBottom();
+    });
 
     const [__, resizableWrapperRef] = useSharedResizeObserver(undefined, () => {
-        if (isAutoScrollEnabledRef.current) scrollToBottom();
+        if (!isAutoScrollEnabledRef.current) return;
+        scrollToBottom();
     });
-
-    useSharedResizeObserver(simpleBarRef.current?.contentEl || null, () => {
-        if (isAutoScrollEnabledRef.current) scrollToBottom();
-    });
-
-    useLayoutEffect(() => {
-        if (isFirstRender) scrollToBottom();
-    }, [isFirstRender]);
 
     const [_, autoScrollTriggerRef] = useSharedIntersectionObserver(undefined, ({ isIntersecting }) => {
         isAutoScrollEnabledRef.current = isIntersecting;

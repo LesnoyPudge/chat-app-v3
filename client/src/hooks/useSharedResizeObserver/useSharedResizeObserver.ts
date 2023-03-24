@@ -19,26 +19,27 @@ export const useSharedResizeObserver = <T extends Element>(
 ): UseSharedResizeObserverResult<T> => {
     const resizeEntryRef = useRef<Partial<ResizeObserverEntry>>({});
     const savedListenerRef = useLatest(providedListener);
-    const [target, setTarget] = useState(
-        providedTargetRef === undefined
-            ? null
-            : isRef(providedTargetRef)
-                ? providedTargetRef.current
-                : providedTargetRef,
-    );
+    const [target, setTarget] = useState<RefObject<T> | T | null>(null);
 
     useLayoutEffect(() => {
-        if (!target) return;
+        if (!providedTargetRef || !!target) return;
+
+        setTarget(providedTargetRef);
+    }, [providedTargetRef, target]);
+
+    useLayoutEffect(() => {
+        const targetElement = isRef(target) ? target.current : target;
+        if (!targetElement) return;
 
         const listener: ResizeObserverListener = (entry) => {
             resizeEntryRef.current = entry;
             (savedListenerRef.current || noop)(entry);
         };
 
-        sharedResizeObserver.observe(target, listener);
+        sharedResizeObserver.observe(targetElement, listener);
 
         return () => {
-            sharedResizeObserver.unobserve(target, listener);
+            sharedResizeObserver.unobserve(targetElement, listener);
         };
     }, [savedListenerRef, target]);
 

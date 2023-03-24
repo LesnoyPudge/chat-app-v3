@@ -1,6 +1,6 @@
 import { PropsWithChildrenAndClassName, Size } from '@types';
 import { conditional, noop, twClassNames } from '@utils';
-import { FC, MutableRefObject, useEffect, useRef } from 'react';
+import { FC, MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
 import { useThrottle } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
 import { SimpleBarCore } from '@reExport';
@@ -21,6 +21,7 @@ export interface Scrollable extends PropsWithChildrenAndClassName {
     simpleBarRef?: MutableRefObject<SimpleBarCore | null>;
     scrollableContentRef?: MutableRefObject<HTMLDivElement | null>;
     onContentResize?: (size: Size) => void;
+    setSimpleBar?: (ref: SimpleBarCore | null) => void;
 }
 
 const styles = {
@@ -42,6 +43,7 @@ export const Scrollable: FC<Scrollable> = ({
     scrollableContentRef,
     children,
     onContentResize,
+    setSimpleBar,
 }) => {
     const { throttle, isThrottling: isAlive } = useThrottle();
     const mySimpleBarRef = useRef<SimpleBarCore | null>(null);
@@ -70,31 +72,47 @@ export const Scrollable: FC<Scrollable> = ({
         if (autoHide) throttle(noop, 1000)();  
     };
 
-    useEffect(() => {
-        if (!mySimpleBarRef.current) return;
+    // useLayoutEffect(() => {
+    //     mySimpleBarRef.current.
+    // }, []);
 
-        const target = mySimpleBarRef.current;
+    const getRef = (ref: SimpleBarCore | null) => {
+        if (!ref) return;
+        
+        mySimpleBarRef.current = ref;
+        // console.log('ref', ref, ref.contentEl, ref.contentWrapperEl);
+        (setSimpleBar || noop)(ref);
+    };
 
-        if (mySimpleBarRef.current.contentEl) {
-            contentRef.current = mySimpleBarRef.current.contentEl;
-        }
+    // useEffect(() => {
+    //     if (!mySimpleBarRef.current) return;
 
-        if (simpleBarRef && !simpleBarRef.current) {
-            simpleBarRef.current = target;
-        }
+    //     const target = mySimpleBarRef.current;
 
-        if (scrollableRef && !scrollableRef.current) {
-            scrollableRef.current = target.getScrollElement() as HTMLDivElement;
-        }
+    //     if (target) {
+    //         (setSimpleBar || noop)(target);
+    //     }
 
-        if (scrollableContentRef && !scrollableContentRef.current) {
-            scrollableContentRef.current = target.getContentElement() as HTMLDivElement;
-        }
+    //     if (mySimpleBarRef.current.contentEl) {
+    //         contentRef.current = mySimpleBarRef.current.contentEl;
+    //     }
 
-        if (target.contentWrapperEl) {
-            target.contentWrapperEl.tabIndex = focusable ? 0 : -1;
-        }
-    }, [direction, focusable, scrollableContentRef, scrollableRef, simpleBarRef]);
+    //     if (simpleBarRef && !simpleBarRef.current) {
+    //         simpleBarRef.current = target;
+    //     }
+
+    //     if (scrollableRef && !scrollableRef.current) {
+    //         scrollableRef.current = target.getScrollElement() as HTMLDivElement;
+    //     }
+
+    //     if (scrollableContentRef && !scrollableContentRef.current) {
+    //         scrollableContentRef.current = target.getContentElement() as HTMLDivElement;
+    //     }
+
+    //     if (target.contentWrapperEl) {
+    //         target.contentWrapperEl.tabIndex = focusable ? 0 : -1;
+    //     }
+    // }, [focusable, scrollableContentRef, scrollableRef, setSimpleBar, simpleBarRef]);
 
     useResizeObserver(contentRef, (entry) => {
         if (!onContentResize) return;
@@ -145,7 +163,7 @@ export const Scrollable: FC<Scrollable> = ({
                 ariaLabel={label}
                 {...dataAttributes}
                 onPointerMove={handlePointerMove}
-                ref={mySimpleBarRef}
+                ref={getRef}
             >
                 {children}
             </SimpleBar>

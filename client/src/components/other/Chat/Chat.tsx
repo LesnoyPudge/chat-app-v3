@@ -10,6 +10,7 @@ import { useAutoScroll } from './hooks';
 import ViewportList from 'react-viewport-list';
 import { useAsync } from 'react-use';
 import { useSharedIntersectionObserver } from '@hooks';
+import { VirtualList } from './components/VirtualList';
 
 
 
@@ -73,7 +74,8 @@ const getMessage = (index: number, createdAt: number = Date.now()): Message => (
     //         text: index.toString(),
     //     }],
     // }]),
-    content: String(index),
+    // content: String(index),
+    content: `${String(index)}    ${loremIpsum({ count: getRandomNumber(1, 6) })}`,
     // createdAt: timeline[index],
     createdAt,
     updatedAt: Date.now(),
@@ -94,7 +96,7 @@ const styles = {
     scrollable: 'h-full',
     list: 'flex flex-col justify-end flex-1',
     messageGroupHead: 'message-group-head',
-    item: 'h-14',
+    item: '',
 };
 
 // export interface ChatContext {
@@ -151,7 +153,7 @@ const getInitialMessagesRequest = (): Promise<Message[]> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(roomMessages.slice(-messageChunkSize));
-        }, 3000);
+        }, 1500);
     });
 };
 
@@ -161,7 +163,7 @@ const getEarlierMessages = (before: number): Promise<Message[]> => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(data);
-        }, 3000);
+        }, 1500);
     });
 };
 
@@ -203,6 +205,7 @@ export const Chat: FC<Chat> = ({
     const {
         autoScrollTriggerRef,
         resizableWrapperRef,
+        // setSimpleBar,
         simpleBarRef,
         isAutoScrollEnabledRef,
     } = useAutoScroll([messageList]);
@@ -233,12 +236,13 @@ export const Chat: FC<Chat> = ({
                 <Scrollable
                     className={styles.scrollable}
                     label='Чат'
-                    simpleBarRef={simpleBarRef}
+                    setSimpleBar={(ref) => simpleBarRef.current = ref}
                 >
                     {/* https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/feed_role */}
                     <SmoothScroll 
                         deps={[messageList]}
                         isAutoScrollEnabledRef={isAutoScrollEnabledRef}
+                        disabled={!messageList.length}
                     >
                         <div 
                             className={styles.list}
@@ -267,7 +271,21 @@ export const Chat: FC<Chat> = ({
                                         </div>
                                     </Conditional>
 
-                                    <List list={earlyMessages}>
+                                    <VirtualList
+                                        items={messageList}
+                                        initialIndex={messageList.length - 1}
+                                        indexesShift={messageList.length}
+                                        withCache
+                                        onViewportIndexesChange={() => console.log('viewport index change')}
+                                    >
+                                        {(message, index) => (
+                                            <div key={message.id} className={styles.item}>
+                                                <>virtual {message.content}</>
+                                            </div>
+                                        )}
+                                    </VirtualList>
+
+                                    {/* <List list={earlyMessages}>
                                         {(message, index) => (
                                             <div key={message.id} className={styles.item}>
                                                 <>early {message.content}</>
@@ -275,31 +293,31 @@ export const Chat: FC<Chat> = ({
                                         )}
                                     </List>
 
-                                    <ViewportList 
+                                    <VirtualList
                                         items={virtualMessages}
-                                        withCache
                                     >
                                         {(message, index) => (
                                             <div key={message.id} className={styles.item}>
                                                 <>virtual {message.content}</>
                                             </div>
                                         )}
-                                    </ViewportList>
+                                    </VirtualList> */}
 
-                                    <List list={lastMessages}>
+
+                                    {/* <List list={lastMessages}>
                                         {(message, index) => (
                                             <div key={message.id} className={styles.item}>
                                                 <>last {message.content}</>
                                             </div>
                                         )}
-                                    </List>
+                                    </List> */}
                                 </Conditional>
                             </Conditional>
                         </div>
                     </SmoothScroll>
                 
                     <div 
-                        // className='h-px' 
+                        className='h-[5px] bg-rose-500' 
                         ref={autoScrollTriggerRef}
                     ></div>
                 </Scrollable>

@@ -16,3 +16,4 @@ export * from './useFileUpload';
 export * from './useWebWorker';
 export * from './useSharedIntersectionObserver';
 export * from './useSharedResizeObserver';
+export * from './useAnimationFrame';
