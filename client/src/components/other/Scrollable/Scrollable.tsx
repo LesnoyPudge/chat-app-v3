@@ -1,15 +1,31 @@
-import { PropsWithChildrenAndClassName, Size } from '@types';
+import { PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName, Size } from '@types';
 import { conditional, noop, twClassNames } from '@utils';
 import { FC, MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
 import { useThrottle } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
 import { SimpleBarCore } from '@reExport';
-import SimpleBar from 'simplebar-react';
+import SimpleBar, { Props as SimpleBarProps } from 'simplebar-react';
 import useResizeObserver from '@react-hook/resize-observer';
+import { ChildrenAsNodeOrFunction } from '@components';
 
 
 
-export interface Scrollable extends PropsWithChildrenAndClassName {
+
+interface ChildrenArgs {
+    scrollableNodeRef: MutableRefObject<HTMLElement | undefined>;
+    scrollableNodeProps: {
+        className: string;
+        ref: MutableRefObject<HTMLElement | undefined>;
+    };
+    contentNodeRef: MutableRefObject<HTMLElement | undefined>;
+    contentNodeProps: {
+        className: string;
+        ref: MutableRefObject<HTMLElement | undefined>;
+    };
+}
+
+export interface Scrollable extends PropsWithClassName,
+PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
     label?: string;
     direction?: 'horizontal' | 'vertical',
     autoHide?: boolean;
@@ -166,6 +182,11 @@ export const Scrollable: FC<Scrollable> = ({
                 ref={getRef}
             >
                 {children}
+                {/* {(props) => (
+                    <ChildrenAsNodeOrFunction args={props}>
+                        {children}
+                    </ChildrenAsNodeOrFunction>
+                )} */}
             </SimpleBar>
         </div>
     );

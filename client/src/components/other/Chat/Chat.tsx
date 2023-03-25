@@ -11,6 +11,9 @@ import ViewportList from 'react-viewport-list';
 import { useAsync } from 'react-use';
 import { useSharedIntersectionObserver } from '@hooks';
 import { VirtualList } from './components/VirtualList';
+import { VariableSizeList } from 'react-window';
+import { AutoSizer } from '@libs';
+import ReactList from 'react-list';
 
 
 
@@ -207,7 +210,7 @@ export const Chat: FC<Chat> = ({
         resizableWrapperRef,
         // setSimpleBar,
         simpleBarRef,
-        isAutoScrollEnabledRef,
+        isAutoScrollEnabled,
     } = useAutoScroll([messageList]);
 
     const [_, earlierMessagesPlaceholder] = useSharedIntersectionObserver(undefined, ({ isIntersecting }) => {
@@ -217,6 +220,7 @@ export const Chat: FC<Chat> = ({
     const earlyMessages = messageList.slice(0, 20);
     const virtualMessages = messageList.slice(20, -(20));
     const lastMessages = messageList.filter((_, i) => (i > messageList.length - (20 + 1)) && i >= 20);
+
 
     return (
         // <ChatContext.Provider value={contextValues}>
@@ -239,53 +243,73 @@ export const Chat: FC<Chat> = ({
                     setSimpleBar={(ref) => simpleBarRef.current = ref}
                 >
                     {/* https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/feed_role */}
-                    <SmoothScroll 
+                    {/* <SmoothScroll 
                         deps={[messageList]}
-                        isAutoScrollEnabledRef={isAutoScrollEnabledRef}
+                        isAutoScrollEnabled={isAutoScrollEnabled}
                         disabled={!messageList.length}
+                    > */}
+                    <div 
+                        className={styles.list}
+                        role='feed'
                     >
-                        <div 
-                            className={styles.list}
-                            role='feed'
-                        >
-                            <Conditional isRendered={loading}>
-                                <div>
-                                    <>loading...</>
-                                </div>
-                            </Conditional>
+                        <Conditional isRendered={loading}>
+                            <div>
+                                <>loading...</>
+                            </div>
+                        </Conditional>
 
-                            <Conditional isRendered={!loading}>
-                                <Conditional isRendered={isAtStart}>
-                                    <HelloFromRoom 
-                                        className='h-24'
-                                        firstMessageCreationTimestamp={messageList.at(0)?.createdAt}
-                                    />
-                                </Conditional>
+                        <Conditional isRendered={!loading}>
+                            {/* <Conditional isRendered={isAtStart}>
+                                <HelloFromRoom 
+                                    className='h-24'
+                                    firstMessageCreationTimestamp={messageList.at(0)?.createdAt}
+                                />
+                            </Conditional> */}
 
-                                <Conditional isRendered={!!messageList.length}>
-                                    <Conditional isRendered={!isAtStart}>
-                                        <div aria-hidden={true} ref={earlierMessagesPlaceholder}>
-                                            <List list={Array(10).fill(null)}>
-                                                <MessagePlaceholder className=''/>
-                                            </List>
-                                        </div>
-                                    </Conditional>
+                            <Conditional isRendered={!!messageList.length}>
+                                {/* <Conditional isRendered={!isAtStart}>
+                                    <div aria-hidden={true} ref={earlierMessagesPlaceholder}>
+                                        <List list={Array(10).fill(null)}>
+                                            <MessagePlaceholder className=''/>
+                                        </List>
+                                    </div>
+                                </Conditional> */}
 
-                                    <VirtualList
-                                        items={messageList}
-                                        initialIndex={messageList.length - 1}
-                                        indexesShift={messageList.length}
-                                        withCache
-                                        onViewportIndexesChange={() => console.log('viewport index change')}
-                                    >
-                                        {(message, index) => (
+                                <VirtualList
+                                    items={messageList}
+                                    initialIndex={messageList.length - 1}
+                                    withCache
+                                    disableBottomFlickering={isAutoScrollEnabled}
+                                >
+                                    {(message, index) => {
+                            
+                                        return (
                                             <div key={message.id} className={styles.item}>
-                                                <>virtual {message.content}</>
+                                                <>{message.content}</>
                                             </div>
-                                        )}
-                                    </VirtualList>
+                                        );
+                                    }}
+                                </VirtualList>
 
-                                    {/* <List list={earlyMessages}>
+
+                                    
+                                {/* <ReactList
+                                        itemRenderer={(index) => {
+                                            return (
+                                                <div 
+                                                    className={styles.item}
+                                                    key={messageList[index].id}
+                                                >
+                                                    <>{messageList[index].content}</>
+                                                </div>
+                                            );
+                                        }}
+                                        length={messageList.length}
+                                        type='uniform'
+                                    /> */}
+                                    
+
+                                {/* <List list={earlyMessages}>
                                         {(message, index) => (
                                             <div key={message.id} className={styles.item}>
                                                 <>early {message.content}</>
@@ -304,22 +328,22 @@ export const Chat: FC<Chat> = ({
                                     </VirtualList> */}
 
 
-                                    {/* <List list={lastMessages}>
+                                {/* <List list={lastMessages}>
                                         {(message, index) => (
                                             <div key={message.id} className={styles.item}>
                                                 <>last {message.content}</>
                                             </div>
                                         )}
                                     </List> */}
-                                </Conditional>
                             </Conditional>
-                        </div>
-                    </SmoothScroll>
-                
+                        </Conditional>
+                    </div>
+                    {/* </SmoothScroll> */}
+
                     <div 
-                        className='h-[5px] bg-rose-500' 
+                        className='bg-rose-500' 
                         ref={autoScrollTriggerRef}
-                    ></div>
+                    ></div> 
                 </Scrollable>
             </div>
         </div>

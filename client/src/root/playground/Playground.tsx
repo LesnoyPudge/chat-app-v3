@@ -113,6 +113,7 @@ import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
 import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
+import { ChunkedList } from './tmp';
 
 
 
@@ -271,7 +272,8 @@ const PlaygroundInner5: FC = () => {
 const PlaygroundInner6: FC = () => {
     return (
         <>
-            <Chat/>
+            <ChunkedList/>
+            {/* <Chat/> */}
         </>
     );
 };
