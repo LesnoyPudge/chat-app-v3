@@ -17,23 +17,23 @@ export const VirtualList = <T,>({
         <ViewportList 
             {...props}
             renderSpacer={({ ref, style, type }) => {
-                // const noFlickerStyles = {
-                //     bottom: {
-                //         height: disableBottomFlickering ? 0 : style.height,
-                //         minHeight: disableBottomFlickering ? 0 : style.height,
-                //         maxHeight: disableBottomFlickering ? 0 : style.height,
-                //     },
-                //     top: {
-                //         height: disableTopFlickering ? 0 : style.height,
-                //         minHeight: disableTopFlickering ? 0 : style.height,
-                //         maxHeight: disableTopFlickering ? 0 : style.height,
-                //     },
-                // };
+                const noFlickerStyles = {
+                    bottom: {
+                        height: disableBottomFlickering ? 0 : style.height,
+                        minHeight: disableBottomFlickering ? 0 : style.height,
+                        maxHeight: disableBottomFlickering ? 0 : style.height,
+                    },
+                    top: {
+                        height: disableTopFlickering ? 0 : style.height,
+                        minHeight: disableTopFlickering ? 0 : style.height,
+                        maxHeight: disableTopFlickering ? 0 : style.height,
+                    },
+                };
 
                 return (
                     <div ref={ref} style={{
                         ...style,
-                        // ...noFlickerStyles[type],
+                        ...noFlickerStyles[type],
                     }} />
                 );
             }}

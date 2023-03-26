@@ -4,7 +4,7 @@ import { AnyFunction, EncodedFile, PropsWithChildrenAndClassName, PropsWithChild
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver } from '@utils';
 import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
-import { useCounter, useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useBoolean, useCounter, useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
@@ -270,10 +270,18 @@ const PlaygroundInner5: FC = () => {
 };
 
 const PlaygroundInner6: FC = () => {
+    const [isVisible, toggle] = useToggle(true);
+
     return (
         <>
-            <ChunkedList/>
-            {/* <Chat/> */}
+            {/* <button onClick={toggle}>
+                {isVisible ? 'hide' : 'show'}
+            </button> */}
+            
+            {/* <Conditional isRendered={isVisible}>
+                <ChunkedList/>
+            </Conditional> */}
+            <Chat/>
         </>
     );
 };

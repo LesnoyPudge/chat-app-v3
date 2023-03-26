@@ -1,5 +1,8 @@
-import { useSharedIntersectionObserver } from '@hooks';
+import { Conditional, List, Scrollable } from '@components';
+import { useAnimationFrame, useSharedIntersectionObserver } from '@hooks';
+import { deepEqual, getRandomNumber } from '@utils';
 import { FC, useRef, useState } from 'react';
+import { useLatest } from 'react-use';
 
 
 
@@ -11,9 +14,18 @@ const ChunkItemPlaceholder: FC = () => {
     );
 };
 
-const itemsArr = Array(150).fill(null).map((_, i) => ({
+interface Item {
+    id: string;
+    content: string;
+    order: number;
+    height: number;
+}
+
+const itemsArr: Item[] = Array(150).fill(null).map((_, i) => ({
     id: String(i),
     content: String(i),
+    order: i,
+    height: getRandomNumber(24, 240),
 }));
 
 const props = {
@@ -35,6 +47,18 @@ const Chunk: FC<Chunk> = ({ type }) => {
     );
 };
 
+const ChunkItem = ({
+    content,
+    height,
+}: Item) => {
+    
+    return (
+        <div style={{ height }}>
+            <>item: {content}</>
+        </div>
+    );
+};
+
 export const ChunkedList: FC = () => {
     const {
         chunkItemPlaceholder,
@@ -42,17 +66,22 @@ export const ChunkedList: FC = () => {
         items,
     } = props;
 
+    const totalChunks = Math.ceil(items.length / chunkSize);
     const chunkIntersection = useRef({
         top: false,
         middle: false,
         bottom: false,
     });
-
-    const chunkedList = useState({
-        top: [],
-        middle: [],
-        bottom: [],
+    const previousChinkIntersection = useRef({ ...chunkIntersection.current });
+    const [chunkedList, setChunkedList] = useState({
+        top: [] as Item[],
+        middle: [] as Item[],
+        bottom: [] as Item[],
     });
+
+    const chunkedItems = useLatest(Array(totalChunks).fill(null).map((_, i) => {
+        return items.slice((i * chunkSize), (i * (2 * chunkSize))); 
+    }));
 
     const [_, topChunkRef] = useSharedIntersectionObserver(undefined, ({ isIntersecting }) => {
         chunkIntersection.current.top = isIntersecting;
@@ -66,25 +95,80 @@ export const ChunkedList: FC = () => {
         chunkIntersection.current.bottom = isIntersecting;
     });
 
+    useAnimationFrame(() => {
+        if (!deepEqual(
+            previousChinkIntersection.current, 
+            chunkIntersection.current,
+        )) return;
+
+        console.log('frame');
+    
+        // setChunkedList((prev) => ({
+        //     top: chunkIntersection.current.top ? ,
+        // }));
+    });
+
     return (
-        <div className='h-screen' aria-hidden='true'>
-            <div ref={topChunkRef}>
-                <>chunk top</>
-            </div>
+        <div className='h-full'>
+            <Scrollable className='h-full'>
+                <div aria-hidden='true'>
+                    {/* <List list={Array(totalChunks)}>
+                        {(_, chunkIndex) => (
+                            <>
+                            
+                            </>
+                        )}
+                    </List> */}
 
-            <div ref={middleChunkRef}>
-                <>chunk top</>
-            </div>
+                    <div ref={topChunkRef}>
+                        <Conditional isRendered={!chunkedList.top.length}>
+                            <List list={Array(chunkSize).fill(null)}>
+                                <ChunkItemPlaceholder/>
+                            </List>
+                        </Conditional>
 
-            <div ref={bottomChunkRef}>
-                <>chunk top</>
-            </div>
+                        <Conditional isRendered={!!chunkedList.top.length}>
+                            <List list={chunkedList.top}>
+                                {(props) => <ChunkItem {...props}/>}
+                            </List>
+                        </Conditional>
+                    </div>
+
+                    <div ref={middleChunkRef}>
+                        <Conditional isRendered={!chunkedList.middle.length}>
+                            <List list={Array(chunkSize).fill(null)}>
+                                <ChunkItemPlaceholder/>
+                            </List>
+                        </Conditional>
+
+                        <Conditional isRendered={!!chunkedList.middle.length}>
+                            <List list={chunkedList.middle}>
+                                {(props) => <ChunkItem {...props}/>}
+                            </List>
+                        </Conditional>
+                    </div>
+
+                    <div ref={bottomChunkRef}>
+                        <Conditional isRendered={!chunkedList.bottom.length}>
+                            <List list={Array(chunkSize).fill(null)}>
+                                <ChunkItemPlaceholder/>
+                            </List>
+                        </Conditional>
+
+                        <Conditional isRendered={!!chunkedList.middle.length}>
+                            <List list={chunkedList.middle}>
+                                {(props) => <ChunkItem {...props}/>}
+                            </List>
+                        </Conditional>
+                    </div>
             
-            {/* <Chunk type='top'/>
+                    {/* <Chunk type='top'/>
 
             <Chunk type='middle'/>
 
             <Chunk type='bottom'/> */}
+                </div>
+            </Scrollable>
         </div>
     );
 };
