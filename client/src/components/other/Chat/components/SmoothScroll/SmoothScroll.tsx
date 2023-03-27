@@ -2,7 +2,7 @@ import { useSharedResizeObserver } from '@hooks';
 import { animated, easings, useReducedMotion, useSpringValue } from '@react-spring/web';
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
-import { FC, RefObject, useCallback, useLayoutEffect, useRef } from 'react';
+import { FC, RefObject, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useIsFirstRender } from 'usehooks-ts';
 
 
@@ -73,14 +73,14 @@ export const SmoothScroll: FC<SmoothScroll> = ({
     //     previousWrapperHeightRef.current = contentRect.height;
     // });
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!wrapperRef.current) return;
 
         console.log(`layout item size: ${wrapperRef.current.offsetHeight - previousWrapperHeightRef.current}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [...deps]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (disabled) return;
         if (!isAutoScrollEnabled) return;
         if (isMotionReduced) return;
@@ -114,7 +114,7 @@ export const SmoothScroll: FC<SmoothScroll> = ({
 
     return (
         <animated.div 
-            className={twClassNames('flex grow h-fit overflow-hidden', className)}
+            className={twClassNames('overflow-hidden', className)}
             style={{
                 transform: spring.to((value) => `translateY(${value}px)`),
             }}

@@ -1,4 +1,4 @@
-import { createContext, FC, Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createContext, CSSProperties, FC, Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Conditional, EmojiCode, List, Message, Scrollable } from '@components';
 import { IMessage } from '@backendTypes';
 import { Descendant } from 'slate';
@@ -7,7 +7,7 @@ import { getRandomNumber, twClassNames } from '@utils';
 import { PropsWithClassName } from '@types';
 import { DayDivider, SmoothScroll } from './components';
 import { useAutoScroll } from './hooks';
-import ViewportList from 'react-viewport-list';
+import { ViewportList } from 'react-viewport-list';
 import { useAsync, useLatest } from 'react-use';
 import { useAnimationFrame, useSharedIntersectionObserver } from '@hooks';
 import { VirtualList } from './components/VirtualList';
@@ -16,6 +16,10 @@ import { AutoSizer } from '@libs';
 import ReactList from 'react-list';
 import { useInterval } from 'usehooks-ts';
 import { differenceInMinutes, isSameDay } from 'date-fns';
+import InfiniteScroll from 'react-infinite-scroller';
+import SimpleBarCore from 'simplebar-core';
+import { useChatScroll } from './hooks/useChatScroll/useChatScroll';
+import { animated } from '@react-spring/web';
 
 
 
@@ -52,7 +56,7 @@ const generateTimestampsArray = (count: number): number[] => {
     return timestamps.reverse();
 };
 
-const messagesLength = 30;
+const messagesLength = 80;
 
 const timeline = generateTimestampsArray(messagesLength);
 
@@ -72,7 +76,7 @@ const getMessage = (index: number, createdAt: number = Date.now()): Message => (
     // user: '1',
     user: getRandomNumber(1, 2).toString(),
     chat: '1',
-    content: getContent(),
+    // content: getContent(),
     // content: JSON.stringify([{
     //     type: 'paragraph',
     //     children: [{
@@ -80,7 +84,7 @@ const getMessage = (index: number, createdAt: number = Date.now()): Message => (
     //     }],
     // }]),
     // content: String(index),
-    // content: `${String(index)}    ${loremIpsum({ count: getRandomNumber(1, 6) })}`,
+    content: `${String(index)}    ${loremIpsum({ count: getRandomNumber(1, 6) })}`,
     // createdAt: timeline[index],
     createdAt,
     updatedAt: Date.now(),
@@ -172,97 +176,285 @@ const getEarlierMessages = (before: number): Promise<Message[]> => {
     });
 };
 
+const getDistributedArrays = <T,>(items: T[]) => {    
+    let lastMessages: T[] = [];
+    let earlyMessages: T[] = [];
+    let virtualMessages: T[] = [];
+        
+    const arr = [...items];
+    const length = arr.length;
+        
+    if (length <= messageChunkSize) {
+        lastMessages = [...arr];
+    }
+        
+    if ((length > messageChunkSize) && (length <= (messageChunkSize * 2))) {
+        earlyMessages = arr.slice(0, length - messageChunkSize);
+        lastMessages = arr.slice(-(messageChunkSize), length);
+    }
+        
+    if (length > (messageChunkSize * 2)) {
+        earlyMessages = arr.slice(0, messageChunkSize);
+        virtualMessages = arr.slice(messageChunkSize, -(messageChunkSize));
+        lastMessages = arr.slice(-(messageChunkSize), length);
+    }
+        
+    return {
+        earlyMessages,
+        virtualMessages,
+        lastMessages,
+    };
+}; 
 
-export const Chat: FC<Chat> = ({
-    className = '',
-}) => {
+export const Chat: FC = () => {
     const [messageList, setMessageList] = useState(messages);
 
-    const handleAddMessage = () => {
-        setMessageList(prev => [...prev, getMessage(prev.length, Date.now())]);
-    };
+    const {
+        setSimpleBar,
+        setAutoScrollTriggerElement,
+        indexesShift,
+        isAutoScrollEnabled,
+        smoothScrollSpring,
+    } = useChatScroll(messageList);
 
-    const listRef = useRef<VariableSizeList | null>(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-    const getRowHeight = (index: number) => {
-        return 56;
-    };
+    // useLayoutEffect(() => {
+    //     if (!contentRef.current || !wrapperRef.current) return;
 
-
+    //     setSimpleBar({
+    //         contentEl: contentRef.current as HTMLElement,
+    //         contentWrapperEl: wrapperRef.current as HTMLElement,
+    //     } as SimpleBarCore);
+    // }, [setSimpleBar]);
 
     return (
-        <div className='h-full flex flex-col'>
-            <button onClick={handleAddMessage}>
-                <>add message</>
-            </button>
-
+        <div className='flex flex-col h-full'>
             <div>
-                <>count: {messageList.length}</>
+                <button onClick={() => setMessageList(prev => [...prev, getMessage(prev.length, Date.now())])}>
+                    <>add message</>
+                </button>
+
+                <div>
+                    <>count {messageList.length}</>
+                </div>
             </div>
 
-            <div className='flex flex-col flex-1'>
-                <AutoSizer>
-                    {({ height, width }) => (
-                        <VariableSizeList 
-                            height={height}
-                            itemCount={messageList.length}
-                            itemSize={getRowHeight}
-                            width={width}
-                            ref={listRef}
+            <div className='flex flex-col grow'>
+                {/* <div className='flex grow relative' ref={wrapperRef}>
+                    <div className='absolute inset-0 overflow-y-scroll'>
+                        <div ref={contentRef}>
+                            
+                        </div>
+                    </div>
+                </div> */}
+                
+                <Scrollable
+                    setSimpleBar={setSimpleBar}
+                >
+                    <div 
+                        className='h-[1px] bg-green-500'
+                    ></div>
+
+                
+                    <animated.div
+                        className='relative overflow-hidden'
+                        style={{
+                            transform: smoothScrollSpring.to((value) => `translateY(${value}px)`),
+                        }}
+                    >
+                        <ViewportList
+                            items={messageList.slice(0, Math.max(0, messageList.length - 40))}
+                            initialIndex={messageList.length - 1}
+                            withCache
+                            indexesShift={indexesShift}
+                            initialPrerender={messageList.length}
+                            renderSpacer={({ ref, style, type }) => {
+                                const noFlickerStyles = {
+                                    bottom: {
+                                        height: isAutoScrollEnabled ? 0 : style.height,
+                                        minHeight: isAutoScrollEnabled ? 0 : style.height,
+                                        maxHeight: isAutoScrollEnabled ? 0 : style.height,
+                                    },
+                                    top: {},
+                                };
+
+                                return (
+                                    <div 
+                                        ref={ref} 
+                                        style={{
+                                            ...style,
+                                            ...noFlickerStyles[type],
+                                        }}
+                                    ></div>
+                                );
+                            }}
                         >
-                            {() => (
-                                <div>
-                                    <></>
+                            {(message) => (
+                                <div key={message.id}>
+                                    {message.content}
                                 </div>
                             )}
-                        </VariableSizeList>
-                    )}
-                </AutoSizer>
+                        </ViewportList>
+
+                        <List list={messageList.slice(-40)}>
+                            {(message) => (
+                                <div key={message.id}>
+                                    <>real {message.content}</>
+                                </div>
+                            )}
+                        </List>
+                    </animated.div>
+                        
+                    <div 
+                        className='h-[1px] bg-green-500'
+                        ref={setAutoScrollTriggerElement}
+                    ></div>
+                </Scrollable>
             </div>
-
-            {/* <Scrollable className=''>
-                <div>
-                    <List list={messageList}>
-                        {(message, index) => {
-                            const isFirst = index === 0;
-                            const previousMessage = messageList[Math.max(0, index - 1)];
-                            const isPreviousUserSameAsCurrent = previousMessage.user === message.user;
-                            const withTimeGap = differenceInMinutes(
-                                previousMessage.createdAt, 
-                                message.createdAt,
-                            ) >= DIFFERENCE_IN_MINUTES_FOR_SMALL_GAP;
-                            const isNewDay = !isSameDay(previousMessage.createdAt, message.createdAt);
-                            const isGroupHead = isFirst || isPreviousUserSameAsCurrent || withTimeGap || isNewDay;
-
-                            return (
-                                <>
-                                    <Conditional isRendered={isNewDay}>
-                                        <DayDivider time={message.createdAt}/>
-                                    </Conditional>
-
-                                    <Message
-                                        className={twClassNames({
-                                            [styles.messageGroupHead]: isGroupHead && !isFirst,
-                                        })}
-                                        message={message}
-                                        displayMode='cozy'
-                                        isGroupHead={isGroupHead}
-                                        tabIndex={0}
-                                        addReaction={() => {}}
-                                        closeEditor={() => {}}
-                                        isInEditMode={false}
-                                        openEditor={() => {}}
-                                        saveEditor={() => {}}
-                                    />
-                                </>
-                            );
-                        }}
-                    </List>
-                </div>
-            </Scrollable> */}
         </div>
     );
 };
+
+
+// export const Chat: FC<Chat> = ({
+//     className = '',
+// }) => {
+//     const [messageList, setMessageList] = useState(messages);
+
+//     const handleAddMessage = () => {
+//         setMessageList(prev => [...prev, getMessage(prev.length, Date.now())]);
+//     };
+
+//     const listRef = useRef<VariableSizeList | null>(null);
+//     const rowHeights = useRef<Record<number, number>>({});
+
+//     useEffect(() => {
+//         if (messageList.length === 0) return;
+//         scrollToBottom();
+        
+//         // eslint-disable-next-line
+//     }, [messageList]);
+
+//     function getRowHeight(index: number) {
+//         return rowHeights.current[index] + 10 || 100;
+//     }
+
+//     const setRowHeight = (index: number, height: number) => {
+//         if (!listRef.current) return;
+//         if (rowHeights.current[index] === height) return;
+//         console.log('set r h', index, height);
+//         listRef.current.resetAfterIndex(0);
+//         rowHeights.current = { ...rowHeights.current, [index]: height };
+//     };
+
+//     const scrollToBottom = () => {
+//         if (!listRef.current) return;
+//         console.log('scroll to bottom');
+//         listRef.current.scrollToItem(messageList.length - 1, 'end');
+//     };
+
+//     const Row: FC<{index: number, style: CSSProperties}> = ({ index, style }) => {
+//         const rowRef = useRef<HTMLDivElement>(null);
+//         // const [row, setRow] = useState<HTMLDivElement | null>(null);
+    
+        
+
+//         // useEffect(() => {
+//         //     if (!rowRef.current) return;
+            
+//         //     setRowHeight(index, rowRef.current.clientHeight);
+            
+//         //     // eslint-disable-next-line
+//         // }, [rowRef]);
+
+//         useAnimationFrame(() => {
+//             if (!rowRef.current) return;
+            
+//             setRowHeight(index, rowRef.current.clientHeight);
+//         });
+ 
+//         const message = messageList[index];
+    
+//         return (
+//             <div style={style}>
+//                 <div ref={rowRef}>
+//                     {message.content}
+//                 </div>
+//             </div>
+//         );
+//     };
+
+//     return (
+//         <div className='h-full flex flex-col'>
+//             <button onClick={handleAddMessage}>
+//                 <>add message</>
+//             </button>
+
+//             <div>
+//                 <>count: {messageList.length}</>
+//             </div>
+
+//             <div className='flex flex-col flex-1'>
+//                 <AutoSizer>
+//                     {({ height, width }) => (
+//                         <VariableSizeList 
+//                             height={height}
+//                             itemCount={messageList.length}
+//                             itemSize={getRowHeight}
+//                             width={width}
+//                             ref={listRef}
+//                         >
+//                             {Row}
+//                         </VariableSizeList>
+//                     )}
+//                 </AutoSizer>
+//             </div>
+
+//             {/* <Scrollable className=''>
+//                 <div>
+//                     <List list={messageList}>
+//                         {(message, index) => {
+//                             const isFirst = index === 0;
+//                             const previousMessage = messageList[Math.max(0, index - 1)];
+//                             const isPreviousUserSameAsCurrent = previousMessage.user === message.user;
+//                             const withTimeGap = differenceInMinutes(
+//                                 previousMessage.createdAt, 
+//                                 message.createdAt,
+//                             ) >= DIFFERENCE_IN_MINUTES_FOR_SMALL_GAP;
+//                             const isNewDay = !isSameDay(previousMessage.createdAt, message.createdAt);
+//                             const isGroupHead = isFirst || isPreviousUserSameAsCurrent || withTimeGap || isNewDay;
+
+//                             return (
+//                                 <>
+//                                     <Conditional isRendered={isNewDay}>
+//                                         <DayDivider time={message.createdAt}/>
+//                                     </Conditional>
+
+//                                     <Message
+//                                         className={twClassNames({
+//                                             [styles.messageGroupHead]: isGroupHead && !isFirst,
+//                                         })}
+//                                         message={message}
+//                                         displayMode='cozy'
+//                                         isGroupHead={isGroupHead}
+//                                         tabIndex={0}
+//                                         addReaction={() => {}}
+//                                         closeEditor={() => {}}
+//                                         isInEditMode={false}
+//                                         openEditor={() => {}}
+//                                         saveEditor={() => {}}
+//                                     />
+//                                 </>
+//                             );
+//                         }}
+//                     </List>
+//                 </div>
+//             </Scrollable> */}
+//         </div>
+//     );
+// };
 
  
 // export const Chat: FC<Chat> = ({
@@ -333,15 +525,15 @@ export const Chat: FC<Chat> = ({
 //         handleEarlyMessage();
 //     }, 1000);
 
-//     useAnimationFrame(() => {
-//         const wrapper = simpleBarRef.current?.contentWrapperEl;
-//         if (!wrapper) return;
-//         if (wrapper.scrollTop === lastScrollPositionRef.current) return;
+//     // useAnimationFrame(() => {
+//     //     const wrapper = simpleBarRef.current?.contentWrapperEl;
+//     //     if (!wrapper) return;
+//     //     if (wrapper.scrollTop === lastScrollPositionRef.current) return;
 
-//         lastScrollPositionRef.current = wrapper.scrollTop;
-//     });
+//     //     lastScrollPositionRef.current = wrapper.scrollTop;
+//     // });
 
-//     useLayoutEffect(() => {
+//     useEffect(() => {
 //         const wrapper = simpleBarRef.current?.contentWrapperEl;
 //         if (!wrapper) return;
 //         if (lastListSize.current <= messageList.length) return;
