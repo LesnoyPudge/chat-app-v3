@@ -18,7 +18,6 @@
 
 @layer components {
     .scrollbar {
-        --thumb-min-length: 40px;
         --track-transition: opacity 0.2s ease-in-out;
 
         &[data-direction=vertical] {
@@ -148,7 +147,6 @@
 
                 & > .simplebar-scrollbar {
                     width: var(--scrollbar-thickness);
-                    min-height: var(--thumb-min-length);
                 }
             }
 
@@ -157,7 +155,6 @@
 
                 & > .simplebar-scrollbar {
                     height: var(--scrollbar-thickness);
-                    min-width: var(--thumb-min-length);
                 }
             }
         }

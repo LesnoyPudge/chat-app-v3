@@ -1,6 +1,4 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-var-requires */
-const plugin = require('tailwindcss/plugin');
+import plugin from 'tailwindcss/plugin';
 
 
 
@@ -74,10 +72,8 @@ const customClasses = {
     ...otherClasses,
 };
 
-const getCustomClasses = () => (
+export const getCustomClasses = () => (
     plugin(({ addUtilities }) => {
         addUtilities(customClasses);
     })
 );
-
-module.exports = getCustomClasses;

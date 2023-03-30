@@ -11,7 +11,7 @@ interface DayDivider extends PropsWithClassName {
 }
 
 const styles = {
-    wrapper: 'flex my-4 text-xs font-semibold text-color-muted',
+    wrapper: 'flex pt-4 pb-3 text-xs font-semibold text-color-muted',
     dividerLine: `relative grow mx-4 before:absolute 
     before:-z-10 before:h-0.5 before:bg-primary-100 
     before:w-full before:top-1/2 before:-translate-y-1/2`,

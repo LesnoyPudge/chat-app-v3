@@ -114,6 +114,7 @@ import SimpleBar from 'simplebar-react';
 import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
 import { ChunkedList } from './tmp';
+import { Chat2 } from 'src/components/other/Chat/Chat2';
 
 
 
@@ -281,7 +282,8 @@ const PlaygroundInner6: FC = () => {
             {/* <Conditional isRendered={isVisible}>
                 <ChunkedList/>
             </Conditional> */}
-            <Chat/>
+            {/* <Chat/> */}
+            <Chat2 className='h-full'/>
         </>
     );
 };

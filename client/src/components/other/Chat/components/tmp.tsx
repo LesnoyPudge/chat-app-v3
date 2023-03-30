@@ -159,6 +159,7 @@ export interface ViewportListRef {
 }
 
 export interface ViewportListPropsBase {
+    disabled?: boolean;
     viewportRef?:
         | MutableRefObject<HTMLElement | null>
         | RefObject<HTMLElement | null>
@@ -203,6 +204,7 @@ export interface ViewportListPropsWithCount extends ViewportListPropsBase {
 
 const ViewportListInner = <T,>(
     {
+        disabled = false,
         items = [],
         count,
         children,
@@ -227,7 +229,7 @@ const ViewportListInner = <T,>(
     ref: ForwardedRef<ViewportListRef>,
 ) => {
     const errorRef = useRef(false);
-
+    
     // if (errorRef.current) {
     //     try {
     //         // setTimeout(() => {
@@ -348,27 +350,29 @@ const ViewportListInner = <T,>(
     const mainFrameRef = useRef(() => {});
 
     
-    useLayoutEffect(() => {
-        const handleClick = () => {
-            console.log('click');
-            errorRef.current = true;
+    // useLayoutEffect(() => {
+    //     const handleClick = () => {
+    //         console.log('click');
+    //         errorRef.current = true;
 
-            try {
-                // setTimeout(() => {
-                // errorRef.current = false;
-                // }, 3000);
-                throw new Error();
-            } catch (error) {
-                // 
-            }
-        };
-        document.addEventListener('click', handleClick);
+    //         try {
+    //             // setTimeout(() => {
+    //             // errorRef.current = false;
+    //             // }, 3000);
+    //             throw new Error();
+    //         } catch (error) {
+    //             // 
+    //         }
+    //     };
+    //     document.addEventListener('click', handleClick);
 
-        return () => document.removeEventListener('click', handleClick);
-    }, []);
+    //     return () => document.removeEventListener('click', handleClick);
+    // }, []);
 
     useIsomorphicLayoutEffect(() => {
         mainFrameRef.current = () => {
+            if (disabled) return;
+
             const viewport = getViewport();
             const topSpacer = topSpacerRef.current;
             const bottomSpacer = bottomSpacerRef.current;
@@ -732,6 +736,7 @@ const ViewportListInner = <T,>(
     }
 
     useIsomorphicLayoutEffect(() => {
+        if (disabled) return;
         anchorElementRef.current = null;
 
         const anchorIndex = anchorIndexRef.current;

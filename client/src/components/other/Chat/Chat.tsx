@@ -15,11 +15,12 @@ import { VariableSizeList } from 'react-window';
 import { AutoSizer } from '@libs';
 import ReactList from 'react-list';
 import { useInterval } from 'usehooks-ts';
-import { differenceInMinutes, isSameDay } from 'date-fns';
+import { differenceInMinutes, isSameDay, millisecondsToMinutes, minutesToMilliseconds } from 'date-fns';
 import InfiniteScroll from 'react-infinite-scroller';
 import SimpleBarCore from 'simplebar-core';
 import { useChatScroll } from './hooks/useChatScroll/useChatScroll';
 import { animated } from '@react-spring/web';
+import SimpleBar from 'simplebar-react';
 
 
 
@@ -56,7 +57,7 @@ const generateTimestampsArray = (count: number): number[] => {
     return timestamps.reverse();
 };
 
-const messagesLength = 80;
+const messagesLength = 20;
 
 const timeline = generateTimestampsArray(messagesLength);
 
@@ -148,7 +149,7 @@ const HelloFromRoom: FC<HelloFromRoom> = ({
     );
 };
 
-const totalAmountOfMessages = 100;
+const totalAmountOfMessages = 500;
 const messageChunkSize = 25;
 
 const roomTimeline = generateTimestampsArray(totalAmountOfMessages);
@@ -204,35 +205,65 @@ const getDistributedArrays = <T,>(items: T[]) => {
         virtualMessages,
         lastMessages,
     };
-}; 
+};
+
+const getMessagesFromTimestamp = (timestamp: number) => {
+    return roomMessages.filter((message) => message.createdAt >= timestamp);
+};
+
+const getMessagesBeforeTimestamp = (timestamp: number) => {
+    return roomMessages
+        .filter((message) => message.createdAt < timestamp)
+        .slice(-20);
+};
+
+const initialMessages = roomMessages.slice(-20);
 
 export const Chat: FC = () => {
-    const [messageList, setMessageList] = useState(messages);
+    const [messageList, setMessageList] = useState(initialMessages);
+    const [isAtStart, setIsAtStart] = useState(false);
 
     const {
-        setSimpleBar,
         setAutoScrollTriggerElement,
         indexesShift,
-        isAutoScrollEnabled,
-        smoothScrollSpring,
+        setContentElement,
+        setContentWrapperElement,
+        setViewportList,
+        handleNewIndexes,
+        setPlaceholder,
+        isPlaceholderVisible,
     } = useChatScroll(messageList);
 
-    const contentRef = useRef<HTMLDivElement | null>(null);
-    const wrapperRef = useRef<HTMLDivElement | null>(null);
+    const timeoutRef = useRef(0);
 
-    // useLayoutEffect(() => {
-    //     if (!contentRef.current || !wrapperRef.current) return;
+    useEffect(() => {
+        if (!isPlaceholderVisible) return;
+        
+        const earlierMessages = getMessagesBeforeTimestamp(messageList[0].createdAt);
+        console.log('start');
+        timeoutRef.current = setTimeout(() => {
+            if (earlierMessages.length < 20) {
+                setIsAtStart(true);
+            }
+            console.log('do');
+            setMessageList(prev => [...earlierMessages, ...prev]);
+        }, 1500);
 
-    //     setSimpleBar({
-    //         contentEl: contentRef.current as HTMLElement,
-    //         contentWrapperEl: wrapperRef.current as HTMLElement,
-    //     } as SimpleBarCore);
-    // }, [setSimpleBar]);
+        return () => {
+            clearTimeout(timeoutRef.current);
+        };
+    }, [isPlaceholderVisible, messageList]);
+
+    const handleClick = () => {
+        const createdAt = Date.now();
+        roomMessages.push(getMessage(parseInt(messageList.at(-1)?.id || '0') + 1, createdAt));
+        setMessageList((prev) => [...prev, ...getMessagesFromTimestamp(createdAt)]);
+    };
 
     return (
-        <div className='flex flex-col h-full'>
+        <div>
             <div>
-                <button onClick={() => setMessageList(prev => [...prev, getMessage(prev.length, Date.now())])}>
+                <button onClick={handleClick}>
                     <>add message</>
                 </button>
 
@@ -240,78 +271,132 @@ export const Chat: FC = () => {
                     <>count {messageList.length}</>
                 </div>
             </div>
+                
+            <div className='h-[80vh]'>
+                <div className='h-full relative'>
+                    <div className='absolute inset-0 overflow-y-scroll' ref={setContentWrapperElement}>
+                        <div ref={setContentElement}>
+                            <div 
+                                className='h-[1px] bg-green-500'
+                            ></div>
 
-            <div className='flex flex-col grow'>
-                {/* <div className='flex grow relative' ref={wrapperRef}>
-                    <div className='absolute inset-0 overflow-y-scroll'>
-                        <div ref={contentRef}>
-                            
+                            <div ref={setPlaceholder}>
+                                <List list={Array(15).fill(null).map((_, i) => `placeholder ${i}`)}>
+                                    {(item) => (
+                                        <div className='py-4'>
+                                            {item}
+                                        </div>
+                                    )}
+                                </List>
+                            </div>
+
+                            <ViewportList
+                                // items={messageList.slice(0, Math.max(0, messageList.length - 40))}
+                                items={messageList}
+                                initialIndex={messageList.length - 1}
+                                withCache
+                                indexesShift={indexesShift}
+                                initialPrerender={messageList.length}
+                                // disabled={true}
+                                ref={setViewportList}
+                                onViewportIndexesChange={handleNewIndexes}
+                                // renderSpacer={({ ref, style, type }) => {
+                                //     const noFlickerStyles = {
+                                //         bottom: {
+                                //             height: isAutoScrollEnabled ? 0 : style.height,
+                                //             minHeight: isAutoScrollEnabled ? 0 : style.height,
+                                //             maxHeight: isAutoScrollEnabled ? 0 : style.height,
+                                //         },
+                                //         top: {},
+                                //     };
+
+                                //     return (
+                                //         <div 
+                                //             ref={ref} 
+                                //             style={{
+                                //                 ...style,
+                                //                 ...noFlickerStyles[type],
+                                //             }}
+                                //         ></div>
+                                //     );
+                                // }}
+                            >
+                                {(message) => (
+                                    <div key={message.id}>
+                                        {message.content}
+                                    </div>
+                                )}
+                            </ViewportList>
+                        
+                            <div 
+                                className='h-[1px] bg-green-500'
+                                ref={setAutoScrollTriggerElement}
+                            ></div>
                         </div>
                     </div>
-                </div> */}
+                </div>
                 
-                <Scrollable
+                {/* <Scrollable
+                    className='h-full'
                     setSimpleBar={setSimpleBar}
                 >
                     <div 
                         className='h-[1px] bg-green-500'
                     ></div>
 
-                
-                    <animated.div
-                        className='relative overflow-hidden'
-                        style={{
-                            transform: smoothScrollSpring.to((value) => `translateY(${value}px)`),
-                        }}
-                    >
-                        <ViewportList
-                            items={messageList.slice(0, Math.max(0, messageList.length - 40))}
-                            initialIndex={messageList.length - 1}
-                            withCache
-                            indexesShift={indexesShift}
-                            initialPrerender={messageList.length}
-                            renderSpacer={({ ref, style, type }) => {
-                                const noFlickerStyles = {
-                                    bottom: {
-                                        height: isAutoScrollEnabled ? 0 : style.height,
-                                        minHeight: isAutoScrollEnabled ? 0 : style.height,
-                                        maxHeight: isAutoScrollEnabled ? 0 : style.height,
-                                    },
-                                    top: {},
-                                };
-
-                                return (
-                                    <div 
-                                        ref={ref} 
-                                        style={{
-                                            ...style,
-                                            ...noFlickerStyles[type],
-                                        }}
-                                    ></div>
-                                );
-                            }}
-                        >
-                            {(message) => (
-                                <div key={message.id}>
-                                    {message.content}
-                                </div>
-                            )}
-                        </ViewportList>
-
-                        <List list={messageList.slice(-40)}>
-                            {(message) => (
-                                <div key={message.id}>
-                                    <>real {message.content}</>
+                    <div ref={setPlaceholder}>
+                        <List list={Array(15).fill(null).map((_, i) => `placeholder ${i}`)}>
+                            {(item) => (
+                                <div className='py-4'>
+                                    {item}
                                 </div>
                             )}
                         </List>
-                    </animated.div>
+                    </div>
+
+                    <ViewportList
+                    // items={messageList.slice(0, Math.max(0, messageList.length - 40))}
+                        items={messageList}
+                        initialIndex={messageList.length - 1}
+                        withCache
+                        indexesShift={indexesShift}
+                        initialPrerender={messageList.length}
+                        // disabled={true}
+                        ref={setViewportList}
+                        onViewportIndexesChange={handleNewIndexes}
+                        // renderSpacer={({ ref, style, type }) => {
+                        //     const noFlickerStyles = {
+                        //         bottom: {
+                        //             height: isAutoScrollEnabled ? 0 : style.height,
+                        //             minHeight: isAutoScrollEnabled ? 0 : style.height,
+                        //             maxHeight: isAutoScrollEnabled ? 0 : style.height,
+                        //         },
+                        //         top: {},
+                        //     };
+
+                        //     return (
+                        //         <div 
+                        //             ref={ref} 
+                        //             style={{
+                        //                 ...style,
+                        //                 ...noFlickerStyles[type],
+                        //             }}
+                        //         ></div>
+                        //     );
+                        // }}
+                    >
+                        {(message) => (
+                            <div key={message.id}>
+                                {message.content}
+                            </div>
+                        )}
+                    </ViewportList>
                         
                     <div 
                         className='h-[1px] bg-green-500'
                         ref={setAutoScrollTriggerElement}
                     ></div>
-                </Scrollable>
+                </Scrollable> */}
             </div>
         </div>
     );
@@ -630,69 +715,7 @@ export const Chat: FC = () => {
 //                                         </List>
 //                                     </div>
 //                                 </Conditional>
-
-//                                 <VirtualList
-//                                     items={messageList}
-//                                     initialIndex={messageList.length - 1}
-//                                     withCache
-//                                     disableBottomFlickering={isAutoScrollEnabled}
-//                                 >
-//                                     {(message, index) => {
-                            
-//                                         return (
-//                                             <div key={message.id} className={styles.item}>
-//                                                 <>{message.content}</>
-//                                             </div>
-//                                         );
-//                                     }}
-//                                 </VirtualList>
-
-
-                                    
-//                                 {/* <ReactList
-//                                         itemRenderer={(index) => {
-//                                             return (
-//                                                 <div 
-//                                                     className={styles.item}
-//                                                     key={messageList[index].id}
-//                                                 >
-//                                                     <>{messageList[index].content}</>
-//                                                 </div>
-//                                             );
-//                                         }}
-//                                         length={messageList.length}
-//                                         type='uniform'
-//                                     /> */}
-                                    
-
-//                                 <Conditional isRendered={false}>
-//                                     <List list={earlyMessages}>
-//                                         {(message, index) => (
-//                                             <div key={message.id} className={styles.item}>
-//                                                 <>early {message.content}</>
-//                                             </div>
-//                                         )}
-//                                     </List>
-
-//                                     <VirtualList
-//                                         items={virtualMessages}
-//                                     >
-//                                         {(message, index) => (
-//                                             <div key={message.id} className={styles.item}>
-//                                                 <>virtual {message.content}</>
-//                                             </div>
-//                                         )}
-//                                     </VirtualList>
-
-
-//                                     <List list={lastMessages}>
-//                                         {(message, index) => (
-//                                             <div key={message.id} className={styles.item}>
-//                                                 <>last {message.content}</>
-//                                             </div>
-//                                         )}
-//                                     </List>
-//                                 </Conditional>
+//                                 
 //                             </Conditional>
 //                         </Conditional>
 //                     </div>

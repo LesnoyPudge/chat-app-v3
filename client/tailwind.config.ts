@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const defaultTheme = require('tailwindcss/defaultTheme');
-const plugin = require('tailwindcss/plugin');
-const getCustomClasses = require('./src/root/styles/customClasses.js');
-
+import type { Config } from 'tailwindcss';
+import defaultTheme from 'tailwindcss/defaultTheme';
+import { getCustomClasses } from './src/root/styles/customClasses';
 
 
 
@@ -10,9 +8,7 @@ const pxToRem = (px = 0, baseFontSize = 16) => {
     return px / baseFontSize;
 };
 
-/** @type {import('tailwindcss').Config} */
-// eslint-disable-next-line no-undef
-module.exports = {
+export default {
     content: [
         './index.html',
         './src/**/*.{js,ts,jsx,tsx}',
@@ -123,4 +119,4 @@ module.exports = {
             },
         },
     },
-};
+} satisfies Config;
