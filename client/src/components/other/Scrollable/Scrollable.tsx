@@ -180,8 +180,6 @@ export const Scrollable: FC<Scrollable> = ({
                 {...dataAttributes}
                 onPointerMove={handlePointerMove}
                 ref={getRef}
-                onDragEnd={() => console.log('drag over')}
-                onDragStart={() => console.log('ww')}
             >
                 {children}
                 {/* {(props) => (

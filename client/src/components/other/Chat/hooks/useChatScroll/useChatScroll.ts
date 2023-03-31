@@ -1,7 +1,7 @@
 import { IMessage } from '@backendTypes';
 import { EmojiCode } from '@components';
 import { useSharedIntersectionObserver, useSharedResizeObserver } from '@hooks';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useLatest } from 'react-use';
 import { ViewportListRef } from 'react-viewport-list';
 
@@ -72,7 +72,7 @@ export const useChatScroll = (messages: Message[]) => {
         if (!placeholder) return;
         if (!viewportList) return;
         if (!contentWrapperElement) return;
-
+        
         const previousTimestamp = earliestMessageTimestampRef.current;
         const currentTimestamp = messages[0].createdAt;
         if (currentTimestamp >= previousTimestamp) return;

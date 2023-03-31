@@ -75,6 +75,8 @@ export const Message: FC<MessageComponent> = ({
         <article 
             className={twClassNames(styles.wrapper, className)}
             aria-labelledby={`${ids.timestampId} ${ids.usernameId} ${ids.contentId} ${ids.editTimestampId}`}
+            aria-hidden={false}
+            aria-setsize={-1}
         >
             <Heading 
                 className={styles.heading} 

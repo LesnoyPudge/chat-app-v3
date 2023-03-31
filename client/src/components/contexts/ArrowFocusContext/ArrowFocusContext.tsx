@@ -32,6 +32,7 @@ export interface ArrowFocusContext {
 interface ArrowFocusContextProvider extends PropsWithChildrenAsNodeOrFunction<ArrowFocusContext> {
     list: ProvidedList;
     orientation: 'horizontal' | 'vertical' | 'both';
+    initialId?: string;
 }
 
 const normalizeList = (list: ProvidedList): NormalizedList | [] => {
@@ -53,12 +54,13 @@ export const ArrowFocusContext = createContext<ArrowFocusContext | undefined>(un
 export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
     list,
     orientation,
+    initialId = '0',
     children,
 }) => {
     const normalizedList = useMemo(() => normalizeList(list), [list]);
     const focusedWithArrow = useRef<boolean>(false);
     const [focus, setFocus] = useState<Focus>({ 
-        focusableId: normalizedList[0]?.id,
+        focusableId: normalizedList[parseInt(initialId)]?.id,
         focusedId: null,
     });
 

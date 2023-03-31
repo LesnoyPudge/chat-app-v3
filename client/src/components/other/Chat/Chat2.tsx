@@ -1,11 +1,11 @@
-import { Conditional, EmojiCode, List, Message } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, Conditional, EmojiCode, List, Message } from '@components';
 import { PropsWithClassName } from '@types';
 import { getRandomNumber, twClassNames } from '@utils';
 import { loremIpsum } from 'lorem-ipsum';
-import { FC, Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { IMessage } from '@backendTypes';
-import { DayDivider } from './components';
-import { useChatScroll } from './hooks/useChatScroll/useChatScroll';
+import { DayDivider, HelloFromRoom, MessagePlaceholder } from './components';
+import { useChatScroll } from './hooks';
 import { ViewportList } from 'react-viewport-list';
 import { Descendant } from 'slate';
 import { differenceInMinutes, isSameDay } from 'date-fns';
@@ -72,37 +72,6 @@ const getMessage = (index: number, createdAt: number = Date.now()): Message => (
     reactions: [],
 });
 
-const MessagePlaceholder: FC<PropsWithClassName> = ({
-    className = '',
-}) => {
-    return (
-        <div aria-hidden={true} className={className}>
-            <>placeholder</>
-        </div>
-    );
-};
-
-interface HelloFromRoom extends PropsWithClassName {
-    firstMessageCreationTimestamp?: number;
-}
-
-const HelloFromRoom: FC<HelloFromRoom> = ({
-    className = '',
-    firstMessageCreationTimestamp,
-}) => {
-    return (
-        <>
-            <div aria-hidden={true} className={className}>
-                <>Hello from room</>
-            </div>
-
-            <Conditional isRendered={!!firstMessageCreationTimestamp}>
-                <DayDivider time={firstMessageCreationTimestamp!}/>
-            </Conditional>
-        </>
-    );
-};
-
 const roomTimeline = generateTimestampsArray(totalAmountOfMessages);
 const roomMessages = Array(totalAmountOfMessages).fill(null).map((_, i) => getMessage(i, roomTimeline[i]));
 
@@ -116,10 +85,12 @@ const initialMessages = roomMessages.slice(-20);
 
 const styles = {
     scrollableWrapper: 'h-full relative',
-    scrollable: 'absolute inset-0 overflow-y-scroll',
-    placeholderList: 'flex flex-col gap-2',
+    scrollable: 'absolute inset-0 overflow-y-scroll overflow-x-hidden',
+    placeholderList: 'flex flex-col gap-4',
     messageGroupHead: 'message-group-head',
 };
+
+const PLACEHOLDER_LIST = Array(15).fill(null);
 
 export const Chat2: FC<Chat> = ({
     className = '',
@@ -141,7 +112,7 @@ export const Chat2: FC<Chat> = ({
 
     const timeoutRef = useRef(0);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!isPlaceholderVisible) return;
         
         const earlierMessages = getMessagesBeforeTimestamp(messageList[0].createdAt);
@@ -158,6 +129,14 @@ export const Chat2: FC<Chat> = ({
             clearTimeout(timeoutRef.current);
         };
     }, [isPlaceholderVisible, messageList]);
+
+    const isLoading = false;
+    const displayMode = 'cozy' satisfies 'cozy' | 'compact';
+
+    const showHelloMessage = !isLoading && isAtStart;
+    const showPlaceholder = !!messageList.length && !isAtStart;
+
+    const [virtualIndexes, setVirtualIndexes] = useState<[null | number, null | number]>([null, null]);
     
     return (
         <div className={className}>
@@ -172,85 +151,73 @@ export const Chat2: FC<Chat> = ({
                         aria-label='Сообщения'
                         ref={setContentElement}
                     >
-                        <Conditional isRendered={false}>
+                        <Conditional isRendered={isLoading}>
                             <div 
                                 className={styles.placeholderList}
                                 aria-hidden
                             >
-                                <List list={Array(15).fill(null)}>
-                                    <MessagePlaceholder/>
+                                <List list={PLACEHOLDER_LIST}>
+                                    <MessagePlaceholder displayMode={displayMode}/>
                                 </List>
                             </div>
                         </Conditional>
 
-                        <Conditional isRendered={!false}>
-                            <Conditional isRendered={isAtStart}>
-                                <HelloFromRoom
-                                    firstMessageCreationTimestamp={messageList.at(0)?.createdAt}
-                                />
-                            </Conditional>
+                        <Conditional isRendered={showHelloMessage}>
+                            <HelloFromRoom
+                                firstMessageCreationTimestamp={messageList.at(0)?.createdAt}
+                            />
+                        </Conditional>
 
-                            <Conditional isRendered={!!messageList.length}>
-                                <Conditional isRendered={!isAtStart}>
-                                    <div 
-                                        className={styles.placeholderList}
-                                        aria-hidden
-                                        ref={setPlaceholder}
-                                    >
-                                        <List list={Array(15).fill(null)}>
-                                            <MessagePlaceholder/>
-                                        </List>
-                                    </div>
-                                </Conditional>
+                        <Conditional isRendered={showPlaceholder}>
+                            <div 
+                                className={styles.placeholderList}
+                                aria-hidden
+                                ref={setPlaceholder}
+                            >
+                                <List list={PLACEHOLDER_LIST}>
+                                    <MessagePlaceholder displayMode={displayMode}/>
+                                </List>
+                            </div>
+                        </Conditional>
 
+                        <Conditional isRendered={!!messageList.length}>
+                            <ArrowFocusContextProvider 
+                                list={messageList}
+                                orientation='vertical'
+                                initialId={messageList.at(-1)?.id}
+                            >
                                 <ViewportList
-                                    items={messageList}
+                                // items={messageList}
+                                    count={messageList.length}
                                     initialIndex={messageList.length - 1}
-                                    withCache
+                                    // withCache
                                     indexesShift={indexesShift}
                                     initialPrerender={messageList.length}
                                     ref={setViewportList}
-                                    onViewportIndexesChange={handleNewIndexes}
+                                    onViewportIndexesChange={(indexes) => {
+                                        setVirtualIndexes(indexes);
+                                        handleNewIndexes(indexes);
+                                    }}
                                 >
-                                    {(message, index) => {
-                                        const isFirst = index === 0;
-                                        const previousMessage = messageList[Math.max(0, index - 1)];
-                                        const isPreviousUserSameAsCurrent = previousMessage.user === message.user;
-                                        const DIFFERENCE_IN_MINUTES_FOR_SMALL_GAP = 5;
-                                        const withTimeGap = differenceInMinutes(
-                                            previousMessage.createdAt, 
-                                            message.createdAt,
-                                        ) >= DIFFERENCE_IN_MINUTES_FOR_SMALL_GAP;
-                                        const isNewDay = !isSameDay(previousMessage.createdAt, message.createdAt);
-                                        const isGroupHead = isFirst || isPreviousUserSameAsCurrent || withTimeGap || isNewDay;
-                                        return (
-                                            <div key={message.id}>
-                                                <Conditional isRendered={isNewDay}>
-                                                    <DayDivider time={message.createdAt}/>
-                                                </Conditional>
+                                    {(index) => {
+                                        const message = messageList[index];
 
-                                                <Message
-                                                    className={twClassNames({
-                                                        // [styles.messageGroupHead]: isGroupHead && !isFirst,
-                                                    })}
-                                                    message={message}
-                                                    displayMode='cozy'
-                                                    isGroupHead={isGroupHead}
-                                                    tabIndex={0}
-                                                    isInEditMode={!!editingMessageId && editingMessageId === message.id}
-                                                    addReaction={(code) => console.log('add reaction', code)}
-                                                    closeEditor={() => setEditingMessageId(null)}
-                                                    openEditor={() => setEditingMessageId(message.id)}
-                                                    saveEditor={(value) => {
-                                                        setEditingMessageId(null);
-                                                        console.log('save editor', value);
-                                                    }}
-                                                />
-                                            </div>
+                                        return (
+                                            <ArrowFocusItem id={message.id} key={message.id}>
+                                                {({ tabIndex, isFocused }) => (
+                                                    <div 
+                                                        className='h-14'
+                                                        tabIndex={tabIndex}
+                                                        key={message.id}
+                                                    >
+                                                        <>{message.id}: {String(isFocused)}</>
+                                                    </div>
+                                                )}
+                                            </ArrowFocusItem>
                                         );
                                     }}
                                 </ViewportList>
-                            </Conditional>
+                            </ArrowFocusContextProvider>
                         </Conditional>
                         
                         <div 
@@ -265,40 +232,143 @@ export const Chat2: FC<Chat> = ({
     );
 };
 
-// {(message, index) => {
-//     const isFirst = index === 0;
-//     const previousMessage = messageList[Math.max(0, index - 1)];
-//     const isPreviousUserSameAsCurrent = previousMessage.user === message.user;
-//     const DIFFERENCE_IN_MINUTES_FOR_SMALL_GAP = 5;
-//     const withTimeGap = differenceInMinutes(
-//         previousMessage.createdAt, 
-//         message.createdAt,
-//     ) >= DIFFERENCE_IN_MINUTES_FOR_SMALL_GAP;
-//     const isNewDay = !isSameDay(previousMessage.createdAt, message.createdAt);
+
+
+
+// {(index) => {
+//     const message = messageList[index];
+//     const isFirst = message.id === messageList[0].id;
+//     const currentMessageIndex = messageList.findIndex((item) => item.id === message.id);
+
+//     const previousMessage = (
+//         currentMessageIndex > 0
+//             ? messageList[currentMessageIndex - 1]
+//             : null
+//     );
+
+//     const isPreviousUserSameAsCurrent = (
+//         previousMessage 
+//             ? previousMessage.user === message.user
+//             : false
+//     );
+
+//     const isNewDay = (
+//         previousMessage
+//             ? !isSameDay(
+//                 previousMessage.createdAt, 
+//                 message.createdAt,
+//             )
+//             : true
+//     );
+
+//     const withTimeGap = (
+//         previousMessage
+//             ? differenceInMinutes(
+//                 previousMessage.createdAt, 
+//                 message.createdAt,
+//             ) >= 5
+//             : false
+//     );
+
 //     const isGroupHead = isFirst || isPreviousUserSameAsCurrent || withTimeGap || isNewDay;
+//     const showDayDivider = isNewDay && !(isAtStart && isFirst);
+
 //     return (
 //         <div key={message.id}>
-//             {/* <Conditional isRendered={isNewDay}>
+//             <Conditional isRendered={showDayDivider}>
 //                 <DayDivider time={message.createdAt}/>
-//             </Conditional> */}
+//             </Conditional>
 
-//             <Message
+//             <div 
 //                 className={twClassNames({
-//                     // [styles.messageGroupHead]: isGroupHead && !isFirst,
+//                     [styles.messageGroupHead]: isGroupHead,
 //                 })}
-//                 message={message}
-//                 displayMode='cozy'
-//                 isGroupHead={isGroupHead}
-//                 tabIndex={0}
-//                 isInEditMode={!!editingMessageId && editingMessageId === message.id}
-//                 addReaction={(code) => console.log('add reaction', code)}
-//                 closeEditor={() => setEditingMessageId(null)}
-//                 openEditor={() => setEditingMessageId(message.id)}
-//                 saveEditor={(value) => {
-//                     setEditingMessageId(null);
-//                     console.log('save editor', value);
-//                 }}
-//             />
+//                 aria-hidden
+//             >
+//                 <Message
+//                     message={message}
+//                     displayMode={displayMode}
+//                     isGroupHead={isGroupHead}
+//                     tabIndex={0}
+//                     isInEditMode={!!editingMessageId && editingMessageId === message.id}
+//                     addReaction={(code) => console.log('add reaction', code)}
+//                     closeEditor={() => setEditingMessageId(null)}
+//                     openEditor={() => setEditingMessageId(message.id)}
+//                     saveEditor={(value) => {
+//                         setEditingMessageId(null);
+//                         console.log('save editor', value);
+//                     }}
+//                 />
+//             </div>
+//         </div>
+//     );
+// };}
+
+
+// {(message) => {
+//     const isFirst = message.id === messageList[0].id;
+//     const currentMessageIndex = messageList.findIndex((item) => item.id === message.id);
+
+//     const previousMessage = (
+//         currentMessageIndex > 0
+//             ? messageList[currentMessageIndex - 1]
+//             : null
+//     );
+        
+//     const isPreviousUserSameAsCurrent = (
+//         previousMessage 
+//             ? previousMessage.user === message.user
+//             : false
+//     );
+
+//     const isNewDay = (
+//         previousMessage
+//             ? !isSameDay(
+//                 previousMessage.createdAt, 
+//                 message.createdAt,
+//             )
+//             : true
+//     );
+
+//     const withTimeGap = (
+//         previousMessage
+//             ? differenceInMinutes(
+//                 previousMessage.createdAt, 
+//                 message.createdAt,
+//             ) >= 5
+//             : false
+//     );
+
+//     const isGroupHead = isFirst || isPreviousUserSameAsCurrent || withTimeGap || isNewDay;
+//     const showDayDivider = isNewDay && !(isAtStart && isFirst);
+
+//     return (
+//         <div key={message.id}>
+//             <Conditional isRendered={showDayDivider}>
+//                 <DayDivider time={message.createdAt}/>
+//             </Conditional>
+
+//             <div 
+//                 className={twClassNames({
+//                     [styles.messageGroupHead]: isGroupHead,
+//                 })}
+//                 aria-hidden
+//             >
+//                 <Message
+//                     message={message}
+//                     displayMode={displayMode}
+//                     isGroupHead={isGroupHead}
+//                     tabIndex={0}
+//                     isInEditMode={!!editingMessageId && editingMessageId === message.id}
+//                     addReaction={(code) => console.log('add reaction', code)}
+//                     closeEditor={() => setEditingMessageId(null)}
+//                     openEditor={() => setEditingMessageId(message.id)}
+//                     saveEditor={(value) => {
+//                         setEditingMessageId(null);
+//                         console.log('save editor', value);
+//                     }}
+//                 />
+//             </div>
 //         </div>
 //     );
 // }}

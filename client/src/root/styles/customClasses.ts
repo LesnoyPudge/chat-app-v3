@@ -61,7 +61,7 @@ const otherClasses = {
     },
 
     '.message-group-head': {
-        'margin-top': 'var(--message-gap)',
+        'padding-top': 'var(--message-gap)',
     },
 };
 
