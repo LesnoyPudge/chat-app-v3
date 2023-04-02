@@ -1,7 +1,8 @@
 import { isRef } from '@typeGuards';
 import { IntersectionObserverListener, noop, sharedIntersectionObserver } from '@utils';
-import { RefObject, useLayoutEffect, useRef, useState } from 'react';
+import { RefObject, useLayoutEffect, useRef } from 'react';
 import { useLatest } from 'react-use';
+import { useProvidedValue } from '@hooks';
 
 
 
@@ -19,14 +20,8 @@ export const useSharedIntersectionObserver = <T extends Element>(
 ): UseSharedIntersectionObserverResult<T> => {
     const intersectionEntryRef = useRef<Partial<IntersectionObserverEntry>>({});
     const savedListenerRef = useLatest(providedListener);
-    const [target, setTarget] = useState<RefObject<T> | T | null>(null);
+    const [target, setTarget] = useProvidedValue(providedTargetRef);
 
-    useLayoutEffect(() => {
-        if (!providedTargetRef || !!target) return;
-
-        setTarget(providedTargetRef);
-    }, [providedTargetRef, target]);
-    
     useLayoutEffect(() => {
         const targetElement = isRef(target) ? target.current : target;
         if (!targetElement) return;

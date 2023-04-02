@@ -1,4 +1,4 @@
-import { PropsWithChildrenAsNodeOrFunction } from '@types';
+import { ObjectWithId, PropsWithChildrenAsNodeOrFunction } from '@types';
 import React, { createContext, FC, useEffect, useMemo, useRef, useState } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
 
@@ -23,41 +23,29 @@ interface Focus {
     focusedId: string | null;
 }
 
-export interface ArrowFocusContext {
+export interface KeyboardNavigationContext {
     focus: Focus;
     handleArrowMove: (e: React.KeyboardEvent) => void;
     setFocusable: (id: string) => void;
 }
 
-interface ArrowFocusContextProvider extends PropsWithChildrenAsNodeOrFunction<ArrowFocusContext> {
-    list: ProvidedList;
+interface KeyboardNavigationContextProvider extends PropsWithChildrenAsNodeOrFunction<KeyboardNavigationContext> {
+    list: ObjectWithId[];
     orientation: 'horizontal' | 'vertical' | 'both';
     initialId?: string;
+    loop?: boolean;
 }
 
-const normalizeList = (list: ProvidedList): NormalizedList | [] => {
-    if (list.length === 0) return list as [];
+export const KeyboardNavigationContext = createContext<KeyboardNavigationContext | undefined>(undefined);
 
-    return Array.isArray(list) ? (
-        list.map((item) => ({
-            id: item.id.toString(),
-        }))
-    ) : (
-        Object.values(list).map((item) => ({
-            id: item.identifier,
-        }))
-    );
-};
-
-export const ArrowFocusContext = createContext<ArrowFocusContext | undefined>(undefined);
-
-export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
+export const KeyboardNavigationContextProvider: FC<KeyboardNavigationContextProvider> = ({
     list,
     orientation,
     initialId = '0',
+    loop = true,
     children,
 }) => {
-    const normalizedList = useMemo(() => normalizeList(list), [list]);
+    const normalizedList = list;
     const focusedWithArrow = useRef<boolean>(false);
     const [focus, setFocus] = useState<Focus>({ 
         focusableId: normalizedList[parseInt(initialId)]?.id,
@@ -133,17 +121,17 @@ export const ArrowFocusContextProvider: FC<ArrowFocusContextProvider> = ({
         });
     }, [focus.focusableId, normalizedList]);
 
-    const contextValues: ArrowFocusContext = {
+    const contextValues: KeyboardNavigationContext = {
         focus,
         handleArrowMove,
         setFocusable,
     };
     
     return (
-        <ArrowFocusContext.Provider value={contextValues}>
+        <KeyboardNavigationContext.Provider value={contextValues}>
             <ChildrenAsNodeOrFunction args={contextValues}>
                 {children}
             </ChildrenAsNodeOrFunction>
-        </ArrowFocusContext.Provider>
+        </KeyboardNavigationContext.Provider>
     );
 };

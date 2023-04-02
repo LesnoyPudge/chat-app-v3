@@ -1,6 +1,7 @@
+import { useProvidedValue } from '@hooks';
 import { isRef } from '@typeGuards';
 import { ResizeObserverListener, noop, sharedResizeObserver } from '@utils';
-import { RefObject, useLayoutEffect, useRef, useState } from 'react';
+import { RefObject, useLayoutEffect, useRef } from 'react';
 import { useLatest } from 'react-use';
 
 
@@ -19,14 +20,8 @@ export const useSharedResizeObserver = <T extends Element>(
 ): UseSharedResizeObserverResult<T> => {
     const resizeEntryRef = useRef<Partial<ResizeObserverEntry>>({});
     const savedListenerRef = useLatest(providedListener);
-    const [target, setTarget] = useState<RefObject<T> | T | null>(null);
-
-    useLayoutEffect(() => {
-        if (!providedTargetRef || !!target) return;
-
-        setTarget(providedTargetRef);
-    }, [providedTargetRef, target]);
-
+    const [target, setTarget] = useProvidedValue(providedTargetRef);
+    
     useLayoutEffect(() => {
         const targetElement = isRef(target) ? target.current : target;
         if (!targetElement) return;

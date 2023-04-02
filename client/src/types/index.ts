@@ -51,3 +51,8 @@ export interface Size {
 }
 
 export type AnyFunction = (...args: any[]) => any;
+
+export interface ObjectWithId {
+    id: string;
+    [x: string]: unknown;
+}

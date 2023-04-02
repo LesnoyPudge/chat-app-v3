@@ -136,7 +136,7 @@ export const Chat2: FC<Chat> = ({
     const showHelloMessage = !isLoading && isAtStart;
     const showPlaceholder = !!messageList.length && !isAtStart;
 
-    const [virtualIndexes, setVirtualIndexes] = useState<[null | number, null | number]>([null, null]);
+    const [virtualIndexes, setVirtualIndexes] = useState<[number, number]>([0, messageList.length]);
     
     return (
         <div className={className}>
@@ -182,7 +182,7 @@ export const Chat2: FC<Chat> = ({
 
                         <Conditional isRendered={!!messageList.length}>
                             <ArrowFocusContextProvider 
-                                list={messageList}
+                                list={messageList.slice(virtualIndexes[0], virtualIndexes[1])}
                                 orientation='vertical'
                                 initialId={messageList.at(-1)?.id}
                             >
@@ -190,6 +190,7 @@ export const Chat2: FC<Chat> = ({
                                 // items={messageList}
                                     count={messageList.length}
                                     initialIndex={messageList.length - 1}
+                                    overscan={5}
                                     // withCache
                                     indexesShift={indexesShift}
                                     initialPrerender={messageList.length}

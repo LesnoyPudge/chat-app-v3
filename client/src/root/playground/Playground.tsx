@@ -4,9 +4,9 @@ import { AnyFunction, EncodedFile, PropsWithChildrenAndClassName, PropsWithChild
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver } from '@utils';
 import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
-import { useBoolean, useCounter, useElementSize, useEventListener, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useBoolean, useCounter, useElementSize, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -105,7 +105,7 @@ const ImageV2: FC<ImageV2> = ({
 
 import getScrollableParent from 'scrollparent';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
-import { useMeasure } from 'react-use';
+import { useLatest, useMeasure } from 'react-use';
 import { useRelativePositionV2 } from 'src/hooks/useRelativePositionV2/useRelativePositionV2';
 import { useFocus } from 'src/hooks/useFocus/useFocus';
 import { Formik } from 'formik';
@@ -114,6 +114,7 @@ import SimpleBar from 'simplebar-react';
 import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
 import { Chat2 } from 'src/components/other/Chat/Chat2';
+import { Test } from 'src/components/other/Chat/KeyboardNavigation';
 
 
 
@@ -270,19 +271,39 @@ const PlaygroundInner5: FC = () => {
 };
 
 const PlaygroundInner6: FC = () => {
-    const [isVisible, toggle] = useToggle(true);
+    // const [isVisible, toggle] = useToggle(true);
+    const ref = useRef<HTMLDivElement | null>(null);
+    const [ref2, setRef2] = useState<HTMLDivElement | null>(null);
+    // const [simp, setSimp] = useState<SimpleBarCore | null>(null);
+    // const content = useLatest(simp?.contentEl || null);
+    // const simpRef = useRef<SimpleBarCore | null>(null);
+
+    // useSharedIntersectionObserver(simp?.contentEl, ({ isIntersecting }) => {
+    //     console.log('work', isIntersecting);
+    // });
+    // useEventListener('click', (e) => {
+    //     console.log('click');
+    // }, ref2);
+    // // console.log(ref.current);
+
+    // useEffect(() => {
+    //     console.log(ref.current);
+    // }, []);
+
+    // useEventListener('keydown', (e) => {
+    //     console.log('key', e.key);
+    // }, ref.current);
 
     return (
         <>
-            {/* <button onClick={toggle}>
-                {isVisible ? 'hide' : 'show'}
-            </button> */}
-            
-            {/* <Conditional isRendered={isVisible}>
-                <ChunkedList/>
-            </Conditional> */}
-            {/* <Chat/> */}
-            <Chat2 className='h-full'/>
+            {/* <div ref={setRef2} tabIndex={0}>
+                <>test</>
+            </div> */}
+            {/* <Scrollable className='h-[500px]' setSimpleBar={setSimp}>
+                
+            </Scrollable> */}
+            {/* <Chat2 className='h-full'/> */}
+            <Test/>
         </>
     );
 };

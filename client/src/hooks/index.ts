@@ -17,3 +17,6 @@ export * from './useWebWorker';
 export * from './useSharedIntersectionObserver';
 export * from './useSharedResizeObserver';
 export * from './useAnimationFrame';
+export * from './useProvidedValue';
+export * from './useEventListener';
+export * from './useStateAndRef';
