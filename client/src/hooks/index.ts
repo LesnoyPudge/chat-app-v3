@@ -20,3 +20,4 @@ export * from './useAnimationFrame';
 export * from './useProvidedValue';
 export * from './useEventListener';
 export * from './useStateAndRef';
+export * from './useRefWithSetter';

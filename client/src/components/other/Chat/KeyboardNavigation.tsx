@@ -8,6 +8,8 @@ import { useProvidedValue, useEventListener, useStateAndRef } from '@hooks';
 import { useInterval } from 'usehooks-ts';
 import SimpleBarCore from 'simplebar-core';
 import { ViewportList, ViewportListRef } from 'react-viewport-list';
+import { useKeyboardNavigation } from './useKeyboardNavigation';
+import { MoveFocusInside } from 'react-focus-lock';
 
 
 
@@ -141,13 +143,32 @@ export const Test: FC = () => {
 
     const handleClick = () => setList(prev => [...prev, { id: prev.length.toString() }]);
 
-    useInterval(handleClick, 2000);
+    // useInterval(handleClick, 2000);
 
     const [simpleBar, setSimpleBar] = useState<SimpleBarCore | null>(null);
     const [indexes, setIndexes] = useState([0, 0]);
     const virtualList = list.slice(indexes[0], indexes[1] + 1);
     const [viewportList, setViewportList] = useState<ViewportListRef | null>(null);
 
+    const { getIsFocused, getTabIndex } = useKeyboardNavigation(
+        virtualList,
+        simpleBar?.contentWrapperEl, 
+        {
+            direction: 'vertical',
+            loop: false,
+            initialFocusableId: virtualList.at(-1)?.id,
+            onFocusChange: (item) => {
+                if (!item) return;
+
+                viewportList?.scrollToIndex({
+                    index: list.findIndex(listItem => listItem.id === item.id),
+                    prerender: virtualList.length,
+                    alignToTop: true,
+                    offset: -400,
+                });
+            },
+        },
+    );
 
     return (
         <div className='h-full flex flex-col'>
@@ -156,52 +177,72 @@ export const Test: FC = () => {
             </button>
 
             <Scrollable className='' focusable setSimpleBar={setSimpleBar}>
-                <KeyboardNavigationContextProvider 
-                    list={virtualList}
-                    initialFocusableId={virtualList.at(-1)?.id}
-                    providedRootElement={simpleBar?.contentWrapperEl}
-                    onFocusChange={(item) => {
-                        console.log('focus', item);
-                        viewportList?.scrollToIndex({
-                            index: list.findIndex(listItem => listItem.id === item.id),
-                            prerender: virtualList.length,
-                            alignToTop: true,
-                            offset: -400,
-                        });
-                    }}
+                <ViewportList 
+                    items={list}
+                    onViewportIndexesChange={setIndexes}
+                    ref={setViewportList}
                 >
-                    {({ lastFocusableId, focusedId, handleKeyDown }) => (
-                        <>
-                            <div>
-                                <>last: {lastFocusableId}</>
-                            </div>
-
-                            <ViewportList 
-                                items={list}
-                                onViewportIndexesChange={setIndexes}
-                                ref={setViewportList}
+                    {(item) => (
+                        <MoveFocusInside
+                            key={item.id}
+                            disabled={!getIsFocused(item.id)}
+                        >
+                            <div
+                                tabIndex={getTabIndex(item.id)}
                             >
-                                {(item) => (
-                                    <div 
-                                        key={item.id}
-                                        className={twClassNames({
-                                            'focused': focusedId === item.id,
-                                        })}
-                                        // onKeyDown={handleKeyDown}
-                                        // tabIndex={0}
-                                    >
-                                        {item.id}
-                                    </div>
-                                )}
-                            </ViewportList>
-                            {/* 
-                            <List list={list}>
-                                
-                            </List> */}
-                        </>
+                                {item.id}
+                            </div>
+                        </MoveFocusInside>
                     )}
-                </KeyboardNavigationContextProvider>
+                </ViewportList>
             </Scrollable>
         </div>
     );
 };
+
+
+// <KeyboardNavigationContextProvider 
+//     list={virtualList}
+//     initialFocusableId={virtualList.at(-1)?.id}
+//     providedRootElement={simpleBar?.contentWrapperEl}
+//     onFocusChange={(item) => {
+//         console.log('focus', item);
+//         viewportList?.scrollToIndex({
+//             index: list.findIndex(listItem => listItem.id === item.id),
+//             prerender: virtualList.length,
+//             alignToTop: true,
+//             offset: -400,
+//         });
+//     }}
+// >
+//     {({ lastFocusableId, focusedId, handleKeyDown }) => (
+//         <>
+//             <div>
+//                 <>last: {lastFocusableId}</>
+//             </div>
+
+//             <ViewportList 
+//                 items={list}
+//                 onViewportIndexesChange={setIndexes}
+//                 ref={setViewportList}
+//             >
+//                 {(item) => (
+//                     <div 
+//                         key={item.id}
+//                         className={twClassNames({
+//                             'focused': focusedId === item.id,
+//                         })}
+//                         // onKeyDown={handleKeyDown}
+//                         // tabIndex={0}
+//                     >
+//                         {item.id}
+//                     </div>
+//                 )}
+//             </ViewportList>
+//             {/* 
+//                             <List list={list}>
+                                
+//                             </List> */}
+//         </>
+//     )}
+// </KeyboardNavigationContextProvider>;
