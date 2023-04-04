@@ -9,6 +9,8 @@ import { useChatScroll } from './hooks';
 import { ViewportList } from 'react-viewport-list';
 import { Descendant } from 'slate';
 import { differenceInMinutes, isSameDay } from 'date-fns';
+import { useKeyboardNavigation } from './useKeyboardNavigation';
+import { MoveFocusInside } from 'react-focus-lock';
 
 
 
@@ -81,10 +83,14 @@ const getMessagesBeforeTimestamp = (timestamp: number) => {
         .slice(-20);
 };
 
+const getMessagesAfterTimestamp = (timestamp: number) => {
+    return roomMessages.filter(item => item.createdAt >= timestamp);
+};
+
 const initialMessages = roomMessages.slice(-20);
 
 const styles = {
-    scrollableWrapper: 'h-full relative',
+    scrollableWrapper: 'flex grow relative',
     scrollable: 'absolute inset-0 overflow-y-scroll overflow-x-hidden',
     placeholderList: 'flex flex-col gap-4',
     messageGroupHead: 'message-group-head',
@@ -108,6 +114,8 @@ export const Chat2: FC<Chat> = ({
         handleNewIndexes,
         setPlaceholder,
         isPlaceholderVisible,
+        contentWrapperElement,
+        viewportList,
     } = useChatScroll(messageList);
 
     const timeoutRef = useRef(0);
@@ -137,17 +145,55 @@ export const Chat2: FC<Chat> = ({
     const showPlaceholder = !!messageList.length && !isAtStart;
 
     const [virtualIndexes, setVirtualIndexes] = useState<[number, number]>([0, messageList.length]);
+    const virtualList = messageList.slice(virtualIndexes[0], virtualIndexes[1] + 1);
+    const virtualListRef = useRef<Message[]>([]);
+
+    const { 
+        getIsFocused, 
+        getTabIndex,
+        setFocusedId,
+    } = useKeyboardNavigation(
+        virtualList,
+        // messageList,
+        contentWrapperElement, 
+        {
+            direction: 'vertical',
+            loop: false,
+            initialFocusableId: virtualList.at(-1)?.id,
+            onFocusChange: (item, stepType) => {
+                if (!item || !viewportList) return;
+                const itemIndex = messageList.findIndex(listItem => listItem.id === item.id);
+
+                viewportList.scrollToIndex({
+                    index: itemIndex,
+                    prerender: 20,
+                    // alignToTop: stepType === 'forward' ? true : false,
+                    alignToTop: false,
+                    offset: -400,
+                });
+            },
+        },
+    );
+
+    const addMessage = () => {
+        const timestamp = Date.now();
+        roomMessages.push(getMessage(roomMessages.length, timestamp));
+        setMessageList(prev => [...prev, ...getMessagesAfterTimestamp(timestamp)]);
+    };
     
     return (
-        <div className={className}>
+        <div className={className + ' h-full flex flex-col'}>
+            <button className='shrink-0' onClick={addMessage}>add</button>
             <div className={styles.scrollableWrapper}>
                 <div 
                     className={styles.scrollable} 
                     ref={setContentWrapperElement}
+                    tabIndex={0}
                 >
                     {/* https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/feed_role */}
                     <div 
                         role='feed'
+                        aria-busy
                         aria-label='Сообщения'
                         ref={setContentElement}
                     >
@@ -181,16 +227,107 @@ export const Chat2: FC<Chat> = ({
                         </Conditional>
 
                         <Conditional isRendered={!!messageList.length}>
-                            <ArrowFocusContextProvider 
+                            <ViewportList
+                                items={messageList}
+                                // count={messageList.length}
+                                initialIndex={messageList.length - 1}
+                                // overscan={5}
+                                withCache
+                                indexesShift={indexesShift}
+                                initialPrerender={messageList.length}
+                                ref={setViewportList}
+                                onViewportIndexesChange={(indexes) => {
+                                    console.log(indexes);
+                                    virtualListRef.current = messageList.slice(indexes[0], indexes[1] + 1);
+                                    // setVirtualIndexes(indexes);
+                                    handleNewIndexes(indexes);
+                                }}
+                            >
+                                {(message) => {
+                                    const isFirst = message.id === messageList[0].id;
+                                    const currentMessageIndex = messageList.findIndex((item) => item.id === message.id);
+                                    
+                                    const previousMessage = (
+                                        currentMessageIndex > 0
+                                            ? messageList[currentMessageIndex - 1]
+                                            : null
+                                    );
+                                    
+                                    const isPreviousUserSameAsCurrent = (
+                                        previousMessage 
+                                            ? previousMessage.user === message.user
+                                            : false
+                                    );
+                                    
+                                    const isNewDay = (
+                                        previousMessage
+                                            ? !isSameDay(
+                                                previousMessage.createdAt, 
+                                                message.createdAt,
+                                            )
+                                            : true
+                                    );
+                                    
+                                    const withTimeGap = (
+                                        previousMessage
+                                            ? differenceInMinutes(
+                                                previousMessage.createdAt, 
+                                                message.createdAt,
+                                            ) >= 5
+                                            : false
+                                    );
+                                    
+                                    const isGroupHead = isFirst || isPreviousUserSameAsCurrent || withTimeGap || isNewDay;
+                                    const showDayDivider = isNewDay && !(isAtStart && isFirst);
+                                    
+                                    return (
+                                        <MoveFocusInside 
+                                            disabled={!getIsFocused(message.id)}
+                                            key={message.id}
+                                        >
+                                            <div>
+                                                <Conditional isRendered={showDayDivider}>
+                                                    <DayDivider time={message.createdAt}/>
+                                                </Conditional>
+                                    
+                                                <div 
+                                                    className={twClassNames({
+                                                        [styles.messageGroupHead]: isGroupHead,
+                                                    })}
+                                                    aria-hidden
+                                                >
+                                                    <Message
+                                                        message={message}
+                                                        displayMode={displayMode}
+                                                        isGroupHead={isGroupHead}
+                                                        tabIndex={getTabIndex(message.id)}
+                                                        onClick={() => setFocusedId(message.id)}
+                                                        isInEditMode={!!editingMessageId && editingMessageId === message.id}
+                                                        addReaction={(code) => console.log('add reaction', code)}
+                                                        closeEditor={() => setEditingMessageId(null)}
+                                                        openEditor={() => setEditingMessageId(message.id)}
+                                                        saveEditor={(value) => {
+                                                            setEditingMessageId(null);
+                                                            console.log('save editor', value);
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </MoveFocusInside>
+                                    );
+                                }}
+                            </ViewportList>
+                            
+                            {/* <ArrowFocusContextProvider 
                                 list={messageList.slice(virtualIndexes[0], virtualIndexes[1])}
                                 orientation='vertical'
                                 initialId={messageList.at(-1)?.id}
                             >
                                 <ViewportList
-                                // items={messageList}
-                                    count={messageList.length}
+                                    items={messageList}
+                                    // count={messageList.length}
                                     initialIndex={messageList.length - 1}
-                                    overscan={5}
+                                    // overscan={5}
                                     // withCache
                                     indexesShift={indexesShift}
                                     initialPrerender={messageList.length}
@@ -200,25 +337,19 @@ export const Chat2: FC<Chat> = ({
                                         handleNewIndexes(indexes);
                                     }}
                                 >
-                                    {(index) => {
-                                        const message = messageList[index];
-
+                                    {(message) => {
                                         return (
-                                            <ArrowFocusItem id={message.id} key={message.id}>
-                                                {({ tabIndex, isFocused }) => (
-                                                    <div 
-                                                        className='h-14'
-                                                        tabIndex={tabIndex}
-                                                        key={message.id}
-                                                    >
-                                                        <>{message.id}: {String(isFocused)}</>
-                                                    </div>
-                                                )}
-                                            </ArrowFocusItem>
+                                            <div 
+                                                className='h-14'
+                                                tabIndex={tabIndex}
+                                                key={message.id}
+                                            >
+                                                <>{message.id}: {String(isFocused)}</>
+                                            </div>
                                         );
                                     }}
                                 </ViewportList>
-                            </ArrowFocusContextProvider>
+                            </ArrowFocusContextProvider> */}
                         </Conditional>
                         
                         <div 
@@ -234,7 +365,20 @@ export const Chat2: FC<Chat> = ({
 };
 
 
-
+// return (
+//     <MoveFocusInside 
+//         disabled={!getIsFocused(message.id)}
+//         key={message.id}
+//     >
+//         <div 
+//             className='h-14'
+//             tabIndex={getTabIndex(message.id)}
+//             onClick={() => setFocusedId(message.id)}
+//         >
+//             <>{message.id}: {String(getIsFocused(message.id))}</>
+//         </div>
+//     </MoveFocusInside>
+// );
 
 // {(index) => {
 //     const message = messageList[index];

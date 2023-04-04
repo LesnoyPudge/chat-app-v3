@@ -14,6 +14,7 @@ interface CozyMessage {
             users: string[];
         }[];
     };
+    tabIndex: number;
     isGroupHead: boolean;
     ids: Ids;
     isInEditMode: boolean;
@@ -39,6 +40,7 @@ export const CozyMessage: FC<CozyMessage> = ({
     isGroupHead,
     isInEditMode,
     message,
+    tabIndex,
     addReaction,
     closeEditor,
     saveEditor,
@@ -78,6 +80,7 @@ export const CozyMessage: FC<CozyMessage> = ({
                             label=''
                             hasPopup='menu'
                             isActive={false}
+                            tabIndex={tabIndex}
                             onLeftClick={() => console.log('open menu')}
                         >
                             <UserName className={styles.username}/>

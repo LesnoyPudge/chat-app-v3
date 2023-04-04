@@ -13,13 +13,14 @@ interface Options {
     direction?: 'horizontal' | 'vertical';
     loop?: boolean;
     initialFocusableId?: string;
-    onFocusChange?: (item?: ObjectWithId) => void;
+    onFocusChange?: (item: ObjectWithId | undefined, stepType: 'forward' | 'backward') => void;
 }
 
 interface UseKeyboardNavigationReturn {
     getIsFocused: (id: string) => boolean;
     getTabIndex: (id: string) => number;
-    setRoot: React.Dispatch<React.SetStateAction<RootElement>>,
+    setRoot: React.Dispatch<React.SetStateAction<RootElement>>;
+    setFocusedId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const useKeyboardNavigation = (
@@ -38,7 +39,7 @@ export const useKeyboardNavigation = (
     const [root, setRoot] = useProvidedValue(providedRoot);
     const initialIdRef = useLatest(initialFocusableId || list.at(0)?.id || null);
     const [_, focusedIdRef, setFocusedId] = useStateAndRef<string | null>(null);
-
+ 
     const getCurrentIndex = useCallback(() => {
         return focusableListRef.current.findIndex((item) => item.id === focusedIdRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,7 +47,7 @@ export const useKeyboardNavigation = (
 
     const getIndexes = useCallback(() => {
         const currentIndex = getCurrentIndex();
-        const listLength = focusableListRef.current.length;
+        const listLength = list.length;
 
         if (!loop) {
             const nextIndex = Math.min(listLength - 1, currentIndex + 1);
@@ -87,24 +88,32 @@ export const useKeyboardNavigation = (
         e.preventDefault();
 
         if (focusedIdRef.current === null) {
+            const item = focusableListRef.current.find((item) => item.id === initialIdRef.current);
             setFocusedId(initialIdRef.current);
-            onFocusChange(focusableListRef.current.find((item) => item.id === initialIdRef.current));
+            onFocusChange(item, isForward ? 'forward' : 'backward');
+
             return;
         }
 
         const { nextIndex, prevIndex } = getIndexes();
         const newIndex = isForward ? nextIndex : prevIndex;
         const newItem = focusableListRef.current[newIndex];
-        
-        if (focusedIdRef.current === newItem.id) return;
+        console.log(prevIndex, newIndex, newIndex);
+        // if (focusedIdRef.current === newItem.id) return;
 
         setFocusedId(newItem.id);
-        onFocusChange(newItem);
+        onFocusChange(newItem, isForward ? 'forward' : 'backward');
     }, root);
 
     useEffect(() => {
-        if (getCurrentIndex() !== -1) return;
+        const index = list.findIndex((item) => item.id === focusedIdRef.current);
+        // const contains = list.some(({ id }) => id === focusedIdRef.current);
+        // console.log('pre res', index, focusedIdRef.current, { list }, contains);
+        if (focusedIdRef.current === null) return;
+        if (index !== -1) return;
 
+        // if (!list.)
+        console.log('reset');
         setFocusedId(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [list]);
@@ -113,6 +122,7 @@ export const useKeyboardNavigation = (
         getIsFocused: (id) => id === focusedIdRef.current,
         getTabIndex: (id) => id === focusedIdRef.current ? 0 : -1,
         setRoot,
+        setFocusedId,
     };
 
     return result;

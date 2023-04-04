@@ -54,5 +54,5 @@ export type AnyFunction = (...args: any[]) => any;
 
 export interface ObjectWithId {
     id: string;
-    [x: string]: unknown;
+    [x: string | number | symbol]: any;
 }

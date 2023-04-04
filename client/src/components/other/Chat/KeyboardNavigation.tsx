@@ -149,8 +149,12 @@ export const Test: FC = () => {
     const [indexes, setIndexes] = useState([0, 0]);
     const virtualList = list.slice(indexes[0], indexes[1] + 1);
     const [viewportList, setViewportList] = useState<ViewportListRef | null>(null);
-
-    const { getIsFocused, getTabIndex } = useKeyboardNavigation(
+    
+    const { 
+        getIsFocused, 
+        getTabIndex,
+        setFocusedId,
+    } = useKeyboardNavigation(
         virtualList,
         simpleBar?.contentWrapperEl, 
         {
@@ -189,8 +193,11 @@ export const Test: FC = () => {
                         >
                             <div
                                 tabIndex={getTabIndex(item.id)}
+                                onClick={() => setFocusedId(item.id)}
                             >
-                                {item.id}
+                                <div>{item.id} {String(getIsFocused(item.id))}</div>
+
+                                <button tabIndex={getTabIndex(item.id)}>item button</button>
                             </div>
                         </MoveFocusInside>
                     )}

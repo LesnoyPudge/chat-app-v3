@@ -40,10 +40,10 @@ export const useChatScroll = (messages: Message[]) => {
         if (!isAutoScrollEnabledRef.current) return;
         if (!viewportList) return;
     
-        viewportList.scrollToIndex({ 
-            index: indexes[1],
-            prerender: 20,
-        });
+        // viewportList.scrollToIndex({ 
+        //     index: indexes[1],
+        //     prerender: 20,
+        // });
     };
 
     useLayoutEffect(() => {
@@ -103,5 +103,7 @@ export const useChatScroll = (messages: Message[]) => {
         handleNewIndexes,
         setPlaceholder,
         isPlaceholderVisible,
+        contentWrapperElement,
+        viewportList,
     };
 };

@@ -115,6 +115,7 @@ import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
 import { Chat2 } from 'src/components/other/Chat/Chat2';
 import { Test } from 'src/components/other/Chat/KeyboardNavigation';
+import ReactFocusLock from 'react-focus-lock';
 
 
 
@@ -302,8 +303,8 @@ const PlaygroundInner6: FC = () => {
             {/* <Scrollable className='h-[500px]' setSimpleBar={setSimp}>
                 
             </Scrollable> */}
-            {/* <Chat2 className='h-full'/> */}
-            <Test/>
+            <Chat2 className='h-full'/>
+            {/* <Test/> */}
         </>
     );
 };
@@ -318,12 +319,14 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </Conditional>
 
             <Conditional isRendered={enabled}>
+                {/* <ReactFocusLock className='h-full'> */}
                 {/* <PlaygroundInner/> */}
                 {/* <PlaygroundInner2/> */}
                 {/* <PlaygroundInner3/> */}
                 {/* <PlaygroundInner4/> */}
                 {/* <PlaygroundInner5/> */}
                 <PlaygroundInner6/>
+                {/* </ReactFocusLock> */}
             </Conditional>
         </>
     );

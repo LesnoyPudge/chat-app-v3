@@ -20,6 +20,7 @@ interface MessageComponent extends PropsWithClassName {
     displayMode: 'cozy' | 'compact';
     tabIndex?: number;
     isInEditMode: boolean;
+    onClick?: () => void;
     openEditor: () => void;
     closeEditor: () => void;
     saveEditor: (value: Descendant[]) => void;
@@ -56,6 +57,7 @@ export const Message: FC<MessageComponent> = ({
     isGroupHead,
     tabIndex = 0,
     isInEditMode,
+    onClick,
     addReaction,
     openEditor,
     closeEditor,
@@ -77,6 +79,8 @@ export const Message: FC<MessageComponent> = ({
             aria-labelledby={`${ids.timestampId} ${ids.usernameId} ${ids.contentId} ${ids.editTimestampId}`}
             aria-hidden={false}
             aria-setsize={-1}
+            tabIndex={tabIndex}
+            onClick={onClick}
         >
             <Heading 
                 className={styles.heading} 
@@ -99,6 +103,7 @@ export const Message: FC<MessageComponent> = ({
             <Conditional isRendered={isCozy}>
                 <CozyMessage
                     ids={ids}
+                    tabIndex={tabIndex}
                     isGroupHead={isGroupHead}
                     isInEditMode={isInEditMode}
                     message={message}
