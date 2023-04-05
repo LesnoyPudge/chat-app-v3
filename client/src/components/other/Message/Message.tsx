@@ -1,5 +1,5 @@
 import { PropsWithClassName } from '@types';
-import { createContext, FC } from 'react';
+import { createContext, FC, useEffect, useRef } from 'react';
 import { Descendant } from 'slate';
 import { EmojiCode, Conditional } from '@components';
 import { Heading, isDescendantEmpty } from '@libs';
@@ -74,7 +74,7 @@ export const Message: FC<MessageComponent> = ({
     };
 
     return (
-        <article 
+        <article
             className={twClassNames(styles.wrapper, className)}
             aria-labelledby={`${ids.timestampId} ${ids.usernameId} ${ids.contentId} ${ids.editTimestampId}`}
             aria-hidden={false}

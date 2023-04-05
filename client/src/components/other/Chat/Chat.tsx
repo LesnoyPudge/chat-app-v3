@@ -105,7 +105,7 @@ export const Chat: FC<Chat> = ({
         setContentElement,
         setContentWrapperElement,
         setViewportList,
-        handleNewIndexes,
+        // handleNewIndexes,
         setPlaceholder,
         isPlaceholderVisible,
     } = useChatScroll(messageList);
@@ -186,7 +186,7 @@ export const Chat: FC<Chat> = ({
                                 indexesShift={indexesShift}
                                 initialPrerender={messageList.length}
                                 ref={setViewportList}
-                                onViewportIndexesChange={handleNewIndexes}
+                                // onViewportIndexesChange={handleNewIndexes}
                             >
                                 {(message) => {
                                     const isFirst = message.id === messageList[0].id;

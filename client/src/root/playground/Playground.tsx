@@ -114,7 +114,6 @@ import SimpleBar from 'simplebar-react';
 import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
 import { Chat2 } from 'src/components/other/Chat/Chat2';
-import { Test } from 'src/components/other/Chat/KeyboardNavigation';
 import ReactFocusLock from 'react-focus-lock';
 
 

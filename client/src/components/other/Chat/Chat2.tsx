@@ -1,8 +1,8 @@
-import { ArrowFocusContextProvider, ArrowFocusItem, Conditional, EmojiCode, List, Message } from '@components';
+import { ArrowFocusContextProvider, ArrowFocusItem, Conditional, EmojiCode, List, Message, RefContextProvider } from '@components';
 import { PropsWithClassName } from '@types';
 import { getRandomNumber, twClassNames } from '@utils';
 import { loremIpsum } from 'lorem-ipsum';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { IMessage } from '@backendTypes';
 import { DayDivider, HelloFromRoom, MessagePlaceholder } from './components';
 import { useChatScroll } from './hooks';
@@ -11,6 +11,7 @@ import { Descendant } from 'slate';
 import { differenceInMinutes, isSameDay } from 'date-fns';
 import { useKeyboardNavigation } from './useKeyboardNavigation';
 import { MoveFocusInside } from 'react-focus-lock';
+import { useLatest } from 'react-use';
 
 
 
@@ -111,11 +112,9 @@ export const Chat2: FC<Chat> = ({
         setContentElement,
         setContentWrapperElement,
         setViewportList,
-        handleNewIndexes,
         setPlaceholder,
         isPlaceholderVisible,
         contentWrapperElement,
-        viewportList,
     } = useChatScroll(messageList);
 
     const timeoutRef = useRef(0);
@@ -144,34 +143,23 @@ export const Chat2: FC<Chat> = ({
     const showHelloMessage = !isLoading && isAtStart;
     const showPlaceholder = !!messageList.length && !isAtStart;
 
-    const [virtualIndexes, setVirtualIndexes] = useState<[number, number]>([0, messageList.length]);
-    const virtualList = messageList.slice(virtualIndexes[0], virtualIndexes[1] + 1);
+    // const [virtualIndexes, setVirtualIndexes] = useState<[number, number]>([0, messageList.length]);
+    // const virtualList = messageList.slice(virtualIndexes[0], virtualIndexes[1] + 1);
     const virtualListRef = useRef<Message[]>([]);
+    // const [virtualList, setVvirtualList] = useState<Message[]>([]);
 
     const { 
         getIsFocused, 
         getTabIndex,
         setFocusedId,
     } = useKeyboardNavigation(
-        virtualList,
-        // messageList,
+        // virtualList,
+        virtualListRef,
         contentWrapperElement, 
         {
             direction: 'vertical',
             loop: false,
-            initialFocusableId: virtualList.at(-1)?.id,
-            onFocusChange: (item, stepType) => {
-                if (!item || !viewportList) return;
-                const itemIndex = messageList.findIndex(listItem => listItem.id === item.id);
-
-                viewportList.scrollToIndex({
-                    index: itemIndex,
-                    prerender: 20,
-                    // alignToTop: stepType === 'forward' ? true : false,
-                    alignToTop: false,
-                    offset: -400,
-                });
-            },
+            initialFocusableId: messageList.at(-1)?.id,
         },
     );
 
@@ -229,18 +217,16 @@ export const Chat2: FC<Chat> = ({
                         <Conditional isRendered={!!messageList.length}>
                             <ViewportList
                                 items={messageList}
-                                // count={messageList.length}
                                 initialIndex={messageList.length - 1}
-                                // overscan={5}
                                 withCache
                                 indexesShift={indexesShift}
                                 initialPrerender={messageList.length}
+                                axis='y'
+                                initialAlignToTop={true}
+                                scrollThreshold={0}
                                 ref={setViewportList}
                                 onViewportIndexesChange={(indexes) => {
-                                    console.log(indexes);
                                     virtualListRef.current = messageList.slice(indexes[0], indexes[1] + 1);
-                                    // setVirtualIndexes(indexes);
-                                    handleNewIndexes(indexes);
                                 }}
                             >
                                 {(message) => {
@@ -285,23 +271,28 @@ export const Chat2: FC<Chat> = ({
                                             disabled={!getIsFocused(message.id)}
                                             key={message.id}
                                         >
-                                            <div>
-                                                <Conditional isRendered={showDayDivider}>
-                                                    <DayDivider time={message.createdAt}/>
-                                                </Conditional>
-                                    
-                                                <div 
-                                                    className={twClassNames({
-                                                        [styles.messageGroupHead]: isGroupHead,
-                                                    })}
-                                                    aria-hidden
+                                            <Conditional isRendered={showDayDivider}>
+                                                <DayDivider time={message.createdAt}/>
+                                            </Conditional>
+                                                    
+                                            <div 
+                                                className={twClassNames({
+                                                    [styles.messageGroupHead]: isGroupHead,
+                                                })}
+                                                aria-hidden
+                                            >
+                                                <ScrollIntoView 
+                                                    enabled={getIsFocused(message.id)}
+                                                    options={{
+                                                        block: 'center',
+                                                    }}
                                                 >
                                                     <Message
                                                         message={message}
                                                         displayMode={displayMode}
                                                         isGroupHead={isGroupHead}
                                                         tabIndex={getTabIndex(message.id)}
-                                                        onClick={() => setFocusedId(message.id)}
+                                                        // onClick={() => setFocusedId(message.id)}
                                                         isInEditMode={!!editingMessageId && editingMessageId === message.id}
                                                         addReaction={(code) => console.log('add reaction', code)}
                                                         closeEditor={() => setEditingMessageId(null)}
@@ -311,7 +302,7 @@ export const Chat2: FC<Chat> = ({
                                                             console.log('save editor', value);
                                                         }}
                                                     />
-                                                </div>
+                                                </ScrollIntoView>
                                             </div>
                                         </MoveFocusInside>
                                     );
@@ -364,6 +355,41 @@ export const Chat2: FC<Chat> = ({
     );
 };
 
+interface ScrollIntoView extends 
+PropsWithClassName, PropsWithChildren {
+    enabled: boolean;
+    options?: ScrollIntoViewOptions;
+    rest?: HTMLAttributes<HTMLDivElement>;
+}
+
+const ScrollIntoView: FC<ScrollIntoView> = ({
+    className = '',
+    enabled,
+    options,
+    rest,
+    children,
+}) => {
+    const optionsRef = useLatest(options);
+    const wrapperRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!enabled) return;
+        if (!wrapperRef.current) return;
+
+        wrapperRef.current.scrollIntoView(optionsRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [enabled]);
+
+    return (
+        <div 
+            className={className}
+            ref={wrapperRef}
+            {...rest}
+        >
+            {children}
+        </div>
+    );
+};
 
 // return (
 //     <MoveFocusInside 

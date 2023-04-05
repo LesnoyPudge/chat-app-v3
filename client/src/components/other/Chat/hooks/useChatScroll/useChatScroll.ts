@@ -36,16 +36,6 @@ export const useChatScroll = (messages: Message[]) => {
         isAutoScrollEnabledRef.current = isIntersecting;
     });
 
-    const handleNewIndexes = (indexes: [number, number]) => {
-        if (!isAutoScrollEnabledRef.current) return;
-        if (!viewportList) return;
-    
-        // viewportList.scrollToIndex({ 
-        //     index: indexes[1],
-        //     prerender: 20,
-        // });
-    };
-
     useLayoutEffect(() => {
         if (!isAutoScrollEnabledRef.current) return;
 
@@ -100,10 +90,8 @@ export const useChatScroll = (messages: Message[]) => {
         setAutoScrollTriggerElement,
         indexesShift,
         setViewportList,
-        handleNewIndexes,
         setPlaceholder,
         isPlaceholderVisible,
         contentWrapperElement,
-        viewportList,
     };
 };
