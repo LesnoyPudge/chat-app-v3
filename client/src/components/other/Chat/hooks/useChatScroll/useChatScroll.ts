@@ -93,5 +93,6 @@ export const useChatScroll = (messages: Message[]) => {
         setPlaceholder,
         isPlaceholderVisible,
         contentWrapperElement,
+        viewportList,
     };
 };

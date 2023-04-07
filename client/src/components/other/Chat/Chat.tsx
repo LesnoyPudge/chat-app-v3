@@ -162,7 +162,7 @@ export const Chat: FC<Chat> = ({
 
                         <Conditional isRendered={showHelloMessage}>
                             <HelloFromRoom
-                                firstMessageCreationTimestamp={messageList.at(0)?.createdAt}
+                                // firstMessageCreationTimestamp={messageList.at(0)?.createdAt}
                             />
                         </Conditional>
 

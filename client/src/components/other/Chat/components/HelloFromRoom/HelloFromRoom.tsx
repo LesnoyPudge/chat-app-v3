@@ -5,13 +5,9 @@ import { DayDivider } from '../DayDivider';
 
 
 
-interface HelloFromRoom extends PropsWithClassName {
-    firstMessageCreationTimestamp?: number;
-}
 
-export const HelloFromRoom: FC<HelloFromRoom> = ({
+export const HelloFromRoom: FC<PropsWithClassName> = ({
     className = '',
-    firstMessageCreationTimestamp,
 }) => {
     return (
         <>
@@ -21,10 +17,6 @@ export const HelloFromRoom: FC<HelloFromRoom> = ({
             >
                 <>Hello from room</>
             </div>
-
-            <Conditional isRendered={!!firstMessageCreationTimestamp}>
-                <DayDivider time={firstMessageCreationTimestamp || Date.now()}/>
-            </Conditional>
         </>
     );
 };

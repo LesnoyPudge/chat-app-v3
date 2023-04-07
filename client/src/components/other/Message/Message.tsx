@@ -1,4 +1,4 @@
-import { PropsWithClassName } from '@types';
+import { PropsWithClassName, PropsWithInnerRef } from '@types';
 import { createContext, FC, useEffect, useRef } from 'react';
 import { Descendant } from 'slate';
 import { EmojiCode, Conditional } from '@components';
@@ -14,7 +14,9 @@ import { useToggle } from 'usehooks-ts';
 //     saveEditor: () => void;
 
 
-interface MessageComponent extends PropsWithClassName {
+interface MessageComponent 
+extends PropsWithClassName,
+PropsWithInnerRef<HTMLElement> {
     message: IMessage & {reactions: {code: EmojiCode, users: string[]}[]};
     isGroupHead: boolean;
     displayMode: 'cozy' | 'compact';
@@ -57,6 +59,7 @@ export const Message: FC<MessageComponent> = ({
     isGroupHead,
     tabIndex = 0,
     isInEditMode,
+    innerRef,
     onClick,
     addReaction,
     openEditor,
@@ -80,6 +83,7 @@ export const Message: FC<MessageComponent> = ({
             aria-hidden={false}
             aria-setsize={-1}
             tabIndex={tabIndex}
+            ref={innerRef}
             onClick={onClick}
         >
             <Heading 
