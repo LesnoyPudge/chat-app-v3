@@ -1,7 +1,7 @@
 import { useEventListener, useProvidedValue, useStateAndRef, useThrottle } from '@hooks';
 import { ObjectWithId } from '@types';
 import { noop } from '@utils';
-import { MutableRefObject, RefObject, useCallback, useMemo } from 'react';
+import { RefObject, useCallback, useMemo } from 'react';
 import { useLatest } from 'react-use';
 import { Key } from 'ts-key-enum';
 
@@ -28,7 +28,7 @@ interface UseKeyboardNavigationReturn {
 }
 
 export const useKeyboardNavigation = (
-    focusableListRef: MutableRefObject<ObjectWithId[]>,
+    focusableListRef: RefObject<ObjectWithId[]>,
     providedRoot: RootElement = null,
     options?: Options,
 ): UseKeyboardNavigationReturn => {
@@ -40,19 +40,20 @@ export const useKeyboardNavigation = (
     } = options || {};
 
     const [root, setRoot] = useProvidedValue(providedRoot);
-    const initialIdRef = useLatest(initialFocusableId || focusableListRef.current.at(0)?.id || null);
+    const initialIdRef = useLatest(initialFocusableId || focusableListRef.current?.at(0)?.id || null);
     const [_, focusedIdRef, setFocusedId] = useStateAndRef<string | null>(null);
     const { isThrottling, throttle } = useThrottle();
  
     const getCurrentIndex = useCallback(() => {
+        if (!focusableListRef.current) return -1;
         return focusableListRef.current.findIndex((item) => item.id === focusedIdRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getIndexes = useCallback(() => {
         const currentIndex = getCurrentIndex();
-        const listLength = focusableListRef.current.length;
-
+        const listLength = focusableListRef.current?.length || 0;
+        console.log(focusableListRef.current?.length, currentIndex, focusableListRef);
         if (!loop) {
             const nextIndex = Math.min(listLength - 1, currentIndex + 1);
             const prevIndex = Math.max(0, currentIndex - 1);
@@ -89,7 +90,7 @@ export const useKeyboardNavigation = (
         
         e.preventDefault();
 
-        if (!focusableListRef.current.length) return;
+        if (!focusableListRef.current?.length) return;
         if (isThrottling) return;
 
         throttle(noop, 0)();
@@ -97,13 +98,15 @@ export const useKeyboardNavigation = (
         const noFocusedId = focusedIdRef.current === null;
         const isItemInArray = focusableListRef.current.some((item) => item.id === focusedIdRef.current);
 
+        const moveDirection = isForward ? 'forward' : 'backward';
+
         if ((noFocusedId || !isItemInArray) && !focusableListRef.current.length) return;
 
         if ((noFocusedId || !isItemInArray) && !!focusableListRef.current.length) {
             const item = focusableListRef.current.find((item) => item.id === initialIdRef.current);
 
             setFocusedId(initialIdRef.current);
-            onFocusChange(item, isForward ? 'forward' : 'backward', focusedIdRef);
+            onFocusChange(item, moveDirection, focusedIdRef);
 
             return;
         }
@@ -111,11 +114,11 @@ export const useKeyboardNavigation = (
         const { nextIndex, prevIndex } = getIndexes();
         const newIndex = isForward ? nextIndex : prevIndex;
         const newItem = focusableListRef.current[newIndex];
-
+        console.log(focusedIdRef.current, newItem.id, newIndex, focusableListRef);
         if (focusedIdRef.current === newItem.id) return;
 
         setFocusedId(newItem.id);
-        onFocusChange(newItem, isForward ? 'forward' : 'backward', focusedIdRef);
+        onFocusChange(newItem, moveDirection, focusedIdRef);
     }, root);
 
     const result: UseKeyboardNavigationReturn = useMemo(() => ({

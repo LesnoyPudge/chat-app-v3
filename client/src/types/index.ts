@@ -42,7 +42,7 @@ export interface RGB {
 export type Merge<T extends object[]> = ReturnType<typeof deepMerge<T>>;
 
 export type PropsWithInnerRef<T extends HTMLElement> = {
-    innerRef?: RefObject<T>;
+    innerRef?: RefObject<T> | ((ref: T) => void);
 }
 
 export interface Size {

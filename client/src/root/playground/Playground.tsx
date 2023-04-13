@@ -111,7 +111,7 @@ import { useFocus } from 'src/hooks/useFocus/useFocus';
 import { Formik } from 'formik';
 import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
-import { Chat } from 'src/components/other/Chat/Chat';
+// import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
 import { Chat2 } from 'src/components/other/Chat/Chat2';
 import ReactFocusLock from 'react-focus-lock';

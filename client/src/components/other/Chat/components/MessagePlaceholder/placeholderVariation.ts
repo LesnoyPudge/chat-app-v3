@@ -2,7 +2,7 @@ import { getRandomNumber } from '@utils';
 
 
 
-interface PlaceholderVariation {
+export interface PlaceholderVariation {
     username: {
         width: number;
     };

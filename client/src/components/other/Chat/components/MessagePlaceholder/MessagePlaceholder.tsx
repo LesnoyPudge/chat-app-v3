@@ -2,12 +2,13 @@ import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC, useRef } from 'react';
 import { Conditional, List } from '@components';
-import { createPlaceholderVariation } from './createPlaceholderVariation';
+import { createPlaceholderVariation, PlaceholderVariation } from './placeholderVariation';
 
 
 
 interface MessagePlaceholder extends PropsWithClassName {
     displayMode: 'cozy' | 'compact';
+    placeholderVariation?: PlaceholderVariation;
 }
 
 const styles = {
@@ -25,9 +26,10 @@ const styles = {
 export const MessagePlaceholder: FC<MessagePlaceholder> = ({
     className = '',
     displayMode,
+    placeholderVariation = createPlaceholderVariation(),
 }) => {
-    const variationRef = useRef(createPlaceholderVariation());
-
+    const variationRef = useRef(placeholderVariation);
+    
     return (
         <div 
             className={twClassNames(styles.wrapper, className)}
