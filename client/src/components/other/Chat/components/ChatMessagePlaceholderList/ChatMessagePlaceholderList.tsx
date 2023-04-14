@@ -1,6 +1,5 @@
 import { List, Static } from '@components';
-import { PropsWithInnerRef } from '@types';
-import { FC, memo, PropsWithChildren } from 'react';
+import { FC } from 'react';
 import { createPlaceholderVariation, MessagePlaceholder } from '../MessagePlaceholder';
 
 
@@ -11,9 +10,7 @@ const styles = {
 
 const list = Array(15).fill(null).map(() => createPlaceholderVariation());
 
-export const ChatMessagePlaceholderList: FC<PropsWithInnerRef<HTMLDivElement>> = ({
-    innerRef,
-}) => {
+export const ChatMessagePlaceholderList: FC = () => {
     const modeTMP = 'cozy';
 
     return (
@@ -21,7 +18,6 @@ export const ChatMessagePlaceholderList: FC<PropsWithInnerRef<HTMLDivElement>> =
             <div
                 className={styles.placeholderList}
                 aria-hidden
-                ref={innerRef}
             >
                 <List list={list}>
                     {(variation) => (

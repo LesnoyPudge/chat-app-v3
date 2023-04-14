@@ -1,12 +1,11 @@
-import { PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName, Size } from '@types';
+import { PropsWithChildrenAsNodeOrFunction, PropsWithClassName, Size } from '@types';
 import { conditional, noop, twClassNames } from '@utils';
-import { FC, MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
+import { FC, MutableRefObject, useEffect, useRef } from 'react';
 import { useThrottle } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
 import { SimpleBarCore } from '@reExport';
-import SimpleBar, { Props as SimpleBarProps } from 'simplebar-react';
+import SimpleBar from 'simplebar-react';
 import useResizeObserver from '@react-hook/resize-observer';
-import { ChildrenAsNodeOrFunction } from '@components';
 
 
 
@@ -88,47 +87,43 @@ export const Scrollable: FC<Scrollable> = ({
         if (autoHide) throttle(noop, 1000)();  
     };
 
-    // useLayoutEffect(() => {
-    //     mySimpleBarRef.current.
-    // }, []);
-
     const getRef = (ref: SimpleBarCore | null) => {
         if (!ref) return;
         
         mySimpleBarRef.current = ref;
-        // console.log('ref', ref, ref.contentEl, ref.contentWrapperEl);
+
         (setSimpleBar || noop)(ref);
     };
 
-    // useEffect(() => {
-    //     if (!mySimpleBarRef.current) return;
+    useEffect(() => {
+        if (!mySimpleBarRef.current) return;
 
-    //     const target = mySimpleBarRef.current;
+        const target = mySimpleBarRef.current;
 
-    //     if (target) {
-    //         (setSimpleBar || noop)(target);
-    //     }
+        if (target) {
+            (setSimpleBar || noop)(target);
+        }
 
-    //     if (mySimpleBarRef.current.contentEl) {
-    //         contentRef.current = mySimpleBarRef.current.contentEl;
-    //     }
+        if (mySimpleBarRef.current.contentEl) {
+            contentRef.current = mySimpleBarRef.current.contentEl;
+        }
 
-    //     if (simpleBarRef && !simpleBarRef.current) {
-    //         simpleBarRef.current = target;
-    //     }
+        if (simpleBarRef && !simpleBarRef.current) {
+            simpleBarRef.current = target;
+        }
 
-    //     if (scrollableRef && !scrollableRef.current) {
-    //         scrollableRef.current = target.getScrollElement() as HTMLDivElement;
-    //     }
+        if (scrollableRef && !scrollableRef.current) {
+            scrollableRef.current = target.getScrollElement() as HTMLDivElement;
+        }
 
-    //     if (scrollableContentRef && !scrollableContentRef.current) {
-    //         scrollableContentRef.current = target.getContentElement() as HTMLDivElement;
-    //     }
+        if (scrollableContentRef && !scrollableContentRef.current) {
+            scrollableContentRef.current = target.getContentElement() as HTMLDivElement;
+        }
 
-    //     if (target.contentWrapperEl) {
-    //         target.contentWrapperEl.tabIndex = focusable ? 0 : -1;
-    //     }
-    // }, [focusable, scrollableContentRef, scrollableRef, setSimpleBar, simpleBarRef]);
+        if (target.contentWrapperEl) {
+            target.contentWrapperEl.tabIndex = focusable ? 0 : -1;
+        }
+    }, [focusable, scrollableContentRef, scrollableRef, setSimpleBar, simpleBarRef]);
 
     useResizeObserver(contentRef, (entry) => {
         if (!onContentResize) return;
@@ -182,11 +177,6 @@ export const Scrollable: FC<Scrollable> = ({
                 ref={getRef}
             >
                 {children}
-                {/* {(props) => (
-                    <ChildrenAsNodeOrFunction args={props}>
-                        {children}
-                    </ChildrenAsNodeOrFunction>
-                )} */}
             </SimpleBar>
         </div>
     );

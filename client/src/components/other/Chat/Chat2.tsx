@@ -1,12 +1,15 @@
 import { Conditional, EmojiCode, Memo, Message, Scrollable } from '@components';
 import { PropsWithClassName } from '@types';
-import { FC, RefObject, useState } from 'react';
+import { createContext, FC, Fragment, RefObject, useState } from 'react';
 import { IMessage } from '@backendTypes';
-import { ChatListItem, ChatMessagePlaceholderList, HelloFromRoom } from './components';
+import { ChatListItem, ChatMessagePlaceholderList, DayDivider, HelloFromRoom } from './components';
 import { useChat } from './hooks';
 import { ViewportList } from 'react-viewport-list';
 import { ChatMock } from './ChatMock';
 import { SimpleBarCore } from '@reExport';
+import { MoveFocusInside } from 'react-focus-lock';
+import { noop } from '@utils';
+import { Descendant } from 'slate';
 
 
 
@@ -30,20 +33,27 @@ export const chatMock = new ChatMock(150, 20);
 
 const initialMessages = chatMock.getLastMessagesChunk();
 
-const styles = {
-    scrollableWrapper: 'flex grow relative',
-    scrollable: 'absolute inset-0 overflow-y-scroll overflow-x-hidden',
-    placeholderList: 'flex flex-col gap-4',
-};
+// const styles = {
+//     scrollableWrapper: 'flex grow relative',
+//     scrollable: 'absolute inset-0 overflow-y-scroll overflow-x-hidden',
+//     placeholderList: 'flex flex-col gap-4',
+// };
+
+interface ChatContext {
+    messageInRedactorMode: string | null;
+    setMessageInRedactorMode: (id: string) => void;
+}
+
+export const ChatContext = createContext<ChatContext | undefined>(undefined);
 
 export const Chat2: FC<Chat> = ({
     className = '',
 }) => {
     const [messageList, setMessageList] = useState(initialMessages);
+    const [redactorId, setRedactorId] = useState<string | null>(null);
 
     const {
         indexesShift,
-        isAtStart,
         normalizedViewportItemRefs,
         handleViewportIndexesChange,
         setContentElement,
@@ -55,11 +65,13 @@ export const Chat2: FC<Chat> = ({
         setViewportList,
     } = useChat(messageList);
 
+    const isAtStart = true;
     const isLoading = false;
-    const displayMode = 'cozy' satisfies 'cozy' | 'compact';
 
     const showHelloMessage = !isLoading && isAtStart;
     const showPlaceholder = !!messageList.length && !isAtStart;
+
+    const firstMessageCreationTimestamp = messageList.at(0)?.createdAt || Date.now();
 
     const addMessage = () => {
         const [_, newMessage] = chatMock.addNewMessage();
@@ -71,6 +83,17 @@ export const Chat2: FC<Chat> = ({
         setContentWrapperElement(ref.contentWrapperEl);
         setContentElement(ref.contentEl);
     };
+
+    const closeEditor = () => setRedactorId(null);
+
+    const addReaction = (id: string, code: EmojiCode) => {
+        console.log('add reactiorn', id, code);
+    };
+
+    const saveEditor = (id: string, value: Descendant[]) => {
+        console.log('save editor', id, value);
+        closeEditor();
+    };
     
     return (
         <div className={className + ' h-full flex flex-col'}>
@@ -79,13 +102,12 @@ export const Chat2: FC<Chat> = ({
             <Scrollable
                 setSimpleBar={setSimpleBar}
                 focusable
-                label=''
+                label='Сообщения'
             >
-                {/* https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/feed_role */}
                 <div
                     role='feed'
                     aria-busy
-                    aria-label='Сообщения'
+                    aria-label='Лента сообщений'
                 >
                     <Conditional isRendered={isLoading}>
                         <ChatMessagePlaceholderList/>
@@ -93,10 +115,19 @@ export const Chat2: FC<Chat> = ({
 
                     <Conditional isRendered={showHelloMessage}>
                         <HelloFromRoom/>
+
+                        <DayDivider time={firstMessageCreationTimestamp}/>
                     </Conditional>
                     
                     <Conditional isRendered={showPlaceholder}>
-                        <ChatMessagePlaceholderList innerRef={setPlaceholderElement}/>
+                        <div 
+                            aria-hidden
+                            ref={setPlaceholderElement}
+                        >
+                            <ChatMessagePlaceholderList/>
+
+                            <DayDivider time={firstMessageCreationTimestamp}/>
+                        </div>
                     </Conditional>
 
                     <Conditional isRendered={!!messageList.length}>
@@ -117,9 +148,15 @@ export const Chat2: FC<Chat> = ({
                                 <Memo key={id}>
                                     <ChatListItem
                                         id={id}
+                                        virtualItemsRef={normalizedViewportItemRefs}
+                                        isFirst={messageList[0].id === id}
+                                        isInRedactorMode={redactorId === id}
                                         isFocused={getIsFocused(id)}
                                         setFocusedId={setFocusedId}
-                                        virtualItemsRef={normalizedViewportItemRefs}
+                                        addReaction={addReaction}
+                                        closeEditor={closeEditor}
+                                        openEditor={setRedactorId}
+                                        saveEditor={saveEditor}
                                     />
                                 </Memo>
                             )}

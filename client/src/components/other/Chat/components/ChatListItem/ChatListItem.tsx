@@ -1,17 +1,24 @@
-import { twClassNames } from '@utils';
+import { noop, twClassNames } from '@utils';
 import { isSameDay, differenceInMinutes } from 'date-fns';
 import { useRef, useEffect, FC, RefObject } from 'react';
-import { Conditional, Message } from '@components';
+import { Conditional, Message, MessageComponent } from '@components';
 import { DayDivider } from '../DayDivider';
 import { chatMock } from '../../Chat2';
 import { NormalizedViewportItemRefs } from '../../hooks';
 
 
 
-interface ChatListItem {
+interface ChatListItem extends Pick<MessageComponent, 
+    'addReaction' | 
+    'closeEditor' | 
+    'openEditor' | 
+    'saveEditor' |
+    'isInRedactorMode'
+> {
     id: string;
     isFocused: boolean;
     virtualItemsRef: RefObject<NormalizedViewportItemRefs>;
+    isFirst: boolean;
     setFocusedId: (id: string) => void;
 }
 
@@ -23,17 +30,19 @@ export const ChatListItem: FC<ChatListItem> = ({
     id,
     isFocused,
     virtualItemsRef,
+    isFirst,
     setFocusedId,
+    ...rest
 }) => {
     const messageList = chatMock.messages;
     const message = messageList.find(item => item.id === id)!;
-    const isFirst = message.id === messageList[0].id;
     const currentMessageIndex = messageList.findIndex((item) => item.id === message.id);
-
-    const isAtStart = false;
 
     const messageWrapperRef = useRef<HTMLDivElement | null>(null);
     const messageRef = useRef<HTMLElement | null>(null);
+
+    const displayMode = 'cozy';
+    const tabIndex = isFocused ? 0 : -1;
 
     useEffect(() => {
         if (!messageRef.current || !messageWrapperRef.current) return;
@@ -76,7 +85,7 @@ export const ChatListItem: FC<ChatListItem> = ({
                 previousMessage.createdAt, 
                 message.createdAt,
             )
-            : true
+            : false
     );
     
     const withTimeGap = (
@@ -89,13 +98,14 @@ export const ChatListItem: FC<ChatListItem> = ({
     );
     
     const isGroupHead = isFirst || isPreviousUserSameAsCurrent || withTimeGap || isNewDay;
-    const showDayDivider = isNewDay && !(isAtStart && isFirst);
+    const showDayDivider = !isFirst && isNewDay;
+
+    const handleItemClick = () => setFocusedId(message.id);
 
     return (
         <div 
             aria-hidden
             ref={messageWrapperRef} 
-            key={id}
         >
             <Conditional isRendered={showDayDivider}>
                 <DayDivider time={message.createdAt}/>
@@ -105,29 +115,15 @@ export const ChatListItem: FC<ChatListItem> = ({
                 className={twClassNames({
                     [styles.messageGroupHead]: isGroupHead,
                 })}
+                onClick={handleItemClick}
             >
                 <Message
                     innerRef={messageRef}
                     message={message}
-                    displayMode={'cozy'}
+                    displayMode={displayMode}
                     isGroupHead={isGroupHead}
-                    tabIndex={isFocused ? 0 : -1}
-                    onClick={() => setFocusedId(message.id)}
-                    isInEditMode={
-                        false
-                        // !!editingMessageId && editingMessageId === message.id
-                    }
-                    addReaction={(code) => console.log('add reaction', code)}
-                    closeEditor={() => {
-                        // setEditingMessageId(null)
-                    }}
-                    openEditor={() => {
-                        // setEditingMessageId(message.id)
-                    }}
-                    saveEditor={(value) => {
-                        // setEditingMessageId(null);
-                        console.log('save editor', value);
-                    }}
+                    tabIndex={tabIndex}
+                    {...rest}
                 />
             </div>
         </div>

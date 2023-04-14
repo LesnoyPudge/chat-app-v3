@@ -41,9 +41,7 @@ export const useChat = (messages: IMessage[]) => {
         messagesLengthRef,
     });
 
-    const {
-        isAtStart,
-    } = useChatLoad({
+    useChatLoad({
         placeholderElement,
         firstMessageCreationDateRef,
     });
@@ -51,7 +49,7 @@ export const useChat = (messages: IMessage[]) => {
     const handleViewportIndexesChange = useCallback((indexes: [number, number]) => {
         const startIndex = Math.max(0, indexes[0] - 1);
         const endIndex = Math.min(messagesLengthRef.current, indexes[1] + 1);
-        console.log(startIndex, endIndex);
+
         setMessagesInViewportRef(messagesRef.current.slice(
             startIndex, 
             endIndex,
@@ -62,6 +60,7 @@ export const useChat = (messages: IMessage[]) => {
     const {
         getIsFocused,
         setFocusedId,
+        getTabIndex,
     } = useKeyboardNavigation(
         messagesInViewportRef,
         contentWrapperElement, 
@@ -83,7 +82,6 @@ export const useChat = (messages: IMessage[]) => {
 
     return {
         indexesShift,
-        isAtStart,
         normalizedViewportItemRefs,
         handleViewportIndexesChange,
         setContentWrapperElement,
@@ -93,5 +91,6 @@ export const useChat = (messages: IMessage[]) => {
         setViewportList,
         getIsFocused,
         setFocusedId,
+        getTabIndex,
     };
 };

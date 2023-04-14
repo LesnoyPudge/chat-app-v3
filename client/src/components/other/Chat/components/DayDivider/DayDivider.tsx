@@ -29,6 +29,7 @@ export const DayDivider: FC<DayDivider> = ({
             className={twClassNames(styles.wrapper, className)}
             role='separator'
             aria-label={formattedDate}
+            aria-hidden={false}
         >
             <div className={styles.dividerLine}></div>
 

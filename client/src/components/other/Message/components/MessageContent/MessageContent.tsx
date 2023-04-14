@@ -1,71 +1,32 @@
-import { IMessage } from '@backendTypes';
-import { Conditional, EmojiCode } from '@components';
+import { Conditional } from '@components';
 import { SerializedSlateContent } from '@libs';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC, useContext } from 'react';
-import { Ids, MessageContext } from '../../Message';
+import { MessageContext } from '../../Message';
 import { MessageEditTimestamp } from '../MessageEditTimestamp';
 
 
-
-interface MessageContent extends PropsWithClassName {
-    message: IMessage & {
-        reactions: {
-            code: EmojiCode;
-            users: string[];
-        }[];
-    };
-    isInEditMode: boolean;
-    ids: Ids;
-}
 
 const styles = {
     wrapper: 'inline message-font-size',
 };
 
-export const MessageContent: FC<MessageContent> = ({
+export const MessageContent: FC<PropsWithClassName> = ({
     className = '',
-    ids,
-    isInEditMode,
-    message,
 }) => {
+    const { ids, isInRedactorMode, message } = useContext(MessageContext) as MessageContext;
+
     return (
         <p 
             className={twClassNames(styles.wrapper, className)}
             id={ids.contentId}
         >
-            <Conditional isRendered={!isInEditMode}>
+            <Conditional isRendered={!isInRedactorMode}>
                 <SerializedSlateContent nodes={message.content}/>
 
-                <MessageEditTimestamp
-                    ids={ids}
-                    message={message}
-                />
+                <MessageEditTimestamp/>
             </Conditional>
         </p>
     );
 };
-
-// const styles = {
-//     wrapper: 'inline message-font-size',
-// };
-
-// export const MessageContent: FC<PropsWithClassName> = ({
-//     className = '',
-// }) => {
-//     const { ids, isInEditMode, message } = useContext(MessageContext) as MessageContext;
-
-//     return (
-//         <p 
-//             className={twClassNames(styles.wrapper, className)}
-//             id={ids.contentId}
-//         >
-//             <Conditional isRendered={!isInEditMode}>
-//                 <SerializedSlateContent nodes={message.content}/>
-
-//                 <MessageEditTimestamp/>
-//             </Conditional>
-//         </p>
-//     );
-// };
