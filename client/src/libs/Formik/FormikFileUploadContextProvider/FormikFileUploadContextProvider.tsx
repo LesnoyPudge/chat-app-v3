@@ -42,7 +42,7 @@ export const FormikFileUploadContextProvider: FC<FormikFileUploadContextProvider
     children,
 }) => {
     const [{ value }, _, { setValue }] = useField<EncodedFile[]>(name);
-    
+
     const errorListenersRef = useRef<UseFileUploadListeners>({
         onAmountLimit: noop,
         onSizeLimit: noop,

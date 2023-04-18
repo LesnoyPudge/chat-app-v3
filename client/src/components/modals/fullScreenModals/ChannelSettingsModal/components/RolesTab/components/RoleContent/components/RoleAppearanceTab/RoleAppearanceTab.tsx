@@ -24,6 +24,8 @@ export const RoleAppearanceTab: FC = () => {
     const { values } = useFormikContext<ChannelSettingsModalFormValues>();
     const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
     
+    const roleImage = (() => `getRoleImageById, ${values.roleId}`)();
+
     return (
         <TabPanel 
             className={styles.wrapper}
@@ -76,10 +78,10 @@ export const RoleAppearanceTab: FC = () => {
                     <FormikFileInput>
                         {({ value }) => (
                             <div className={styles.firstFileInputWrapper}>
-                                <Conditional isRendered={!!values.roleImage || !!value.length}>
+                                <Conditional isRendered={!!roleImage || !!value.length}>
                                     <Image
                                         className={styles.firstFileInputImage}
-                                        src={values.roleImage}
+                                        src={roleImage}
                                         file={value[0]}
                                         alt='Значок роли'
                                     />

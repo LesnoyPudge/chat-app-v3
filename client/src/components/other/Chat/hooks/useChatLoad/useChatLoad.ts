@@ -1,6 +1,6 @@
 import { useSharedIntersectionObserver } from '@hooks';
 import { RefObject } from 'react';
-import { chatMock } from '../../Chat2';
+import { chatMock } from '../../Chat';
 
 
 

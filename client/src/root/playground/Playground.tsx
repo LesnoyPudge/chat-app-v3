@@ -4,7 +4,7 @@ import { AnyFunction, EncodedFile, PropsWithChildrenAndClassName, PropsWithChild
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver } from '@utils';
 import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
-import { useBoolean, useCounter, useElementSize, useHover, useImageOnLoad, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useBoolean, useCounter, useElementSize, useHover, useImageOnLoad, useInterval, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
@@ -113,7 +113,6 @@ import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
 // import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
-import { Chat2 } from 'src/components/other/Chat/Chat2';
 import ReactFocusLock from 'react-focus-lock';
 
 
@@ -271,44 +270,67 @@ const PlaygroundInner5: FC = () => {
 };
 
 const PlaygroundInner6: FC = () => {
-    // const [isVisible, toggle] = useToggle(true);
-    const ref = useRef<HTMLDivElement | null>(null);
-    const [ref2, setRef2] = useState<HTMLDivElement | null>(null);
-    // const [simp, setSimp] = useState<SimpleBarCore | null>(null);
-    // const content = useLatest(simp?.contentEl || null);
-    // const simpRef = useRef<SimpleBarCore | null>(null);
+    const [list, setList] = useState(Array(19).fill(null).map(() => ''));
 
-    // useSharedIntersectionObserver(simp?.contentEl, ({ isIntersecting }) => {
-    //     console.log('work', isIntersecting);
-    // });
-    // useEventListener('click', (e) => {
-    //     console.log('click');
-    // }, ref2);
-    // // console.log(ref.current);
+    const add = () => setList((prev) => [...prev, '']);
 
-    // useEffect(() => {
-    //     console.log(ref.current);
-    // }, []);
+    useInterval(add, 500);
 
-    // useEventListener('keydown', (e) => {
-    //     console.log('key', e.key);
-    // }, ref.current);
+    const ListComponent = (
+        <div className='flex flex-col gap-2'>
+            {/* <List list={list}>
+                
+            </List> */}
+            <ViewportList items={list}>
+                {(_, i) => (
+                    <div 
+                        className='py-2'
+                        onClick={add}
+                        key={i}
+                    >
+                        <>item: {i}</>
+                    </div>
+                )}
+            </ViewportList>
+        </div>
+    );
 
     return (
         <>
-            {/* <div ref={setRef2} tabIndex={0}>
-                <>test</>
-            </div> */}
-            {/* <Scrollable className='h-[500px]' setSimpleBar={setSimp}>
-                
-            </Scrollable> */}
-            <Chat2 className='h-full'/>
-            {/* <Test/> */}
+            <Conditional isRendered={true}>
+                <div className='h-full relative flex'>
+                    <Scrollable>
+                        {ListComponent}
+                    </Scrollable>
+                </div>
+            </Conditional>
+
+            <Conditional isRendered={false}>
+                <div className='h-full relative'>
+                    <div className='absolute inset-0 overflow-y-scroll'>
+                        {ListComponent}
+                    </div>
+                </div>
+            </Conditional>
+
+            {/* <Chat2 className='h-full'/> */}
         </>
     );
 };
 
-const enabled = !!1;
+const PlaygroundInner7: FC = () => {
+    return (
+        <>
+            <OverlayContextProvider isOverlayExistInitial>
+                <ModalWindow label='' withBackdrop>
+
+                </ModalWindow>
+            </OverlayContextProvider>
+        </>
+    );
+};
+
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -324,7 +346,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner3/> */}
                 {/* <PlaygroundInner4/> */}
                 {/* <PlaygroundInner5/> */}
-                <PlaygroundInner6/>
+                {/* <PlaygroundInner6/> */}
+                <PlaygroundInner7/>
                 {/* </ReactFocusLock> */}
             </Conditional>
         </>

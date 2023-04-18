@@ -17,7 +17,7 @@ const tabs = {
 };
 
 const initialValues = {
-    avatar: null,
+    avatar: [],
     theme: 'dark',
     messageDisplayType: 'cozy',
 };

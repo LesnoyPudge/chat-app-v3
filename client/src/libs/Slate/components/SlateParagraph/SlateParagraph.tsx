@@ -5,21 +5,28 @@ import { RenderElementAttributes } from '../../types';
 
 
 
-interface SlateParagraph extends PropsWithChildrenAndClassName {
+type SlateParagraph = PropsWithChildrenAndClassName & ({
+    serialized?: never;
     attributes: RenderElementAttributes;
-}
+} | {
+    serialized: true;
+    attributes?: never;
+})
 
 export const SlateParagraph: FC<SlateParagraph> = ({
     className = '',
     attributes,
+    serialized,
     children,
 }) => {
+    const Tag = serialized ? 'span' : 'p';
+
     return (
-        <p 
+        <Tag 
             className={twClassNames(className)}
             {...attributes}
         >
             {children}
-        </p>
+        </Tag>
     );
 };

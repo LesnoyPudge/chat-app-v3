@@ -16,10 +16,11 @@ interface ModalWindow extends PropsWithChildrenAsNodeOrFunction<OverlayContext> 
 const defaultTransitionOptions = getTransitionOptions.defaultModal();
 
 const styles = {
-    wrapper: `grid place-items-center fixed w-screen 
-    h-screen pointer-events-none`,
-    backdrop: `fixed top-0 left-0 w-screen h-screen bg-black 
-    focus-hidden opacity-70 -z-10 scale-[999]`,
+    wrapper: 'fixed inset-0 pointer-events-none',
+    inner: 'h-full relative isolate',
+    backdrop: 'absolute inset-0 z-0 bg-black focus-hidden opacity-70 scale-[999]',
+    contentWrapper: 'absolute inset-0 z-10 grid place-items-center',
+    contentScrollable: 'overflow-x-hidden overflow-y-scroll scrollbar-hidden max-h-full',
 };
 
 export const ModalWindow: FC<ModalWindow> = ({
@@ -31,7 +32,9 @@ export const ModalWindow: FC<ModalWindow> = ({
 }) => {
     const overlayValues = useContext(OverlayContext) as OverlayContext;
     const { closeOverlay, isOverlayExist } = overlayValues;
+
     const withPointerEvents = isOverlayExist && !noPointerEvents;
+    const pointerClass = noPointerEvents ? 'pointer-events-none' : 'pointer-events-auto';
 
     return (
         <AnimatedTransition 
@@ -48,26 +51,33 @@ export const ModalWindow: FC<ModalWindow> = ({
                     focused
                 >
                     <animated.div 
-                        className={twClassNames(
-                            styles.wrapper,
-                            { 'pointer-events-auto': withPointerEvents },
-                        )}
+                        className={styles.wrapper}
                         style={style}
                         role='dialog'
                         aria-label={label}
                     >
-                        <Conditional isRendered={withBackdrop}>
-                            <div
-                                className={twClassNames(styles.backdrop,
-                                    { 'pointer-events-auto': withPointerEvents },
-                                )}
-                                onClick={closeOverlay}
-                            ></div>
-                        </Conditional>
+                        <div className={styles.inner}>
+                            <Conditional isRendered={withBackdrop}>
+                                <div
+                                    className={twClassNames(
+                                        styles.backdrop,
+                                        pointerClass,
+                                    )}
+                                    onClick={closeOverlay}
+                                ></div>
+                            </Conditional>
                         
-                        <ChildrenAsNodeOrFunction args={overlayValues}>
-                            {children}
-                        </ChildrenAsNodeOrFunction>
+                            <div className={styles.contentWrapper}>
+                                <div className={twClassNames(
+                                    styles.contentScrollable,
+                                    pointerClass,
+                                )}>
+                                    <ChildrenAsNodeOrFunction args={overlayValues}>
+                                        {children}
+                                    </ChildrenAsNodeOrFunction>
+                                </div>
+                            </div>
+                        </div>
                     </animated.div>
                 </OverlayItem>
             )}   

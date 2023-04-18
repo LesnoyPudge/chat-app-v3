@@ -2,8 +2,20 @@
 
 
 
+@layer components {
+    .scrollbar-hidden {
+        &::-webkit-scrollbar {
+            @apply w-0 h-0;
+        }
+
+        & {
+            scrollbar-width: none;
+        }
+    }
+}
+
 /*
-    scrollbar
+    simplebar-custom
         simplebar-wrapper
             simplebar-placeholder
             simplebar-mask
@@ -17,7 +29,7 @@
 */
 
 @layer components {
-    .scrollbar {
+    .simplebar-custom {
         --track-transition: opacity 0.2s ease-in-out;
 
         &[data-direction=vertical] {
@@ -98,14 +110,14 @@
                         min-height: 100%;
 
                         & > .simplebar-content {
-                            display: flex;
-                            flex-direction: column;
-                            position: absolute;
-                            min-width: 100%;
-                            width: fit-content;
-                            height: fit-content;
-                            min-height: 100%;
-                            overflow: hidden;
+                            // display: flex;
+                            // flex-direction: column;
+                            // position: absolute;
+                            // min-width: 100%;
+                            // width: fit-content;
+                            // height: fit-content;
+                            // min-height: 100%;
+                            // overflow: hidden;
                         }
                     }
                 }
@@ -117,8 +129,7 @@
             transition: var(--track-transition);
 
             &::before {
-                // @apply bg-primary-300;
-                @apply bg-green-500;
+                @apply bg-scrollbar-track;
 
                 content: '';
                 position: absolute;
@@ -132,8 +143,7 @@
                 opacity: 1;
 
                 &::before {
-                    // @apply bg-primary-600;
-                    @apply bg-yellow-50;
+                    @apply bg-scrollbar-thumb;
 
                     opacity: 1;
                     inset: calc((var(--scrollbar-thickness) - var(--thumb-thickness)) / 2);

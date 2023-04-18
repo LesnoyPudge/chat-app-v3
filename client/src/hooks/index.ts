@@ -21,3 +21,4 @@ export * from './useProvidedValue';
 export * from './useEventListener';
 export * from './useStateAndRef';
 export * from './useRefWithSetter';
+export * from './useKeyboardNavigation';

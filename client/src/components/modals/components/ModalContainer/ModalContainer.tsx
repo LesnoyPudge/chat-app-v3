@@ -6,7 +6,7 @@ import { FC } from 'react';
 
 const styles = {
     wrapper: `flex flex-col justify-between max-h-screen w-[min(440px,100vw)] 
-    shadow-elevation-high bg-primary-200 rounded overflow-y-auto`,
+    shadow-elevation-high bg-primary-200 rounded`,
 };
 
 export const ModalContainer: FC<PropsWithChildrenAndClassName> = ({

@@ -6,13 +6,18 @@ import { RenderElementAttributes } from '../../types';
 
 
 
-interface SlateEmoji extends PropsWithChildrenAndClassName {
+type SlateEmoji = PropsWithChildrenAndClassName & {
     code: EmojiCode;
+} & ({
+    serialized?: never;
     attributes: RenderElementAttributes;
-}
+} | {
+    serialized: true;
+    attributes?: never;
+})
 
 const styles = {
-    wrapper: 'inline-block message-emoji-size',
+    wrapper: 'inline-block mx-0.5 message-emoji-size',
     emoji: 'inline-block w-full h-full',
 };
 

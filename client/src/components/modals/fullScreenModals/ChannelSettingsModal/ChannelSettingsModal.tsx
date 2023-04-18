@@ -1,9 +1,10 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import { ModalWindow, TabContextProvider } from '@components';
 import { getTransitionOptions } from '@utils';
 import { FullScreenModalWrapper, FullScreenModalNavigationSide, FullScreenModalContentSide, ScreenShake } from '../components';
 import { BannedTab, MembersTab, Navigation, OverviewTab, RolesTab } from './components';
 import { Form, Formik } from 'formik';
+import { EncodedFile } from '@types';
 
 
 
@@ -12,12 +13,12 @@ export type ChannelSettingsModalTabs = typeof tabs;
 export interface ChannelSettingsModalFormValues {
     channelId: string;
     channelName: string,
-    channelImage: string | null,
+    channelImage: EncodedFile[],
     channelIsPrivate: boolean,
     roleId: string,
     roleName: string,
     roleColorHEX: string,
-    roleImage: string | null,
+    roleImage: EncodedFile[],
     roleChannelControl: boolean;
     roleRoomControl: boolean;
     roleCreateInvitation: boolean;
@@ -41,12 +42,12 @@ export const ChannelSettingsModal: FC = () => {
     const initialValues: ChannelSettingsModalFormValues = {
         channelId: 'someChannelID',
         channelName: 'coolChannel',
-        channelImage: null,
+        channelImage: [],
         channelIsPrivate: false,
         roleId: 'id1',
         roleName: 'roleName',
         roleColorHEX: '#fff',
-        roleImage: null,
+        roleImage: [],
         roleBanMember: true,
         roleChannelControl: true,
         roleCreateInvitation: false,

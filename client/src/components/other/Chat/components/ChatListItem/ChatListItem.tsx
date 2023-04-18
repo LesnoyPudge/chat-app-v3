@@ -1,9 +1,9 @@
-import { noop, twClassNames } from '@utils';
+import { twClassNames } from '@utils';
 import { isSameDay, differenceInMinutes } from 'date-fns';
 import { useRef, useEffect, FC, RefObject } from 'react';
 import { Conditional, Message, MessageComponent } from '@components';
 import { DayDivider } from '../DayDivider';
-import { chatMock } from '../../Chat2';
+import { chatMock } from '../../Chat';
 import { NormalizedViewportItemRefs } from '../../hooks';
 
 
@@ -23,6 +23,7 @@ interface ChatListItem extends Pick<MessageComponent,
 }
 
 const styles = {
+    message: 'pr-12 py-1',
     messageGroupHead: 'message-group-head',
 };
 
@@ -118,6 +119,7 @@ export const ChatListItem: FC<ChatListItem> = ({
                 onClick={handleItemClick}
             >
                 <Message
+                    className={styles.message}
                     innerRef={messageRef}
                     message={message}
                     displayMode={displayMode}

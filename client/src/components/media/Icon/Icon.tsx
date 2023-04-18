@@ -14,7 +14,7 @@ interface Icon extends PropsWithClassName {
 
 const styles = {
     wrapper: 'relative flex shrink-0 transition-all',
-    svg: 'absolute inset-0',
+    svg: 'absolute inset-0 m-auto',
 };
 
 export const Icon: FC<Icon> = ({ 

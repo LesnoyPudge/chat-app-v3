@@ -6,8 +6,9 @@ import emailConfirmationImage from '@assets/email-confirmation.png';
 
 
 const styles = {
-    image: `absolute top-0 left-1/2 -translate-x-1/2 
-    -translate-y-1/2 h-[140px] w-[140px] object-contain`,
+    imageWrapper: 'relative h-[70px]',
+    image: `absolute z-10 h-[140px] w-[140px] object-contain 
+    left-1/2 -translate-x-1/2 pointer-events-auto`,
     header: 'pt-16',
     content: 'pb-6 text-center gap-3.5',
     footer: 'flex-col',
@@ -26,50 +27,54 @@ export const RequestCodeSlide: FC = () => {
     const email = 'wow@mail.ru';
 
     return (
-        <ModalContainer className='relative'>
-            <Image
-                className={styles.image}
-                src={emailConfirmationImage}
-            />
-                                        
-            <ModalHeader className={styles.header}>
-                <ModalTitle>
-                    <>Подтверждение адреса электронной почты</>
-                </ModalTitle>
-            </ModalHeader>
+        <>
+            <div className={styles.imageWrapper}>
+                <Image
+                    className={styles.image}
+                    src={emailConfirmationImage}
+                />
+            </div>
 
-            <ModalContent className={styles.content}>
-                <p>
-                    <>Подтвердите свой прошлый адрес электронной почты </>
-                    <strong>{email}</strong>
-                    <>, чтобы его изменить.</>
-                </p>
+            <ModalContainer>         
+                <ModalHeader className={styles.header}>
+                    <ModalTitle>
+                        <>Подтверждение адреса электронной почты</>
+                    </ModalTitle>
+                </ModalHeader>
 
-                <p>
-                    <>Нет доступа к этому адресу? Обратитесь за </>
-                    <>помощью к поставщику услуг электронной почты.</>
-                </p>
-            </ModalContent>
+                <ModalContent className={styles.content}>
+                    <p>
+                        <>Подтвердите свой прошлый адрес электронной почты </>
+                        <strong>{email}</strong>
+                        <>, чтобы его изменить.</>
+                    </p>
 
-            <ModalFooter className={styles.footer}>
-                <Button
-                    className={styles.button}
-                    stylingPreset='brand'
-                    size='medium'
-                    onLeftClick={sendConfirmationCode}
-                >
-                    <>Отправить код подтверждения</>
-                </Button>
+                    <p>
+                        <>Нет доступа к этому адресу? Обратитесь за </>
+                        <>помощью к поставщику услуг электронной почты.</>
+                    </p>
+                </ModalContent>
 
-                <Button
-                    className={styles.button}
-                    stylingPreset='lite'
-                    size='medium'
-                    onLeftClick={closeOverlay}
-                >
-                    <>Отмена</>
-                </Button>
-            </ModalFooter>
-        </ModalContainer>
+                <ModalFooter className={styles.footer}>
+                    <Button
+                        className={styles.button}
+                        stylingPreset='brand'
+                        size='medium'
+                        onLeftClick={sendConfirmationCode}
+                    >
+                        <>Отправить код подтверждения</>
+                    </Button>
+
+                    <Button
+                        className={styles.button}
+                        stylingPreset='lite'
+                        size='medium'
+                        onLeftClick={closeOverlay}
+                    >
+                        <>Отмена</>
+                    </Button>
+                </ModalFooter>
+            </ModalContainer>
+        </>
     );
 };

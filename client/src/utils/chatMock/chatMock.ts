@@ -2,6 +2,7 @@ import { getRandomNumber } from '@utils';
 import { loremIpsum } from 'lorem-ipsum';
 import { EmojiCode } from '@components';
 import { IMessage } from '@backendTypes';
+import { Descendant } from 'slate';
 
 
 
@@ -86,3 +87,17 @@ export class ChatMock {
         return this.messages.slice(-(amount));
     }
 }
+
+export const createSingleMessage = (content: Descendant[]): Message => ({
+    id: Math.random().toString(),
+    chat: Math.random().toString(),
+    content: JSON.stringify(content),
+    user: Math.random().toString(),
+    attachments: [],
+    reactions: [],
+    respondOn: [],
+    isChanged: false,
+    isDeleted: false,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+});

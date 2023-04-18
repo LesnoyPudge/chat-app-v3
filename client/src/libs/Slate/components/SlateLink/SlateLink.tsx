@@ -5,10 +5,15 @@ import { RenderElementAttributes } from '../../types';
 
 
 
-interface SlateLink extends PropsWithChildrenAndClassName {
+type SlateLink = PropsWithChildrenAndClassName & {
     url: string;
+} & ({
+    serialized?: never;
     attributes: RenderElementAttributes;
-}
+} | {
+    serialized: true;
+    attributes?: never;
+})
 
 const baseClassName = 'text-color-link';
 

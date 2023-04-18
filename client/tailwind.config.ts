@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import { getCustomClasses } from './src/root/styles/customClasses';
+import containerQueries from '@tailwindcss/container-queries';
 
 
 
@@ -15,7 +16,7 @@ export default {
     ],
 
     plugins: [
-        require('@tailwindcss/container-queries'),
+        containerQueries,
         getCustomClasses(),
     ],
 
@@ -75,6 +76,11 @@ export default {
                     afk: 'var(--status-afk)',
                     offline: 'var(--status-offline)',
                     dnd: 'var(--status-dnd)',
+                },
+
+                scrollbar: {
+                    track: 'var(--scrollbar-track)',
+                    thumb: 'var(--scrollbar-thumb)',
                 },
             },
               

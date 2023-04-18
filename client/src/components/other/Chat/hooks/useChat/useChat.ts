@@ -4,8 +4,7 @@ import { useLatest } from 'react-use';
 import { useChatLoad, useChatScroll } from '..';
 import { IMessage } from '@backendTypes';
 import { ViewportListRef } from 'react-viewport-list';
-import { useKeyboardNavigation } from '../../useKeyboardNavigation';
-import { useRefWithSetter } from '@hooks';
+import { useRefWithSetter, useKeyboardNavigation } from '@hooks';
 
 
 

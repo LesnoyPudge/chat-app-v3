@@ -1,4 +1,5 @@
 import { EmojiCode } from '@components';
+import { MutableRefObject } from 'react';
 import { BaseEditor } from 'slate';
 import { HistoryEditor } from 'slate-history';
 import { ReactEditor, RenderElementProps } from 'slate-react';
@@ -9,7 +10,7 @@ export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor
 
 export type ParagraphElement = {
     type: 'paragraph';
-    children: CustomText[];
+    children: (CustomText | LinkElement | EmojiElement)[];
 }
 
 export type EmojiElement = {
@@ -49,5 +50,5 @@ export interface RenderElementAttributes {
     'data-slate-inline'?: true | undefined;
     'data-slate-void'?: true | undefined;
     dir?: 'rtl' | undefined;
-    ref: any;
+    ref: MutableRefObject<never>;
 }

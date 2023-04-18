@@ -9,12 +9,12 @@ import { MBToBytes } from '@utils';
 
 
 interface CreateChannelFormValues {
-    avatar: EncodedFile | null;
+    avatar: EncodedFile[];
     name: string;
 }
 
 const initialValues: CreateChannelFormValues = {
-    avatar: null,
+    avatar: [],
     name: '',
 };
 

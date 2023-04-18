@@ -3,20 +3,24 @@ import plugin from 'tailwindcss/plugin';
 
 
 const scrollbarClasses = {
-    '.scrollbar': {
+    '.simplebar-custom': {
         '1': {},
+    },
+
+    '.scrollbar-hidden': {
+        '2': {},
     },
 };
 
 const colorPickerClasses = {
     '.color-picker': {
-        '2': {},
+        '3': {},
     },
 };
 
 const sliderInputClasses = {
     '.slider-input': {
-        '3': {},
+        '4': {},
     },
 };
 
@@ -38,11 +42,11 @@ const otherClasses = {
     },
 
     '.focused': {
-        '@apply outline outline-focus outline-[3px]': {},
+        '@apply outline-[3px]': {},
     },
 
     '.focus-hidden': {
-        '@apply outline-none focus-visible:outline-none focus-within:outline-none': {},
+        '@apply outline-0': {},
     },
 
     '.message-font-size': {

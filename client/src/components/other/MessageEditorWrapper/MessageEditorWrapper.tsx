@@ -42,8 +42,8 @@ export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
         >
             <Scrollable 
                 className={styles.scrollable} 
-                small 
-                scrollableContentRef={scrollableContentRef}
+                small
+                setScrollable={scrollableContentRef}
                 withOppositeGutter
                 autoHide
                 onContentResize={handleSizeChange}

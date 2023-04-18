@@ -44,7 +44,7 @@ export interface MessageContext extends Required<SharedProps> {
 export const MessageContext = createContext<MessageContext | undefined>(undefined);
 
 const styles = {
-    wrapper: `group relative pr-12 py-1 bg-primary-200 
+    wrapper: `group relative bg-primary-200 
     hover:bg-primary-300 focus-within:bg-primary-300`,
     heading: 'sr-only',
 };

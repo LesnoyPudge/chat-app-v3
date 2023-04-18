@@ -49,6 +49,11 @@
         }
     }
 
+    * {
+        @apply outline-focus outline-0;
+        outline-style: solid;
+    }
+
     *:focus:not(:focus-visible) {
         @apply focus-hidden;
     }
@@ -61,10 +66,6 @@
     [role="button"] {
         @apply cursor-pointer;
 
-        // width: -webkit-fill-available;
-        // width: -moz-available;
-        // width: stretch;
-
         &:disabled {
             @apply opacity-50 cursor-not-allowed;
         }
@@ -74,13 +75,23 @@
         @apply sr-only;
     }
 
-    // *::-webkit-scrollbar {
-    //     @apply w-2 h-2;
-    // }
+    [data-debug=true] * {
+        box-shadow: inset 0 0 0px 0.5px red, 0 0 0px 0.5px red !important;
+        // outline: 0.5px solid red !important;
+        // background-color: rgba($color: limegreen, $alpha: 0.05) !important;
+    }
 
-    // * {
-    //     scrollbar-width: thin;
-    // }
+    img[alt] {
+        text-indent: -9999px;
+    }
+
+    *::-webkit-scrollbar {
+        @apply w-2 h-2;
+    }
+
+    * {
+        scrollbar-width: thin;
+    }
 
     *::-webkit-scrollbar {
         width: 14px;
@@ -93,7 +104,7 @@
     }
 
     *::-webkit-scrollbar-thumb {
-        @apply bg-primary-500;
+        @apply bg-scrollbar-thumb;
     }
 
     *::-webkit-scrollbar-thumb,
@@ -104,18 +115,8 @@
     }
 
     *::-webkit-scrollbar-track {
-        @apply bg-primary-300;
+        @apply bg-scrollbar-track;
         border-width: initial;
-    }
-
-    [data-debug=true] * {
-        box-shadow: inset 0 0 0px 0.5px red, 0 0 0px 0.5px red !important;
-        // outline: 0.5px solid red !important;
-        // background-color: rgba($color: limegreen, $alpha: 0.05) !important;
-    }
-
-    img[alt] {
-        text-indent: -9999px;
     }
 
     // input:-webkit-autofill,
