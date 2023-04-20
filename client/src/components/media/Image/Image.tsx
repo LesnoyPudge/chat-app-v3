@@ -39,8 +39,8 @@ const states = {
 
 const styles = {
     image: {
-        base: 'h-auto w-full max-w-full object-cover sr-only',
-        active: 'not-sr-only',
+        base: 'h-auto w-full max-w-full object-cover opacity-0',
+        active: 'opacity-100',
         error: 'opacity-0',
     },
 };

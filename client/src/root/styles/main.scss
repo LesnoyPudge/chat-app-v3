@@ -49,6 +49,12 @@
         }
     }
 
+    img,
+    video,
+    canvas {
+        @apply overflow-hidden;
+    }
+
     * {
         @apply outline-focus outline-0;
         outline-style: solid;

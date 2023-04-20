@@ -1,4 +1,4 @@
-import { AppSettingsModalTabs, Separator, SliderInput, TabContext, TabPanel } from '@components';
+import { AppSettingsModalTabs, RadioInputIndicator, Separator, SliderInput, TabContext, TabPanel } from '@components';
 import { FormikRadioInput, HeadingLevel } from '@libs';
 import { FC, useContext } from 'react';
 import { SettingsGroupTitle } from '..';
@@ -31,7 +31,13 @@ export const AppearanceTab: FC = () => {
                                 label='Тёмная тема'
                                 value='dark'
                             >
-                                <strong>Тёмная</strong>
+                                {({ checked }) => (
+                                    <>
+                                        <RadioInputIndicator checked={checked}/>
+                                    
+                                        <strong>Тёмная</strong>
+                                    </>
+                                )}
                             </FormikRadioInput>
 
                             <FormikRadioInput
@@ -39,7 +45,13 @@ export const AppearanceTab: FC = () => {
                                 label='Светлая тема'
                                 value='light'
                             >
-                                <strong>Светлая</strong>
+                                {({ checked }) => (
+                                    <>
+                                        <RadioInputIndicator checked={checked}/>
+                                    
+                                        <strong>Светлая</strong>
+                                    </>
+                                )}
                             </FormikRadioInput>
 
                             <FormikRadioInput
@@ -47,7 +59,13 @@ export const AppearanceTab: FC = () => {
                                 label='Автоматически'
                                 value='auto'
                             >
-                                <strong>Синхронизация с компьютером</strong>
+                                {({ checked }) => (
+                                    <>
+                                        <RadioInputIndicator checked={checked}/>
+                                    
+                                        <strong>Синхронизация с компьютером</strong>
+                                    </>
+                                )}
                             </FormikRadioInput>
                         </div>
                     </div>
@@ -66,7 +84,16 @@ export const AppearanceTab: FC = () => {
                             label='Стандартное отображение'
                             value='cozy'
                         >
-                            <><strong>Уютно</strong> — современно, красиво и приятно для глаз.</>
+                            {({ checked }) => (
+                                <>
+                                    <RadioInputIndicator checked={checked}/>
+                                    
+                                    <span>
+                                        <strong>Уютно</strong>
+                                        <> — современно, красиво и приятно для глаз.</>
+                                    </span>
+                                </>
+                            )}
                         </FormikRadioInput>
                             
                         <FormikRadioInput
@@ -74,7 +101,16 @@ export const AppearanceTab: FC = () => {
                             label='Компактное отображение'
                             value='compact'
                         >
-                            <><strong>Компактно</strong> — на экране помещается больше сообщений.</>
+                            {({ checked }) => (
+                                <>
+                                    <RadioInputIndicator checked={checked}/>
+                                    
+                                    <span>
+                                        <strong>Компактно</strong>
+                                        <> — на экране помещается больше сообщений.</>
+                                    </span>
+                                </>
+                            )}
                         </FormikRadioInput>
                     </div>
                 </HeadingLevel>
