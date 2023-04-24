@@ -1,8 +1,8 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow, Memo, Static } from '@components';
 import { useInView } from '@react-spring/web';
 import { AnyFunction, EncodedFile, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver } from '@utils';
-import { CSSProperties, FC, MutableRefObject, PropsWithChildren, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { Component, createContext, CSSProperties, FC, MutableRefObject, PropsWithChildren, PureComponent, ReactNode, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
 import { useBoolean, useCounter, useElementSize, useHover, useImageOnLoad, useInterval, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
@@ -318,19 +318,96 @@ const PlaygroundInner6: FC = () => {
     );
 };
 
-const PlaygroundInner7: FC = () => {
+interface ContextValues {
+    counter: number;
+    inc: () => void;
+    decr: () => void;
+}
+
+const PlaygroundContext = createContext<ContextValues | undefined>(undefined);
+
+const Count: FC = () => {
+    const { counter } = useContext(PlaygroundContext) as ContextValues;
+    
+    return (
+        <div className='m-1'>
+            {counter}
+        </div>
+    );
+};
+
+const Decr: FC = () => {
+    const { decr } = useContext(PlaygroundContext) as ContextValues;
+    
+    return (
+        <button className='m-1' onClick={decr}>
+            <>decr</>
+        </button>
+    );
+};
+
+const Empty: FC = () => {
+    return (
+        <button className='m-1'>
+            <>empty</>
+        </button>
+    );
+};
+
+const Inner: FC = () => {
+    const { inc } = useContext(PlaygroundContext) as ContextValues;
+    
     return (
         <>
-            <OverlayContextProvider isOverlayExistInitial>
-                <ModalWindow label='' withBackdrop>
+            <Memo>
+                <button className='m-1' onClick={inc}>
+                    <>inc</>
+                </button>
+            </Memo>
 
-                </ModalWindow>
-            </OverlayContextProvider>
+            <Memo>
+                <Empty/>
+            </Memo>
+
+            <Memo>
+                <Count/>
+            </Memo>
         </>
     );
 };
 
-const enabled = !!0;
+const PlaygroundInner7: FC = () => {
+    const { count, increment, decrement } = useCounter(0);
+
+    const values: ContextValues = useMemo(() => ({
+        counter: count,
+        inc: increment,
+        decr: decrement,
+    }), [count]);
+
+    return (
+        <div className='flex flex-col gap-2'>
+            <PlaygroundContext.Provider value={values}>
+                <Memo>
+                    <Decr/>
+                </Memo>
+
+                <Inner/>
+            </PlaygroundContext.Provider>   
+        </div>
+    );
+};
+
+const PlaygroundInner8: FC = () => {
+
+    return (
+        <OverlayContextProvider isOverlayExistInitial>
+            <RoomSettingsModal/>
+        </OverlayContextProvider>
+    );
+};
+
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -347,7 +424,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner4/> */}
                 {/* <PlaygroundInner5/> */}
                 {/* <PlaygroundInner6/> */}
-                <PlaygroundInner7/>
+                {/* <PlaygroundInner7/> */}
+                <PlaygroundInner8/>
                 {/* </ReactFocusLock> */}
             </Conditional>
         </>

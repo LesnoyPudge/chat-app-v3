@@ -20,6 +20,7 @@ interface ChatListItem extends Pick<MessageComponent,
     virtualItemsRef: RefObject<NormalizedViewportItemRefs>;
     isFirst: boolean;
     setFocusedId: (id: string) => void;
+    getTabIndex: (id: string) => number;
 }
 
 const styles = {
@@ -33,6 +34,7 @@ export const ChatListItem: FC<ChatListItem> = ({
     virtualItemsRef,
     isFirst,
     setFocusedId,
+    getTabIndex,
     ...rest
 }) => {
     const messageList = chatMock.messages;
@@ -43,7 +45,7 @@ export const ChatListItem: FC<ChatListItem> = ({
     const messageRef = useRef<HTMLElement | null>(null);
 
     const displayMode = 'cozy';
-    const tabIndex = isFocused ? 0 : -1;
+    const tabIndex = getTabIndex(message.id);
 
     useEffect(() => {
         if (!messageRef.current || !messageWrapperRef.current) return;

@@ -34,7 +34,7 @@ export const useKeyboardNavigation = (
 ): UseKeyboardNavigationReturn => {
     const {
         direction = 'vertical',
-        loop = true,
+        loop = false,
         initialFocusableId,
         onFocusChange = noop,
     } = options || {};
@@ -43,10 +43,14 @@ export const useKeyboardNavigation = (
     const initialIdRef = useLatest(initialFocusableId || focusableListRef.current?.at(0)?.id || null);
     const [_, focusedIdRef, setFocusedId] = useStateAndRef<string | null>(null);
     const { isThrottling, throttle } = useThrottle();
- 
+
     const getCurrentIndexRef = useLatest(() => {
         if (!focusableListRef.current) return -1;
-        return focusableListRef.current.findIndex((item) => item.id === focusedIdRef.current);
+
+        return focusableListRef.current.findIndex((item) => (
+            item.id === focusedIdRef.current ||
+            item.id === initialIdRef.current
+        ));
     });
 
     const getIndexesRef = useLatest(() => {
@@ -87,20 +91,25 @@ export const useKeyboardNavigation = (
         if (direction === 'vertical' && !isVerticalMove) return;
         
         e.preventDefault();
+        
+        const isEmptyList = !focusableListRef.current?.length;
 
-        if (!focusableListRef.current?.length) return;
+        if (isEmptyList) return;
         if (isThrottling) return;
 
         throttle(noop, 0)();
 
-        const noFocusedId = focusedIdRef.current === null;
-        const isItemInArray = focusableListRef.current.some((item) => item.id === focusedIdRef.current);
+        const noFocusedId = focusedIdRef.current === null && initialIdRef.current === null;
+        const isItemInArray = focusableListRef.current.some((item) => (
+            item.id === focusedIdRef.current || 
+            item.id === initialIdRef.current
+        ));
 
         const moveDirection = isForward ? 'forward' : 'backward';
 
-        if ((noFocusedId || !isItemInArray) && !focusableListRef.current.length) return;
+        if ((noFocusedId || !isItemInArray) && isEmptyList) return;
 
-        if ((noFocusedId || !isItemInArray) && !!focusableListRef.current.length) {
+        if ((noFocusedId || !isItemInArray) && !isEmptyList) {
             const item = focusableListRef.current.find((item) => item.id === initialIdRef.current);
 
             setFocusedId(initialIdRef.current);
@@ -119,9 +128,15 @@ export const useKeyboardNavigation = (
         onFocusChange(newItem, moveDirection, focusedIdRef);
     }, root);
 
+    const getTabIndex = useCallback((id: string) => {
+        const isInitial = id === initialIdRef.current && !focusedIdRef.current;
+        return (id === focusedIdRef.current || isInitial) ? 0 : -1;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } , []);
+
     const result: UseKeyboardNavigationReturn = useMemo(() => ({
         getIsFocused: (id) => id === focusedIdRef.current,
-        getTabIndex: (id) => id === focusedIdRef.current ? 0 : -1,
+        getTabIndex,
         setRoot,
         setFocusedId,
     // eslint-disable-next-line react-hooks/exhaustive-deps

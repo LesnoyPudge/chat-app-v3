@@ -1,7 +1,7 @@
 import { FC, useContext } from 'react';
-import { Button, Conditional, UserAvatar, UserName } from '@components';
+import { Conditional, UserAvatar } from '@components';
 import { MessageContext } from '../../Message';
-import { MessageAdditions, MessageContent, MessageCozyTimestamp, MessageTimestamp } from '..';
+import { MessageAdditions, MessageContent, MessageCozyTimestamp, MessageTimestamp, MessageUsername } from '..';
 
 
 
@@ -47,14 +47,7 @@ export const CozyMessage: FC = () => {
             <div className={styles.secondCol}>
                 <Conditional isRendered={isGroupHead}>
                     <div className={styles.infoRow}>
-                        <Button
-                            label=''
-                            hasPopup='menu'
-                            isActive={false}
-                            onLeftClick={() => console.log('open menu')}
-                        >
-                            <UserName className={styles.username}/>
-                        </Button>
+                        <MessageUsername className={styles.username}/>
 
                         <MessageCozyTimestamp/>
                     </div> 

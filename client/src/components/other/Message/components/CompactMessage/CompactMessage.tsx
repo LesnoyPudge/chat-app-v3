@@ -1,7 +1,6 @@
 import { twClassNames } from '@utils';
 import { FC, useContext } from 'react';
-import { Button, UserName } from '@components';
-import { MessageAdditions, MessageContent, MessageTimestamp } from '..';
+import { MessageAdditions, MessageContent, MessageTimestamp, MessageUsername } from '..';
 import { MessageContext } from '../../Message';
 
 
@@ -19,7 +18,7 @@ const styles = {
 };
 
 export const CompactMessage: FC = () => {
-    const { isGroupHead, ids, tabIndex } = useContext(MessageContext) as MessageContext;
+    const { isGroupHead } = useContext(MessageContext) as MessageContext;
 
     return (
         <div className={styles.wrapper}>
@@ -33,20 +32,7 @@ export const CompactMessage: FC = () => {
             <div className={styles.content}>
                 <div>
                     <span className={styles.usernameWrapper}>
-                        <Button 
-                            className={styles.username}
-                            id={ids.usernameId}
-                            hasPopup='menu'
-                            isActive={false}
-                            tabIndex={tabIndex}
-                            onLeftClick={() => console.log('open user related menu')}
-                            onRightClick={() => console.log('open user related menu')}
-                        >
-                            <UserName
-                                // userId={}
-                                // channelId={}
-                            />
-                        </Button>
+                        <MessageUsername className={styles.username}/>
 
                         <>: </>
                     </span>

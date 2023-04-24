@@ -51,6 +51,7 @@ export const Chat: FC<Chat> = ({
         setContentWrapperElement,
         setPlaceholderElement,
         getIsFocused,
+        getTabIndex,
         setAutoScrollTriggerElement,
         setFocusedId,
         setViewportList,
@@ -80,7 +81,6 @@ export const Chat: FC<Chat> = ({
             className={className}
             setScrollable={setContentElement}
             setScrollableWrapper={setContentWrapperElement}
-            focusable
             direction='vertical'
             label='Сообщения'
         >
@@ -134,6 +134,7 @@ export const Chat: FC<Chat> = ({
                                     isFirst={messageList[0].id === id}
                                     isInRedactorMode={redactorId === id}
                                     isFocused={getIsFocused(id)}
+                                    getTabIndex={getTabIndex}
                                     setFocusedId={setFocusedId}
                                     addReaction={addReaction}
                                     closeEditor={closeEditor}

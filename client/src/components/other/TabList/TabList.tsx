@@ -1,9 +1,10 @@
-import { PropsWithChildrenAndClassName } from '@types';
+import { PropsWithChildrenAndClassName, PropsWithInnerRef } from '@types';
 import { FC } from 'react';
 
 
 
-interface TabList extends PropsWithChildrenAndClassName {
+interface TabList extends PropsWithChildrenAndClassName, 
+PropsWithInnerRef<HTMLDivElement> {
     label: string
     orientation?: 'vertical' | 'horizontal';
 }
@@ -12,6 +13,7 @@ export const TabList: FC<TabList> = ({
     className = '',
     label,
     orientation = 'vertical',
+    innerRef,
     children,
 }) => {
     return (
@@ -20,6 +22,7 @@ export const TabList: FC<TabList> = ({
             role='tablist' 
             aria-orientation={orientation}
             aria-label={label}
+            ref={innerRef}
         >
             {children}
         </div>

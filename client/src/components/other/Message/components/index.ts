@@ -9,3 +9,4 @@ export * from './MessageTimestamp';
 export * from './MessageEditTimestamp';
 export * from './MessageCozyTimestamp';
 export * from './MessageAdditions';
+export * from './MessageUsername';
