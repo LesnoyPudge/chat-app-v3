@@ -1,40 +1,33 @@
 import { CheckBox, ChildrenAsNodeOrFunction } from '@components';
-import { PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
+import { PropsWithChildrenAsNodeOrFunction } from '@types';
 import { useField } from 'formik';
-import { FC } from 'react';
+import { FC, useId } from 'react';
 
 
 
-interface ChildrenArgs {
-    checked: boolean;
-}
+type OmittedKeys = 'className' | 'onChange' | 'checked' | 'id' | 'children';
 
-interface FormikCheckBox extends
-PropsWithChildrenAsNodeOrFunction<ChildrenArgs>,
-PropsWithClassName {
-    name: string;
-    label: string;
-}
+type ChildrenArgs = Omit<CheckBox, 'className' | 'children'> & Required<Pick<CheckBox, 'id'>>;
+
+type FormikCheckBox = Omit<CheckBox, OmittedKeys> & PropsWithChildrenAsNodeOrFunction<ChildrenArgs>;
 
 export const FormikCheckBox: FC<FormikCheckBox> = ({
-    className = '',
-    name,
-    label,
     children,
+    ...props
 }) => {
-    const [{ value: checked, onChange }] = useField(name);
+    const [{ value: checked, onChange }] = useField(props.name);
+    const id = useId();
+
+    const childrenArgs: ChildrenArgs = {
+        ...props,
+        id,
+        checked,
+        onChange,
+    };
 
     return (
-        <CheckBox
-            className={className}
-            name={name}
-            checked={checked}
-            label={label}
-            onChange={onChange}
-        >
-            <ChildrenAsNodeOrFunction args={{ checked }}>
-                {children}
-            </ChildrenAsNodeOrFunction>
-        </CheckBox>
+        <ChildrenAsNodeOrFunction args={childrenArgs}>
+            {children}
+        </ChildrenAsNodeOrFunction>
     );
 };

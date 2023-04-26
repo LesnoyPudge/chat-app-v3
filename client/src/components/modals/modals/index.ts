@@ -18,3 +18,4 @@ export * from './BanMemberModal';
 export * from './KickMemberModal';
 export * from './ChangeChannelOwnerModal';
 export * from './FindChannelModal';
+export * from './RoomWhitelistModal';

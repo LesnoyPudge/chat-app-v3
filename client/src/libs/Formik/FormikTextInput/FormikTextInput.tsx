@@ -6,21 +6,17 @@ import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
 
 
-type OmitedKeys = 'className' | 'onChange' | 'value' | 'error' | 'children';
+type OmittedKeys = 'className' | 'onChange' | 'value' | 'error' | 'children' | 'id';
 
-type ChildrenArgs = TextInput & {
-    id: string;
-};
+type ChildrenArgs = Omit<TextInput, 'className'> & Required<Pick<TextInput, 'id'>>;
 
-type FormikTextInput = Omit<TextInput, OmitedKeys> & PropsWithChildrenAsNodeOrFunction<ChildrenArgs>;
+type FormikTextInput = Omit<TextInput, OmittedKeys> & PropsWithChildrenAsNodeOrFunction<ChildrenArgs>;
 
 export const FormikTextInput: FC<FormikTextInput> = ({
     children,
     ...props
 }) => {
-    const { name } = props;
-
-    const [{ value, onChange }, meta] = useField(name);
+    const [{ value, onChange }, meta] = useField(props.name);
     const id = useId();
     const error = conditional(meta.error!, '', !!meta.error && meta.touched);
 
@@ -31,7 +27,7 @@ export const FormikTextInput: FC<FormikTextInput> = ({
         value,
         onChange,
     };
-
+    
     return (
         <ChildrenAsNodeOrFunction args={childrenArgs}>
             {children}

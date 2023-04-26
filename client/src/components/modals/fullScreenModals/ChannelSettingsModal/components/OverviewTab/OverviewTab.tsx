@@ -1,4 +1,4 @@
-import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput, Icon } from '@components';
+import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput, Icon, CheckBox } from '@components';
 import { FormikCheckBox, FormikFileInput, FormikFileUploadContextProvider, FormikTextInput } from '@libs';
 import { MBToBytes } from '@utils';
 import { FC, useContext } from 'react';
@@ -130,19 +130,21 @@ export const OverviewTab: FC = () => {
 
             <Separator spacing={40}/>
 
-            <FormikCheckBox 
-                className={styles.checkBox}
+            <FormikCheckBox
                 label='Приватность канала' 
                 name='channelIsPrivate'
             >
-                {({ checked }) => (
-                    <>
+                {(props) => (
+                    <CheckBox 
+                        className={styles.checkBox}
+                        {...props}
+                    >
                         <div className={styles.checkBoxText}>
                             <>Не отображать канал в поиске, вход только по приглашениям.</>
                         </div>
 
-                        <CheckBoxIndicatorSlide checked={checked}/>
-                    </>
+                        <CheckBoxIndicatorSlide checked={props.checked}/>
+                    </CheckBox>
                 )}
             </FormikCheckBox>
         </TabPanel>

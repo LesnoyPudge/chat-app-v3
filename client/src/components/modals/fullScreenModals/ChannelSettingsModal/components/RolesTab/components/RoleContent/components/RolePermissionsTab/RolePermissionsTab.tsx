@@ -1,5 +1,5 @@
 import { FC, useContext, useMemo } from 'react';
-import { Image, CheckBoxIndicatorSlide, Conditional, Separator, TabContext, TabPanel } from '@components';
+import { Image, CheckBoxIndicatorSlide, Conditional, Separator, TabContext, TabPanel, CheckBox } from '@components';
 import { FormikCheckBox, Heading, HeadingLevel } from '@libs';
 import permissionNotFoundImage from '@assets/not-found-image.svg';
 import { RoleContentTabs } from '../..';
@@ -131,18 +131,20 @@ export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
                                     return (
                                         <div key={permission.name}>
                                             <FormikCheckBox 
-                                                className={styles.permissionCheckBox}
                                                 name={permission.name}
                                                 label={permission.title}
                                             >
-                                                {({ checked }) => (
-                                                    <>
+                                                {(props) => (
+                                                    <CheckBox 
+                                                        className={styles.permissionCheckBox}
+                                                        {...props}
+                                                    >
                                                         <div className={styles.permissionTitle}>
                                                             {permission.title}
                                                         </div>
         
-                                                        <CheckBoxIndicatorSlide checked={checked}/>
-                                                    </>
+                                                        <CheckBoxIndicatorSlide checked={props.checked}/>
+                                                    </CheckBox>
                                                 )}
                                             </FormikCheckBox>
         

@@ -3,26 +3,31 @@ import { ModalWindow, TabContextProvider } from '@components';
 import { FullScreenModalContentSide, FullScreenModalNavigationSide, FullScreenModalWrapper, ScreenShake } from '../components';
 import { Form, Formik } from 'formik';
 import { getTransitionOptions } from '@utils';
-import { Navigation, OverviewTab, PermissionsTab } from './components';
+import { Navigation, OverviewTab } from './components';
 
 
 
 export type RoomSettingsModalTabs = typeof tabs;
 
-interface RoomSettingsModalFormValues {
-    some?: string;
+export interface RoomSettingsModalFormValues {
+    roomName: string;
+    isPrivate: boolean;
+    allowedRoles: Set<string>;
+    allowedMembers: Set<string>;
 }
 
 const transitionOptions = getTransitionOptions.fullScreenModal();
 
 const tabs = {
     overviewTab: <OverviewTab/>,
-    permissionsTab: <PermissionsTab/>,
 };
 
 export const RoomSettingsModal: FC = () => {
     const initialValues: RoomSettingsModalFormValues = {
-
+        roomName: 'some room name',
+        isPrivate: false,
+        allowedRoles: new Set(['1', '2', '3', '4', '5']),
+        allowedMembers: new Set(['1', '2', '3', '4', '5']),
     };
 
     return (

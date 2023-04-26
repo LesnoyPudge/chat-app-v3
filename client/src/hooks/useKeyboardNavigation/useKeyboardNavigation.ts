@@ -47,10 +47,15 @@ export const useKeyboardNavigation = (
     const getCurrentIndexRef = useLatest(() => {
         if (!focusableListRef.current) return -1;
 
-        return focusableListRef.current.findIndex((item) => (
-            item.id === focusedIdRef.current ||
-            item.id === initialIdRef.current
-        ));
+        const focusedIdIndex = focusableListRef.current.findIndex((item) => {
+            return item.id === focusedIdRef.current;
+        });
+
+        if (focusedIdIndex !== -1) return focusedIdIndex;
+
+        return focusableListRef.current.findIndex((item) => {
+            return item.id === initialIdRef.current;
+        });
     });
 
     const getIndexesRef = useLatest(() => {
@@ -91,7 +96,7 @@ export const useKeyboardNavigation = (
         if (direction === 'vertical' && !isVerticalMove) return;
         
         e.preventDefault();
-        
+        console.log('?');
         const isEmptyList = !focusableListRef.current?.length;
 
         if (isEmptyList) return;
@@ -129,8 +134,8 @@ export const useKeyboardNavigation = (
     }, root);
 
     const getTabIndex = useCallback((id: string) => {
-        const isInitial = id === initialIdRef.current && !focusedIdRef.current;
-        return (id === focusedIdRef.current || isInitial) ? 0 : -1;
+        const isInitial = (id === initialIdRef.current) && !focusedIdRef.current;
+        return ((id === focusedIdRef.current) || isInitial) ? 0 : -1;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     } , []);
 

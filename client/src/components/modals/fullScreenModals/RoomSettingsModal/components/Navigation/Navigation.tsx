@@ -47,21 +47,6 @@ export const Navigation: FC = () => {
                             </NavigationItem>
                         </Button>
                     </MoveFocusInside>
-
-                    <MoveFocusInside disabled={!getIsFocused(tabs.permissionsTab.identifier)}>
-                        <Button
-                            className={styles.button}
-                            isActive={isActive.permissionsTab}
-                            label='Права доступа'
-                            tabIndex={getTabIndex(tabs.permissionsTab.identifier)}
-                            {...tabProps.permissionsTab}
-                            onLeftClick={changeTab.permissionsTab}
-                        >
-                            <NavigationItem isActive={isActive.permissionsTab}>
-                                <>Права доступа</>
-                            </NavigationItem>
-                        </Button>
-                    </MoveFocusInside>
                 </div>
             </TabList>
 

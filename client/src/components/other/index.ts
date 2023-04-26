@@ -20,3 +20,4 @@ export * from './UserName';
 export * from './Message';
 export * from './MessageEditorWrapper';
 export * from './Chat';
+export * from './RolesAndMembersCheckList';

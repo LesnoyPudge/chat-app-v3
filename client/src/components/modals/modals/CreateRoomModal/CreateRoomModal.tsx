@@ -12,7 +12,7 @@ export interface CreateRoomFormValues {
     name: string;
     isPrivate: boolean;
     allowedRoles: Set<string>;
-    allowedUsers: Set<string>;
+    allowedMembers: Set<string>;
 }
 
 const initialValues: CreateRoomFormValues = {
@@ -20,7 +20,7 @@ const initialValues: CreateRoomFormValues = {
     name: '',
     isPrivate: false,
     allowedRoles: new Set([]),
-    allowedUsers: new Set([]),
+    allowedMembers: new Set([]),
 };
 
 const tabs = {

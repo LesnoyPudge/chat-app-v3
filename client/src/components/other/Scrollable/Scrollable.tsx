@@ -43,6 +43,7 @@ PropsWithChildrenAsNodeOrFunction<RefObject<SimpleBarCore>>
     withOppositeGutter?: boolean;
     small?: boolean;
     focusable?: boolean;
+    followContentSize?: boolean;
     setSimpleBar?: MutableRefObject<SimpleBarCore | null> | ((el: SimpleBarCore | null) => void);
     setScrollableWrapper?: MutableRefObject<HTMLElement | null> | ((el: HTMLElement | null) => void);
     setScrollable?: MutableRefObject<HTMLElement | null> | ((el: HTMLElement | null) => void);
@@ -63,12 +64,14 @@ export const Scrollable: FC<Scrollable> = ({
     withOppositeGutter = false,
     small = false,
     focusable = false,
+    followContentSize = false,
     children,
     onContentResize,
     setScrollable = noop,
     setScrollableWrapper = noop,
     setSimpleBar = noop,
 }) => {
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const { throttle, isThrottling: isAlive } = useThrottle();
     const simpleBarApiRef = useRef<SimpleBarCore | null>(null);
     const handleKeepAliveRef = useLatest(() => {
@@ -116,7 +119,7 @@ export const Scrollable: FC<Scrollable> = ({
     };
 
     useSharedResizeObserver(simpleBarApiRef.current?.contentEl, (entry) => {
-        if (!onContentResize) return;
+        if (!onContentResize && !followContentSize) return;
 
         const isHorizontal = direction === 'horizontal';
         const isVertical = direction === 'vertical';
@@ -144,10 +147,17 @@ export const Scrollable: FC<Scrollable> = ({
             ),
         };
 
-        onContentResize({
+        const size = {
             width: entry.borderBoxSize[0].inlineSize + padding.horizontal,
             height: entry.borderBoxSize[0].blockSize + padding.vertical,
-        });
+        };
+
+        if (wrapperRef.current) {
+            wrapperRef.current.style.width = size.width + 'px';
+            wrapperRef.current.style.height = size.height + 'px';
+        }
+
+        (onContentResize || noop)(size);
     });
 
     useEffect(() => {
@@ -172,10 +182,13 @@ export const Scrollable: FC<Scrollable> = ({
     }, [focusable]);
     
     return (
-        <div className={twClassNames(
-            styles.wrapper,
-            className,
-        )}>
+        <div 
+            className={twClassNames(
+                styles.wrapper,
+                className,
+            )}
+            ref={wrapperRef}
+        >
             <SimpleBar 
                 className={styles.scrollable}
                 style={scrollbarStyles as React.CSSProperties}

@@ -1,0 +1,214 @@
+import { Conditional, Scrollable, Image, Button, CheckBoxIndicatorCheck, Icon, UserAvatar } from '@components';
+import { Heading } from '@libs';
+import { ObjectWithId, PropsWithClassName } from '@types';
+import { FC, useRef } from 'react';
+import { ViewportList } from 'react-viewport-list';
+import notFoundImage from '@assets/not-found-image.svg';
+import { twClassNames } from '@utils';
+import { useKeyboardNavigation } from '@hooks';
+import { MoveFocusInside } from 'react-focus-lock';
+
+
+
+export interface RolesAndMembersCheckList extends PropsWithClassName {
+    roles: (ObjectWithId & {
+        name: string;
+        color: string;
+    })[];
+    members: (ObjectWithId & {
+        username: string;
+        avatar: string;
+    })[];
+    checkRole: (id: string) => void;
+    checkMember: (id: string) => void;
+    getIsRoleChecked: (id: string) => boolean;
+    getIsMemberChecked: (id: string) => boolean;
+}
+
+const styles = {
+    heading: 'text-xs uppercase bold',
+    list: 'flex flex-col gap-1',
+    singleNotFound: 'flex justify-center items-center h-full font-medium text-sm',
+    notFoundWrapper: 'flex flex-col h-full justify-center items-center',
+    notFoundImage: 'w-[85px] h-[85px] mb-4',
+    notFoundText: 'text-sm text-color-secondary',
+    item: {
+        base: `flex w-full items-center py-2 px-1.5 rounded 
+        hover:bg-primary-hover focus-visible:bg-primary-hover`,
+        active: 'bg-primary-selected',
+    },
+    checkBoxIndicator: 'mr-4',
+    itemImage: 'w-5 h-5',
+    itemName: 'ml-2 text-sm font-medium truncate',
+};
+
+export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
+    className = '',
+    roles,
+    members,
+    checkMember,
+    checkRole,
+    getIsMemberChecked,
+    getIsRoleChecked,
+}) => {
+    const isRolesFound = !!roles.length;
+    const isMembersFound = !!members.length;
+    const isAnyFound = isRolesFound || isMembersFound;
+
+    const rolesRef = useRef(roles);
+    const rolesNavigation = useKeyboardNavigation(rolesRef);
+
+    const membersRef = useRef(members);
+    const membersNavigation = useKeyboardNavigation(membersRef);
+
+    return (
+        <Scrollable 
+            className={className}
+            small
+            focusable
+            label='Список ролей и участников'
+            followContentSize
+        >
+            <Conditional isRendered={isAnyFound}>
+                <Heading className={styles.heading}>
+                    <>Роли</>
+                </Heading>
+
+                <Conditional isRendered={isRolesFound}>
+                    <ul 
+                        className={styles.list}
+                        ref={rolesNavigation.setRoot}
+                        tabIndex={0}
+                    >
+                        <ViewportList
+                            items={roles}
+                            withCache
+                        >
+                            {(role) => {
+                                const handleRoleCheck = () => checkRole(role.id);
+                                const isRoleChecked = getIsRoleChecked(role.id);
+
+                                return (
+                                    <MoveFocusInside 
+                                        disabled={!rolesNavigation.getIsFocused(role.id)}
+                                        key={role.id}
+                                    >
+                                        <li>
+                                            <Button
+                                                className={twClassNames(
+                                                    styles.item.base,
+                                                    { [styles.item.active]: isRoleChecked },
+                                                )}
+                                                label={`Добавить роль ${role.name}`}
+                                                isActive={isRoleChecked}
+                                                tabIndex={rolesNavigation.getTabIndex(role.id)}
+                                                onLeftClick={handleRoleCheck}
+                                            >
+                                                <CheckBoxIndicatorCheck
+                                                    className={styles.checkBoxIndicator}
+                                                    checked={isRoleChecked}
+                                                />
+
+                                                <Icon
+                                                    className={styles.itemImage}
+                                                    style={{ fill: role.color }}
+                                                    iconId='role-shield-icon'
+                                                />
+
+                                                <div className={styles.itemName}>
+                                                    {role.name}
+                                                </div>
+                                            </Button>
+                                        </li>
+                                    </MoveFocusInside>
+                                );
+                            }}
+                        </ViewportList>
+                    </ul>
+                </Conditional>
+
+                <Conditional isRendered={!isRolesFound}>
+                    <div className={styles.singleNotFound}>
+                        <>Роли не найдены</>
+                    </div>
+                </Conditional>  
+
+                <Heading className={styles.heading}>
+                    <>Участники</>
+                </Heading>
+
+                <Conditional isRendered={isMembersFound}>
+                    <ul 
+                        className={styles.list}
+                        ref={membersNavigation.setRoot}
+                        tabIndex={0}
+                    >
+                        <ViewportList
+                            items={members}
+                            withCache
+                        >
+                            {(member) => {
+                                const handleMemberCheck = () => checkMember(member.id);
+                                const isMemberChecked = getIsMemberChecked(member.id);
+
+                                return (
+                                    <MoveFocusInside 
+                                        disabled={!membersNavigation.getIsFocused(member.id)}
+                                        key={member.id}
+                                    >
+                                        <li>
+                                            <Button
+                                                className={twClassNames(
+                                                    styles.item.base,
+                                                    { [styles.item.active]: isMemberChecked },
+                                                )}
+                                                label={`Добавить участника ${member.username}`}
+                                                isActive={isMemberChecked}
+                                                tabIndex={membersNavigation.getTabIndex(member.id)}
+                                                onLeftClick={handleMemberCheck}
+                                            >
+                                                <CheckBoxIndicatorCheck
+                                                    className={styles.checkBoxIndicator}
+                                                    checked={isMemberChecked}
+                                                />
+
+                                                <UserAvatar
+                                                    className={styles.itemImage}
+                                                    avatar={member.avatar}
+                                                    username={member.username}
+                                                />
+
+                                                <div className={styles.itemName}>
+                                                    {member.username}
+                                                </div>
+                                            </Button>
+                                        </li>
+                                    </MoveFocusInside>
+                                );
+                            }}
+                        </ViewportList>
+                    </ul>
+                </Conditional>
+
+                <Conditional isRendered={!isMembersFound}>
+                    <div className={styles.singleNotFound}>
+                        <>Участники не найдены</>
+                    </div>
+                </Conditional>
+            </Conditional>
+
+            <Conditional isRendered={!isAnyFound}>
+                <div className={styles.notFoundWrapper}>
+                    <Image
+                        className={styles.notFoundImage}
+                        src={notFoundImage}
+                    />
+
+                    <div className={styles.notFoundText}>
+                        <>Роли и участники не найдены</>
+                    </div>
+                </div>
+            </Conditional> 
+        </Scrollable>
+    );
+};

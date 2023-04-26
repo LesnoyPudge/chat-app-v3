@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput, CreateRoomModalTabs } from '@components';
+import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput, CreateRoomModalTabs, CheckBox } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
@@ -129,19 +129,21 @@ export const CreateRoomTab: FC = () => {
                         name='isPrivate'
                         label='Название канала'                    
                     >
-                        {({ checked }) => (
-                            <div className={styles.checkBoxContent}>
-                                <div className={styles.checkBoxInfo}>
-                                    <Icon
-                                        className={styles.checkBoxIcon}
-                                        iconId='lock-icon'
-                                    />
+                        {(props) => (
+                            <CheckBox {...props}>
+                                <div className={styles.checkBoxContent}>
+                                    <div className={styles.checkBoxInfo}>
+                                        <Icon
+                                            className={styles.checkBoxIcon}
+                                            iconId='lock-icon'
+                                        />
 
-                                    <span>Приватная комната</span>
+                                        <span>Приватная комната</span>
+                                    </div>
+
+                                    <CheckBoxIndicatorSlide checked={props.checked}/>
                                 </div>
-
-                                <CheckBoxIndicatorSlide checked={checked}/>
-                            </div>
+                            </CheckBox>
                         )}
                     </FormikCheckBox>
 
