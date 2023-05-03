@@ -19,7 +19,6 @@ export const useChat = (messages: IMessage[]) => {
     const messagesRef = useLatest(messages);
     const messagesLengthRef = useLatest(messages.length);
     const firstMessageCreationDateRef = useLatest(messages.at(0)?.createdAt || null);
-    const [messagesInViewportRef, setMessagesInViewportRef] = useRefWithSetter<ObjectWithId[]>([]);
     const normalizedViewportItemRefs = useRef<NormalizedViewportItemRefs>(new Map());
     
     const [contentWrapperElement, setContentWrapperElement] = useState<HTMLElement | null>(null);
@@ -45,27 +44,18 @@ export const useChat = (messages: IMessage[]) => {
         firstMessageCreationDateRef,
     });
 
-    const handleViewportIndexesChange = useCallback((indexes: [number, number]) => {
-        const startIndex = Math.max(0, indexes[0] - 1);
-        const endIndex = Math.min(messagesLengthRef.current, indexes[1] + 1);
-
-        setMessagesInViewportRef(messagesRef.current.slice(
-            startIndex, 
-            endIndex,
-        ));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     const {
         getIsFocused,
         setFocusedId,
         getTabIndex,
+        setViewportIndexes,
     } = useKeyboardNavigation(
-        messagesInViewportRef,
+        messagesRef,
         contentWrapperElement, 
         {
             direction: 'vertical',
             loop: false,
+            virtualized: true,
             initialFocusableId: messages.at(-1)?.id,
             onFocusChange: (item) => {
                 if (!item) return;
@@ -82,7 +72,7 @@ export const useChat = (messages: IMessage[]) => {
     return {
         indexesShift,
         normalizedViewportItemRefs,
-        handleViewportIndexesChange,
+        setViewportIndexes,
         setContentWrapperElement,
         setContentElement,
         setPlaceholderElement,

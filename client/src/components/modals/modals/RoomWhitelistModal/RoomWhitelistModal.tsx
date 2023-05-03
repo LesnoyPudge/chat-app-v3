@@ -2,6 +2,7 @@ import { FC, useContext, useRef } from 'react';
 import { Button, ModalWindow, OverlayContext, RolesAndMembersCheckList, SearchBar } from '@components';
 import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../components';
 import { useTextInput } from '@hooks';
+import { useSet } from 'react-use';
 
 
 
@@ -12,6 +13,11 @@ interface RoomWhitelistModal extends Pick<RolesAndMembersCheckList, 'members' | 
     }) => void;
 }
 
+const styles = {
+    searchBar: 'h-10 mb-2',
+    rolesAndMembers: 'max-h-[300px]',
+};
+
 export const RoomWhitelistModal: FC<RoomWhitelistModal> = ({
     members,
     roles,
@@ -19,22 +25,19 @@ export const RoomWhitelistModal: FC<RoomWhitelistModal> = ({
 }) => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
     const { handleChange, handleReset, value } = useTextInput('');
-    const checkedMembersIdRef = useRef(new Set<string>());
-    const checkedRolesIdRef = useRef(new Set<string>());
-
-    const checkMember = (id: string) => checkedMembersIdRef.current.add(id);
-    const checkRole = (id: string) => checkedRolesIdRef.current.add(id);
-
-    const getIsMemberChecked = (id: string) => checkedMembersIdRef.current.has(id);
-    const getIsRoleChecked = (id: string) => checkedRolesIdRef.current.has(id);
+    const [checkedMembersId, membersActions] = useSet<string>();
+    const [checkedRolesId, rolesActions] = useSet<string>();
 
     const handleSubmit = () => {
         closeOverlay();
         onSubmit({
-            members: checkedMembersIdRef.current,
-            roles: checkedRolesIdRef.current,
+            members: checkedMembersId,
+            roles: checkedRolesId,
         });
     };
+
+    const filteredMembers = members.filter((member) => member.username.includes(value));
+    const filteredRoles = roles.filter((role) => role.name.includes(value));
 
     return (
         <ModalWindow 
@@ -54,7 +57,7 @@ export const RoomWhitelistModal: FC<RoomWhitelistModal> = ({
 
                 <ModalContent>
                     <SearchBar
-                        className='h-10'
+                        className={styles.searchBar}
                         placeholder='Название роли или имя участника'
                         label='Поиск среди участников или ролей'
                         onChange={handleChange}
@@ -63,13 +66,13 @@ export const RoomWhitelistModal: FC<RoomWhitelistModal> = ({
                     />
 
                     <RolesAndMembersCheckList
-                        className='max-h-[300px]'
-                        roles={roles}
-                        members={members}
-                        checkMember={checkMember}
-                        checkRole={checkRole}
-                        getIsMemberChecked={getIsMemberChecked}
-                        getIsRoleChecked={getIsRoleChecked}
+                        className={styles.rolesAndMembers}
+                        roles={filteredRoles}
+                        members={filteredMembers}
+                        checkMember={membersActions.add}
+                        checkRole={rolesActions.add}
+                        getIsMemberChecked={membersActions.has}
+                        getIsRoleChecked={rolesActions.has}
                     />
                 </ModalContent>
 

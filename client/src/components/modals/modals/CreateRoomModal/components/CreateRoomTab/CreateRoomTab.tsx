@@ -24,7 +24,14 @@ const styles = {
 export const CreateRoomTab: FC = () => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
     const { changeTab } = useContext(TabContext) as TabContext<CreateRoomModalTabs>;
-    const { values } = useFormikContext<CreateRoomFormValues>();
+    const { values, isValid, validateField } = useFormikContext<CreateRoomFormValues>();
+
+    const handleNextStep = () => {
+        validateField('name');
+        if (!isValid) return;
+        
+        changeTab.addWhiteListTab();
+    };
 
     return (
         <>
@@ -177,7 +184,8 @@ export const CreateRoomTab: FC = () => {
                     <Button
                         stylingPreset='brand'
                         size='medium'
-                        onLeftClick={changeTab.addWhiteListTab}
+                        type='submit'
+                        onLeftClick={handleNextStep}
                     >
                         <>Далее</>
                     </Button>

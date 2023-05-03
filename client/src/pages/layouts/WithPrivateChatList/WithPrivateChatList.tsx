@@ -1,15 +1,15 @@
 import { FC } from 'react';
-import { SplitedPageLayout } from '../components';
+import { SplittedPageLayout } from '../components';
 import { Header, PrivateChatList } from './components';
 
 
 
 export const WithPrivateChatList: FC = () => {
     return (
-        <SplitedPageLayout>
+        <SplittedPageLayout>
             <Header/>
 
             <PrivateChatList/>
-        </SplitedPageLayout>
+        </SplittedPageLayout>
     );
 };

@@ -27,7 +27,7 @@ const channels = [
 ];
 
 const styles = {
-    wrapper: 'h-screen w-[72px] bg-primary-500',
+    wrapper: 'h-screen w-[72px] shrink-0 bg-primary-500',
     scrollbar: 'h-full',
     inner: 'flex flex-col gap-2',
     button: {

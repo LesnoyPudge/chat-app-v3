@@ -1,7 +1,7 @@
-import { useEventListener, useProvidedValue, useStateAndRef, useThrottle } from '@hooks';
+import { useEventListener, useProvidedValue, useRefWithSetter, useStateAndRef, useThrottle } from '@hooks';
 import { ObjectWithId } from '@types';
 import { noop } from '@utils';
-import { RefObject, useCallback, useMemo } from 'react';
+import { RefObject, useCallback } from 'react';
 import { useLatest } from 'react-use';
 import { Key } from 'ts-key-enum';
 
@@ -13,6 +13,8 @@ interface Options {
     direction?: 'horizontal' | 'vertical';
     loop?: boolean;
     initialFocusableId?: string;
+    virtualized?: boolean;
+    overscan?: number;
     onFocusChange?: (
         item: ObjectWithId | undefined, 
         stepType: 'forward' | 'backward',
@@ -25,10 +27,11 @@ interface UseKeyboardNavigationReturn {
     getTabIndex: (id: string) => number;
     setRoot: React.Dispatch<React.SetStateAction<RootElement>>;
     setFocusedId: React.Dispatch<React.SetStateAction<string | null>>;
+    setViewportIndexes: (indexes: [number, number]) => void;
 }
 
 export const useKeyboardNavigation = (
-    focusableListRef: RefObject<ObjectWithId[]>,
+    providedFocusableListRef: RefObject<ObjectWithId[]>,
     providedRoot: RootElement = null,
     options?: Options,
 ): UseKeyboardNavigationReturn => {
@@ -36,11 +39,33 @@ export const useKeyboardNavigation = (
         direction = 'vertical',
         loop = false,
         initialFocusableId,
+        virtualized = false,
+        overscan = 3,
         onFocusChange = noop,
     } = options || {};
 
+    const providedListRef = useLatest(providedFocusableListRef.current ? providedFocusableListRef.current : []);
+    const [virtualListRef, setVirtualListRef] = useRefWithSetter<ObjectWithId[]>([]);
+    
+    const focusableListRef = useLatest(
+        virtualized 
+            ? (virtualListRef.current || []) 
+            : (providedListRef.current || []),
+    );
+
+    const setViewportIndexes = useCallback(([first, second]: [number, number]) => {
+        const startIndex = Math.max(0, first - 1 - overscan);
+        const endIndex = Math.min(providedListRef.current.length, second + 1 + overscan);
+
+        setVirtualListRef(providedListRef.current.slice(
+            startIndex, 
+            endIndex,
+        ));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const [root, setRoot] = useProvidedValue(providedRoot);
-    const initialIdRef = useLatest(initialFocusableId || focusableListRef.current?.at(0)?.id || null);
+    const initialIdRef = useLatest(initialFocusableId || focusableListRef.current.at(0)?.id || null);
     const [_, focusedIdRef, setFocusedId] = useStateAndRef<string | null>(null);
     const { isThrottling, throttle } = useThrottle();
 
@@ -60,7 +85,7 @@ export const useKeyboardNavigation = (
 
     const getIndexesRef = useLatest(() => {
         const currentIndex = getCurrentIndexRef.current();
-        const listLength = focusableListRef.current?.length || 0;
+        const listLength = focusableListRef.current.length || 0;
 
         if (!loop) {
             const nextIndex = Math.min(listLength - 1, currentIndex + 1);
@@ -96,14 +121,14 @@ export const useKeyboardNavigation = (
         if (direction === 'vertical' && !isVerticalMove) return;
         
         e.preventDefault();
-        console.log('?');
-        const isEmptyList = !focusableListRef.current?.length;
+
+        const isEmptyList = !focusableListRef.current.length;
 
         if (isEmptyList) return;
         if (isThrottling) return;
 
         throttle(noop, 0)();
-
+        
         const noFocusedId = focusedIdRef.current === null && initialIdRef.current === null;
         const isItemInArray = focusableListRef.current.some((item) => (
             item.id === focusedIdRef.current || 
@@ -139,13 +164,14 @@ export const useKeyboardNavigation = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
     } , []);
 
-    const result: UseKeyboardNavigationReturn = useMemo(() => ({
-        getIsFocused: (id) => id === focusedIdRef.current,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const getIsFocused = useCallback((id: string) => id === focusedIdRef.current, []);
+
+    return {
+        getIsFocused,
         getTabIndex,
         setRoot,
         setFocusedId,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), []);
-
-    return result;
+        setViewportIndexes,
+    };
 };

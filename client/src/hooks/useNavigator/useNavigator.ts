@@ -20,7 +20,7 @@ export const useNavigator = () => {
         anyPrivateChat: pathname.includes('/app/private-chat'),
         privateChat: (privateChatId: string) => pathname === `/app/private-chat/${privateChatId}`,
         channel: (channelId: string) => pathname.includes(`/app/channel/${channelId}`),
-        room: (channelId: string, roomId: string) => pathname.includes(`/app/channel/${channelId}/room/${roomId}`),
+        room: (channelId: string, roomId: string) => pathname === `/app/channel/${channelId}/room/${roomId}`,
     }), [pathname]);
 
     const navigateTo = useMemo(() => ({

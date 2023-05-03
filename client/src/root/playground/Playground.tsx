@@ -402,13 +402,13 @@ const PlaygroundInner8: FC = () => {
 
     return (
         <OverlayContextProvider isOverlayExistInitial>
-            <RoomSettingsModal/>
+            {/* <RoomSettingsModal/> */}
             {/* <CreateRoomModal/> */}
         </OverlayContextProvider>
     );
 };
 
-const enabled = !!1;
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

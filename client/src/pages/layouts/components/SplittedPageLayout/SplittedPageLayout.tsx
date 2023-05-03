@@ -4,7 +4,7 @@ import { UserToolBar } from './components';
 
 
 
-export const SplitedPageLayout: FC<PropsWithChildren> = ({ children }) => {
+export const SplittedPageLayout: FC<PropsWithChildren> = ({ children }) => {
     return (
         <div className='flex w-full overflow-hidden'>
             <div className='flex flex-col bg-primary-300 w-[240px] overflow-hidden'>

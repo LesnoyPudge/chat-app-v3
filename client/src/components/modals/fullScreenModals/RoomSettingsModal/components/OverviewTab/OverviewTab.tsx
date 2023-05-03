@@ -10,12 +10,26 @@ import { useFormikContext } from 'formik';
 
 const styles = {
     wrapper: 'pt-[60px] pl-10',
+    inner: 'rounded overflow-hidden',
+    topSide: {
+        base: 'p-4 bg-primary-300 transition-all',
+        checked: 'bg-primary-500',
+    },
+    checkBoxInner: 'flex items-center gap-2',
+    checkBoxIcon: 'w-5 h-5 fill-icon-100',
+    checkBoxText: 'font-semibold',
+    checkBox: 'ml-auto',
+    description: 'text-xs mt-2.5',
+    bottomSide: 'bg-primary-300',
+    bottomFirst: 'p-4 flex gap-2 justify-between items-center',
+    bottomFirstText: 'text-xs font-bold uppercase',
+    separator: 'mx-4',
 };
 
 export const OverviewTab: FC = () => {
     const { values, setFieldValue } = useFormikContext<RoomSettingsModalFormValues>();
 
-    const members = Array(10).fill(null).map((_, i) => ({
+    const members = Array(20).fill(null).map((_, i) => ({
         id: i.toString(),
         username: `username ${i}`,
         avatar: 'https://i.pravatar.cc/50',
@@ -70,22 +84,25 @@ export const OverviewTab: FC = () => {
                 label='Настройки приватности комнаты'
             >
                 {(props) => (
-                    <div className='rounded overflow-hidden'>
-                        <div className={twClassNames('p-4 bg-primary-300 transition-all', {
-                            'bg-primary-500': props.checked,
-                        })}>
-                            <div className='flex items-center gap-2'>
+                    <div className={styles.inner}>
+                        <div 
+                            className={twClassNames(
+                                styles.topSide.base, 
+                                { [styles.topSide.checked]: props.checked },
+                            )}
+                        >
+                            <div className={styles.checkBoxInner}>
                                 <Icon
-                                    className='w-5 h-5 fill-icon-100'
+                                    className={styles.checkBoxIcon}
                                     iconId='lock-icon'
                                 />
 
-                                <span className='font-semibold'>
+                                <span className={styles.checkBoxText}>
                                     <>Приватная комната</>
                                 </span>
 
                                 <CheckBox
-                                    className='ml-auto'
+                                    className={styles.checkBox}
                                     {...props}
                                 >
                                     <CheckBoxIndicatorSlide
@@ -94,16 +111,16 @@ export const OverviewTab: FC = () => {
                                 </CheckBox>
                             </div>
 
-                            <div className='text-xs mt-2.5'>
+                            <div className={styles.description}>
                                 <>Если сделать комнату приватной, только выбранные </>
                                 <>вами участники и роли смогут просматривать её.</>
                             </div>
                         </div>
 
                         <Conditional isRendered={props.checked}>
-                            <div className='bg-primary-300'>
-                                <div className='p-4 flex gap-2 justify-between items-center'>
-                                    <Heading className='text-xs font-bold uppercase'>
+                            <div className={styles.bottomSide}>
+                                <div className={styles.bottomFirst}>
+                                    <Heading className={styles.bottomFirstText}>
                                         <>Кто может получать доступ к этой комнате?</>
                                     </Heading>
 
@@ -132,7 +149,7 @@ export const OverviewTab: FC = () => {
                                 </div>
 
                                 <Separator 
-                                    className='mx-4'
+                                    className={styles.separator}
                                     spacing={0}
                                 />
 

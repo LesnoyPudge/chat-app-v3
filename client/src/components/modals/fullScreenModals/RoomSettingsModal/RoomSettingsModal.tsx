@@ -7,6 +7,10 @@ import { Navigation, OverviewTab } from './components';
 
 
 
+interface RoomSettingsModal {
+    roomId: string;
+}
+
 export type RoomSettingsModalTabs = typeof tabs;
 
 export interface RoomSettingsModalFormValues {
@@ -22,7 +26,9 @@ const tabs = {
     overviewTab: <OverviewTab/>,
 };
 
-export const RoomSettingsModal: FC = () => {
+export const RoomSettingsModal: FC<RoomSettingsModal> = ({
+    roomId,
+}) => {
     const initialValues: RoomSettingsModalFormValues = {
         roomName: 'some room name',
         isPrivate: false,
@@ -41,7 +47,7 @@ export const RoomSettingsModal: FC = () => {
                         initialValues={initialValues}
                         onSubmit={(values) => {
                             resetShakeStacks();
-                            console.log(values);
+                            console.log(roomId, values);
                         }}
                         onReset={resetShakeStacks}
                         enableReinitialize

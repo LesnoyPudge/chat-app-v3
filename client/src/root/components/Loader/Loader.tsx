@@ -1,4 +1,4 @@
-import { Conditional, Link, OverlayPortal } from '@components';
+import { Conditional, OverlayPortal } from '@components';
 import { createContext, FC, PropsWithChildren, useState } from 'react';
 
 
@@ -29,23 +29,7 @@ export const Loader: FC<PropsWithChildren> = ({ children }) => {
                             </div>
 
                             <div className='mt-auto grid mb-8'>
-                                <p>Проблемы с подключением? Сообщите нам!</p>
-
-                                <div className='mt-2'>
-                                    <Link
-                                        className=''
-                                        href='https://twitter.com/discord'
-                                    >
-                                        <>Напишите нам в Твиттере</>
-                                    </Link>
-
-                                    <Link
-                                        className=''
-                                        href='https://discordstatus.com'
-                                    >
-                                        <>Состояние сервера</>
-                                    </Link>
-                                </div>
+                                <p>Проблемы с подключением? Сообщите нам! </p>
                             </div>
                         </div>
                     </div>

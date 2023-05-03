@@ -35,10 +35,14 @@ export const AllowedRolesAndMembers: FC = () => {
     }));
 
     const rolesRef = useRef(roles);
-    const rolesNavigation = useKeyboardNavigation(rolesRef);
+    const rolesNavigation = useKeyboardNavigation(rolesRef, undefined, {
+        virtualized: true,
+    });
 
     const membersRef = useRef(members);
-    const membersNavigation = useKeyboardNavigation(membersRef);
+    const membersNavigation = useKeyboardNavigation(membersRef, undefined, {
+        virtualized: true,
+    });
 
     const removeItem = (name: 'allowedRoles' | 'allowedMembers', id: string) => {
         const newValue = new Set(values[name]);
@@ -68,7 +72,10 @@ export const AllowedRolesAndMembers: FC = () => {
                         tabIndex={0}
                         ref={rolesNavigation.setRoot}
                     >
-                        <ViewportList items={roles}>
+                        <ViewportList 
+                            items={roles}
+                            onViewportIndexesChange={rolesNavigation.setViewportIndexes}
+                        >
                             {(role) => {
                                 const handleRemove = () => removeItem('allowedRoles', role.id);
 
@@ -131,7 +138,10 @@ export const AllowedRolesAndMembers: FC = () => {
                         ref={membersNavigation.setRoot}
                         tabIndex={0}
                     >
-                        <ViewportList items={members}>
+                        <ViewportList 
+                            items={members}
+                            onViewportIndexesChange={membersNavigation.setViewportIndexes}
+                        >
                             {(member) => {
                                 const handleRemove = () => removeItem('allowedMembers', member.id);
 

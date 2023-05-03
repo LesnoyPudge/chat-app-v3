@@ -5,7 +5,7 @@ import { OpenEmojiPickerButton, Attachments, AttachmentsModals } from './compone
 import { Form, Formik } from 'formik';
 import { Descendant } from 'slate';
 import { EncodedFile } from '@types';
-import { MBToBytes } from '@utils';
+import { MBToBytes, twClassNames } from '@utils';
 
 
 
@@ -25,6 +25,7 @@ const initialValues: MessageInputBarFormValues = {
 };
 
 const styles = {
+    wrapper: 'm-4 mb-6',
     button: 'group/button w-11 h-11 p-2.5 sticky top-0 rounded-lg shrink-0',
     icon: `w-full h-full fill-icon-200 group-hover/button:fill-icon-100 
     group-focus-visible/button:fill-icon-100`,
@@ -57,7 +58,7 @@ export const MessageInputBar: FC<MessageInputBar> = ({
                         sizeLimit: MBToBytes(8),
                     }}
                 >
-                    <Form className={className + ' m-4'}>
+                    <Form className={twClassNames(styles.wrapper, className)}>
                         <SlateContainer
                             value={values.content}
                             onChange={(value) => setFieldValue('content', value)}

@@ -46,7 +46,7 @@ export const Chat: FC<Chat> = ({
     const {
         indexesShift,
         normalizedViewportItemRefs,
-        handleViewportIndexesChange,
+        setViewportIndexes,
         setContentElement,
         setContentWrapperElement,
         setPlaceholderElement,
@@ -124,7 +124,7 @@ export const Chat: FC<Chat> = ({
                         initialAlignToTop={true}
                         scrollThreshold={0}
                         ref={setViewportList}
-                        onViewportIndexesChange={handleViewportIndexesChange}
+                        onViewportIndexesChange={setViewportIndexes}
                     >
                         {({ id }) => (
                             <Memo key={id}>

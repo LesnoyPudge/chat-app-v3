@@ -1,7 +1,7 @@
 import { PropsWithChildrenAsNodeOrFunction, PropsWithClassName, Size } from '@types';
 import { conditional, noop, twClassNames } from '@utils';
-import { FC, MutableRefObject, RefObject, useEffect, useLayoutEffect, useRef } from 'react';
-import { useSharedResizeObserver, useThrottle } from '@hooks';
+import { FC, MutableRefObject, RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useSharedResizeObserver, useStateAndRef, useThrottle } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
 import { isCallable, SimpleBarCore } from '@reExport';
 import SimpleBar from 'simplebar-react';
@@ -16,6 +16,7 @@ import useResizeObserver from '@react-hook/resize-observer';
 // } from 'overlayscrollbars';
 import { ChildrenAsNodeOrFunction } from 'src/components/helpers';
 import { useLatest } from 'react-use';
+import { useIsFirstRender } from 'usehooks-ts';
 
 
 
@@ -51,7 +52,10 @@ PropsWithChildrenAsNodeOrFunction<RefObject<SimpleBarCore>>
 }
 
 const styles = {
-    wrapper: 'flex flex-1 relative max-h-full',
+    wrapper: {
+        base: 'flex flex-1 relative max-h-full',
+        sizeFollow: 'flex-auto',
+    },
     scrollable: 'absolute inset-0 simplebar-custom',
 };
 
@@ -73,7 +77,7 @@ export const Scrollable: FC<Scrollable> = ({
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { throttle, isThrottling: isAlive } = useThrottle();
-    const simpleBarApiRef = useRef<SimpleBarCore | null>(null);
+    const [simpleBarApi, simpleBarApiRef, setSimpleBarApi] = useStateAndRef<SimpleBarCore | null>(null);
     const handleKeepAliveRef = useLatest(() => {
         if (autoHide) throttle(noop, 1000)();  
     });
@@ -85,22 +89,22 @@ export const Scrollable: FC<Scrollable> = ({
         'data-is-alive': isAlive,
     };
 
-    const scrollbarSizes = {
+    const scrollbarSizesRef = useLatest({
         '--scrollbar-thickness': small ? 10 : hidden ? 0 : 10,
         '--track-thickness': small ? 6 : hidden ? 0 : 8,
         '--thumb-thickness': small ? 6 : hidden ? 0 : 8,
-    };
+    });
 
-    const scrollbarStyles: Record<keyof typeof scrollbarSizes, string> = {
-        '--scrollbar-thickness': scrollbarSizes['--scrollbar-thickness'] + 'px',
-        '--track-thickness': scrollbarSizes['--track-thickness'] + 'px',
-        '--thumb-thickness': scrollbarSizes['--thumb-thickness'] + 'px',
+    const scrollbarStyles: Record<keyof typeof scrollbarSizesRef.current, string> = {
+        '--scrollbar-thickness': scrollbarSizesRef.current['--scrollbar-thickness'] + 'px',
+        '--track-thickness': scrollbarSizesRef.current['--track-thickness'] + 'px',
+        '--thumb-thickness': scrollbarSizesRef.current['--thumb-thickness'] + 'px',
     };
 
     const setRef = (simpleBarApi: SimpleBarCore | null) => {
         if (!simpleBarApi) return;
-
-        simpleBarApiRef.current = simpleBarApi;
+        
+        setSimpleBarApi(simpleBarApi);
 
         isCallable(setSimpleBar) 
             ? setSimpleBar(simpleBarApi) 
@@ -118,12 +122,10 @@ export const Scrollable: FC<Scrollable> = ({
         ;
     };
 
-    useSharedResizeObserver(simpleBarApiRef.current?.contentEl, (entry) => {
-        if (!onContentResize && !followContentSize) return;
-
+    const getCorrectContentSize = useCallback((width: number, height: number) => {
         const isHorizontal = direction === 'horizontal';
         const isVertical = direction === 'vertical';
-        const scrollbarSize = scrollbarSizes['--scrollbar-thickness'];
+        const scrollbarSize = scrollbarSizesRef.current['--scrollbar-thickness'];
         const scrollbarSizeWithGutter = scrollbarSize * 2;
 
         const padding = {
@@ -147,10 +149,32 @@ export const Scrollable: FC<Scrollable> = ({
             ),
         };
 
-        const size = {
-            width: entry.borderBoxSize[0].inlineSize + padding.horizontal,
-            height: entry.borderBoxSize[0].blockSize + padding.vertical,
+        return {
+            width: width + padding.horizontal,
+            height: height + padding.vertical,
         };
+    }, [direction, scrollbarSizesRef, withOppositeGutter]);
+
+
+    // useLayoutEffect(() => {
+    //     if (!followContentSize) return;
+    //     if (!simpleBarApi?.contentEl) return;
+    //     if (!wrapperRef.current) return;
+
+    //     console.log('in layout');
+        
+    //     const contentRect = simpleBarApi.contentEl.getBoundingClientRect();
+    //     console.log(simpleBarApi.contentEl, contentRect);
+    //     const size = getCorrectContentSize(contentRect.width, contentRect.height);
+
+    //     wrapperRef.current.style.width = size.width + 'px';
+    //     wrapperRef.current.style.height = size.height + 'px';
+    // }, [followContentSize, getCorrectContentSize, simpleBarApi]);
+
+    useSharedResizeObserver(simpleBarApi?.contentEl, (entry) => {
+        if (!onContentResize && !followContentSize) return;
+
+        const size = getCorrectContentSize(entry.borderBoxSize[0].inlineSize, entry.borderBoxSize[0].blockSize);
 
         if (wrapperRef.current) {
             wrapperRef.current.style.width = size.width + 'px';
@@ -161,30 +185,30 @@ export const Scrollable: FC<Scrollable> = ({
     });
 
     useEffect(() => {
-        if (!simpleBarApiRef.current) return;
+        if (!simpleBarApi) return;
 
-        const defaultListener = simpleBarApiRef.current.drag;
+        const defaultListener = simpleBarApi.drag;
 
-        simpleBarApiRef.current.drag = (...rest) => {
+        simpleBarApi.drag = (...rest) => {
             handleKeepAliveRef.current();
             defaultListener(...rest);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [handleKeepAliveRef, simpleBarApi]);
     
     useEffect(() => {
-        if (!simpleBarApiRef.current) return;
+        if (!simpleBarApi) return;
 
-        const wrapper = simpleBarApiRef.current.contentWrapperEl;
+        const wrapper = simpleBarApi.contentWrapperEl;
         if (!wrapper) return;
         
         wrapper.tabIndex = focusable ? 0 : -1;
-    }, [focusable]);
+    }, [focusable, simpleBarApi]);
     
     return (
         <div 
             className={twClassNames(
-                styles.wrapper,
+                styles.wrapper.base,
+                { [styles.wrapper.sizeFollow]: followContentSize },
                 className,
             )}
             ref={wrapperRef}

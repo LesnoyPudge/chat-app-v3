@@ -5,7 +5,7 @@ import { FC, useRef } from 'react';
 import { ViewportList } from 'react-viewport-list';
 import notFoundImage from '@assets/not-found-image.svg';
 import { twClassNames } from '@utils';
-import { useKeyboardNavigation } from '@hooks';
+import { useKeyboardNavigation, useRefWithSetter } from '@hooks';
 import { MoveFocusInside } from 'react-focus-lock';
 
 
@@ -26,8 +26,8 @@ export interface RolesAndMembersCheckList extends PropsWithClassName {
 }
 
 const styles = {
-    heading: 'text-xs uppercase bold',
-    list: 'flex flex-col gap-1',
+    heading: 'text-xs uppercase bold mb-2',
+    list: 'mb-2',
     singleNotFound: 'flex justify-center items-center h-full font-medium text-sm',
     notFoundWrapper: 'flex flex-col h-full justify-center items-center',
     notFoundImage: 'w-[85px] h-[85px] mb-4',
@@ -51,15 +51,22 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
     getIsMemberChecked,
     getIsRoleChecked,
 }) => {
+    // const [viewport, viewportRef, setViewport] = useStateAndRef<HTMLElement | null>(null);
+    const [viewportRef, setViewport] = useRefWithSetter<HTMLElement | null>(null);
+
+    const rolesRef = useRef(roles);
+    const rolesNavigation = useKeyboardNavigation(rolesRef, undefined, {
+        virtualized: true,
+    });
+
+    const membersRef = useRef(members);
+    const membersNavigation = useKeyboardNavigation(membersRef, undefined, {
+        virtualized: true,
+    });
+
     const isRolesFound = !!roles.length;
     const isMembersFound = !!members.length;
     const isAnyFound = isRolesFound || isMembersFound;
-
-    const rolesRef = useRef(roles);
-    const rolesNavigation = useKeyboardNavigation(rolesRef);
-
-    const membersRef = useRef(members);
-    const membersNavigation = useKeyboardNavigation(membersRef);
 
     return (
         <Scrollable 
@@ -68,6 +75,7 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
             focusable
             label='Список ролей и участников'
             followContentSize
+            setScrollableWrapper={setViewport}
         >
             <Conditional isRendered={isAnyFound}>
                 <Heading className={styles.heading}>
@@ -82,7 +90,9 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                     >
                         <ViewportList
                             items={roles}
-                            withCache
+                            initialPrerender={10}
+                            viewportRef={viewportRef}
+                            onViewportIndexesChange={rolesNavigation.setViewportIndexes}
                         >
                             {(role) => {
                                 const handleRoleCheck = () => checkRole(role.id);
@@ -145,7 +155,9 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                     >
                         <ViewportList
                             items={members}
-                            withCache
+                            initialPrerender={10}
+                            viewportRef={viewportRef}
+                            onViewportIndexesChange={membersNavigation.setViewportIndexes}
                         >
                             {(member) => {
                                 const handleMemberCheck = () => checkMember(member.id);
