@@ -1,7 +1,9 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { ArrowFocusContextProvider, ArrowFocusItem, Scrollable } from '@components';
+import { List, Scrollable } from '@components';
+import { useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
-import { FC } from 'react';
+import { FC, useRef } from 'react';
+import { MoveFocusInside } from 'react-focus-lock';
 import { PrivateChatItem } from './components';
 
 
@@ -272,34 +274,48 @@ const styles = {
 };
 
 export const PrivateChatList: FC = () => {
+    const privateChatsRef = useRef(privateChats);
+    const {
+        getIsFocused,
+        getTabIndex,
+        setFocusedId,
+        setRoot,
+        setViewportIndexes,
+        withFocusSet,
+    } = useKeyboardNavigation(privateChatsRef);
+
     return (
         <div className={styles.section}>
             <Heading className={styles.heading}>
                 <>Личные сообщения</>
             </Heading>
 
-            <ArrowFocusContextProvider list={privateChats} orientation='vertical'>
-                <Scrollable 
-                    withOppositeGutter 
-                    autoHide 
-                    small
+            <Scrollable 
+                withOppositeGutter 
+                autoHide 
+                small
+            >
+                <ul 
+                    className={styles.list}
+                    tabIndex={0}
+                    aria-label='Список приватных сообщений'
+                    ref={setRoot}
                 >
-                    <ul className={styles.list}>
-                        {privateChats.map((privateChat) => (
+                    <List list={privateChats}>
+                        {(privateChat) => (
                             <li key={privateChat.id}>
-                                <ArrowFocusItem id={privateChat.id}>
-                                    {({ tabIndex }) => (
-                                        <PrivateChatItem 
-                                            privateChat={privateChat}
-                                            tabIndex={tabIndex}
-                                        />
-                                    )}
-                                </ArrowFocusItem>
+                                <MoveFocusInside disabled={!getIsFocused(privateChat.id)}>
+                                    <PrivateChatItem 
+                                        privateChat={privateChat}
+                                        tabIndex={getTabIndex(privateChat.id)}
+                                        withFocusSet={withFocusSet}
+                                    />
+                                </MoveFocusInside>
                             </li>
-                        ))}
-                    </ul>
-                </Scrollable>
-            </ArrowFocusContextProvider>
+                        )}
+                    </List>
+                </ul>
+            </Scrollable>
         </div>
     );
 };

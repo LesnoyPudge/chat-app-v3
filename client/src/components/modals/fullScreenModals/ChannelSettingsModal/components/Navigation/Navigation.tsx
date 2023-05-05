@@ -1,6 +1,9 @@
-import { FC, useContext } from 'react';
-import { ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalTabs, DeleteChannelModal, Icon, OverlayContextProvider, Separator, TabContext, TabList } from '@components';
+import { FC, useContext, useRef } from 'react';
+import { Button, ChannelSettingsModalTabs, DeleteChannelModal, Icon, OverlayContextProvider, Separator, TabContext, TabList } from '@components';
 import { NavigationHeading, NavigationItem } from '../../../components';
+import { objectKeysToIdArray } from '@utils';
+import { useKeyboardNavigation } from '@hooks';
+import { MoveFocusInside } from 'react-focus-lock';
 
 
 
@@ -12,94 +15,96 @@ const styles = {
 
 export const Navigation: FC = () => {
     const { tabs, changeTab, isActive, tabProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
-    
+    const tabsRef = useRef(objectKeysToIdArray(tabs));
+    const {
+        getIsFocused,
+        getTabIndex,
+        setRoot,
+        withFocusSet,
+    } = useKeyboardNavigation(tabsRef);
+
     return (
         <div>
-            <ArrowFocusContextProvider list={tabs} orientation='vertical'>
-                <TabList label='Настройки канала' orientation='vertical'>
-                    <NavigationHeading>
-                        <>Канал лошок111</>
-                    </NavigationHeading>
+            <TabList 
+                label='Настройки канала' 
+                orientation='vertical'
+                tabIndex={0}
+                innerRef={setRoot}
+            >
+                <NavigationHeading>
+                    <>Канал лошок111</>
+                </NavigationHeading>
 
-                    <div className={styles.list}>
-                        <ArrowFocusItem id={tabs.overviewTab.identifier}>
-                            {({ tabIndex }) => (
-                                <Button
-                                    className={styles.button}
-                                    isActive={isActive.overviewTab}
-                                    label='Обзор канала'
-                                    tabIndex={tabIndex}
-                                    {...tabProps.overviewTab}
-                                    onLeftClick={changeTab.overviewTab}
-                                >
-                                    <NavigationItem isActive={isActive.overviewTab}>
-                                        <>Обзор</>
-                                    </NavigationItem>
-                                </Button>
-                            )}
-                        </ArrowFocusItem>
+                <div className={styles.list}>
+                    <MoveFocusInside disabled={!getIsFocused(tabs.overviewTab.identifier)}>
+                        <Button
+                            className={styles.button}
+                            isActive={isActive.overviewTab}
+                            label='Обзор канала'
+                            tabIndex={getTabIndex(tabs.overviewTab.identifier)}
+                            {...tabProps.overviewTab}
+                            onLeftClick={withFocusSet(tabs.overviewTab.identifier, changeTab.overviewTab)}
+                        >
+                            <NavigationItem isActive={isActive.overviewTab}>
+                                <>Обзор</>
+                            </NavigationItem>
+                        </Button>
+                    </MoveFocusInside>
 
-                        <ArrowFocusItem id={tabs.rolesTab.identifier}>
-                            {({ tabIndex }) => (
-                                <Button
-                                    className={styles.button}
-                                    isActive={isActive.rolesTab}
-                                    label='Роли канала'
-                                    tabIndex={tabIndex}
-                                    {...tabProps.rolesTab}
-                                    onLeftClick={changeTab.rolesTab}
-                                >
-                                    <NavigationItem isActive={isActive.rolesTab}>
-                                        <>Роли</>
-                                    </NavigationItem>
-                                </Button>
-                            )}
-                        </ArrowFocusItem>
-                    </div>
+                    <MoveFocusInside disabled={!getIsFocused(tabs.rolesTab.identifier)}>
+                        <Button
+                            className={styles.button}
+                            isActive={isActive.rolesTab}
+                            label='Роли канала'
+                            tabIndex={getTabIndex(tabs.rolesTab.identifier)}
+                            {...tabProps.rolesTab}
+                            onLeftClick={withFocusSet(tabs.rolesTab.identifier, changeTab.rolesTab)}
+                        >
+                            <NavigationItem isActive={isActive.rolesTab}>
+                                <>Роли</>
+                            </NavigationItem>
+                        </Button>
+                    </MoveFocusInside>
+                </div>
 
-                    <Separator spacing={16}/>
+                <Separator spacing={16}/>
 
-                    <NavigationHeading>
-                        <>Управление участниками</>
-                    </NavigationHeading>
+                <NavigationHeading>
+                    <>Управление участниками</>
+                </NavigationHeading>
 
-                    <div className={styles.list}>
-                        <ArrowFocusItem id={tabs.membersTab.identifier}>
-                            {({ tabIndex }) => (
-                                <Button
-                                    className={styles.button}
-                                    isActive={isActive.membersTab}
-                                    label='Участники канала'
-                                    tabIndex={tabIndex}
-                                    {...tabProps.membersTab}
-                                    onLeftClick={changeTab.membersTab}
-                                >
-                                    <NavigationItem isActive={isActive.membersTab}>
-                                        <>Участники</>
-                                    </NavigationItem>
-                                </Button>
-                            )}
-                        </ArrowFocusItem>
+                <div className={styles.list}>
+                    <MoveFocusInside disabled={!getIsFocused(tabs.membersTab.identifier)}>
+                        <Button
+                            className={styles.button}
+                            isActive={isActive.membersTab}
+                            label='Участники канала'
+                            tabIndex={getTabIndex(tabs.membersTab.identifier)}
+                            {...tabProps.membersTab}
+                            onLeftClick={withFocusSet(tabs.membersTab.identifier, changeTab.membersTab)}
+                        >
+                            <NavigationItem isActive={isActive.membersTab}>
+                                <>Участники</>
+                            </NavigationItem>
+                        </Button>
+                    </MoveFocusInside>
 
-                        <ArrowFocusItem id={tabs.bannedTab.identifier}>
-                            {({ tabIndex }) => (
-                                <Button
-                                    className={styles.button}
-                                    isActive={isActive.bannedTab}
-                                    label='Забаненные пользователи'
-                                    tabIndex={tabIndex}
-                                    {...tabProps.bannedTab}
-                                    onLeftClick={changeTab.bannedTab}
-                                >
-                                    <NavigationItem isActive={isActive.bannedTab}>
-                                        <>Баны</>
-                                    </NavigationItem>
-                                </Button>
-                            )}
-                        </ArrowFocusItem>
-                    </div>
-                </TabList>
-            </ArrowFocusContextProvider>
+                    <MoveFocusInside disabled={!getIsFocused(tabs.bannedTab.identifier)}>
+                        <Button
+                            className={styles.button}
+                            isActive={isActive.bannedTab}
+                            label='Забаненные пользователи'
+                            tabIndex={getTabIndex(tabs.bannedTab.identifier)}
+                            {...tabProps.bannedTab}
+                            onLeftClick={withFocusSet(tabs.bannedTab.identifier, changeTab.bannedTab)}
+                        >
+                            <NavigationItem isActive={isActive.bannedTab}>
+                                <>Баны</>
+                            </NavigationItem>
+                        </Button>
+                    </MoveFocusInside>
+                </div>
+            </TabList>
 
             <Separator spacing={16}/>
 

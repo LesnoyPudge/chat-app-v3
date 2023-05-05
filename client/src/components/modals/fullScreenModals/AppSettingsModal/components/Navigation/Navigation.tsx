@@ -1,5 +1,8 @@
-import { AppSettingsModalTabs, ArrowFocusContextProvider, ArrowFocusItem, Button, Icon, Link, Separator, TabContext, TabList } from '@components';
-import { FC, useContext } from 'react';
+import { AppSettingsModalTabs, Button, Icon, Link, Separator, TabContext, TabList } from '@components';
+import { useKeyboardNavigation } from '@hooks';
+import { objectKeysToIdArray } from '@utils';
+import { FC, useContext, useRef } from 'react';
+import { MoveFocusInside } from 'react-focus-lock';
 import { NavigationHeading, NavigationItem } from '../../../components';
 
 
@@ -15,55 +18,59 @@ const styles = {
 
 export const Navigation: FC = () => {
     const { changeTab, tabs, isActive, tabProps } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
+    const tabsRef = useRef(objectKeysToIdArray(tabs));
+    const {
+        getIsFocused,
+        getTabIndex,
+        withFocusSet,
+        setRoot,
+    } = useKeyboardNavigation(tabsRef);
 
     return (
         <div>
-            <TabList label='Настройки приложения' orientation='vertical'>
-                <ArrowFocusContextProvider list={tabs} orientation='vertical'>
-                    <NavigationHeading>
-                        <>Настройки пользователя</>
-                    </NavigationHeading>
+            <TabList 
+                label='Настройки приложения' 
+                orientation='vertical'
+                tabIndex={0}
+                innerRef={setRoot}
+            >
+                <NavigationHeading>
+                    <>Настройки пользователя</>
+                </NavigationHeading>
 
-                    <ArrowFocusItem id={tabs.profileTab.identifier}>
-                        {({ tabIndex }) => (
-                            <Button
-                                className={styles.button}
-                                isActive={isActive.profileTab}
-                                label='Моя учётная запись'
-                                tabIndex={tabIndex}
-                                {...tabProps.profileTab}
-                                onLeftClick={changeTab.profileTab}
-                            >
-                                <NavigationItem isActive={isActive.profileTab}>
-                                    <>Моя учётная запись</>
-                                </NavigationItem>
-                            </Button>
-                        )}
-                    </ArrowFocusItem>
+                <MoveFocusInside disabled={!getIsFocused(tabs.profileTab.identifier)}>
+                    <Button
+                        className={styles.button}
+                        isActive={isActive.profileTab}
+                        label='Моя учётная запись'
+                        tabIndex={getTabIndex(tabs.profileTab.identifier)}
+                        {...tabProps.profileTab}
+                        onLeftClick={withFocusSet(tabs.profileTab.identifier, changeTab.profileTab)}
+                    >
+                        <NavigationItem isActive={isActive.profileTab}>
+                            <>Моя учётная запись</>
+                        </NavigationItem>
+                    </Button>
+                </MoveFocusInside>
 
-                    <Separator spacing={16}/>
+                <Separator spacing={16}/>
 
-                    <NavigationHeading>
-                        <>Настройки приложения</>
-                    </NavigationHeading>
+                <NavigationHeading>
+                    <>Настройки приложения</>
+                </NavigationHeading>
 
-                    <ArrowFocusItem id={tabs.appearanceTab.identifier}>
-                        {({ tabIndex }) => (
-                            <Button
-                                className={styles.button}
-                                isActive={isActive.appearanceTab}
-                                label='Внешний вид'
-                                tabIndex={tabIndex}
-                                {...tabProps.appearanceTab}
-                                onLeftClick={changeTab.appearanceTab}
-                            >
-                                <NavigationItem isActive={isActive.appearanceTab}>
-                                    <>Внешний вид</>
-                                </NavigationItem>
-                            </Button>
-                        )}
-                    </ArrowFocusItem>
-                </ArrowFocusContextProvider>
+                <Button
+                    className={styles.button}
+                    isActive={isActive.appearanceTab}
+                    label='Внешний вид'
+                    tabIndex={getTabIndex(tabs.appearanceTab.identifier)}
+                    {...tabProps.appearanceTab}
+                    onLeftClick={withFocusSet(tabs.appearanceTab.identifier, changeTab.appearanceTab)}
+                >
+                    <NavigationItem isActive={isActive.appearanceTab}>
+                        <>Внешний вид</>
+                    </NavigationItem>
+                </Button>
             </TabList>
 
             <Separator spacing={16}/>

@@ -1,6 +1,6 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
 import { UserAvatar, RefContextProvider, Button, Icon, Tooltip } from '@components';
-import { useNavigator } from '@hooks';
+import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
 import React, { FC } from 'react';
 
@@ -14,7 +14,7 @@ interface IPrivateChats {
     extraStatus: ExtraStatusType;
 }
 
-interface IPrivateChatItem {
+interface IPrivateChatItem extends Pick<ReturnType<typeof useKeyboardNavigation>, 'withFocusSet'> {
     privateChat: IPrivateChats;
     tabIndex: number;
 }
@@ -45,6 +45,7 @@ const styles = {
 export const PrivateChatItem: FC<IPrivateChatItem> = ({ 
     privateChat,
     tabIndex,
+    withFocusSet,
 }) => {
     const {
         id,
@@ -67,7 +68,7 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({
                     styles.userInfo.base,
                     { [styles.userInfo.active]: isActive },
                 )}
-                onLeftClick={handleNavigate}
+                onLeftClick={withFocusSet(privateChat.id, handleNavigate)}
                 label={`Перейти к личным сообщениям с ${username}`}
                 tabIndex={tabIndex}
             >

@@ -1,10 +1,11 @@
-import { ArrowFocusContextProvider, ArrowFocusItem, Button, CheckBoxIndicatorCheck, Conditional, Icon, Image, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
-import { FC, useContext, useMemo } from 'react';
+import { Button, CheckBoxIndicatorCheck, Conditional, Icon, Image, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
+import { FC, useContext, useMemo, useRef } from 'react';
 import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalSubtitle } from '../../components';
 import { useSet } from 'react-use';
-import { useTextInput } from '@hooks';
+import { useKeyboardNavigation, useTextInput } from '@hooks';
 import notFoundImage from '@assets/not-found-image.svg';
 import { twClassNames } from '@utils';
+import { MoveFocusInside } from 'react-focus-lock';
 
 
 
@@ -42,7 +43,7 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
 }) => {
     const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
     const [membersId, membersIdHelpers] = useSet<string>();
-    const { value, deferredValue, handleChange, handleReset } = useTextInput();
+    const { value, handleChange, handleReset } = useTextInput();
 
     const role = {
         id: roleId,
@@ -50,9 +51,15 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
         color: 'red',
     };
 
-    const filteredMembers = useMemo(() => {
-        return members.filter((member) => member.name.includes(deferredValue));
-    }, [deferredValue]);
+    const filteredMembers = members.filter((member) => member.name.includes(value));
+
+    const filteredMembersRef = useRef(filteredMembers);
+    const {
+        getIsFocused,
+        getTabIndex,
+        setRoot,
+        withFocusSet,
+    } = useKeyboardNavigation(filteredMembersRef);
 
     const noMembers = !members.length;
     const showFilteredMembers = !!filteredMembers.length;
@@ -103,51 +110,51 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
                                     className={styles.scrollable}
                                     small
                                 >
-                                    <div className={styles.list}>
-                                        <ArrowFocusContextProvider 
-                                            list={filteredMembers} 
-                                            orientation='vertical'
-                                        >
-                                            <List list={filteredMembers}>
-                                                {({ id, name, avatar }) => {
-                                                    const toggleMember = () => membersIdHelpers.toggle(id);
-                                                    const isActive = membersIdHelpers.has(id);
+                                    <ul
+                                        className={styles.list}
+                                        ref={setRoot}
+                                        tabIndex={0}
+                                        aria-label='Список участников'
+                                    >
+                                        <List list={filteredMembers}>
+                                            {({ id, name, avatar }) => {
+                                                const toggleMember = () => membersIdHelpers.toggle(id);
+                                                const isActive = membersIdHelpers.has(id);
 
-                                                    return (
-                                                        <ArrowFocusItem id={id}>
-                                                            {({ tabIndex }) => (
-                                                                <Button
-                                                                    className={twClassNames(
-                                                                        styles.item.base,
-                                                                        { [styles.item.active]: isActive },
-                                                                    )}
-                                                                    label={`Выбрать ${name}`}
-                                                                    tabIndex={tabIndex}
-                                                                    isActive={isActive}
-                                                                    onLeftClick={toggleMember}
-                                                                >
-                                                                    <CheckBoxIndicatorCheck
-                                                                        className={styles.indicator}
-                                                                        checked={isActive}
-                                                                    />
+                                                return (
+                                                    <li>
+                                                        <MoveFocusInside disabled={!getIsFocused(id)}>
+                                                            <Button
+                                                                className={twClassNames(
+                                                                    styles.item.base,
+                                                                    { [styles.item.active]: isActive },
+                                                                )}
+                                                                label={`Выбрать ${name}`}
+                                                                tabIndex={getTabIndex(id)}
+                                                                isActive={isActive}
+                                                                onLeftClick={withFocusSet(id, toggleMember)}
+                                                            >
+                                                                <CheckBoxIndicatorCheck
+                                                                    className={styles.indicator}
+                                                                    checked={isActive}
+                                                                />
 
-                                                                    <UserAvatar
-                                                                        className={styles.avatar}
-                                                                        avatar={avatar}
-                                                                        username={name}
-                                                                    />
+                                                                <UserAvatar
+                                                                    className={styles.avatar}
+                                                                    avatar={avatar}
+                                                                    username={name}
+                                                                />
 
-                                                                    <div className={styles.username}>
-                                                                        {name}
-                                                                    </div>
-                                                                </Button>
-                                                            )}
-                                                        </ArrowFocusItem>
-                                                    );
-                                                }}
-                                            </List>
-                                        </ArrowFocusContextProvider>
-                                    </div>
+                                                                <div className={styles.username}>
+                                                                    {name}
+                                                                </div>
+                                                            </Button>
+                                                        </MoveFocusInside>
+                                                    </li>
+                                                );
+                                            }}
+                                        </List>
+                                    </ul>
                                 </Scrollable>
                             </Conditional>
 

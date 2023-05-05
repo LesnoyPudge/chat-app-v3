@@ -5,8 +5,10 @@ import { afterInit, beforeInit } from './root/helpers';
 
 
 
-await beforeInit();
+(async() => {
+    await beforeInit();
 
-ReactDOM.createRoot(getHTML().app).render(<Root/>);
+    ReactDOM.createRoot(getHTML().app).render(<Root/>);
 
-afterInit();
+    afterInit();
+})();

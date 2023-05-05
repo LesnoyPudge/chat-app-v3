@@ -1,10 +1,12 @@
-import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, ArrowFocusContextProvider, ArrowFocusItem, Scrollable } from '@components';
+import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, Scrollable, List } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
-import { FC, useContext } from 'react';
+import { FC, useContext, useRef } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { ActionButtons } from './components';
 import { getRandomNumber } from '@utils';
 import friendsNotFoundImage from '@assets/friendsNotFound.svg';
+import { MoveFocusInside } from 'react-focus-lock';
+import { useKeyboardNavigation } from '@hooks';
 
 
 
@@ -120,6 +122,13 @@ export const Content: FC<Content> = ({ value }) => {
     const listToShow = filters[currentTab.identifier]();
     const showList = !!listToShow.length;
 
+    const listToShowRef = useRef(listToShow);
+    const {
+        getIsFocused,
+        getTabIndex,
+        setRoot,
+    } = useKeyboardNavigation(listToShowRef);
+
     return (
         <TabPanel 
             className={styles.tabPanel}
@@ -132,50 +141,50 @@ export const Content: FC<Content> = ({ value }) => {
             <Separator className={styles.separator} spacing={12}/>
             
             <Conditional isRendered={showList}>
-                <ArrowFocusContextProvider list={listToShow} orientation='both'>
-                    <Scrollable>
-                        <ul className={styles.list}>
-                            {listToShow.map((user) => (
-                                <ArrowFocusItem id={user.id} key={user.id}>
-                                    {({ tabIndex }) => (
-                                        <li className={styles.listItem} >
-                                            <UserAvatar
-                                                className={styles.avatar}
-                                                avatar={user.avatar}
-                                                username={user.username}
-                                                status={user.status}
-                                                extraStatus={user.extraStatus}
-                                            />
+                <Scrollable>
+                    <ul 
+                        className={styles.list}
+                        tabIndex={0}
+                        aria-label='Список запросов'
+                        ref={setRoot}
+                    >
+                        <List list={listToShow}>
+                            {(user) => (
+                                <MoveFocusInside disabled={getIsFocused(user.id)}>
+                                    <li className={styles.listItem} >
+                                        <UserAvatar
+                                            className={styles.avatar}
+                                            {...user}
+                                        />
 
-                                            <div className={styles.infoWrapper}>
-                                                <div className={styles.username}>
-                                                    {user.username}
+                                        <div className={styles.infoWrapper}>
+                                            <div className={styles.username}>
+                                                {user.username}
+                                            </div>
+
+                                            <Conditional isRendered={isActive.friendRequests}>
+                                                <div className={styles.extraInfo}>
+                                                    {
+                                                        getRandomNumber(0, 1) 
+                                                            ? 'Исходящий запрос дружбы' 
+                                                            : 'Входящий запрос дружбы'
+                                                    }
                                                 </div>
+                                            </Conditional>
+                                        </div>
 
-                                                <Conditional isRendered={isActive.friendRequests}>
-                                                    <div className={styles.extraInfo}>
-                                                        {
-                                                            getRandomNumber(0, 1) 
-                                                                ? 'Исходящий запрос дружбы' 
-                                                                : 'Входящий запрос дружбы'
-                                                        }
-                                                    </div>
-                                                </Conditional>
-                                            </div>
-
-                                            <div className={styles.buttonsContainer}>
-                                                <ActionButtons 
-                                                    userId={user.id} 
-                                                    tabIndex={tabIndex}
-                                                />
-                                            </div>
-                                        </li>
-                                    )}
-                                </ArrowFocusItem>
-                            ))}
-                        </ul>
-                    </Scrollable>
-                </ArrowFocusContextProvider>
+                                        <div className={styles.buttonsContainer}>
+                                            <ActionButtons 
+                                                userId={user.id} 
+                                                tabIndex={getTabIndex(user.id)}
+                                            />
+                                        </div>
+                                    </li>
+                                </MoveFocusInside>
+                            )}
+                        </List>
+                    </ul>
+                </Scrollable>
             </Conditional>
 
             <Conditional isRendered={!showList}>

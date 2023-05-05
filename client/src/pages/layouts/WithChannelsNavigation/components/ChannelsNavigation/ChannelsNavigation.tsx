@@ -1,8 +1,9 @@
-import { FC } from 'react';
-import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, ArrowFocusContextProvider, ArrowFocusItem, Scrollable, FindChannelModal, ChannelAvatar } from '@components';
+import { FC, useRef } from 'react';
+import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List } from '@components';
 import { WrapperWithBullet } from './components';
-import { useNavigator } from '@hooks';
+import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
+import { MoveFocusInside } from 'react-focus-lock';
 
 
 
@@ -61,6 +62,14 @@ export const ChannelsNavigation: FC = () => {
     const isInAppOrPrivateChatPage = myLocationIs.app || myLocationIs.anyPrivateChat;
     const showChannels = !!channels.length;
 
+    const channelsRef = useRef(channels);
+    const {
+        getIsFocused,
+        getTabIndex,
+        setRoot,
+        withFocusSet,
+    } = useKeyboardNavigation(channelsRef);
+
     return (
         <div className={styles.wrapper}>
             <Scrollable className={styles.scrollbar} hidden>
@@ -98,52 +107,55 @@ export const ChannelsNavigation: FC = () => {
                     </div>
 
                     <Conditional isRendered={showChannels}>
-                        <ArrowFocusContextProvider list={channels} orientation='vertical'>
-                            <div className={styles.list}>
-                                {channels.map((channel) => {
+                        <ul 
+                            className={styles.list}
+                            tabIndex={0}
+                            aria-label='Список каналов'
+                            ref={setRoot}
+                        >
+                            <List list={channels}>
+                                {(channel) => {
                                     const isInChannel = myLocationIs.channel(channel.id);
                                     const handleNavigateToChannel = () => navigateTo.channel(channel.id);
 
                                     return (
-                                        <ArrowFocusItem id={channel.id} key={channel.id} >
-                                            {({ tabIndex }) => (
-                                                <WrapperWithBullet isActive={isInChannel}>
-                                                    <RefContextProvider>
-                                                        <Button
-                                                            className={twClassNames(
-                                                                styles.button.base, 
-                                                                styles.brandButton.base,
-                                                                { 
-                                                                    [styles.button.active]: isInChannel,
-                                                                    [styles.brandButton.active]: isInChannel, 
-                                                                },
-                                                            )}
-                                                            tabIndex={tabIndex}
-                                                            label={channel.name}
-                                                            onLeftClick={handleNavigateToChannel}
-                                                        >
-                                                            <ChannelAvatar
-                                                                className={styles.channelAvatar}
-                                                                avatar={channel.avatar}
-                                                                name={channel.name}
-                                                            />
-                                                        </Button>
+                                        <MoveFocusInside disabled={!getIsFocused(channel.id)}>
+                                            <WrapperWithBullet isActive={isInChannel}>
+                                                <RefContextProvider>
+                                                    <Button
+                                                        className={twClassNames(
+                                                            styles.button.base, 
+                                                            styles.brandButton.base,
+                                                            { 
+                                                                [styles.button.active]: isInChannel,
+                                                                [styles.brandButton.active]: isInChannel, 
+                                                            },
+                                                        )}
+                                                        tabIndex={getTabIndex(channel.id)}
+                                                        label={channel.name}
+                                                        onLeftClick={withFocusSet(channel.id, handleNavigateToChannel)}
+                                                    >
+                                                        <ChannelAvatar
+                                                            className={styles.channelAvatar}
+                                                            avatar={channel.avatar}
+                                                            name={channel.name}
+                                                        />
+                                                    </Button>
 
-                                                        <Tooltip preferredAlignment='right'>
-                                                            <>{channel.name}</>
-                                                        </Tooltip>
+                                                    <Tooltip preferredAlignment='right'>
+                                                        <>{channel.name}</>
+                                                    </Tooltip>
 
-                                                        <ContextMenu preferredAlignment='right'>
-                                                            <>menu</>
-                                                        </ContextMenu>
-                                                    </RefContextProvider>
-                                                </WrapperWithBullet>
-                                            )}
-                                        </ArrowFocusItem>
+                                                    <ContextMenu preferredAlignment='right'>
+                                                        <>menu</>
+                                                    </ContextMenu>
+                                                </RefContextProvider>
+                                            </WrapperWithBullet>
+                                        </MoveFocusInside>
                                     );
-                                })}
-                            </div>
-                        </ArrowFocusContextProvider>
+                                }}
+                            </List>
+                        </ul>
                     </Conditional>
 
                     <div className={twClassNames(styles.sticky, styles.footer)}>

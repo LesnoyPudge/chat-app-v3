@@ -3,25 +3,17 @@ import plugin from 'tailwindcss/plugin';
 
 
 const scrollbarClasses = {
-    '.simplebar-custom': {
-        '1': {},
-    },
+    '.simplebar-custom': {},
 
-    '.scrollbar-hidden': {
-        '2': {},
-    },
+    '.scrollbar-hidden': {},
 };
 
 const colorPickerClasses = {
-    '.color-picker': {
-        '3': {},
-    },
+    '.color-picker': {},
 };
 
 const sliderInputClasses = {
-    '.slider-input': {
-        '4': {},
-    },
+    '.slider-input': {},
 };
 
 const otherClasses = {

@@ -7,12 +7,14 @@ interface TabList extends PropsWithChildrenAndClassName,
 PropsWithInnerRef<HTMLDivElement> {
     label: string
     orientation?: 'vertical' | 'horizontal';
+    tabIndex?: number;
 }
 
 export const TabList: FC<TabList> = ({
     className = '',
     label,
     orientation = 'vertical',
+    tabIndex = -1,
     innerRef,
     children,
 }) => {
@@ -23,6 +25,7 @@ export const TabList: FC<TabList> = ({
             aria-orientation={orientation}
             aria-label={label}
             ref={innerRef}
+            tabIndex={tabIndex}
         >
             {children}
         </div>

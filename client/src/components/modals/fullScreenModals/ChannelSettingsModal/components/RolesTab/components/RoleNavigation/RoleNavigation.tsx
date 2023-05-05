@@ -1,7 +1,9 @@
-import { FC, useContext } from 'react';
-import { RefContextProvider, ArrowFocusContextProvider, Button, Icon, ArrowFocusItem, TabList, Tooltip, TabContext, Scrollable } from '@components';
+import { FC, useContext, useRef } from 'react';
+import { RefContextProvider, Button, Icon, TabList, Tooltip, TabContext, Scrollable, List } from '@components';
 import { TabTitle } from '../../../../../components';
-import { twClassNames } from '@utils';
+import { objectKeysToIdArray, twClassNames } from '@utils';
+import { useKeyboardNavigation } from '@hooks';
+import { MoveFocusInside } from 'react-focus-lock';
 
 
 
@@ -29,6 +31,13 @@ const roles = Array(32).fill('').map((_, index) => ({
 
 export const RoleNavigation: FC = () => {
     const { changeTab, tabs, isActive, tabProps } = useContext(TabContext) as TabContext<Record<string, string>>;
+    const tabsRef = useRef(objectKeysToIdArray(tabs));
+    const {
+        getIsFocused,
+        getTabIndex,
+        setRoot,
+        withFocusSet,
+    } = useKeyboardNavigation(tabsRef);
 
     const handleCreateRole = () => console.log('create role');
     
@@ -62,44 +71,41 @@ export const RoleNavigation: FC = () => {
             </div>
 
             <Scrollable>
-                <ArrowFocusContextProvider 
-                    list={tabs} 
+                <TabList 
+                    className={styles.list}
+                    label='Список ролей' 
                     orientation='vertical'
+                    innerRef={setRoot}
+                    tabIndex={0}
                 >
-                    <TabList 
-                        className={styles.list}
-                        label='Список ролей' 
-                        orientation='vertical'
-                    >
-                        {roles.map(({ id, color, name }) => (
-                            <ArrowFocusItem id={id} key={id}>
-                                {({ tabIndex }) => (
-                                    <Button
-                                        className={twClassNames(
-                                            styles.roleItem.base,
-                                            { [styles.roleItem.active]: isActive[id] },
-                                        )}
-                                        label={`Редактировать роль ${name}`}
-                                        tabIndex={tabIndex}
-                                        {...tabProps[id]}
-                                        onLeftClick={changeTab[id]}
-                                    >
-                                        <div 
-                                            className={styles.roleIndicator}
-                                            style={{
-                                                backgroundColor: color,
-                                            }}
-                                        ></div>
+                    <List list={roles}>
+                        {({ color, id, name }) => (
+                            <MoveFocusInside disabled={!getIsFocused(id)}>
+                                <Button
+                                    className={twClassNames(
+                                        styles.roleItem.base,
+                                        { [styles.roleItem.active]: isActive[id] },
+                                    )}
+                                    label={`Редактировать роль ${name}`}
+                                    tabIndex={getTabIndex(id)}
+                                    {...tabProps[id]}
+                                    onLeftClick={withFocusSet(id, changeTab[id])}
+                                >
+                                    <div 
+                                        className={styles.roleIndicator}
+                                        style={{
+                                            backgroundColor: color,
+                                        }}
+                                    ></div>
                                         
-                                        <div className={styles.roleName}>
-                                            {name}
-                                        </div>
-                                    </Button>
-                                )}
-                            </ArrowFocusItem>
-                        ))}
-                    </TabList>
-                </ArrowFocusContextProvider>
+                                    <div className={styles.roleName}>
+                                        {name}
+                                    </div>
+                                </Button>
+                            </MoveFocusInside>
+                        )}
+                    </List>
+                </TabList>
             </Scrollable>
         </div>
     );

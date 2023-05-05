@@ -22,19 +22,19 @@ interface Options {
     ) => void;
 }
 
-interface UseKeyboardNavigationReturn {
-    getIsFocused: (id: string) => boolean;
-    getTabIndex: (id: string) => number;
-    setRoot: React.Dispatch<React.SetStateAction<RootElement>>;
-    setFocusedId: React.Dispatch<React.SetStateAction<string | null>>;
-    setViewportIndexes: (indexes: [number, number]) => void;
-}
+// interface UseKeyboardNavigationReturn {
+//     getIsFocused: (id: string) => boolean;
+//     getTabIndex: (id: string) => number;
+//     setRoot: React.Dispatch<React.SetStateAction<RootElement>>;
+//     setFocusedId: React.Dispatch<React.SetStateAction<string | null>>;
+//     setViewportIndexes: (indexes: [number, number]) => void;
+// }
 
 export const useKeyboardNavigation = (
     providedFocusableListRef: RefObject<ObjectWithId[]>,
     providedRoot: RootElement = null,
     options?: Options,
-): UseKeyboardNavigationReturn => {
+) => {
     const {
         direction = 'vertical',
         loop = false,
@@ -167,11 +167,20 @@ export const useKeyboardNavigation = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const getIsFocused = useCallback((id: string) => id === focusedIdRef.current, []);
 
+    const withFocusSet = useCallback((id: string, cb: CallableFunction) => {
+        return () => {
+            setFocusedId(id);
+            cb();
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return {
         getIsFocused,
         getTabIndex,
         setRoot,
         setFocusedId,
         setViewportIndexes,
+        withFocusSet,
     };
 };

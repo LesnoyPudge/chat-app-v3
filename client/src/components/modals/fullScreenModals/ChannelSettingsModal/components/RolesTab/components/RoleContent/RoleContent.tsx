@@ -1,9 +1,11 @@
-import { AddMemberToRoleModal, ArrowFocusContextProvider, ArrowFocusItem, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal, Icon, OverlayContextProvider, RefContextProvider, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip } from '@components';
-import { useTextInput } from '@hooks';
+import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal, Icon, OverlayContextProvider, RefContextProvider, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip } from '@components';
+import { useKeyboardNavigation, useRefWithSetter, useTextInput } from '@hooks';
 import { HeadingLevel, Heading } from '@libs';
-import { objectKeys, twClassNames } from '@utils';
+import { ObjectWithId } from '@types';
+import { objectKeys, objectKeysToIdArray, twClassNames } from '@utils';
 import { useFormikContext } from 'formik';
 import { FC, useContext, useEffect } from 'react';
+import { MoveFocusInside } from 'react-focus-lock';
 import { RoleMembersTab, RoleAppearanceTab, RolePermissionsTab } from './components';
 
 
@@ -66,6 +68,14 @@ export const RoleContent: FC = () => {
         members: <RoleMembersTab value={membersSearch.value}/>,
     };
 
+    const [rolesRef, setRolesRef] = useRefWithSetter<ObjectWithId[]>([]);
+    const {
+        getTabIndex,
+        setRoot,
+        withFocusSet,
+        getIsFocused,
+    } = useKeyboardNavigation(rolesRef);
+
     useEffect(() => {
         if (values.roleId === role.id) return;
 
@@ -86,122 +96,124 @@ export const RoleContent: FC = () => {
                 {...tabPanelProps[currentTab.identifier]}
             >
                 <TabContextProvider tabs={providedTabs}>
-                    {({ currentTab, tabs, changeTab, isActive, tabProps }) => (
-                        <>
-                            <div className={styles.header}>
-                                <div className={styles.description}>
-                                    <Heading className={styles.title}>
-                                        <>Редактировать роль — {role.name}</>
-                                    </Heading>
-
-                                    <OverlayContextProvider>
-                                        {({ isOverlayExist, openOverlay }) => (
-                                            <RefContextProvider>
-                                                <Button
-                                                    className={styles.deleteRoleButton}
-                                                    label={`Удалить роль ${role.name}`}
-                                                    hasPopup='dialog'
-                                                    isActive={isOverlayExist}
-                                                    onLeftClick={openOverlay}
-                                                >
-                                                    <Icon
-                                                        className={styles.deleteRoleIcon}
-                                                        iconId='garbage-can-icon'
-                                                    />
-                                                </Button>
-    
-                                                <Tooltip 
-                                                    preferredAlignment='top'
-                                                    spacing={8}
-                                                    boundsSize={0}
-                                                >
-                                                    <>Удалить роль</>
-                                                </Tooltip>
-
-                                                <DeleteRoleModal roleId={role.id}/>
-                                            </RefContextProvider>
-                                        )}
-                                    </OverlayContextProvider>
-                                </div>
+                    {({ currentTab, tabs, changeTab, isActive, tabProps }) => {
+                        setRolesRef(objectKeysToIdArray(tabs));
                         
-                                <ArrowFocusContextProvider 
-                                    list={tabs} 
-                                    orientation='horizontal'
-                                >
-                                    <TabList 
-                                        className={styles.tabList}
-                                        label='Настройки роли' 
-                                        orientation='horizontal'
-                                    >
-                                        <div className={styles.headerDivider}></div>
-
-                                        {objectKeys(tabs).map((tab) => (
-                                            <ArrowFocusItem id={tab} key={tab}>
-                                                {({ tabIndex }) => (
-                                                    <Button
-                                                        className={twClassNames(
-                                                            styles.button.base,
-                                                            { [styles.button.active]: isActive[tab] },
-                                                        )}
-                                                        label={labels[tab]}
-                                                        tabIndex={tabIndex}
-                                                        {...tabProps[tab]}
-                                                        onLeftClick={changeTab[tab]}
-                                                    >
-                                                        {tabNames[tab]}
-                                                    </Button>
-                                                )}
-                                            </ArrowFocusItem>
-                                        ))}
-                                    </TabList>
-                                </ArrowFocusContextProvider>
-                            
-                                <Conditional isRendered={isActive.permissions}>
-                                    <SearchBar
-                                        className={styles.permissionsSearchBar}
-                                        value={permissionsSearch.value}
-                                        label='Поиск по правам'
-                                        placeholder='Поиск по правам'
-                                        onChange={permissionsSearch.handleChange}
-                                        onReset={permissionsSearch.handleReset}
-                                    />
-                                </Conditional>
-
-                                <Conditional isRendered={isActive.members}>
-                                    <div className={styles.membersSearchWrapper}>
-                                        <SearchBar
-                                            className={styles.membersSearch}
-                                            value={membersSearch.value}
-                                            label='Поиск участников'
-                                            placeholder='Поиск участников'
-                                            onChange={membersSearch.handleChange}
-                                            onReset={membersSearch.handleReset}
-                                        />
-                                    
+                        return (
+                            <>
+                                <div className={styles.header}>
+                                    <div className={styles.description}>
+                                        <Heading className={styles.title}>
+                                            <>Редактировать роль — {role.name}</>
+                                        </Heading>
+    
                                         <OverlayContextProvider>
                                             {({ isOverlayExist, openOverlay }) => (
-                                                <>
+                                                <RefContextProvider>
                                                     <Button
-                                                        stylingPreset='brand'
-                                                        size='small'
+                                                        className={styles.deleteRoleButton}
+                                                        label={`Удалить роль ${role.name}`}
                                                         hasPopup='dialog'
                                                         isActive={isOverlayExist}
                                                         onLeftClick={openOverlay}
                                                     >
-                                                        <>Добавить участников</>
+                                                        <Icon
+                                                            className={styles.deleteRoleIcon}
+                                                            iconId='garbage-can-icon'
+                                                        />
                                                     </Button>
-
-                                                    <AddMemberToRoleModal roleId={values.roleId}/>
-                                                </>
+        
+                                                    <Tooltip 
+                                                        preferredAlignment='top'
+                                                        spacing={8}
+                                                        boundsSize={0}
+                                                    >
+                                                        <>Удалить роль</>
+                                                    </Tooltip>
+    
+                                                    <DeleteRoleModal roleId={role.id}/>
+                                                </RefContextProvider>
                                             )}
                                         </OverlayContextProvider>
                                     </div>
-                                </Conditional>
-                            </div>
-
-                            {providedTabs[currentTab.identifier]}
-                        </>
-                    )}
+                            
+                                    <TabList 
+                                        className={styles.tabList}
+                                        label='Настройки роли' 
+                                        orientation='horizontal'
+                                        tabIndex={0}
+                                        innerRef={setRoot}
+                                    >
+                                        <div className={styles.headerDivider}></div>
+    
+                                        {objectKeys(tabs).map((tab) => (
+                                            <MoveFocusInside 
+                                                disabled={!getIsFocused(tab)}
+                                                key={tab}
+                                            >
+                                                <Button
+                                                    className={twClassNames(
+                                                        styles.button.base,
+                                                        { [styles.button.active]: isActive[tab] },
+                                                    )}
+                                                    label={labels[tab]}
+                                                    tabIndex={getTabIndex(tab)}
+                                                    {...tabProps[tab]}
+                                                    onLeftClick={withFocusSet(tab, changeTab[tab])}
+                                                >
+                                                    {tabNames[tab]}
+                                                </Button>
+                                            </MoveFocusInside>
+                                        ))}
+                                    </TabList>
+                                
+                                    <Conditional isRendered={isActive.permissions}>
+                                        <SearchBar
+                                            className={styles.permissionsSearchBar}
+                                            value={permissionsSearch.value}
+                                            label='Поиск по правам'
+                                            placeholder='Поиск по правам'
+                                            onChange={permissionsSearch.handleChange}
+                                            onReset={permissionsSearch.handleReset}
+                                        />
+                                    </Conditional>
+    
+                                    <Conditional isRendered={isActive.members}>
+                                        <div className={styles.membersSearchWrapper}>
+                                            <SearchBar
+                                                className={styles.membersSearch}
+                                                value={membersSearch.value}
+                                                label='Поиск участников'
+                                                placeholder='Поиск участников'
+                                                onChange={membersSearch.handleChange}
+                                                onReset={membersSearch.handleReset}
+                                            />
+                                        
+                                            <OverlayContextProvider>
+                                                {({ isOverlayExist, openOverlay }) => (
+                                                    <>
+                                                        <Button
+                                                            stylingPreset='brand'
+                                                            size='small'
+                                                            hasPopup='dialog'
+                                                            isActive={isOverlayExist}
+                                                            onLeftClick={openOverlay}
+                                                        >
+                                                            <>Добавить участников</>
+                                                        </Button>
+    
+                                                        <AddMemberToRoleModal roleId={values.roleId}/>
+                                                    </>
+                                                )}
+                                            </OverlayContextProvider>
+                                        </div>
+                                    </Conditional>
+                                </div>
+    
+                                {providedTabs[currentTab.identifier]}
+                            </>
+                        );
+                    }}
                 </TabContextProvider>
             </TabPanel>
         </HeadingLevel>
