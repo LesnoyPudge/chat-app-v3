@@ -14,17 +14,19 @@ export const token = {
         };
     },
 
-    validateRefreshToken(refreshToken: string): Partial<IUser> {
+    validateRefreshToken(refreshToken: string): Partial<IUser> | null {
         try {
-            return jwt.verify(refreshToken, JWT_REFRESH_KEYWORD) as Partial<IUser>;
+            const data = jwt.verify(refreshToken, JWT_REFRESH_KEYWORD) as Partial<IUser>;
+            return data;
         } catch (error) {
             return null;
         } 
     },
 
-    validateAccessToken(accessToken: string): Partial<IUser> {
+    validateAccessToken(accessToken: string): Partial<IUser> | null {
         try {
-            return jwt.verify(accessToken, JWT_ACCESS_KEYWORD) as Partial<IUser>;
+            const data = jwt.verify(accessToken, JWT_ACCESS_KEYWORD) as Partial<IUser>;
+            return data;
         } catch (error) {
             return null;
         } 

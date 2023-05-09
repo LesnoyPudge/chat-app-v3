@@ -22,5 +22,7 @@ export const array = {
                 ...array.slice(oldIndex + 1),
             ] as T;
         }
+
+        return array;
     },
 };

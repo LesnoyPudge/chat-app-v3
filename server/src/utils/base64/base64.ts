@@ -8,7 +8,7 @@ export const base64 = {
         
         const urlPart = base64url.split(',') + ',';
         const base64StringLength = base64url.length - urlPart.length;
-        const padding = base64String.slice(-2).match(/=/ig).length;
+        const padding = base64String.slice(-2).match(/=/ig)?.length || 0;
 
         const sizeInBytes = Math.ceil(base64StringLength / 4) * 3 - padding;
 

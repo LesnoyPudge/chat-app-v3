@@ -27,15 +27,5 @@ export default defineConfig(() => {
         server: {
             port: 3000,
         },
-        build: {
-            
-        },
-        resolve: {
-            alias: {
-                // 'mixins': path.join(__dirname, 'src/root/styles/mixins'),
-                // 'functions': path.join(__dirname, 'src/root/styles/functions'),
-                // 'variables': path.join(__dirname, 'src/root/styles/variables'),
-            },
-        },
     };
 });

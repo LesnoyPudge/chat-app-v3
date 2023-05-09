@@ -22,8 +22,8 @@ export const MessageDto: IMessageDto = {
             respondOn: message.respondOn.map((messageId) => {
                 return messageId.toString();
             }),
-            createdAt: message.createdAt.toString(),
-            updatedAt: message.updatedAt.toString(),
+            createdAt: message.createdAt.getMilliseconds(),
+            updatedAt: message.updatedAt.getMilliseconds(),
         };
     },
 };

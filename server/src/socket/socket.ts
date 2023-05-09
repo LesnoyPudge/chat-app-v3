@@ -7,6 +7,7 @@ import { channelListeners, messageListeners, userListeners, roomListeners, priva
 
 
 
+
 export type AuthorizedSocketType = Socket & {
     handshake: {
         auth: {
@@ -18,19 +19,19 @@ export type AuthorizedSocketType = Socket & {
 
 export const socket = {
     listen() {
-        io.use((socket: AuthorizedSocketType, next) => {
+        io.use((socket, next) => {
             const error = ApiError.unauthorized('unauthorized socket connection');
-            const socketAuthorizationErorr = {
+            const socketAuthorizationError = {
                 message: error.message,
                 name: error.name,
                 data: error.status,
             };
             
-            const authToken = socket.handshake.auth.token;
-            if (!authToken) return next(socketAuthorizationErorr);
+            const authToken = (socket as AuthorizedSocketType).handshake.auth.token;
+            if (!authToken) return next(socketAuthorizationError);
             
             const user = token.validateAccessToken(authToken);
-            if (!user) return next(socketAuthorizationErorr);
+            if (!user) return next(socketAuthorizationError);
             
             socket.handshake.auth.user = user;
 
@@ -50,7 +51,7 @@ export const socket = {
     },
 };
 
-const initListeners = (socketIO: AuthorizedSocketType) => {
+const initListeners = (socketIO: Socket) => {
     console.log('connected ' + socketIO.id);
     
 
@@ -68,9 +69,9 @@ const initListeners = (socketIO: AuthorizedSocketType) => {
         // socket.events.reciveConnectionToVoiceRoom(userId);
     });
 
-    userListeners(socketIO);
-    channelListeners(socketIO);
-    roomListeners(socketIO);
-    messageListeners(socketIO);
-    privateChannelListeners(socketIO);
+    userListeners(socketIO as AuthorizedSocketType);
+    channelListeners(socketIO as AuthorizedSocketType);
+    roomListeners(socketIO as AuthorizedSocketType);
+    messageListeners(socketIO as AuthorizedSocketType);
+    privateChannelListeners(socketIO as AuthorizedSocketType);
 };

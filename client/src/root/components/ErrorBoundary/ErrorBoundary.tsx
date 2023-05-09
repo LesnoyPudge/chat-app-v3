@@ -8,12 +8,12 @@ import { useIsMounted } from 'usehooks-ts';
 
 
 
-interface ErorrContext {
+interface ErrorContext {
     handleReset: (cb: () => void) => void;
     onCrush: () => void;
 }
 
-const ErorrContext = createContext<ErorrContext | undefined>(undefined);
+const ErrorContext = createContext<ErrorContext | undefined>(undefined);
 
 export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
     const isMounted = useIsMounted();
@@ -35,22 +35,22 @@ export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
         cb();
     };
 
-    const contextValues: ErorrContext = {
+    const contextValues: ErrorContext = {
         handleReset,
         onCrush,
     };
 
     return (
-        <ErorrContext.Provider value={contextValues}>
+        <ErrorContext.Provider value={contextValues}>
             <ReactErrorBoundary FallbackComponent={ErrorFallback}>
                 {children}
             </ReactErrorBoundary>
-        </ErorrContext.Provider>
+        </ErrorContext.Provider>
     );
 };
 
 const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
-    const { handleReset, onCrush } = useContext(ErorrContext) as ErorrContext;
+    const { handleReset, onCrush } = useContext(ErrorContext) as ErrorContext;
     
     const handleClick = () => handleReset(resetErrorBoundary);
 

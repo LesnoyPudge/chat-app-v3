@@ -1,6 +1,5 @@
 import { IAuthResponse } from '@types';
 import { getRandomString } from '@utils';
-import fetch from 'node-fetch';
 
 
 
