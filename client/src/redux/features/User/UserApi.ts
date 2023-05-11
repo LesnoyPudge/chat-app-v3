@@ -15,7 +15,7 @@ export const UserApi = rootApi.injectEndpoints({
         }),
         userLogin: build.mutation<IAuthResponse, ILoginUserRequest>({
             query: (body) => ({
-                url: CUSTOM_API_V1_URL + '/user/login',
+                url: CUSTOM_API_V1_URL + '/users/auth/login',
                 method: 'POST',
                 body,
             }),
@@ -27,7 +27,7 @@ export const UserApi = rootApi.injectEndpoints({
         }),
         userRegistration: build.mutation<IAuthResponse, IRegistrationUserRequest>({
             query: (body) => ({
-                url: CUSTOM_API_V1_URL + '/user/registration',
+                url: CUSTOM_API_V1_URL + '/users/auth/registration',
                 method: 'POST',
                 body,
             }),

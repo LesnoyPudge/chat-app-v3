@@ -44,9 +44,9 @@ const userValidators: IUserValidators = {
             toString({ fieldName:  'username' }),
         ],
         password: [
-            sanitizeInput({ fieldName:  'password' }),
-            notEmpty({ fieldName:  'password' }),
-            toString({ fieldName:  'password' }),
+            // sanitizeInput({ fieldName:  'password' }),
+            // notEmpty({ fieldName:  'password' }),
+            // toString({ fieldName:  'password' }),
         ],
     },
 

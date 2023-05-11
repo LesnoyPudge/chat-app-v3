@@ -27,7 +27,7 @@ const validate: ValidationHandlerType = (validations) => {
             
             if (hasErrors) {
                 const firstError = errors[0];
-                
+                console.log(errors);
                 const errorMessage = [
                     `Validation failed: ${firstError.msg}`,
                     `[param: ${firstError.param}, value: ${firstError.value}]`,

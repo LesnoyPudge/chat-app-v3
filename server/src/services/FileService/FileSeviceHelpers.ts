@@ -58,6 +58,7 @@ export const FileServiceHelpers = {
                         isDefault: true,
                         filename,
                         base64url,
+                        type: 'avatar',
                     }],
                     queryOptions(),
                 ).then((attachments) => attachments[0]);

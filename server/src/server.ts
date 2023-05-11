@@ -44,49 +44,23 @@ const dbConnection = async() => {
     // mongoose.set('debug', true);
     mongoose.set('strictQuery', true);
     // DB_CONNECTION_URL
-    await mongoose.connect('mongodb://127.0.0.1:27017/ChatApp').then(() => {
+    // mongodb://127.0.0.1:27017/ChatApp
+    await mongoose.connect(DB_CONNECTION_URL).then(() => {
         console.log('database connected');
     }).catch((error) => {
         console.log(`database connection failed: ${error.message}`);
     });
-    const schema = new mongoose.Schema({
-        id: mongoose.SchemaTypes.String,
-        name: mongoose.SchemaTypes.String,
-    }, { id: false });
-    schema.pre('save', async function(next) {
-        console.log('save', this);
-        this.id = this._id.toString();
-        next();
-    });
-    
-    const toDTO = <T>(model: T & Document<Types.ObjectId>): T & {id: string} => {
-        const result = model.toObject<T & {id: string}>();
-        result.id = result._id.toString();
-        
-        return result;
-    };
-
-    const Cat = mongoose.model<({id: string, name: string} & Document<Types.ObjectId>)>('Cat', schema, 'Cat');
-    
-
-    const kitty = new Cat({ name: 'Zildjian' });
-    // kitty.id = kitty._id.toString();
-
-    
-    await kitty.save();
-    console.log('meow');
-    console.log(kitty.id, kitty);
 };
 
 (async function() {
     try {
         socket.listen();
-        // routesInit(app);
+        routesInit(app);
         await dbConnection();
         server.listen(CUSTOM_SERVER_PORT, () => {
             console.log(`Server started at: ${CUSTOM_SERVER_PORT}`);
         });
     } catch (error) {
-        throw new Error(String(error));
+        console.log(error);
     }
 })();

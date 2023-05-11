@@ -1,7 +1,7 @@
 import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow, Memo, Static } from '@components';
 import { useInView } from '@react-spring/web';
 import { AnyFunction, EncodedFile, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction } from '@types';
-import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver } from '@utils';
+import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv } from '@utils';
 import { Component, createContext, CSSProperties, FC, MutableRefObject, PropsWithChildren, PureComponent, ReactNode, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
 import { useBoolean, useCounter, useElementSize, useHover, useImageOnLoad, useInterval, useToggle, useUpdateEffect } from 'usehooks-ts';
@@ -114,6 +114,7 @@ import SimpleBar from 'simplebar-react';
 // import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
 import ReactFocusLock from 'react-focus-lock';
+import { useUserLoginMutation, useUserRegistrationMutation } from '@redux/features';
 
 
 
@@ -398,17 +399,76 @@ const PlaygroundInner7: FC = () => {
     );
 };
 
-const PlaygroundInner8: FC = () => {
+const PlaygroundInner8: FC = () => {    
+    const apiRouteInput = useTextInput('');
+    const loginInput = useTextInput('');
+    const passwordInput = useTextInput('');
+
+
+    const sendRequest = (endpoint: string) => {
+        return fetch(`${getEnv().CUSTOM_SERVER_URL + getEnv().CUSTOM_API_V1_URL}/${endpoint}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                login: loginInput.value,
+                password: passwordInput.value,
+            }),
+        });
+    };
+    const [login] = useUserLoginMutation();
+    const [registration] = useUserRegistrationMutation();
+
+    const handleClick = () => {
+        // sendRequest(apiRouteInput.value).then((value) => {
+        //     return value.json();
+        // })
+        
+        registration({
+            login: loginInput.value,
+            password: passwordInput.value, 
+            username: 'some username',
+        }).then((value: any) => {
+            console.log(value);
+        }).catch((error) => {
+            console.log(`error: ${error}`);
+        });
+    };
 
     return (
-        <OverlayContextProvider isOverlayExistInitial>
-            {/* <RoomSettingsModal/> */}
-            {/* <CreateRoomModal/> */}
-        </OverlayContextProvider>
+        <div className='flex flex-col'>
+            <input 
+                type='text' 
+                value={apiRouteInput.value}
+                onChange={apiRouteInput.handleChange}
+            />
+
+            <label>
+                <>login</>
+                
+                <input 
+                    type='text' 
+                    value={loginInput.value}
+                    onChange={loginInput.handleChange}
+                />
+            </label>
+
+            <label>
+                <>password</>
+            
+                <input 
+                    type='text' 
+                    value={passwordInput.value}
+                    onChange={passwordInput.handleChange}
+                />
+            </label>
+
+            <button onClick={handleClick}>
+                send
+            </button>
+        </div>
     );
 };
 
-const enabled = !!0;
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
