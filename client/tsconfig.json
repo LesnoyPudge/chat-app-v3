@@ -38,10 +38,10 @@
             "@libs": ["src/libs/index"],
             "@reExport": ["src/reExport"],
             "@typeGuards": ["src/typeGuards"],
+            "@shared": ["../shared/index"],
         },
     },
     "include": [
         "src",
-        "declaration.d.ts", 
     ]
 }

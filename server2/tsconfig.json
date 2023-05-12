@@ -16,7 +16,10 @@
         "paths": {
             "@utils": ["src/utils/index"],
             "@database": ["src/database/index"],
-
+            "@errors": ["src/errors/index"],
+            "@routers": ["src/routers/index"],
+            "@shared": ["../shared/index"],
+            
 
             // "@controllers": ["src/controllers/index"],
             // "@dtos": ["src/dtos/index"],

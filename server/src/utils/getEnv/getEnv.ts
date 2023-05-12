@@ -31,5 +31,5 @@ export const getEnv = () => {
     }
     const vars = process.env as unknown as IEnv;
 
-    return { ...vars };
+    return { ...vars } as const;
 };
