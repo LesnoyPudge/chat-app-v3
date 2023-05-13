@@ -1,7 +1,7 @@
 {
     "extends": "ts-node/node16/tsconfig.json",
     "ts-node": {
-      "transpileOnly": true,
+      "transpileOnly": false,
       "files": true,
       "esm": true,
     },
@@ -19,18 +19,16 @@
             "@errors": ["src/errors/index"],
             "@routers": ["src/routers/index"],
             "@shared": ["../shared/index"],
+            "@middlewares": ["src/middlewares/index"],
+            "@types": ["src/types/index"],
             
-
             // "@controllers": ["src/controllers/index"],
             // "@dtos": ["src/dtos/index"],
-            // "@middlewares": ["src/middlewares/index"],
             // "@models": ["src/models/index"],
             // "@models/schemas": ["src/models/schemas/index"],
             // "@routes": ["src/routes/index"],
             // "@services": ["src/services/index"],
             // "@socket": ["src/socket/index"],
-            // "@types": ["src/types/index"],
-            
             // "@validators": ["src/validators/index"],
             // "@server": ["src/server"],
             // "@subscription": ["src/subscription/index"],

@@ -5,6 +5,8 @@ import express, { Router } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { getEnv } from '@utils';
+import { ChannelRouter } from '@routers';
+import { authorizationMiddleware, errorMiddleware } from '@middlewares';
 
 
 
@@ -14,7 +16,6 @@ const server = http.createServer(app);
 const {
     CUSTOM_CLIENT_URL,
     CUSTOM_SERVER_PORT,
-    CUSTOM_API_V1_URL,
 } = getEnv();
 
 app.use(express.json());
@@ -25,30 +26,53 @@ app.use(cors({
 }));
 
 // app.use(paramsToBodyMiddleware);
-export const UserRouter = Router();
+
+const UserRouter = Router();
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/auth/registration',
-    // UserValidator.registration,
-    // controllerContainer(UserController.registration),
-    (req, res) => {
-        console.log('body', req.body);
-        res.send('hello');
+    '/api/v1/user/action',
+    authorizationMiddleware,
+    (req, res, next) => {
+        console.log('action');
+        res.send('action');
     },
 );
 
-app.use(UserRouter);
-// app.use([
-//     UserRouter,
-//     ChannelRouter,
+UserRouter.post(
+    '/api/v1/user/login',
+    (req, res, next) => {
+        console.log('login');
+        res.send('login');
+    },
+);
+
+UserRouter.post(
+    '/api/v1/user/registration',
+    (req, res, next) => {
+        console.log('registration');
+        res.send('registration');
+    },
+);
+
+UserRouter.post(
+    '/api/v1/user/refresh',
+    (req, res, next) => {
+        console.log('refresh');
+        res.send('refresh');
+    },
+);
+
+app.use([
+    UserRouter,
+    ChannelRouter,
 //     RoomRouter,
 //     PrivateChannelRouter,
 //     MessageRouter,
 //     RoleRouter,
 //     FileRouter,
-// ]);
+]);
 
-// app.use(errorHandlerMiddleware);
+app.use(errorMiddleware);
 
 const main = async() => {
     await databaseConnection();
