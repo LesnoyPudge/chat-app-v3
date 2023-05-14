@@ -1,1 +1,1 @@
-export * from './qwe';
+export * from './UserModel/UserModel';

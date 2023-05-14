@@ -4,5 +4,5 @@
 export const getSchemaOptions = () => ({
     id: false,
     versionKey: false,
-    timestamps: true,
+    timestamps: false,
 } as const);

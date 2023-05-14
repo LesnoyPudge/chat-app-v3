@@ -1,12 +1,13 @@
 import './env';
 import http from 'http';
-import { databaseConnection } from '@database';
+import { databaseConnection, UserModel } from '@database';
 import express, { Router } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { getEnv } from '@utils';
 import { ChannelRouter } from '@routers';
 import { authorizationMiddleware, errorMiddleware } from '@middlewares';
+import { User } from '../../shared/types';
 
 
 
@@ -31,10 +32,18 @@ const UserRouter = Router();
 
 UserRouter.post(
     '/api/v1/user/action',
-    authorizationMiddleware,
+    // authorizationMiddleware,
     (req, res, next) => {
         console.log('action');
-        res.send('action');
+        UserModel.create({
+            avatar: 'avatarId',            
+            username: 'cool',
+            password: 'pass',
+            login: `qwe ${Math.random()}`,
+        }).then((val) => {
+            console.log((JSON.parse(JSON.stringify(val)) as User).createdAt);
+            res.json(val);
+        }); 
     },
 );
 
