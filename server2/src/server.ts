@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { getEnv } from '@utils';
 import { ChannelRouter } from '@routers';
-import { authorizationMiddleware, errorMiddleware } from '@middlewares';
+import { authorizationMiddleware, errorCatcherMiddleware, errorHandlerMiddleware } from '@middlewares';
 import { User } from '../../shared/types';
 
 
@@ -33,18 +33,18 @@ const UserRouter = Router();
 UserRouter.post(
     '/api/v1/user/action',
     // authorizationMiddleware,
-    (req, res, next) => {
+    errorCatcherMiddleware(async(req, res, next) => {
         console.log('action');
-        UserModel.create({
+        const val = await UserModel.create({
             avatar: 'avatarId',            
             username: 'cool',
             password: 'pass',
             login: `qwe ${Math.random()}`,
-        }).then((val) => {
-            console.log((JSON.parse(JSON.stringify(val)) as User).createdAt);
-            res.json(val);
-        }); 
-    },
+        });
+        
+        console.log((JSON.parse(JSON.stringify(val)) as User).createdAt);
+        res.json(val); 
+    }),
 );
 
 UserRouter.post(
@@ -81,7 +81,7 @@ app.use([
 //     FileRouter,
 ]);
 
-app.use(errorMiddleware);
+app.use(errorHandlerMiddleware);
 
 const main = async() => {
     await databaseConnection();

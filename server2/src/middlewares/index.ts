@@ -1,2 +1,3 @@
 export * from './authorizationMiddleware';
-export * from './errorMiddleware';
+export * from './errorHandlerMiddleware';
+export * from './errorCatcherMiddleware';

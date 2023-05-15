@@ -36,7 +36,7 @@ export interface User {
 export interface Channel {
     id: Id;
     identifier: string;
-    avatar: string;
+    avatar: Id | null;
     name: string;
     owner: Id;
     isPrivate: boolean;
@@ -45,18 +45,14 @@ export interface Channel {
     roles: Id[];
     banList: {
         user: Id;
-        reason: string;
+        reason: string | null;
     }[];
     invitations: {
         creator: Id;
         code: string;
-        expiryDate: string;
-        createdAt: string;
+        expiryDate: Timestamp | null;
+        createdAt: Timestamp;
     }[];
-    categories: {
-        id: Id;
-        name: string;
-    }[],
     createdAt: Timestamp;
 }
 
@@ -64,13 +60,16 @@ export interface Room {
     id: Id;
     name: string;
     channel: Id;
-    chat: Id;
+    isPrivate: boolean;
+    chat: {
+        id: Id;
+        messages: Id[];
+    };
     whiteList: {
         users: Id[];
         roles: Id[];
     };
     type: 'voice' | 'text';
-    category: Id;
     createdAt: Timestamp;
 }
 
@@ -81,7 +80,7 @@ export interface Role {
     users: Id[];
     isDefault: boolean;
     color: string;
-    image: Id;
+    image: Id | null;
     order: number;
     permissions: {
         channelControl: boolean;
@@ -104,19 +103,20 @@ export interface Message {
     isChanged: boolean;
     isDeleted: boolean;
     createdAt: Timestamp;
-    updatedAt: number;
+    updatedAt: Timestamp;
 }
 
 export interface File {
     id: Id;
     filename: string;
     base64url: string;
+    isDeletable: boolean;
     createdAt: Timestamp;
 }
 
 export interface PrivateChannel {
     id: Id;
-    members: Id[];
+    members: [Id, Id];
     activeMembers: Id[];
     chat: {
         id: Id;

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 
 
-export const errorMiddleware = (error: Partial<ApiError>, req: Request, res: Response, _: NextFunction) => {
+export const errorHandlerMiddleware = (error: Partial<ApiError>, req: Request, res: Response, _: NextFunction) => {
     console.log('\n\n');
     console.log('Caught an error');
     console.log(`Path: ${req.path}`);

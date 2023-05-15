@@ -7,8 +7,8 @@ import { withPreSaveHook } from 'src/database/withPreSaveHook';
 
 
 const UserSchema = new Schema<User>({
-    id: { type: SchemaTypes.String, default: '' },
-    login: { type: SchemaTypes.String, required: true },
+    id: { type: SchemaTypes.String },
+    login: { type: SchemaTypes.String, required: true, unique: true, lowercase: true },
     password: { type: SchemaTypes.String, required: true },
     username: { type: SchemaTypes.String, required: true },
     avatar: { type: SchemaTypes.String, required: true },
