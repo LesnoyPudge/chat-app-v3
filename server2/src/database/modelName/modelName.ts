@@ -9,4 +9,5 @@ export const MODEL_NAME = {
     FILE: 'File',
     MESSAGE: 'Message',
     ROLE: 'Role',
+    CHAT: 'Chat',
 } as const;

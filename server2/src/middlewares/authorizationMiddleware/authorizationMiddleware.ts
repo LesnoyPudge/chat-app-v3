@@ -4,14 +4,17 @@ import { token } from '@utils';
 
 
 
-export const authorizationMiddleware: Middleware<void, void> = (req, res, next) => {
+export const authorizationMiddleware: Middleware = (req, res, next) => {
     const accessToken = req.cookies?.accessToken;
     if (!accessToken) throw ApiError.unauthorized();
 
-    const user = token.validateAccessToken(accessToken);
-    if (!user) throw ApiError.unauthorized();
+    const userData = token.validateAccessToken(accessToken);
+    if (!userData) throw ApiError.unauthorized();
 
-    req.user = user;
+    req.auth = {
+        id: userData.id,
+        accessToken,
+    };
 
     next();
 };

@@ -1,3 +1,4 @@
+import '@total-typescript/ts-reset';
 import ReactDOM from 'react-dom/client';
 import { Root } from '@root';
 import { getHTML } from '@utils';

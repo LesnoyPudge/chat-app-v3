@@ -1,4 +1,3 @@
-import '@total-typescript/ts-reset';
 import { FC, lazy, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, Loader, Masks } from './components';
 import { useAuthorization, useDebug, usePageVisibility, usePreventDefault, useThemeSwitcher } from './hooks';
@@ -6,7 +5,7 @@ import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import './styles/main.scss';
 import { Provider } from 'react-redux';
-import { store } from '@redux/store';
+// import { store } from '@redux/store';
 
 
 
@@ -20,7 +19,7 @@ const RootInner: FC = () => {
     useDebug();
     
     return (
-        <Provider store={store}>
+        <>
             <Heading className='sr-only'>
                 <>ChatApp</>
             </Heading>
@@ -38,7 +37,7 @@ const RootInner: FC = () => {
                     </ErrorBoundary>
                 </Playground>
             </HeadingLevel>
-        </Provider>
+        </>
     );
 };
 

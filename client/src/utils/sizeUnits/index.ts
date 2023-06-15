@@ -1,1 +1,1 @@
-export * from './sizeUnits';
+export { KBToBytes, MBToBytes } from '@shared';

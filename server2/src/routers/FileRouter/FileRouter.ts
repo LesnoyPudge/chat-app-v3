@@ -1,39 +1,29 @@
 import { Router } from 'express';
 import { FileController } from '@controllers';
-import { controllerContainer, getEnv } from '@utils';
-import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
+import { authorizationMiddleware, errorCatcherMiddleware, paramsToBodyMiddleware } from '@middlewares';
 import { FileValidator } from '@validators';
+import { Endpoints } from '@shared';
 
 
 
-
-const { CUSTOM_API_V1_URL } = getEnv();
 export const FileRouter = Router();
 
-FileRouter.get(
-    CUSTOM_API_V1_URL + '/file/avatar/:avatarId/read',
+FileRouter.post(
+    `${Endpoints.V1.File.Download.Path}/:fileId`,
+    paramsToBodyMiddleware,
+    FileValidator[Endpoints.V1.File.Download.ActionName],
     authorizationMiddleware,
-    FileValidator.readAvatar,
-    controllerContainer(FileController.readAvatar),
+    errorCatcherMiddleware(
+        FileController[Endpoints.V1.File.Download.ActionName],
+    ),
 );
 
-FileRouter.get(
-    CUSTOM_API_V1_URL + '/file/attachment/:attachmentId/read',
+FileRouter.post(
+    `${Endpoints.V1.File.Read.Path}/:fileId`,
+    paramsToBodyMiddleware,
+    FileValidator[Endpoints.V1.File.Read.ActionName],
     authorizationMiddleware,
-    FileValidator.readAttachment,
-    controllerContainer(FileController.readAttachment),
-);
-
-FileRouter.get(
-    CUSTOM_API_V1_URL + '/file/avatar/:avatarId/get',
-    authorizationMiddleware,
-    FileValidator.getAttachmentInfo,
-    controllerContainer(FileController.getAttachmentInfo),
-);
-
-FileRouter.get(
-    CUSTOM_API_V1_URL + '/file/role-image/:imageId/read',
-    authorizationMiddleware,
-    FileValidator.readRoleImage,
-    controllerContainer(FileController.readRoleImage),
+    errorCatcherMiddleware(
+        FileController[Endpoints.V1.File.Read.ActionName],
+    ),
 );

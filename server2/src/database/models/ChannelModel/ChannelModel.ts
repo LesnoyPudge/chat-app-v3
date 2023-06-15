@@ -1,12 +1,12 @@
 import { model, Schema, SchemaTypes } from 'mongoose';
-import { Channel } from '@shared';
+import { Entities } from '@shared';
 import { getSchemaOptions } from 'src/database/getSchemaOptions';
 import { MODEL_NAME } from 'src/database/modelName';
 import { withPreSaveHook } from 'src/database/withPreSaveHook';
 
 
 
-const ChannelSchema = new Schema<Channel>({
+const ChannelSchema = new Schema<Entities.Channel.Default>({
     id: { type: SchemaTypes.String },
     identifier: { type: SchemaTypes.String, required: true, unique: true, lowercase: true },
     name: { type: SchemaTypes.String, required: true },
@@ -22,7 +22,7 @@ const ChannelSchema = new Schema<Channel>({
         expiryTimestamp: { type: SchemaTypes.String, default: null },
         createdAt: { type: SchemaTypes.Number, default: Date.now },
     }],
-    banList: [{
+    banned: [{
         user: { type: SchemaTypes.String, ref: MODEL_NAME.USER },
         reason: { type: SchemaTypes.String, default: null },
     }],

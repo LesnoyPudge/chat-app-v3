@@ -1,54 +1,63 @@
 import { Router } from 'express';
 import { MessageController } from '@controllers';
-import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
-import { controllerContainer, getEnv } from '@utils';
+import { authorizationMiddleware, errorCatcherMiddleware } from '@middlewares';
 import { MessageValidator } from '@validators';
+import { Endpoints } from '@shared';
 
 
-
-
-const { CUSTOM_API_V1_URL } = getEnv();
 
 export const MessageRouter = Router();
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + 'chat/:chatId/messages/create',
+    Endpoints.V1.Message.Create.Path,
+    MessageValidator[Endpoints.V1.Message.Create.ActionName],
     authorizationMiddleware,
-    MessageValidator.create,
-    controllerContainer(MessageController.create),
+    errorCatcherMiddleware(
+        MessageController[Endpoints.V1.Message.Create.ActionName],
+    ),
 );
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId',
+    Endpoints.V1.Message.Delete.Path,
+    MessageValidator[Endpoints.V1.Message.Delete.ActionName],
     authorizationMiddleware,
-    MessageValidator.getOne,
-    controllerContainer(MessageController.getOne),
+    errorCatcherMiddleware(
+        MessageController[Endpoints.V1.Message.Delete.ActionName],
+    ),
 );
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId/update',
+    Endpoints.V1.Message.DeleteAttachment.Path,
+    MessageValidator[Endpoints.V1.Message.DeleteAttachment.ActionName],
     authorizationMiddleware,
-    MessageValidator.update,
-    controllerContainer(MessageController.update),
+    errorCatcherMiddleware(
+        MessageController[Endpoints.V1.Message.DeleteAttachment.ActionName],
+    ),
+);
+
+MessageRouter.get(
+    Endpoints.V1.Message.GetOne.Path,
+    MessageValidator[Endpoints.V1.Message.GetOne.ActionName],
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        MessageController[Endpoints.V1.Message.GetOne.ActionName],
+    ),
 );
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId/delete',
+    Endpoints.V1.Message.Restore.Path,
+    MessageValidator[Endpoints.V1.Message.Restore.ActionName],
     authorizationMiddleware,
-    MessageValidator.delete,
-    controllerContainer(MessageController.delete),
+    errorCatcherMiddleware(
+        MessageController[Endpoints.V1.Message.Restore.ActionName],
+    ),
 );
 
 MessageRouter.post(
-    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId/restore',
+    Endpoints.V1.Message.Update.Path,
+    MessageValidator[Endpoints.V1.Message.Update.ActionName],
     authorizationMiddleware,
-    MessageValidator.restore,
-    controllerContainer(MessageController.restore),
-);
-
-MessageRouter.post(
-    CUSTOM_API_V1_URL + 'chat/:chatId/messages/:messageId/attachment/:attachmentId/delete',
-    authorizationMiddleware,
-    MessageValidator.deleteAttachment,
-    controllerContainer(MessageController.deleteAttachment),
+    errorCatcherMiddleware(
+        MessageController[Endpoints.V1.Message.Update.ActionName],
+    ),
 );

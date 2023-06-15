@@ -5,3 +5,4 @@ export * from './MessageModel';
 export * from './FileModel';
 export * from './PrivateChannelModel';
 export * from './RoleModel';
+export * from './ChatModel';

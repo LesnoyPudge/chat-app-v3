@@ -1,5 +1,6 @@
 import { deepMerge } from '@reExport';
 import { PropsWithChildren, ReactNode, RefObject } from 'react';
+import { Entities } from '@shared';
 
 
 
@@ -19,13 +20,7 @@ export type PropsWithChildrenAsNodeOrFunction<T> = {
 
 export type PropsWithChildrenAndClassName = PropsWithChildren & PropsWithClassName;
 
-export interface EncodedFile {
-    name: string;
-    size: number;
-    type: string;
-    lastModified: number;
-    base64: string;
-}
+export type EncodedFile = Entities.File.Encoded;
 
 export interface InvalidEncodedFile extends Pick<EncodedFile, 'name' | 'size' | 'type'> {
     reason: 'type' | 'size';

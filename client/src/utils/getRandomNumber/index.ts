@@ -1,1 +1,1 @@
-export * from './getRandomNumber';
+export {getRandomNumber} from '@shared';

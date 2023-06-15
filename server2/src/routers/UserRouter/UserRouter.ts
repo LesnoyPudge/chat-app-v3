@@ -1,120 +1,164 @@
 import { Router } from 'express';
 import { UserController } from '@controllers';
-import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
-import { controllerContainer, getEnv } from '@utils';
+import { authorizationMiddleware, errorCatcherMiddleware } from '@middlewares';
 import { UserValidator } from '@validators';
+import { Endpoints } from '@shared';
 
 
 
-const { CUSTOM_API_V1_URL } = getEnv();
 export const UserRouter = Router();
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/auth/registration',
-    UserValidator.registration,
-    controllerContainer(UserController.registration),
-);
-
-UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/auth/login',
-    UserValidator.login,
-    controllerContainer(UserController.login),
-);
-
-UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/auth/logout',
-    controllerContainer(UserController.logout),
-);
-
-UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/auth/refresh',
-    controllerContainer(UserController.refresh),
-);
-
-UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/:targetId',
+    Endpoints.V1.User.AcceptFriendRequest.Path,
+    UserValidator[Endpoints.V1.User.AcceptFriendRequest.ActionName],
     authorizationMiddleware,
-    UserValidator.getOne,
-    controllerContainer(UserController.getOne),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.AcceptFriendRequest.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/profile/update',
+    Endpoints.V1.User.Block.Path,
+    UserValidator[Endpoints.V1.User.Block.ActionName],
     authorizationMiddleware,
-    UserValidator.update,
-    controllerContainer(UserController.update),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.Block.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/credentials/update',
+    Endpoints.V1.User.CredentialsUpdate.Path,
+    UserValidator[Endpoints.V1.User.CredentialsUpdate.ActionName],
     authorizationMiddleware,
-    UserValidator.credentialsUpdate,
-    controllerContainer(UserController.credentialsUpdate),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.CredentialsUpdate.ActionName],
+    ),
+);
+
+UserRouter.post(
+    Endpoints.V1.User.DeclineFriendRequest.Path,
+    UserValidator[Endpoints.V1.User.DeclineFriendRequest.ActionName],
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.DeclineFriendRequest.ActionName],
+    ),
+);
+
+UserRouter.post(
+    Endpoints.V1.User.Delete.Path,
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.Delete.ActionName],
+    ),
+);
+
+UserRouter.post(
+    Endpoints.V1.User.DeleteFriend.Path,
+    UserValidator[Endpoints.V1.User.DeleteFriend.ActionName],
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.DeleteFriend.ActionName],
+    ),
 );
 
 UserRouter.get(
-    CUSTOM_API_V1_URL + '/users/delete',
+    Endpoints.V1.User.GetOne.Path,
+    UserValidator[Endpoints.V1.User.GetOne.ActionName],
     authorizationMiddleware,
-    controllerContainer(UserController.delete),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.GetOne.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/blocked/:targetId/add',
+    Endpoints.V1.User.HidePrivateChannel.Path,
+    UserValidator[Endpoints.V1.User.HidePrivateChannel.ActionName],
     authorizationMiddleware,
-    UserValidator.blockUser,
-    controllerContainer(UserController.blockUser),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.HidePrivateChannel.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/blocked/:targetId/remove',
-    authorizationMiddleware,
-    UserValidator.unblockUser,
-    controllerContainer(UserController.unblockUser),
+    Endpoints.V1.User.Login.Path,
+    UserValidator[Endpoints.V1.User.Login.ActionName],
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.Login.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/emails/access-code',
+    Endpoints.V1.User.Logout.Path,
     authorizationMiddleware,
-    controllerContainer(UserController.requestAccessCode),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.Logout.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/friends/:targetId/send',
+    Endpoints.V1.User.ProfileUpdate.Path,
+    UserValidator[Endpoints.V1.User.ProfileUpdate.ActionName],
     authorizationMiddleware,
-    UserValidator.sendFriendRequest,
-    controllerContainer(UserController.sendFriendRequest),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.ProfileUpdate.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/friends/:targetId/accept',
-    authorizationMiddleware,
-    UserValidator.acceptFriendRequest,
-    controllerContainer(UserController.acceptFriendRequest),
+    Endpoints.V1.User.Refresh.Path,
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.Refresh.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/friends/:targetId/decline',
-    authorizationMiddleware,
-    UserValidator.declineFriendRequest,
-    controllerContainer(UserController.declineFriendRequest),
+    Endpoints.V1.User.Registration.Path,
+    UserValidator[Endpoints.V1.User.Registration.ActionName],
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.Registration.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/friends/:targetId/remove',
+    Endpoints.V1.User.RequestAccessCode.Path,
     authorizationMiddleware,
-    UserValidator.deleteFriend,
-    controllerContainer(UserController.deleteFriend),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.RequestAccessCode.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/activate/:activationCode',
+    Endpoints.V1.User.RevokeFriendRequest.Path,
+    UserValidator[Endpoints.V1.User.RevokeFriendRequest.ActionName],
     authorizationMiddleware,
-    UserValidator.activateAccount,
-    controllerContainer(UserController.activateAccount),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.RevokeFriendRequest.ActionName],
+    ),
 );
 
 UserRouter.post(
-    CUSTOM_API_V1_URL + '/users/emails/activation-code',
+    Endpoints.V1.User.SendFriendRequest.Path,
+    UserValidator[Endpoints.V1.User.SendFriendRequest.ActionName],
     authorizationMiddleware,
-    controllerContainer(UserController.requestActivationLink),
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.SendFriendRequest.ActionName],
+    ),
+);
+
+UserRouter.post(
+    Endpoints.V1.User.Unblock.Path,
+    UserValidator[Endpoints.V1.User.Unblock.ActionName],
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.Unblock.ActionName],
+    ),
+);
+
+UserRouter.post(
+    Endpoints.V1.User.VerifyAccessCode.Path,
+    UserValidator[Endpoints.V1.User.VerifyAccessCode.ActionName],
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        UserController[Endpoints.V1.User.VerifyAccessCode.ActionName],
+    ),
 );

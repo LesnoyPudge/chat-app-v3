@@ -114,7 +114,7 @@ import SimpleBar from 'simplebar-react';
 // import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
 import ReactFocusLock from 'react-focus-lock';
-import { useUserLoginMutation, useUserRegistrationMutation } from '@redux/features';
+// import { useUserLoginMutation, useUserRegistrationMutation } from '@redux/features';
 
 
 
@@ -399,70 +399,152 @@ const PlaygroundInner7: FC = () => {
     );
 };
 
-const PlaygroundInner8: FC = () => {    
-    const apiRouteInput = useTextInput('');
-    const loginInput = useTextInput('');
-    const passwordInput = useTextInput('');
+// const PlaygroundInner8: FC = () => {    
+//     const apiRouteInput = useTextInput('');
+//     const loginInput = useTextInput('');
+//     const passwordInput = useTextInput('');
 
 
-    const sendRequest = (endpoint: string) => {
-        return fetch(`${getEnv().CUSTOM_SERVER_URL + getEnv().CUSTOM_API_V1_URL}/${endpoint}`, {
-            method: 'POST',
-            body: JSON.stringify({
-                login: loginInput.value,
-                password: passwordInput.value,
-            }),
-        });
-    };
-    const [login] = useUserLoginMutation();
-    const [registration] = useUserRegistrationMutation();
+//     const sendRequest = (endpoint: string) => {
+//         return fetch(`${getEnv().CUSTOM_SERVER_URL + getEnv().CUSTOM_API_V1_URL}/${endpoint}`, {
+//             method: 'POST',
+//             body: JSON.stringify({
+//                 login: loginInput.value,
+//                 password: passwordInput.value,
+//             }),
+//         });
+//     };
+//     const [login] = useUserLoginMutation();
+//     const [registration] = useUserRegistrationMutation();
 
-    const handleClick = () => {
-        // sendRequest(apiRouteInput.value).then((value) => {
-        //     return value.json();
-        // })
+//     const handleClick = () => {
+//         // sendRequest(apiRouteInput.value).then((value) => {
+//         //     return value.json();
+//         // })
         
-        registration({
-            login: loginInput.value,
-            password: passwordInput.value, 
-            username: 'some username',
-        }).then((value: any) => {
-            console.log(value);
-        }).catch((error) => {
-            console.log(`error: ${error}`);
+//         registration({
+//             login: loginInput.value,
+//             password: passwordInput.value, 
+//             username: 'some username',
+//         }).then((value: any) => {
+//             console.log(value);
+//         }).catch((error) => {
+//             console.log(`error: ${error}`);
+//         });
+//     };
+
+//     return (
+//         <div className='flex flex-col'>
+//             <input 
+//                 type='text' 
+//                 value={apiRouteInput.value}
+//                 onChange={apiRouteInput.handleChange}
+//             />
+
+//             <label>
+//                 <>login</>
+                
+//                 <input 
+//                     type='text' 
+//                     value={loginInput.value}
+//                     onChange={loginInput.handleChange}
+//                 />
+//             </label>
+
+//             <label>
+//                 <>password</>
+            
+//                 <input 
+//                     type='text' 
+//                     value={passwordInput.value}
+//                     onChange={passwordInput.handleChange}
+//                 />
+//             </label>
+
+//             <button onClick={handleClick}>
+//                 send
+//             </button>
+//         </div>
+//     );
+// };
+
+import { io, Manager } from 'socket.io-client';
+
+
+
+// const socket = io('ws://localhost:5000', { autoConnect: false, auth: { some: 'some' } });
+// socket.on('connect', () => {
+//     console.log(`event: connect | session id: ${socket.id}`);
+// });
+
+// socket.on('connect_error', (err) => {
+//     console.log(`event: connect_error | reason: ${err.message}`);
+// });
+
+// socket.on('disconnect', (reason) => {   
+//     console.log(`event: disconnect | reason: ${reason}`);
+// });
+
+// socket.onAny((event, ...args) => {
+//     console.log(`any event: ${event} | arguments: ${args}`);
+// });
+
+let accessToken: string | undefined = undefined;
+
+const PlaygroundInner9: FC = () => {
+    const socketRef = useRef(io('ws://localhost:5000', { 
+        autoConnect: false, 
+        auth: { accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ODgzNWRmYzgyYWE3ZTYxZmQwZjM5ZiIsImVtYWlsIjpudWxsLCJwYXNzd29yZCI6IiQyYiQxMCRrckJGM3NpSk5EM2JpMUZMU1VKc2hlbWx0VS5vbTRHTUg0empNZmZYTENrdUxkNkpveHhPTyIsImlhdCI6MTY4NjY1OTY3OCwiZXhwIjoxNjg2NjYwNTc4fQ.jW1ZgxAz46YuER_Voxu6Iv8cmi2FtPLl_8T3IY_15_k' }, 
+    }));
+
+    useEffect(() => {
+        const socket = socketRef.current;
+
+        socket.on('connect', () => {
+            console.log(`event: connect | session id: ${socket.id}`);
         });
+        
+        socket.on('connect_error', (err) => {
+            console.log(`event: connect_error | reason: ${err.message}`);
+        });
+        
+        socket.on('disconnect', (reason) => {   
+            console.log(`event: disconnect | reason: ${reason}`);
+        });
+        
+        socket.onAny((event, ...args) => {
+            console.log(`any event: ${event} | arguments: ${args}`);
+        });
+    }, []);
+
+    const handleConnect = () => {
+        // accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ODgzNWRmYzgyYWE3ZTYxZmQwZjM5ZiIsImVtYWlsIjpudWxsLCJwYXNzd29yZCI6IiQyYiQxMCRrckJGM3NpSk5EM2JpMUZMU1VKc2hlbWx0VS5vbTRHTUg0empNZmZYTENrdUxkNkpveHhPTyIsImlhdCI6MTY4NjY0ODg2NywiZXhwIjoxNjg2NjQ5NzY3fQ.Ie96daceBTs-fVUu7XQmdzaHbnXp8YL8S4P9O6yz-d0';
+        socketRef.current.connect();
+        console.log('should open');
+    };
+
+    const handleDisconnect = () => {
+        accessToken = undefined;
+        socketRef.current.disconnect();
+        console.log('should close');
+    };
+
+    const handleSome = () => {
+        socketRef.current.emit('some', 'hello');
     };
 
     return (
-        <div className='flex flex-col'>
-            <input 
-                type='text' 
-                value={apiRouteInput.value}
-                onChange={apiRouteInput.handleChange}
-            />
+        <div className='flex gap-6 font-bold text-3xl [&>*]:bg-gray-700 [&>*]:p-4'>
+            <button onClick={handleConnect}>
+                <>conn</>
+            </button>
 
-            <label>
-                <>login</>
-                
-                <input 
-                    type='text' 
-                    value={loginInput.value}
-                    onChange={loginInput.handleChange}
-                />
-            </label>
+            <button onClick={handleDisconnect}>
+                <>disc</>
+            </button>
 
-            <label>
-                <>password</>
-            
-                <input 
-                    type='text' 
-                    value={passwordInput.value}
-                    onChange={passwordInput.handleChange}
-                />
-            </label>
-
-            <button onClick={handleClick}>
-                send
+            <button onClick={handleSome}>
+                <>some</>
             </button>
         </div>
     );
@@ -486,7 +568,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner5/> */}
                 {/* <PlaygroundInner6/> */}
                 {/* <PlaygroundInner7/> */}
-                <PlaygroundInner8/>
+                {/* <PlaygroundInner8/> */}
+                <PlaygroundInner9/>
                 {/* </ReactFocusLock> */}
             </Conditional>
         </>

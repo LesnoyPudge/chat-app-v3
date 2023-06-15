@@ -55,7 +55,6 @@ export const encodeFiles = async(files: File[], options: EncodeFilesOptions = {}
             name: file.name,
             size: file.size,
             type: file.type,
-            lastModified: file.lastModified,
             base64,
         });
     }));

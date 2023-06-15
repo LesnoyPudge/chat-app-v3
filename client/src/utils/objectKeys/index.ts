@@ -1,1 +1,1 @@
-export * from './objectKeys';
+export { objectKeys } from '@shared';

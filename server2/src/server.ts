@@ -1,23 +1,47 @@
+import '@total-typescript/ts-reset';
 import './env';
 import http from 'http';
-import { databaseConnection, UserModel } from '@database';
-import express, { Router } from 'express';
+import { databaseConnection } from '@database';
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { getEnv } from '@utils';
-import { ChannelRouter } from '@routers';
-import { authorizationMiddleware, errorCatcherMiddleware, errorHandlerMiddleware } from '@middlewares';
-import { User } from '../../shared/types';
+import { getEnv, token } from '@utils';
+import { errorHandlerMiddleware } from '@middlewares';
+import { Server } from 'socket.io';
+import { Override, Prettify, SocketAuth, Tokens } from '@shared';
+import { ApiError } from '@errors';
+import { Sockets } from './subscription/Sockets';
 
 
-
-const app = express();
-const server = http.createServer(app);
 
 const {
     CUSTOM_CLIENT_URL,
     CUSTOM_SERVER_PORT,
 } = getEnv();
+
+const app = express();
+const server = http.createServer(app);
+
+const socketServer = new Server(server, {
+    cors: {
+        origin: CUSTOM_CLIENT_URL,
+        methods: ['GET', 'POST'],
+    },
+});
+
+socketServer.use((socket, next) => {
+    const auth = socket.handshake.auth as Partial<SocketAuth>;
+    if (!auth.accessToken) return next(ApiError.unauthorized());
+            
+    const data = token.validateAccessToken(auth.accessToken);
+    if (!data) return next(ApiError.unauthorized());
+
+    auth.data = data;
+
+    next();
+});
+
+export const sockets = new Sockets(socketServer);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -26,69 +50,26 @@ app.use(cors({
     origin: CUSTOM_CLIENT_URL,
 }));
 
-// app.use(paramsToBodyMiddleware);
+import { ChannelRouter, ChatRouter, FileRouter, MessageRouter, PrivateChannelRouter, RoleRouter, RoomRouter, UserRouter } from '@routers';
 
-const UserRouter = Router();
 
-UserRouter.post(
-    '/api/v1/user/action',
-    // authorizationMiddleware,
-    errorCatcherMiddleware(async(req, res, next) => {
-        console.log('action');
-        const val = await UserModel.create({
-            avatar: 'avatarId',            
-            username: 'cool',
-            password: 'pass',
-            login: `qwe ${Math.random()}`,
-        });
-        
-        console.log((JSON.parse(JSON.stringify(val)) as User).createdAt);
-        res.json(val); 
-    }),
-);
-
-UserRouter.post(
-    '/api/v1/user/login',
-    (req, res, next) => {
-        console.log('login');
-        res.send('login');
-    },
-);
-
-UserRouter.post(
-    '/api/v1/user/registration',
-    (req, res, next) => {
-        console.log('registration');
-        res.send('registration');
-    },
-);
-
-UserRouter.post(
-    '/api/v1/user/refresh',
-    (req, res, next) => {
-        console.log('refresh');
-        res.send('refresh');
-    },
-);
 
 app.use([
     UserRouter,
     ChannelRouter,
-//     RoomRouter,
-//     PrivateChannelRouter,
-//     MessageRouter,
-//     RoleRouter,
-//     FileRouter,
+    RoomRouter,
+    PrivateChannelRouter,
+    MessageRouter,
+    RoleRouter,
+    FileRouter,
+    ChatRouter,
 ]);
 
 app.use(errorHandlerMiddleware);
 
-const main = async() => {
+(async() => {
     await databaseConnection();
-
     server.listen(CUSTOM_SERVER_PORT, () => {
         console.log(`started at: ${CUSTOM_SERVER_PORT}`);
     });
-};
-
-main();
+})();

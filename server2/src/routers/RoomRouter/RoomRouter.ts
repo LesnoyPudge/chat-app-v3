@@ -1,40 +1,45 @@
 import { Router } from 'express';
 import { RoomController } from '@controllers';
-import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
-import { controllerContainer, getEnv } from '@utils';
+import { authorizationMiddleware, errorCatcherMiddleware } from '@middlewares';
 import { RoomValidator } from '@validators';
+import { Endpoints } from '@shared';
 
 
-
-
-const { CUSTOM_API_V1_URL } = getEnv();
 
 export const RoomRouter = Router();
 
 RoomRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/rooms/create',
+    Endpoints.V1.Room.Create.Path,
+    RoomValidator[Endpoints.V1.Room.Create.ActionName],
     authorizationMiddleware,
-    RoomValidator.create,
-    controllerContainer(RoomController.create),
+    errorCatcherMiddleware(
+        RoomController[Endpoints.V1.Room.Create.ActionName],
+    ),
 );
 
 RoomRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/rooms/:roomId',
+    Endpoints.V1.Room.Delete.Path,
+    RoomValidator[Endpoints.V1.Room.Delete.ActionName],
     authorizationMiddleware,
-    RoomValidator.getOne,
-    controllerContainer(RoomController.getOne),
+    errorCatcherMiddleware(
+        RoomController[Endpoints.V1.Room.Delete.ActionName],
+    ),
+);
+
+RoomRouter.get(
+    Endpoints.V1.Room.GetOne.Path,
+    RoomValidator[Endpoints.V1.Room.GetOne.ActionName],
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        RoomController[Endpoints.V1.Room.GetOne.ActionName],
+    ),
 );
 
 RoomRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/rooms/:roomId/update',
+    Endpoints.V1.Room.Update.Path,
+    RoomValidator[Endpoints.V1.Room.Update.ActionName],
     authorizationMiddleware,
-    RoomValidator.update,
-    controllerContainer(RoomController.update),
-);
-
-RoomRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/rooms/:roomId/delete',
-    authorizationMiddleware,
-    RoomValidator.delete,
-    controllerContainer(RoomController.delete),
+    errorCatcherMiddleware(
+        RoomController[Endpoints.V1.Room.Update.ActionName],
+    ),
 );

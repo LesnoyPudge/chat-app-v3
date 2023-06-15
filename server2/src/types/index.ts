@@ -1,42 +1,66 @@
+import { Id, Override, Prettify, SocketAuth, StrictOmit, Tokens } from '@shared';
 import { 
     NextFunction, 
-    Request as ExpressRequest,
     Response as ExpressResponse,
 } from 'express';
 import { Send } from 'express-serve-static-core';
+import { Server, Socket } from 'socket.io';
 
 
 
-interface AuthorizationData {
-    cookies: {
-        refreshToken: string;
-        accessToken: string;
-    };
-        // user: Partial<IUser>;
-    user: {
-        id: '123',
-        name: 'wow',
+interface WithAuthorizationCookies {
+    cookies: Prettify<Pick<Tokens, 'accessToken'> & Partial<Pick<Tokens, 'refreshToken'>>>;
+}
+
+interface WithAuthorizationData {
+    auth: WithAuthorizationCookies['cookies'] & {
+        id: Id;
     }
 }
 
-export interface Request<RequestBody> extends Pick<ExpressRequest, 'headers'>, Partial<AuthorizationData> {
+type WithAuthorization = Prettify<WithAuthorizationCookies & WithAuthorizationData>;
+
+export interface Request<RequestBody> extends Partial<WithAuthorization> {
     body: RequestBody;
+    params: Record<string, unknown>;
 }
 
-export type AuthorizedRequest<RequestBody> = Required<AuthorizationData> & Request<RequestBody>;
+export type AuthorizedRequest<RequestBody> = Required<WithAuthorization> & Request<RequestBody>;
 
 export interface Response<ResponseBody> extends ExpressResponse {
     json: Send<ResponseBody, this>;
 }
 
-export type Middleware<RequestBody, ResponseBody> = (
+export type Middleware<RequestBody = unknown, ResponseBody = unknown> = (
     req: Request<RequestBody>, 
     res: Response<ResponseBody>, 
     next: NextFunction,
-) => void;
+) => unknown;
 
-export type AuthorizedMiddleware<RequestBody, ResponseBody> = (
+export type AuthorizedMiddleware<RequestBody = unknown, ResponseBody = unknown> = (
     req: AuthorizedRequest<RequestBody>, 
     res: Response<ResponseBody>, 
     next: NextFunction,
-) => void;
+) => unknown;
+
+export type Service<Body, Return> = (
+    Pick<Body, keyof Body> extends never | void | Record<string, never>
+        ? () => Promise<Return> 
+        : (body: Prettify<Pick<Body, keyof Body>>) => Promise<Return>
+);
+
+export type AuthorizedService<Body, Return> = (
+    Pick<Body, keyof Body> extends never | void | Record<string, never>
+        ? (auth: Prettify<Pick<WithAuthorization, 'auth'>['auth']>) => Promise<Return>
+        : (auth: Prettify<Pick<WithAuthorization, 'auth'>['auth']>, body: Body) => Promise<Return>
+);
+
+export type AuthorizedSocket = StrictOmit<Socket, 'handshake'> & Override<
+    Socket, 
+    'handshake', 
+    Socket['handshake'] & Override<
+        Socket['handshake'],
+        'auth',
+        SocketAuth
+    >
+>;

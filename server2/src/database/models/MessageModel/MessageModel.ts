@@ -1,12 +1,12 @@
 import { model, Schema, SchemaTypes } from 'mongoose';
-import { Message } from '@shared';
+import { Entities } from '@shared';
 import { getSchemaOptions } from 'src/database/getSchemaOptions';
 import { MODEL_NAME } from 'src/database/modelName';
 import { withPreSaveHook } from 'src/database/withPreSaveHook';
 
 
 
-const MessageSchema = new Schema<Message>({
+const MessageSchema = new Schema<Entities.Message.Default>({
     id: { type: SchemaTypes.String },
     chat: { type: SchemaTypes.String, required: true },
     user: { type: SchemaTypes.String, ref: MODEL_NAME.USER, required: true },
@@ -14,8 +14,23 @@ const MessageSchema = new Schema<Message>({
     isChanged: { type: SchemaTypes.Boolean, default: false },
     isDeleted: { type: SchemaTypes.Boolean, default: false },
     attachments: [{
-        type: SchemaTypes.String,
-        ref: MODEL_NAME.FILE,
+        id: {
+            type: SchemaTypes.String,
+            ref: MODEL_NAME.FILE,
+            required: true,
+        },
+        name: {
+            type: SchemaTypes.String,
+            required: true,
+        },
+        type: {
+            type: SchemaTypes.String,
+            required: true,
+        },
+        size: {
+            type: SchemaTypes.Number,
+            required: true,
+        },
     }],
     updatedAt: { type: SchemaTypes.Number, default: Date.now },
     createdAt: { type: SchemaTypes.Number, default: Date.now },

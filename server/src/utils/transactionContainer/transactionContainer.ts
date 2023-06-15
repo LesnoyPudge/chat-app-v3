@@ -2,7 +2,7 @@ import { startSession, QueryOptions, ClientSession } from 'mongoose';
 
 
 
-type QueryOptionsType = (extraOptionsObject?: QueryOptions) => QueryOptions;
+type QueryOptionsType = (options?: QueryOptions) => QueryOptions;
 type OnCommitType = (cb: () => Promise<void> | void) => ClientSession;
 interface ITransactionCallbackArgs {
     queryOptions: QueryOptionsType, 
@@ -39,13 +39,12 @@ export const transactionContainer: TransactionContainerType = async(fn) => {
         if (transaction.isSuccessful()) return await cb();
     });
 
-    const queryOptions: QueryOptionsType = (extraOptionsObject = {}) => {
-        const optionsObject = { 
+    const queryOptions: QueryOptionsType = (options = {}) => {
+        return {
             session, 
             lean: true, 
+            ...options, 
         };
-        
-        return { ...optionsObject, ...extraOptionsObject };
     };
     
     try {
@@ -56,11 +55,9 @@ export const transactionContainer: TransactionContainerType = async(fn) => {
         await session.commitTransaction();
         await session.endSession();
         transaction.success();
-        console.log('transaction ends without errors');
 
         return data;
     } catch(error) {
-        console.log('aborting transaction');
         transaction.fail();
         await session.abortTransaction();
         await session.endSession();

@@ -1,5 +1,4 @@
 import { ChannelServiceHelpers, FileServiceHelpers, MessageServiceHelpers, PrivateChannelServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, UserServiceHelpers } from '@services';
-import { IUserSettings } from '@types';
 import { date, password } from '@utils';
 import { ValidationChain, check } from 'express-validator';
 
@@ -87,8 +86,8 @@ export const isValidPassword: ValidationChainCreator = ({
 }) => {
     return check(fieldName).custom(async(password: string, { req }) => {
         const user = await UserServiceHelpers.getOne({ _id: req.auth.user.id });
-        const isEqueals = await isPasswordsEquals({ password, hashedPassword: user.password });
-        if (!isEqueals) return Promise.reject();
+        const isEquals = await isPasswordsEquals({ password, hashedPassword: user.password });
+        if (!isEquals) return Promise.reject();
         return Promise.resolve();
     }).bail().withMessage(errorMessage);
 };

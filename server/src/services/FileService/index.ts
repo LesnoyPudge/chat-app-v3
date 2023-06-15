@@ -1,2 +1,2 @@
 export * from './FileSevice';
-export * from './FileSeviceHelpers';
+export * from './FileServiceHelpers';

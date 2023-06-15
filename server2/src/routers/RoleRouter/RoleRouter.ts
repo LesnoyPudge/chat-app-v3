@@ -1,54 +1,63 @@
 import { Router } from 'express';
 import { RoleController } from '@controllers';
-import { authorizationMiddleware, paramsToBodyMiddleware } from '@middlewares';
-import { controllerContainer, getEnv } from '@utils';
+import { authorizationMiddleware, errorCatcherMiddleware } from '@middlewares';
 import { RoleValidator } from '@validators';
+import { Endpoints } from '@shared';
 
 
-
-
-const { CUSTOM_API_V1_URL } = getEnv();
 
 export const RoleRouter = Router();
 
 RoleRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/roles/create',
+    Endpoints.V1.Role.AddMember.Path,
+    RoleValidator[Endpoints.V1.Role.AddMember.ActionName],
     authorizationMiddleware,
-    RoleValidator.create,
-    controllerContainer(RoleController.create),
+    errorCatcherMiddleware(
+        RoleController[Endpoints.V1.Role.AddMember.ActionName],
+    ),
+);
+
+RoleRouter.post(
+    Endpoints.V1.Role.Create.Path,
+    RoleValidator[Endpoints.V1.Role.Create.ActionName],
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        RoleController[Endpoints.V1.Role.Create.ActionName],
+    ),
+);
+
+RoleRouter.post(
+    Endpoints.V1.Role.Delete.Path,
+    RoleValidator[Endpoints.V1.Role.Delete.ActionName],
+    authorizationMiddleware,
+    errorCatcherMiddleware(
+        RoleController[Endpoints.V1.Role.Delete.ActionName],
+    ),
 );
 
 RoleRouter.get(
-    CUSTOM_API_V1_URL + '/channels/:channelId/roles/:roleId',
+    Endpoints.V1.Role.GetOne.Path,
+    RoleValidator[Endpoints.V1.Role.GetOne.ActionName],
     authorizationMiddleware,
-    RoleValidator.getOne,
-    controllerContainer(RoleController.getOne),
+    errorCatcherMiddleware(
+        RoleController[Endpoints.V1.Role.GetOne.ActionName],
+    ),
 );
 
 RoleRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/roles/:roleId/update',
+    Endpoints.V1.Role.RemoveMember.Path,
+    RoleValidator[Endpoints.V1.Role.RemoveMember.ActionName],
     authorizationMiddleware,
-    RoleValidator.update,
-    controllerContainer(RoleController.update),
+    errorCatcherMiddleware(
+        RoleController[Endpoints.V1.Role.RemoveMember.ActionName],
+    ),
 );
 
 RoleRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/roles/:roleId/delete',
+    Endpoints.V1.Role.Update.Path,
+    RoleValidator[Endpoints.V1.Role.Update.ActionName],
     authorizationMiddleware,
-    RoleValidator.delete,
-    controllerContainer(RoleController.delete),
-);
-
-RoleRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/roles/:roleId/add-user/:targetId',
-    authorizationMiddleware,
-    RoleValidator.addUser,
-    controllerContainer(RoleController.addUser),
-);
-
-RoleRouter.post(
-    CUSTOM_API_V1_URL + '/channels/:channelId/roles/:roleId/remove-user/:targetId',
-    authorizationMiddleware,
-    RoleValidator.deleteUser,
-    controllerContainer(RoleController.deleteUser),
+    errorCatcherMiddleware(
+        RoleController[Endpoints.V1.Role.Update.ActionName],
+    ),
 );
