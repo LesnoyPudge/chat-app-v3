@@ -1,13 +1,12 @@
 import { EntityId, SocketId, UserId } from '@shared';
-import { AuthorizedSocket } from '@types';
+import { AuthorizedServer, AuthorizedSocket } from '@types';
 import autoBind from 'auto-bind';
-import { Server, Socket } from 'socket.io';
 import { Entity } from './Entity';
 
 
 
 export class Sockets {
-    server: Server;
+    server: AuthorizedServer;
     sockets: Map<SocketId, {
         socket: AuthorizedSocket;
         userId: UserId;
@@ -16,7 +15,7 @@ export class Sockets {
     }>;
     users: Map<UserId, Set<SocketId>>;
     
-    constructor(server: Server) {
+    constructor(server: AuthorizedServer) {
         this.server = server;
         this.sockets = new Map();
         this.users = new Map();
@@ -24,20 +23,19 @@ export class Sockets {
         autoBind(this);
 
         this.server.on('connection', (socket) => {
-            this.add(socket as unknown as AuthorizedSocket);
+            this.add(socket);
 
-            socket.on(
-                'disconnect', 
-                () => this.remove(socket as unknown as AuthorizedSocket),
-            );
+            socket.on('disconnect', () => this.remove(socket));
         });
     }
 
     add(socket: AuthorizedSocket) {
+        if (!socket.data.id || !socket.data.accessToken) return;
+
         this.sockets.set(socket.id, {
             socket,
-            userId: socket.handshake.auth.id,
-            accessToken: socket.handshake.auth.accessToken,
+            userId: socket.data.id,
+            accessToken: socket.data.accessToken,
             subscriptions: new Map(),
         });
     }

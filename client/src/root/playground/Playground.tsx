@@ -489,64 +489,153 @@ import { io, Manager } from 'socket.io-client';
 //     console.log(`any event: ${event} | arguments: ${args}`);
 // });
 
-let accessToken: string | undefined = undefined;
+// let accessToken: string | undefined = undefined;
 
-const PlaygroundInner9: FC = () => {
-    const socketRef = useRef(io('ws://localhost:5000', { 
-        autoConnect: false, 
-        auth: { accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ODgzNWRmYzgyYWE3ZTYxZmQwZjM5ZiIsImVtYWlsIjpudWxsLCJwYXNzd29yZCI6IiQyYiQxMCRrckJGM3NpSk5EM2JpMUZMU1VKc2hlbWx0VS5vbTRHTUg0empNZmZYTENrdUxkNkpveHhPTyIsImlhdCI6MTY4NjY1OTY3OCwiZXhwIjoxNjg2NjYwNTc4fQ.jW1ZgxAz46YuER_Voxu6Iv8cmi2FtPLl_8T3IY_15_k' }, 
-    }));
+// const PlaygroundInner9: FC = () => {
+//     const socketRef = useRef(io('ws://localhost:5000', { 
+//         autoConnect: false, 
+//         auth: { accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ODgzNWRmYzgyYWE3ZTYxZmQwZjM5ZiIsImVtYWlsIjpudWxsLCJwYXNzd29yZCI6IiQyYiQxMCRrckJGM3NpSk5EM2JpMUZMU1VKc2hlbWx0VS5vbTRHTUg0empNZmZYTENrdUxkNkpveHhPTyIsImlhdCI6MTY4NjY1OTY3OCwiZXhwIjoxNjg2NjYwNTc4fQ.jW1ZgxAz46YuER_Voxu6Iv8cmi2FtPLl_8T3IY_15_k' }, 
+//     }));
 
-    useEffect(() => {
-        const socket = socketRef.current;
+//     useEffect(() => {
+//         const socket = socketRef.current;
 
-        socket.on('connect', () => {
-            console.log(`event: connect | session id: ${socket.id}`);
-        });
+//         socket.on('connect', () => {
+//             console.log(`event: connect | session id: ${socket.id}`);
+//         });
         
-        socket.on('connect_error', (err) => {
-            console.log(`event: connect_error | reason: ${err.message}`);
-        });
+//         socket.on('connect_error', (err) => {
+//             console.log(`event: connect_error | reason: ${err.message}`);
+//         });
         
-        socket.on('disconnect', (reason) => {   
-            console.log(`event: disconnect | reason: ${reason}`);
-        });
+//         socket.on('disconnect', (reason) => {   
+//             console.log(`event: disconnect | reason: ${reason}`);
+//         });
         
-        socket.onAny((event, ...args) => {
-            console.log(`any event: ${event} | arguments: ${args}`);
-        });
-    }, []);
+//         socket.onAny((event, ...args) => {
+//             console.log(`any event: ${event} | arguments: ${args}`);
+//         });
+//     }, []);
 
-    const handleConnect = () => {
-        // accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ODgzNWRmYzgyYWE3ZTYxZmQwZjM5ZiIsImVtYWlsIjpudWxsLCJwYXNzd29yZCI6IiQyYiQxMCRrckJGM3NpSk5EM2JpMUZMU1VKc2hlbWx0VS5vbTRHTUg0empNZmZYTENrdUxkNkpveHhPTyIsImlhdCI6MTY4NjY0ODg2NywiZXhwIjoxNjg2NjQ5NzY3fQ.Ie96daceBTs-fVUu7XQmdzaHbnXp8YL8S4P9O6yz-d0';
-        socketRef.current.connect();
-        console.log('should open');
+//     const handleConnect = () => {
+//         // accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ODgzNWRmYzgyYWE3ZTYxZmQwZjM5ZiIsImVtYWlsIjpudWxsLCJwYXNzd29yZCI6IiQyYiQxMCRrckJGM3NpSk5EM2JpMUZMU1VKc2hlbWx0VS5vbTRHTUg0empNZmZYTENrdUxkNkpveHhPTyIsImlhdCI6MTY4NjY0ODg2NywiZXhwIjoxNjg2NjQ5NzY3fQ.Ie96daceBTs-fVUu7XQmdzaHbnXp8YL8S4P9O6yz-d0';
+//         socketRef.current.connect();
+//         console.log('should open');
+//     };
+
+//     const handleDisconnect = () => {
+//         accessToken = undefined;
+//         socketRef.current.disconnect();
+//         console.log('should close');
+//     };
+
+//     const handleSome = () => {
+//         socketRef.current.emit('some', 'hello');
+//     };
+
+//     return (
+//         <div className='flex gap-6 font-bold text-3xl [&>*]:bg-gray-700 [&>*]:p-4'>
+//             <button onClick={handleConnect}>
+//                 <>conn</>
+//             </button>
+
+//             <button onClick={handleDisconnect}>
+//                 <>disc</>
+//             </button>
+
+//             <button onClick={handleSome}>
+//                 <>some</>
+//             </button>
+//         </div>
+//     );
+// };
+
+const peerConnection = new RTCPeerConnection({
+    iceServers: [{ urls: ['stun4.l.google.com:19302'] }],
+    iceCandidatePoolSize: 10,
+});
+
+const streams: {
+    local: MediaStream | null;
+    remote: MediaStream | null;
+} = {
+    local: null,
+    remote: null,
+};
+
+const PlaygroundInner10: FC = () => {
+    const [mediaTracks, setMediaTracks] = useState<MediaStreamTrack[]>([]);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const audioRef2 = useRef<HTMLAudioElement>(null);
+
+    const handleStartCall = async() => {
+        streams.local = await navigator.mediaDevices.getUserMedia({ audio: true });
+        streams.remote = new MediaStream();
+
+        streams.local.getTracks().forEach((track) => {
+            if (!streams.local) return;
+            peerConnection.addTrack(track, streams.local);
+        });
+
+        peerConnection.ontrack = (event) => {
+            event.streams[0].getTracks().forEach((track) => {
+                if (!streams.remote) return;
+                streams.remote.addTrack(track);
+            });
+        };
+
+        if (!audioRef.current || !audioRef2.current) return;
+
+        audioRef.current.srcObject = streams.local;
+        audioRef2.current.srcObject = streams.remote;
+
+        peerConnection.onicecandidate = (event) => {
+            event.candidate && localStorage.setItem('offerCandidates', JSON.stringify(event.candidate.toJSON()));
+        };
+
+        const offerDescription = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offerDescription);
+
+        const offer = {
+            sdp: offerDescription.sdp,
+            type: offerDescription.type,
+        };
+
+        localStorage.setItem('offer', JSON.stringify(offer));
+
+        
     };
 
-    const handleDisconnect = () => {
-        accessToken = undefined;
-        socketRef.current.disconnect();
-        console.log('should close');
-    };
-
-    const handleSome = () => {
-        socketRef.current.emit('some', 'hello');
-    };
+    const handleEndCall = () => {};
 
     return (
-        <div className='flex gap-6 font-bold text-3xl [&>*]:bg-gray-700 [&>*]:p-4'>
-            <button onClick={handleConnect}>
-                <>conn</>
-            </button>
+        <>
+            <div className='grid gap-2 p-11'>
+                <div>
+                    <>status: {}</>
+                </div>
 
-            <button onClick={handleDisconnect}>
-                <>disc</>
-            </button>
+                <audio
+                    ref={audioRef}
+                    controls 
+                    autoPlay
+                ></audio>
 
-            <button onClick={handleSome}>
-                <>some</>
-            </button>
-        </div>
+                <audio
+                    ref={audioRef2}
+                    controls 
+                    autoPlay
+                ></audio>
+
+                <button onClick={handleStartCall}>
+                    <>start call</>
+                </button>
+
+                <button onClick={handleEndCall}>
+                    <>end call</>
+                </button>
+            </div>
+        </>
     );
 };
 
@@ -569,7 +658,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner6/> */}
                 {/* <PlaygroundInner7/> */}
                 {/* <PlaygroundInner8/> */}
-                <PlaygroundInner9/>
+                {/* <PlaygroundInner9/> */}
+                <PlaygroundInner10/>
                 {/* </ReactFocusLock> */}
             </Conditional>
         </>

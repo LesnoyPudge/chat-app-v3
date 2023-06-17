@@ -1,6 +1,5 @@
-import { MODEL_NAME } from '@database';
 import { ChannelServiceHelpers, ChatServiceHelpers, MessageServiceHelpers, PrivateChannelServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, UserServiceHelpers } from '@services';
-import { EntityId, StrictOmit, UserId, ValueOf, WithId } from '@shared';
+import { EntityId, UserId, ValueOf, WithId, ENTITY_NAMES, SOCKET_SERVER_EVENT_NAMES, SOCKET_CLIENT_EVENT_NAMES, StrictOmit } from '@shared';
 import { AuthorizedSocket } from '@types';
 import autoBind from 'auto-bind';
 import { isDeepStrictEqual } from 'util';
@@ -9,43 +8,31 @@ import { Sockets } from './Sockets';
 
 
 
-type PartialNames = StrictOmit<typeof MODEL_NAME, 'FILE'>;
-
-type EntityNames = {
-    [K in keyof PartialNames]: PartialNames[K]
-}[keyof PartialNames];
-
-const SOCKET_EVENTS = {
-    SUBSCRIBE: 'subscribe',
-    UNSUBSCRIBE: 'unsubscribe',
-    ERROR: 'error',
-    DATA: 'data',
-    DELETE: 'delete',
-} as const;
+type Names = StrictOmit<typeof ENTITY_NAMES, 'FILE'>;
 
 type Validator = (userId: UserId, entityId: EntityId) => Promise<boolean>;
 
 type DTO<T> = (entity: T) => Partial<T>;
 
 const ServiceHelpers = {
-    [MODEL_NAME.CHANNEL]: ChannelServiceHelpers?.getOne,
-    [MODEL_NAME.MESSAGE]: MessageServiceHelpers?.getOne,
-    [MODEL_NAME.PRIVATE_CHANNEL]: PrivateChannelServiceHelpers?.getOne,
-    [MODEL_NAME.ROLE]: RoleServiceHelpers?.getOne,
-    [MODEL_NAME.ROOM]: RoomServiceHelpers?.getOne,
-    [MODEL_NAME.USER]: UserServiceHelpers?.getOne,
-    [MODEL_NAME.CHAT]: ChatServiceHelpers?.getOne,
+    [ENTITY_NAMES.CHANNEL]: ChannelServiceHelpers?.getOne,
+    [ENTITY_NAMES.MESSAGE]: MessageServiceHelpers?.getOne,
+    [ENTITY_NAMES.PRIVATE_CHANNEL]: PrivateChannelServiceHelpers?.getOne,
+    [ENTITY_NAMES.ROLE]: RoleServiceHelpers?.getOne,
+    [ENTITY_NAMES.ROOM]: RoomServiceHelpers?.getOne,
+    [ENTITY_NAMES.USER]: UserServiceHelpers?.getOne,
+    [ENTITY_NAMES.CHAT]: ChatServiceHelpers?.getOne,
 };
 
 export class EntitySubscription<T extends WithId> {
     private entities: Map<EntityId, Entity<T>>;
     private sockets: Sockets;
-    private name: EntityNames;
+    private name: ValueOf<Names>;
     private validator: Validator;
     private defaultDTO: DTO<T>;
 
     constructor(
-        name: EntityNames, 
+        name: ValueOf<Names>, 
         sockets: Sockets,
         validator: Validator = () => Promise.resolve(true),
         defaultDTO: DTO<T> = (value) => value,
@@ -57,27 +44,32 @@ export class EntitySubscription<T extends WithId> {
         this.defaultDTO = defaultDTO,
 
         autoBind(this);
-
+        const qwe = this.toName(SOCKET_CLIENT_EVENT_NAMES.UNSUBSCRIBE);
         this.sockets.server.on('connection', (socket) => {
             socket.on(
-                this.toName(SOCKET_EVENTS.SUBSCRIBE), 
+                this.toName(SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE), 
                 (entityId) => this.subscribe(
-                    socket as unknown as AuthorizedSocket, 
+                    socket, 
                     entityId,
                 ),
             );
             socket.on(
-                this.toName(SOCKET_EVENTS.UNSUBSCRIBE), 
+                this.toName(SOCKET_CLIENT_EVENT_NAMES.UNSUBSCRIBE), 
                 (entityId) => this.unsubscribe(
-                    socket as unknown as AuthorizedSocket, 
+                    socket, 
                     entityId,
                 ),
             );
         });
     }
 
-    private toName(event: ValueOf<typeof SOCKET_EVENTS>) {
-        return `${this.name}_${event}`;
+    private toName<
+        T extends ValueOf<
+            typeof SOCKET_SERVER_EVENT_NAMES & 
+            typeof SOCKET_CLIENT_EVENT_NAMES
+        >
+    >(event: T) {
+        return `${this.name}_${event}` as const;
     }
 
     private async getEntity(entityId: EntityId) {
@@ -104,13 +96,13 @@ export class EntitySubscription<T extends WithId> {
 
         const isAvailable = await this.validator(userId, entityId);
         if (!isAvailable) return this.sockets.server.to(socket.id).emit(
-            this.toName(SOCKET_EVENTS.ERROR),
+            this.toName(SOCKET_SERVER_EVENT_NAMES.ERROR),
             entityId,
         );
 
         const entity = await this.getEntity(entityId);
         if (!entity) return this.sockets.server.to(socket.id).emit(
-            this.toName(SOCKET_EVENTS.ERROR),
+            this.toName(SOCKET_SERVER_EVENT_NAMES.ERROR),
             entityId,
         );
             
@@ -118,7 +110,8 @@ export class EntitySubscription<T extends WithId> {
         this.sockets.addSubscription(socket.id, entity);
 
         this.sockets.server.to(socket.id).emit(
-            this.toName(SOCKET_EVENTS.DATA),
+            this.toName(SOCKET_SERVER_EVENT_NAMES.DATA),
+            entity.data.id,
             this.defaultDTO(entity.data),
         );
     }
@@ -156,7 +149,8 @@ export class EntitySubscription<T extends WithId> {
         );
 
         this.sockets.server.to(sockets).emit(
-            this.toName('data'),
+            this.toName(SOCKET_SERVER_EVENT_NAMES.DATA),
+            entity.data.id,
             providedDTO(entity.data),
         );
     }
@@ -166,7 +160,7 @@ export class EntitySubscription<T extends WithId> {
         if (!entity) return;
 
         this.sockets.server.to(entity.getSubscribers()).emit(
-            this.toName(SOCKET_EVENTS.DELETE),
+            this.toName(SOCKET_SERVER_EVENT_NAMES.DELETE),
             entityId,
         );
 

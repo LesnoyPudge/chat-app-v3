@@ -1,7 +1,6 @@
 import { model, Schema, SchemaTypes } from 'mongoose';
-import { Entities } from '@shared';
+import { Entities, ENTITY_NAMES } from '@shared';
 import { getSchemaOptions } from 'src/database/getSchemaOptions';
-import { MODEL_NAME } from 'src/database/modelName';
 import { withPreSaveHook } from 'src/database/withPreSaveHook';
 
 
@@ -26,20 +25,20 @@ const UserSchema = new Schema<Entities.User.Default>({
     isActivated: { type: SchemaTypes.Boolean, default: false },
     isDeleted: { type: SchemaTypes.Boolean, default: false },
     extraStatus: { type: SchemaTypes.String, default: 'default' },
-    channels: [{ type: SchemaTypes.String, ref: MODEL_NAME.CHANNEL }],
+    channels: [{ type: SchemaTypes.String, ref: ENTITY_NAMES.CHANNEL }],
     privateChannels: [{ 
-        id: { type: SchemaTypes.String, ref: MODEL_NAME.PRIVATE_CHANNEL },
+        id: { type: SchemaTypes.String, ref: ENTITY_NAMES.PRIVATE_CHANNEL },
         hidden: { type: SchemaTypes.Boolean, default: false },
     }],
-    friends: [{ type: SchemaTypes.String, ref: MODEL_NAME.USER }],
-    blocked: [{ type: SchemaTypes.String, ref: MODEL_NAME.USER }],
+    friends: [{ type: SchemaTypes.String, ref: ENTITY_NAMES.USER }],
+    blocked: [{ type: SchemaTypes.String, ref: ENTITY_NAMES.USER }],
     friendRequests: {
         incoming: [{
-            from: { type: SchemaTypes.String, ref: MODEL_NAME.USER },
+            from: { type: SchemaTypes.String, ref: ENTITY_NAMES.USER },
             createdAt: { type: SchemaTypes.Number, default: Date.now },
         }],
         outgoing: [{
-            to: { type: SchemaTypes.String, ref: MODEL_NAME.USER },
+            to: { type: SchemaTypes.String, ref: ENTITY_NAMES.USER },
             createdAt: { type: SchemaTypes.Number, default: Date.now },
         }],
     },
@@ -48,4 +47,4 @@ const UserSchema = new Schema<Entities.User.Default>({
 
 withPreSaveHook(UserSchema);
 
-export const UserModel = model(MODEL_NAME.USER, UserSchema, MODEL_NAME.USER);
+export const UserModel = model(ENTITY_NAMES.USER, UserSchema, ENTITY_NAMES.USER);

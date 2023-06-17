@@ -1,3 +1,4 @@
+import { ValueOf } from 'ts-essentials';
 import { Entities } from './entities';
 
 
@@ -69,9 +70,3 @@ export type SocketId = Id;
 export type UserId = Id;
 
 export type EntityId = Id;
-
-export type SocketAuth = Prettify<
-    Pick<Tokens, 'accessToken'> & 
-    WithId & 
-    { data: Entities.User.Token; }
->;

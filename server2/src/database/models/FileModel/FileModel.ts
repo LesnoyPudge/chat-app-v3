@@ -1,7 +1,6 @@
 import { model, Schema, SchemaTypes } from 'mongoose';
-import { Entities } from '@shared';
+import { Entities, ENTITY_NAMES } from '@shared';
 import { getSchemaOptions } from 'src/database/getSchemaOptions';
-import { MODEL_NAME } from 'src/database/modelName';
 import { withPreSaveHook } from 'src/database/withPreSaveHook';
 
 
@@ -18,4 +17,4 @@ const FileSchema = new Schema<Entities.File.Default>({
 
 withPreSaveHook(FileSchema);
 
-export const FileModel = model(MODEL_NAME.FILE, FileSchema, MODEL_NAME.MESSAGE);
+export const FileModel = model(ENTITY_NAMES.FILE, FileSchema, ENTITY_NAMES.MESSAGE);

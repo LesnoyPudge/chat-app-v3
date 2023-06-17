@@ -1,7 +1,6 @@
 import { model, Schema, SchemaTypes } from 'mongoose';
-import { Entities } from '@shared';
+import { Entities, ENTITY_NAMES } from '@shared';
 import { getSchemaOptions } from 'src/database/getSchemaOptions';
-import { MODEL_NAME } from 'src/database/modelName';
 import { withPreSaveHook } from 'src/database/withPreSaveHook';
 
 
@@ -9,14 +8,14 @@ import { withPreSaveHook } from 'src/database/withPreSaveHook';
 const MessageSchema = new Schema<Entities.Message.Default>({
     id: { type: SchemaTypes.String },
     chat: { type: SchemaTypes.String, required: true },
-    user: { type: SchemaTypes.String, ref: MODEL_NAME.USER, required: true },
+    user: { type: SchemaTypes.String, ref: ENTITY_NAMES.USER, required: true },
     content: { type: SchemaTypes.String, default: '' },
     isChanged: { type: SchemaTypes.Boolean, default: false },
     isDeleted: { type: SchemaTypes.Boolean, default: false },
     attachments: [{
         id: {
             type: SchemaTypes.String,
-            ref: MODEL_NAME.FILE,
+            ref: ENTITY_NAMES.FILE,
             required: true,
         },
         name: {
@@ -38,4 +37,4 @@ const MessageSchema = new Schema<Entities.Message.Default>({
 
 withPreSaveHook(MessageSchema);
 
-export const MessageModel = model(MODEL_NAME.MESSAGE, MessageSchema, MODEL_NAME.MESSAGE);
+export const MessageModel = model(ENTITY_NAMES.MESSAGE, MessageSchema, ENTITY_NAMES.MESSAGE);

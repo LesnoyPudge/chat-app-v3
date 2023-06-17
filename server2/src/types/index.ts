@@ -1,10 +1,11 @@
-import { Id, Override, Prettify, SocketAuth, StrictOmit, Tokens } from '@shared';
+import { Id, Prettify, SocketClientEvents, SocketData, SocketServerEvents, Tokens } from '@shared';
 import { 
     NextFunction, 
     Response as ExpressResponse,
 } from 'express';
 import { Send } from 'express-serve-static-core';
 import { Server, Socket } from 'socket.io';
+
 
 
 
@@ -55,12 +56,6 @@ export type AuthorizedService<Body, Return> = (
         : (auth: Prettify<Pick<WithAuthorization, 'auth'>['auth']>, body: Body) => Promise<Return>
 );
 
-export type AuthorizedSocket = StrictOmit<Socket, 'handshake'> & Override<
-    Socket, 
-    'handshake', 
-    Socket['handshake'] & Override<
-        Socket['handshake'],
-        'auth',
-        SocketAuth
-    >
->;
+export type AuthorizedServer = Server<SocketClientEvents, SocketServerEvents, object, SocketData>;
+
+export type AuthorizedSocket = Socket<SocketClientEvents, SocketServerEvents, object, SocketData>;

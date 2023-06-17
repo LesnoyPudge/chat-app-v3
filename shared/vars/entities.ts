@@ -1,7 +1,7 @@
 
 
 
-export const MODEL_NAME = {
+export const ENTITY_NAMES = {
     USER: 'User',
     CHANNEL: 'Channel',
     ROOM: 'Room',

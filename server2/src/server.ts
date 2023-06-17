@@ -8,7 +8,6 @@ import cors from 'cors';
 import { getEnv, token } from '@utils';
 import { errorHandlerMiddleware } from '@middlewares';
 import { Server } from 'socket.io';
-import { Override, Prettify, SocketAuth, Tokens } from '@shared';
 import { ApiError } from '@errors';
 import { Sockets } from './subscription/Sockets';
 
@@ -27,16 +26,16 @@ const socketServer = new Server(server, {
         origin: CUSTOM_CLIENT_URL,
         methods: ['GET', 'POST'],
     },
-});
+}) as AuthorizedServer;
 
 socketServer.use((socket, next) => {
-    const auth = socket.handshake.auth as Partial<SocketAuth>;
-    if (!auth.accessToken) return next(ApiError.unauthorized());
+    const data = socket.data;
+    if (!data.accessToken) return next(ApiError.unauthorized());
             
-    const data = token.validateAccessToken(auth.accessToken);
-    if (!data) return next(ApiError.unauthorized());
+    const tokenData = token.validateAccessToken(data.accessToken);
+    if (!tokenData) return next(ApiError.unauthorized());
 
-    auth.data = data;
+    data.tokenData = tokenData;
 
     next();
 });
@@ -51,6 +50,7 @@ app.use(cors({
 }));
 
 import { ChannelRouter, ChatRouter, FileRouter, MessageRouter, PrivateChannelRouter, RoleRouter, RoomRouter, UserRouter } from '@routers';
+import { AuthorizedServer } from '@types';
 
 
 
