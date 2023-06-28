@@ -1,5 +1,5 @@
 import { ChannelServiceHelpers, ChatServiceHelpers, MessageServiceHelpers, PrivateChannelServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, UserServiceHelpers } from '@services';
-import { Entities } from '@shared';
+import { Entities, promiseToBoolean } from '@shared';
 import { compare } from 'bcrypt';
 import { FilterQuery } from 'mongoose';
 
@@ -418,25 +418,8 @@ export const customChains = {
 
             const room = await RoomServiceHelpers.getOne({ chat: message.chat });
             if (!room) return Promise.reject();
-
-            const channel = await ChannelServiceHelpers.getOne({ 
-                rooms: { $in: [room.id] },
-                members: { $in: [userId] },
-            });
-            if (!channel) return Promise.reject();
-
-            if (!room.isPrivate) return Promise.resolve();
-
-            const haveAccess = await (this.oneOf([
-                this.permissionAdministrator(userId, channel.id),
-                this.permissionRoom(userId, channel.id),
-                this.channelOwner(userId, channel.id),
-                this.inRoomWhiteList(userId, room.id),
-            ])()).then(() => true).catch(() => false);
-
-            if (haveAccess) return Promise.resolve();
-
-            return Promise.reject();
+            
+            return this.ableToFullyAccessRoom(userId, room.id)();
         };
     },
 
@@ -508,31 +491,19 @@ export const customChains = {
 
     ableToCreateMessage(userId: string, chatId: string) {
         return async() => {
-            const privateChannel = await PrivateChannelServiceHelpers.getOne({ 
+            const room = await RoomServiceHelpers.getOne({
                 chat: chatId,
-                members: { $in: [userId] }, 
             });
-            if (privateChannel) return Promise.resolve();
+            
+            if (room) return this.ableToFullyAccessRoom(userId, room.id)();
 
-            const room = await RoomServiceHelpers.getOne({ chat: chatId });
-            if (!room) return Promise.reject();
-
-            const channel = await ChannelServiceHelpers.getOne({ 
-                rooms: { $in: [room.id] },
-                members: { $in: [userId] },
+            const privateChannel = await PrivateChannelServiceHelpers.getOne({
+                chat: chatId,
             });
-            if (!channel) return Promise.reject();
 
-            if (!room.isPrivate) return Promise.resolve();
-
-            const haveAccess = await (this.oneOf([
-                this.permissionAdministrator(userId, channel.id),
-                this.permissionRoom(userId, channel.id),
-                this.channelOwner(userId, channel.id),
-                this.inRoomWhiteList(userId, room.id),
-            ])()).then(() => true).catch(() => false);
-
-            if (haveAccess) return Promise.resolve();
+            if (privateChannel) this.ableToFullyAccessPrivateChannel(
+                userId, privateChannel.id,
+            )();
 
             return Promise.reject();
         };
@@ -543,14 +514,107 @@ export const customChains = {
             const chat = await ChatServiceHelpers.getOne({ id: chatId });
             if (!chat) return Promise.reject();
 
-            if (chat.room !== null) {
-                const room = await RoomServiceHelpers.getOne({ id: chat.room });
-                if (!room) return Promise.reject();
+            switch (chat.owner) {
+                case 'PrivateChannel': {
+                    return this.privateChannelMember(userId, chat.ownerId)();
+                }
+                
+                case 'Room': {
+                    const room = await RoomServiceHelpers.getOne({ id: chat.ownerId });
+                    if (!room) return Promise.reject();
+            
+                    return this.channelMember(userId, room.channel)();
+                }
 
-                return customChains.channelMember(userId, room.channel)();
+                default: {
+                    break;
+                }
+            }
+        };
+    },
+
+    ableToGetConversation(userId: string, conversationId: string) {
+        return async() => {
+            const room = await RoomServiceHelpers.getOne({
+                conversation: conversationId,
+            });
+            
+            if (room) {
+                if (room.type !== 'voice') return Promise.reject();
+
+                return this.channelMember(userId, room.channel)();
             }
 
-            return customChains.privateChannelMember(userId, chat.privateChannel)();
+            const privateChannel = await PrivateChannelServiceHelpers.getOne({
+                conversation: conversationId,
+            });
+
+            if (privateChannel) {
+                return this.privateChannelMember(userId, privateChannel.id)();
+            }
+
+            return Promise.reject();
+        };
+    },
+
+    ableToJoinConversation(userId: string, conversationId: string) {
+        return async() => {
+            const room = await RoomServiceHelpers.getOne({
+                conversation: conversationId,
+            });
+            
+            if (room) return this.ableToFullyAccessRoom(userId, room.id)();
+
+            const privateChannel = await PrivateChannelServiceHelpers.getOne({
+                conversation: conversationId,
+            });
+
+            if (privateChannel) this.ableToFullyAccessPrivateChannel(
+                userId, privateChannel.id,
+            )();
+
+            return Promise.reject();
+        };
+    },
+
+    ableToFullyAccessPrivateChannel(userId: string, privateChannelId: string) {
+        return async() => {
+            const isMember = await promiseToBoolean(
+                this.privateChannelMember(userId, privateChannelId)(),
+            );
+            if (!isMember) return Promise.reject();
+
+            const privateChannel = await PrivateChannelServiceHelpers.getOne({
+                id: privateChannelId,
+            });
+            if (!privateChannel) return Promise.reject();
+
+            const secondUserId = privateChannel.members.filter((id) => {
+                return id !== userId;
+            })[0];
+
+            const isBlocked = await promiseToBoolean(
+                this.inBlockList(secondUserId, userId)(),
+            );
+            if (isBlocked) return Promise.reject();
+
+            return Promise.resolve();
+        };
+    },
+
+    ableToFullyAccessRoom(userId: string, roomId: string) {
+        return async() => {
+            const room = await RoomServiceHelpers.getOne({ id: roomId });
+            if (!room) return Promise.reject();
+
+            if (room.isPrivate) return this.oneOf([
+                this.inRoomWhiteList(userId, room.id),
+                this.channelOwner(userId, room.channel),
+                this.permissionAdministrator(userId, room.channel),
+                this.permissionRoom(userId, room.channel),
+            ])();
+
+            return this.channelMember(userId, room.channel)();
         };
     },
 };

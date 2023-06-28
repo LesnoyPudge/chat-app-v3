@@ -1,15 +1,10 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
 import { ChildrenAsNodeOrFunction } from '@components';
 import { isObjectWithId } from '@typeGuards';
-import { ReactNode } from 'react';
 
 
 
-
-
-type Children<T> = (item: T, index: number, array: T[]) => ReactNode;
-
-interface List<T> extends PropsWithChildrenAsNodeOrFunction<Children<T>> {
+interface List<T> extends PropsWithChildrenAsNodeOrFunction<[item: T, index: number, array: T[]]> {
     list: T[];
 }
 

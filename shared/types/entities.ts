@@ -1,4 +1,5 @@
-import { Id, StrictOmit, Timestamp } from './index';
+import { MODEL_NAMES } from '../vars';
+import { Id, PeerId, StrictOmit, Timestamp, UserId } from './index';
 
 
 
@@ -95,6 +96,7 @@ export module Entities {
             channel: Id;
             isPrivate: boolean;
             chat: Id;
+            conversation: Id;
             whiteList: {
                 users: Id[];
                 roles: Id[];
@@ -167,26 +169,27 @@ export module Entities {
             id: Id;
             members: [Id, Id];
             chat: Id;
+            conversation: Id;
             createdAt: Timestamp;
         }
     }
 
     export module Chat {
-        interface WithPrivateChannel {
-            privateChannel: Id;
-            room: null;
-        }
-
-        interface WithRoom {
-            privateChannel: null;
-            room: Id;
-        }
-
-        export type WithOneId = WithPrivateChannel | WithRoom;
-
-        export type Default = WithOneId & {
+        export type Default = {
             id: Id;
+            ownerId: Id;
+            owner: typeof MODEL_NAMES.PRIVATE_CHANNEL | typeof MODEL_NAMES.ROOM;
             messages: Id[];
+        }
+    }
+    
+    export module Conversation {
+        export type Default = {
+            id: Id;
+            ownerId: Id;
+            owner: typeof MODEL_NAMES.PRIVATE_CHANNEL | typeof MODEL_NAMES.ROOM;
+            members: Map<UserId, PeerId>;
+            startTimestamp: Timestamp;
         }
     }
 }

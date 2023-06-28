@@ -56,8 +56,7 @@
     }
 
     * {
-        @apply outline-focus outline-0;
-        outline-style: solid;
+        @apply outline-focus outline-0 outline;
     }
 
     *:focus:not(:focus-visible) {
@@ -100,8 +99,7 @@
     }
 
     *::-webkit-scrollbar {
-        width: 14px;
-        height: 14px;
+        @apply w-3.5 h-3.5;
     }
 
     *::-webkit-scrollbar-corner {
@@ -121,7 +119,6 @@
     }
 
     *::-webkit-scrollbar-track {
-        @apply bg-scrollbar-track;
         border-width: initial;
     }
 
@@ -142,6 +139,12 @@
             animation-iteration-count: 1 !important;
             transition-duration: 0.01ms !important;
             scroll-behavior: auto !important;
+        }
+    }
+
+    @media (prefers-reduced-data: reduce) {
+        html {
+            font-family: system-ui;
         }
     }
 }

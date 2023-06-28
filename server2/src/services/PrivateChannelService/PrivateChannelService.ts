@@ -1,6 +1,6 @@
 import { PrivateChannelModel, transactionContainer } from '@database';
 import { ApiError } from '@errors';
-import { Endpoints } from '@shared';
+import { Endpoints, MODEL_NAMES } from '@shared';
 import { AuthorizedService } from '@types';
 import { ChatServiceHelpers, UserServiceHelpers } from '@services';
 
@@ -26,8 +26,8 @@ export const PrivateChannelService: PrivateChannelService = {
                 });
                 
                 const chat = await ChatServiceHelpers.create({
-                    room: null,
-                    privateChannel: privateChannel.id,
+                    owner: MODEL_NAMES.PRIVATE_CHANNEL,
+                    ownerId: privateChannel.id,
                 });
 
                 privateChannel.chat = chat.id;

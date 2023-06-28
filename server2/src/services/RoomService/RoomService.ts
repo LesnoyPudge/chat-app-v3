@@ -1,7 +1,7 @@
 import { RoomModel, transactionContainer } from '@database';
 import { ApiError } from '@errors';
 import { ChannelServiceHelpers, ChatServiceHelpers } from '@services';
-import { Endpoints } from '@shared';
+import { Endpoints, MODEL_NAMES } from '@shared';
 import { RoomSubscription } from '@subscription';
 import { AuthorizedService } from '@types';
 
@@ -36,8 +36,8 @@ export const RoomService: RoomService = {
                 });
 
                 const chat = await ChatServiceHelpers.create({
-                    room: newRoom.id,
-                    privateChannel: null,
+                    owner: MODEL_NAMES.ROOM,
+                    ownerId: newRoom.id,
                 });
 
                 newRoom.chat = chat.id;

@@ -1,5 +1,5 @@
 import { ChannelServiceHelpers, ChatServiceHelpers, MessageServiceHelpers, PrivateChannelServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, UserServiceHelpers } from '@services';
-import { EntityId, UserId, ValueOf, WithId, ENTITY_NAMES, SOCKET_SERVER_EVENT_NAMES, SOCKET_CLIENT_EVENT_NAMES, StrictOmit } from '@shared';
+import { EntityId, UserId, ValueOf, WithId, MODEL_NAMES, SOCKET_SERVER_EVENT_NAMES, SOCKET_CLIENT_EVENT_NAMES, StrictOmit } from '@shared';
 import { AuthorizedSocket } from '@types';
 import autoBind from 'auto-bind';
 import { isDeepStrictEqual } from 'util';
@@ -8,20 +8,20 @@ import { Sockets } from './Sockets';
 
 
 
-type Names = StrictOmit<typeof ENTITY_NAMES, 'FILE'>;
+type Names = StrictOmit<typeof MODEL_NAMES, 'FILE'>;
 
 type Validator = (userId: UserId, entityId: EntityId) => Promise<boolean>;
 
 type DTO<T> = (entity: T) => Partial<T>;
 
 const ServiceHelpers = {
-    [ENTITY_NAMES.CHANNEL]: ChannelServiceHelpers?.getOne,
-    [ENTITY_NAMES.MESSAGE]: MessageServiceHelpers?.getOne,
-    [ENTITY_NAMES.PRIVATE_CHANNEL]: PrivateChannelServiceHelpers?.getOne,
-    [ENTITY_NAMES.ROLE]: RoleServiceHelpers?.getOne,
-    [ENTITY_NAMES.ROOM]: RoomServiceHelpers?.getOne,
-    [ENTITY_NAMES.USER]: UserServiceHelpers?.getOne,
-    [ENTITY_NAMES.CHAT]: ChatServiceHelpers?.getOne,
+    [MODEL_NAMES.CHANNEL]: ChannelServiceHelpers?.getOne,
+    [MODEL_NAMES.MESSAGE]: MessageServiceHelpers?.getOne,
+    [MODEL_NAMES.PRIVATE_CHANNEL]: PrivateChannelServiceHelpers?.getOne,
+    [MODEL_NAMES.ROLE]: RoleServiceHelpers?.getOne,
+    [MODEL_NAMES.ROOM]: RoomServiceHelpers?.getOne,
+    [MODEL_NAMES.USER]: UserServiceHelpers?.getOne,
+    [MODEL_NAMES.CHAT]: ChatServiceHelpers?.getOne,
 };
 
 export class EntitySubscription<T extends WithId> {
@@ -44,7 +44,7 @@ export class EntitySubscription<T extends WithId> {
         this.defaultDTO = defaultDTO,
 
         autoBind(this);
-        const qwe = this.toName(SOCKET_CLIENT_EVENT_NAMES.UNSUBSCRIBE);
+
         this.sockets.server.on('connection', (socket) => {
             socket.on(
                 this.toName(SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE), 

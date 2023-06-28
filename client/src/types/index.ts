@@ -1,6 +1,7 @@
 import { deepMerge } from '@reExport';
 import { PropsWithChildren, ReactNode, RefObject } from 'react';
-import { Entities } from '@shared';
+import { AnyArray, Entities, IsNever, ToType } from '@shared';
+import { AnyRecord } from 'ts-essentials/dist/any-record';
 
 
 
@@ -8,15 +9,17 @@ export type PropsWithClassName = {
     className?: string;
 }
 
-export type PropsWithChildrenAsNodeOrFunction<T> = {
-    children?: 
-        ReactNode | 
-        (
-            T extends (...args: never) => ReactNode 
-                ? T 
-                : (args: T) => ReactNode
-        );
-};
+export type PropsWithChildrenAsNodeOrFunction<
+    T extends AnyRecord | AnyArray
+> = {
+    children?: ReactNode | (
+        ToType<T> extends Record<string | number, unknown> 
+            ? ((arg: T) => ReactNode)
+            : T extends AnyArray
+                ? ((...args: T) => ReactNode)
+                : never
+    );
+}
 
 export type PropsWithChildrenAndClassName = PropsWithChildren & PropsWithClassName;
 
@@ -44,8 +47,6 @@ export interface Size {
     width: number;
     height: number;
 }
-
-export type AnyFunction = (...args: any[]) => any;
 
 export interface ObjectWithId {
     id: string;

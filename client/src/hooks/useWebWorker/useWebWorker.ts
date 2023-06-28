@@ -1,4 +1,4 @@
-import { AnyFunction } from '@types';
+import { AnyFunction } from '@shared';
 import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 
 

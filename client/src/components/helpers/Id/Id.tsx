@@ -4,11 +4,11 @@ import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
 
 
-export const Id: FC<PropsWithChildrenAsNodeOrFunction<string>> = ({ children }) => {
+export const Id: FC<PropsWithChildrenAsNodeOrFunction<[string]>> = ({ children }) => {
     const id = useId();
 
     return (
-        <ChildrenAsNodeOrFunction args={id}>
+        <ChildrenAsNodeOrFunction args={[id]}>
             {children}
         </ChildrenAsNodeOrFunction>
     );

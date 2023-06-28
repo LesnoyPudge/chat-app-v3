@@ -24,7 +24,8 @@
         "nodemailer": "^6.9.3",
         "peer": "^1.0.0",
         "socket.io": "^4.6.2",
-        "validator": "^13.9.0"
+        "validator": "^13.9.0",
+        "ws": "^8.13.0"
     },
     "devDependencies": {
         "@total-typescript/ts-reset": "^0.4.2",

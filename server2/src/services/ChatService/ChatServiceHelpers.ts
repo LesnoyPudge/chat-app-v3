@@ -7,12 +7,12 @@ import { FilterQuery } from 'mongoose';
 
 
 export const ChatServiceHelpers = {
-    async create({ room, privateChannel }: Entities.Chat.WithOneId) {
+    async create({ owner, ownerId }: Pick<Entities.Chat.Default, 'owner' | 'ownerId'>) {
         return transactionContainer(
             async({ session }) => {
                 const chat = ChatModel.create([{
-                    privateChannel,
-                    room,
+                    owner,
+                    ownerId,
                     messages: [],
                 }], { session }).then((v) => v[0]);
 

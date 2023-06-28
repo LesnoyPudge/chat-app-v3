@@ -21,6 +21,8 @@ export type Prettify<T> = {
 // eslint-disable-next-line @typescript-eslint/ban-types
 } & {};
 
+export type ToType<T> = Prettify<T>;
+
 export interface WithUserId {
     userId: Id;
 }
@@ -70,3 +72,5 @@ export type SocketId = Id;
 export type UserId = Id;
 
 export type EntityId = Id;
+
+export type PeerId = Id;
