@@ -38,6 +38,10 @@
         @apply z-20 pointer-events-none;
     }
 
+    #dev {
+        @apply sr-only invisible opacity-0;
+    }
+
     input,
     textarea {
         @apply bg-transparent border-none border-0 text-inherit p-0 resize-none;

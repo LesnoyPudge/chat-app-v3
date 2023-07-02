@@ -1,12 +1,12 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
-import { Alignment, EncodedFile, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction } from '@types';
+import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
-import { Component, createContext, CSSProperties, FC, MutableRefObject, PropsWithChildren, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
-import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -115,339 +115,6 @@ import SimpleBar from 'simplebar-react';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
 import ReactFocusLock from 'react-focus-lock';
 // import { useUserLoginMutation, useUserRegistrationMutation } from '@redux/features';
-
-
-
-const PlaygroundInner3: FC = () => {
-    const [isActive, setIsActive] = useState(false);
-
-    return (
-        <>
-            <Scrollable className='h-full'>
-                <RefContextProvider>
-                    <div 
-                        className='mt-80 bg-zinc-700' 
-                        onClick={() => setIsActive((prev) => !prev)}
-                    >
-                        <>wow</>
-
-                        <Conditional isRendered={isActive}>
-                            <RelativelyPositionedV2>
-                                
-                            </RelativelyPositionedV2>
-                        </Conditional>
-                    </div>
-                </RefContextProvider>
-
-                <List list={Array(99).fill(null).map((_, i) => String(i))}>
-                    {(item) => (
-                        <div className='h-16'>
-                            {item}
-                        </div>
-                    )}
-                </List>
-            </Scrollable>
-        </>
-    );
-};
-
-const workerFunction = (n: number) => {
-    const fibonacci = (n: number): number => {
-        if (n <= 1) return n;
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    };
-
-    return fibonacci(n);
-};
-
-const workerFunction2 = (n: number) => {
-    const memoizedFibonacci = (() => {
-        const memo: { [key: number]: number } = {};
-        return (n: number): number => {
-            if (n in memo) return memo[n];
-            if (n <= 1) return n;
-            let fib = 1;
-            let prevFib = 1;
-            for (let i = 2; i < n; i++) {
-                const temp = fib;
-                fib += prevFib;
-                prevFib = temp;
-            }
-            memo[n] = fib;
-            return memo[n];
-        };
-    })();
-
-    return memoizedFibonacci(n);
-};
-
-const PlaygroundInner4: FC = () => {
-    const [runWorker, result] = useWebWorker(workerFunction2);
-    const [number, setNumber] = useState(1);
-    
-    const handleClick = () => {
-        runWorker(number);
-    };
-
-    const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNumber(parseInt(event.target.value));
-    };
-
-    return (
-        <div>
-            <label>
-                <>Calculate Fibonacci for:</>
-
-                <input type='number' value={number} onChange={handleNumberChange} />
-            </label>
-            
-            <button onClick={handleClick}>Calculate</button>
-
-            {result.data && <p>The result is: {result.data}</p>}
-            {result.error && <p>An error occurred: {result.error.message}</p>}
-        </div>
-    );
-};
-
-const PlaygroundInner5: FC = () => {
-    const { count, increment } = useCounter(0);
-
-    const [_, setTextareaRef] = useSharedResizeObserver(undefined, (entry) => {
-        console.log('textarea resize');
-    });
-    
-    const [__, setButtonRef] = useSharedResizeObserver(undefined, (entry) => {
-        console.log('button resize');
-    });
-
-    const [___, setItemRef] = useSharedIntersectionObserver(undefined, (entry) => {
-        console.log('int obs', entry.isIntersecting);
-    });
-
-    return (
-        <div>
-            <button onClick={increment} ref={setButtonRef}>
-                {count}
-            </button>
-
-            <textarea 
-                className='bg-lime-800 resize block'
-                name='' 
-                id=''
-                value='wow'
-                onChange={() => {}}
-                ref={setTextareaRef}
-            ></textarea>
-
-            <Scrollable className='h-[500px]'>
-                <div className='h-[900px]'>
-                    <div ref={setItemRef}>
-                        <>item</>
-                    </div>
-                </div>
-            </Scrollable>
-        </div>
-    );
-};
-
-const PlaygroundInner6: FC = () => {
-    const [list, setList] = useState(Array(19).fill(null).map(() => ''));
-
-    const add = () => setList((prev) => [...prev, '']);
-
-    useInterval(add, 500);
-
-    const ListComponent = (
-        <div className='flex flex-col gap-2'>
-            {/* <List list={list}>
-                
-            </List> */}
-            <ViewportList items={list}>
-                {(_, i) => (
-                    <div 
-                        className='py-2'
-                        onClick={add}
-                        key={i}
-                    >
-                        <>item: {i}</>
-                    </div>
-                )}
-            </ViewportList>
-        </div>
-    );
-
-    return (
-        <>
-            <Conditional isRendered={true}>
-                <div className='h-full relative flex'>
-                    <Scrollable>
-                        {ListComponent}
-                    </Scrollable>
-                </div>
-            </Conditional>
-
-            <Conditional isRendered={false}>
-                <div className='h-full relative'>
-                    <div className='absolute inset-0 overflow-y-scroll'>
-                        {ListComponent}
-                    </div>
-                </div>
-            </Conditional>
-
-            {/* <Chat2 className='h-full'/> */}
-        </>
-    );
-};
-
-interface ContextValues {
-    counter: number;
-    inc: () => void;
-    decr: () => void;
-}
-
-const PlaygroundContext = createContext<ContextValues | undefined>(undefined);
-
-const Count: FC = () => {
-    const { counter } = useContext(PlaygroundContext) as ContextValues;
-    
-    return (
-        <div className='m-1'>
-            {counter}
-        </div>
-    );
-};
-
-const Decr: FC = () => {
-    const { decr } = useContext(PlaygroundContext) as ContextValues;
-    
-    return (
-        <button className='m-1' onClick={decr}>
-            <>decr</>
-        </button>
-    );
-};
-
-const Empty: FC = () => {
-    return (
-        <button className='m-1'>
-            <>empty</>
-        </button>
-    );
-};
-
-const Inner: FC = () => {
-    const { inc } = useContext(PlaygroundContext) as ContextValues;
-    
-    return (
-        <>
-            <Memo>
-                <button className='m-1' onClick={inc}>
-                    <>inc</>
-                </button>
-            </Memo>
-
-            <Memo>
-                <Empty/>
-            </Memo>
-
-            <Memo>
-                <Count/>
-            </Memo>
-        </>
-    );
-};
-
-const PlaygroundInner7: FC = () => {
-    const { count, increment, decrement } = useCounter(0);
-
-    const values: ContextValues = useMemo(() => ({
-        counter: count,
-        inc: increment,
-        decr: decrement,
-    }), [count]);
-
-    return (
-        <div className='flex flex-col gap-2'>
-            <PlaygroundContext.Provider value={values}>
-                <Memo>
-                    <Decr/>
-                </Memo>
-
-                <Inner/>
-            </PlaygroundContext.Provider>   
-        </div>
-    );
-};
-
-// const PlaygroundInner8: FC = () => {    
-//     const apiRouteInput = useTextInput('');
-//     const loginInput = useTextInput('');
-//     const passwordInput = useTextInput('');
-
-
-//     const sendRequest = (endpoint: string) => {
-//         return fetch(`${getEnv().CUSTOM_SERVER_URL + getEnv().CUSTOM_API_V1_URL}/${endpoint}`, {
-//             method: 'POST',
-//             body: JSON.stringify({
-//                 login: loginInput.value,
-//                 password: passwordInput.value,
-//             }),
-//         });
-//     };
-//     const [login] = useUserLoginMutation();
-//     const [registration] = useUserRegistrationMutation();
-
-//     const handleClick = () => {
-//         // sendRequest(apiRouteInput.value).then((value) => {
-//         //     return value.json();
-//         // })
-        
-//         registration({
-//             login: loginInput.value,
-//             password: passwordInput.value, 
-//             username: 'some username',
-//         }).then((value: any) => {
-//             console.log(value);
-//         }).catch((error) => {
-//             console.log(`error: ${error}`);
-//         });
-//     };
-
-//     return (
-//         <div className='flex flex-col'>
-//             <input 
-//                 type='text' 
-//                 value={apiRouteInput.value}
-//                 onChange={apiRouteInput.handleChange}
-//             />
-
-//             <label>
-//                 <>login</>
-                
-//                 <input 
-//                     type='text' 
-//                     value={loginInput.value}
-//                     onChange={loginInput.handleChange}
-//                 />
-//             </label>
-
-//             <label>
-//                 <>password</>
-            
-//                 <input 
-//                     type='text' 
-//                     value={passwordInput.value}
-//                     onChange={passwordInput.handleChange}
-//                 />
-//             </label>
-
-//             <button onClick={handleClick}>
-//                 send
-//             </button>
-//         </div>
-//     );
-// };
-
 import { io, Socket } from 'socket.io-client';
 import { audioBase } from './audioBase64';
 
@@ -937,79 +604,13 @@ const PlaygroundInner11: FC = () => {
     );
 };
 
-const RelativelyPositionedV2: FC<PropsWithChildren> = ({ children }) => {
-    const absoluteElementRef = useRef<HTMLDivElement | null>(null);
-    const { targetRef: relativeElementRef } = useContext(RefContext) as RefContext;
-    const { alignment, isRelativeInView } = useRelativePositionV2({
-        preferredAlignment: 'top',
-        relativeElementRef,
-        absoluteElementRef,
-        swappableAlignment: true,
-        centered: true,
-        spacing: 20,
-    });
 
-    return (
-        <div className='fixed z-10' ref={absoluteElementRef}>
-            {children} {alignment}
-        </div>
-    );
-};
-
-
-import { AnyArray, IsNever, Primitive, AnyFunction, Tuple, Prettify, ToType, StrictExtract } from '@shared';
+import { AnyArray, IsNever, Primitive, AnyFunction, Tuple, Prettify, ToType, StrictExtract, StrictOmit, objectKeys } from '@shared';
 import isCallable from 'is-callable';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
+import { isOmittedRect, isRef } from '@typeGuards';
 
 
-
-// type PropsWithChildrenAsNodeOrFunctionV3<
-//     T extends Record<string | number, unknown> | AnyArray
-// > = {
-//     children?: ReactNode | (
-//         T extends Record<string | number, unknown> 
-//             ? ((arg: T) => ReactNode)
-//             : T extends AnyArray
-//                 ? ((...args: T) => ReactNode)
-//                 : never
-//     );
-// }
-
-// type ChildrenAsNodeOrFunctionV3<
-//     T extends Record<string | number, unknown> | AnyArray
-// > = PropsWithChildrenAsNodeOrFunctionV3<T> & {
-//     args: Readonly<T>;
-// };
-
-// const ChildrenAsNodeOrFunctionV3 = <T extends Record<string | number, unknown> & object | AnyArray,>({
-//     args,
-//     children,
-// }: ChildrenAsNodeOrFunctionV3<T>) => {
-//     const childrenNode = (
-//         isCallable(children) 
-//             ? Array.isArray(args) 
-//                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//                 // @ts-ignore
-//                 ? children(...args)
-//                 : children(args) 
-//             : children
-//     );
-    
-//     return (
-//         <>
-//             {childrenNode}
-//         </>
-//     );
-// };
-// Record<string | number, unknown>
-// ToType
-
-
-
-
-
-// line = line.replace('interface', 'type');
-// return lines.join('\n')
 
 interface WithAlignment {
     alignment: Alignment;
@@ -1019,67 +620,74 @@ interface Position {
     top: number;
     left: number;
 }
-interface Options {
+interface RelativePositionOptions {
     preferredAlignment: Alignment;
     swappableAlignment?: boolean;
     boundsSize?: number;
     spacing?: number;
     centered?: boolean;
+    unbounded?: boolean;
 }
 
 interface WithRects {
-    followerRect: DOMRect;
-    leaderRect: DOMRect;
+    followerRect: OmittedRect;
+    leaderRect: OmittedRect;
 }
 
-interface UseRelativePositionArgs extends Options {
-    followerRef: RefObject<HTMLElement>;
-    leaderRef: RefObject<HTMLElement>;
+interface UseRelativePositionArgs extends RelativePositionOptions {
+    followerElementRef: RefObject<HTMLElement>;
+    leaderElementOrRectRef: RefObject<HTMLElement | OmittedRect>;
 }
 
 const useRelativePositionV3 = ({
     preferredAlignment,
-    followerRef,
-    leaderRef,
+    followerElementRef,
+    leaderElementOrRectRef,
     swappableAlignment = false,
     boundsSize = 0,
     spacing = 0,
     centered = false,
+    unbounded = false,
 }: UseRelativePositionArgs): WithAlignment => {
     const [alignment, setAlignment] = useState(preferredAlignment);
-    const isFirstRender = useIsFirstRender();
 
-    const calculate = useCallback(() => {
-        if (!followerRef.current || !leaderRef.current) return;
+    const calculateRef = useLatest(() => {
+        if (!followerElementRef.current || !leaderElementOrRectRef.current) return;
+
+        const leaderRect = (
+            isOmittedRect(leaderElementOrRectRef.current)
+                ? leaderElementOrRectRef.current
+                : leaderElementOrRectRef.current.getBoundingClientRect()
+        );
         
         const { alignment: newAlignment, left, top } = calculateRelativePosition({
-            followerRect: followerRef.current.getBoundingClientRect(),
-            leaderRect: leaderRef.current.getBoundingClientRect(),
+            followerRect: followerElementRef.current.getBoundingClientRect(),
+            leaderRect: leaderRect,
             boundsSize,
             centered,
             preferredAlignment,
             spacing,
             swappableAlignment,
+            unbounded,
         });
 
         if (alignment !== newAlignment) setAlignment(newAlignment);
 
-        const follower = followerRef.current;
+        const follower = followerElementRef.current;
         if (follower.style.top === `${top}px` && follower.style.left === `${left}px`) return;
   
         follower.style.top = `${top}px`;
         follower.style.left = `${left}px`;
-    }, [
-        alignment, boundsSize, centered, 
-        followerRef, leaderRef, preferredAlignment, 
-        spacing, swappableAlignment,
-    ]);
+    });
 
-    useLayoutEffect(() => {
-        if (isFirstRender) calculate();
-    }, [isFirstRender, calculate]);
+    // useLayoutEffect(() => {
+    //     console.log('calc 1');
+    //     calculateRef.current();
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
 
-    useAnimationFrame(calculate);
+
+    useAnimationFrame(calculateRef.current);
     
     return {
         alignment,
@@ -1094,7 +702,8 @@ const calculateRelativePosition = ({
     centered,
     spacing,
     swappableAlignment,
-}: Required<Options> & WithRects): Position & WithAlignment => {
+    unbounded,
+}: Required<RelativePositionOptions> & WithRects): Position & WithAlignment => {
     const centering = {
         vertical: (
             centered 
@@ -1109,10 +718,10 @@ const calculateRelativePosition = ({
     };
 
     const bounds = {
-        top: boundsSize,
-        bottom: window.innerHeight - boundsSize - followerRect.height,
-        left: boundsSize,
-        right: window.innerWidth - boundsSize - followerRect.width,
+        top: unbounded ? -9999 : boundsSize,
+        bottom: unbounded ? 9999 : window.innerHeight - boundsSize - followerRect.height,
+        left: unbounded ? -9999 : boundsSize,
+        right: unbounded ? 9999 : window.innerWidth - boundsSize - followerRect.width,
     };
 
     const unboundedPositions = {
@@ -1235,18 +844,31 @@ const calculateRelativePosition = ({
     return alternativeAlignmentOptions[preferredAlignment];
 };
 
-type RelativelyPositionedV3 = PropsWithChildrenAsNodeOrFunction<WithAlignment>;
+type RelativelyPositionedV3 = RelativePositionOptions & Pick<
+    UseRelativePositionArgs, 
+    'leaderElementOrRectRef'
+> & PropsWithChildrenAsNodeOrFunction<WithAlignment>;
 
-const RelativelyPositionedV3: FC<RelativelyPositionedV3> = ({ children }) => {
-    const followerRef = useRef<HTMLDivElement>(null);
-    const { targetRef: leaderRef } = useContext(RefContext) as RefContext;
+const RelativelyPositionedV3: FC<RelativelyPositionedV3> = ({ 
+    leaderElementOrRectRef,
+    preferredAlignment,
+    swappableAlignment,
+    centered,
+    spacing = 20,
+    boundsSize = 20,
+    unbounded,
+    children, 
+}) => {
+    const followerElementRef = useRef<HTMLDivElement>(null);
     const { alignment } = useRelativePositionV3({
-        preferredAlignment: 'top',
-        followerRef,
-        leaderRef,
-        swappableAlignment: true,
-        centered: true,
-        spacing: 20,
+        preferredAlignment,
+        followerElementRef,
+        leaderElementOrRectRef,
+        swappableAlignment,
+        centered,
+        spacing,
+        boundsSize,
+        unbounded,
     });
 
     const childrenArgs: WithAlignment = {
@@ -1254,7 +876,7 @@ const RelativelyPositionedV3: FC<RelativelyPositionedV3> = ({ children }) => {
     };
     
     return (
-        <div className='fixed' ref={followerRef}>
+        <div className='fixed' ref={followerElementRef}>
             <ChildrenAsNodeOrFunction args={childrenArgs}>
                 {children}
             </ChildrenAsNodeOrFunction>
@@ -1277,17 +899,14 @@ const transitionOptions = getTransitionOptions.withOpacity({
     },
 });
 
-const styles = {
-    base: `bg-primary-500 text-color-base font-bold py-[5px] px-2.5 
-    rounded-md w-max max-w-[300px] shadow-elevation-low`,
-};
-
-const TooltipV2: FC<PropsWithChildren> = ({ children }) => {
-    const { targetRef } = useContext(RefContext) as RefContext;
+const TooltipV2: FC<PropsWithChildren & {leaderElementRef: RefObject<HTMLElement>}> = ({ children, leaderElementRef }) => {
     const [isExist, setIsExist] = useState(false);
     const [withKeyboardRef, setWithKeyboard] = useRefWithSetter(false);
     const [withMouseRef, setWithMouse] = useRefWithSetter(false);
-
+    const styles = {
+        base: `bg-primary-500 text-color-base font-bold py-[5px] px-2.5 
+        rounded-md w-max max-w-[300px] shadow-elevation-low`,
+    };
     const changeState = () => {
         const newState = withKeyboardRef.current || withMouseRef.current;
         if (newState === isExist) return;
@@ -1296,14 +915,16 @@ const TooltipV2: FC<PropsWithChildren> = ({ children }) => {
     };
 
     const handleFocusIn = (e: FocusEvent) => {
-        if (e.target !== targetRef.current) return;
+        if (!leaderElementRef.current) return;
+        if (e.target !== leaderElementRef.current) return;
 
         setWithKeyboard(true);
         changeState();
     };
     
     const handleFocusOut = (e: FocusEvent) => {
-        if (e.target !== targetRef.current) return;
+        if (!leaderElementRef.current) return;
+        if (e.target !== leaderElementRef.current) return;
         
         setWithKeyboard(false);
         changeState();
@@ -1319,16 +940,15 @@ const TooltipV2: FC<PropsWithChildren> = ({ children }) => {
         changeState();
     };
 
-    useEventListener('focusin', handleFocusIn, targetRef);
-    useEventListener('focusout', handleFocusOut, targetRef);
-    useEventListener('mouseenter', handleMouseEnter, targetRef);
-    useEventListener('mouseleave', handleMouseLeave, targetRef);
+    useEventListener('focusin', handleFocusIn, leaderElementRef);
+    useEventListener('focusout', handleFocusOut, leaderElementRef);
+    useEventListener('mouseenter', handleMouseEnter, leaderElementRef);
+    useEventListener('mouseleave', handleMouseLeave, leaderElementRef);
 
-    useSharedIntersectionObserver(targetRef, ({ isIntersecting }) => {
+    useSharedIntersectionObserver(leaderElementRef, ({ isIntersecting }) => {
         if (isIntersecting === isExist) return;
+        if (!withKeyboardRef.current && !withMouseRef.current) return;
 
-        setWithKeyboard(isIntersecting);
-        setWithMouse(isIntersecting);
         setIsExist(isIntersecting);
     });
 
@@ -1341,7 +961,10 @@ const TooltipV2: FC<PropsWithChildren> = ({ children }) => {
                 <Conditional isRendered={isAnimatedExist}>
                     <OverlayPortal>
                         <div className='overlay-item-wrapper'>
-                            <RelativelyPositionedV3>
+                            <RelativelyPositionedV3
+                                leaderElementOrRectRef={leaderElementRef}
+                                preferredAlignment='top'
+                            >
                                 {({ alignment }) => {
                                     const alignmentStyles = {
                                         top: {
@@ -1382,108 +1005,345 @@ const TooltipV2: FC<PropsWithChildren> = ({ children }) => {
     );
 };
 
-const PlaygroundInner12: FC = () => {
-    const wrapperRef = useRef<HTMLDivElement>(null);
-    const thirdbRef = useRef<HTMLButtonElement>(null);
-    
+const SynchronizedPlaceholder: FC<PropsWithChildrenAndClassName> = ({
+    className = '',
+    children,
+}) => {
+    const elementToSyncRef = useRef<HTMLDivElement>(null);
+    const styles = {
+        base: 'animate-pulse bg-sky-700',
+    };
     useEffect(() => {
-        const handle = (e: MouseEvent) => {
-            if (!thirdbRef.current) return;
-            
-            // thirdbRef.current.style.top = `${e.clientY}px`;
-            // thirdbRef.current.style.left = `${e.clientX}px`;
-        };
+        if (!elementToSyncRef.current) return;
 
-        document.addEventListener('mousemove', handle);
-        
-        return () => {
-            document.removeEventListener('mousemove', handle);
-        };
+        elementToSyncRef.current.getAnimations().forEach((animation) => {
+            animation.startTime = 0;
+        });
     }, []);
 
-    const { x } = useSpring({
-        from: { x: 0 },
-        to: { x: 0 },
-        config: { duration: 2000 },
-        reset: true,
-        loop: true,
+    return (
+        <div 
+            className={twClassNames(styles.base, className)}
+            ref={elementToSyncRef}
+        >
+            {children}
+        </div>
+    );
+};
+
+
+type ContextMenuV2 = (
+    PropsWithClassName & 
+    PropsWithChildrenAsNodeOrFunction<OverlayContext> &
+    Pick<UseRelativePositionArgs, 'preferredAlignment'> & {
+        leaderElementRef: RefObject<HTMLElement>;
+        withContextMenuHandler?: boolean;
+    }
+)
+
+export const ContextMenuV2: FC<ContextMenuV2> = ({
+    className = '',
+    preferredAlignment,
+    leaderElementRef,
+    withContextMenuHandler = false,
+    children,
+}) => {
+    const contextValues = useContext(OverlayContext) as OverlayContext;
+    const leaderElementOrRectRef = useRef<HTMLElement | OmittedRect | null>(leaderElementRef.current);
+    const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-color-base p-5';
+    const transitionOptions = getTransitionOptions.defaultContextMenu();
+    const withRightClickRef = useRef(false);
+    
+    useEffect(() => {
+        if (withRightClickRef.current) {
+            withRightClickRef.current = false;
+            return;
+        }
+        
+        leaderElementOrRectRef.current = leaderElementRef.current;
+    }, [contextValues.isOverlayExist, leaderElementRef]);
+
+
+    const handleContextMenu = (e: MouseEvent) => {
+        if (!withContextMenuHandler) return;
+
+        const { closingThrottleRef, openOverlay } = contextValues;
+        
+        if (closingThrottleRef.current) return;
+
+        withRightClickRef.current = true;
+        const withMouse = e.button !== -1;
+        const withKeyboard = !withMouse;
+    
+        if (withMouse) {
+            const cursorSize = 1;
+    
+            leaderElementOrRectRef.current = {
+                top: e.clientY,
+                bottom: e.clientY + cursorSize,
+                left: e.clientX,
+                right: e.clientX + cursorSize,
+                width: cursorSize,
+                height: cursorSize,
+            };
+        }
+
+        if (withKeyboard) {
+            leaderElementOrRectRef.current = e.currentTarget as HTMLElement;
+        }
+
+        openOverlay();
+    };
+
+    useEventListener('contextmenu', handleContextMenu, leaderElementRef);
+
+    return (
+        <AnimatedTransition 
+            isExist={contextValues.isOverlayExist}
+            transitionOptions={transitionOptions}
+        >
+            {({ isAnimatedExist, style }) => (
+                <OverlayItem 
+                    isRendered={isAnimatedExist}
+                    blockable
+                    blocking
+                    closeOnClickOutside
+                    closeOnEscape
+                    focused
+                >
+                    <RelativelyPositionedV3
+                        leaderElementOrRectRef={leaderElementOrRectRef}
+                        preferredAlignment={preferredAlignment}
+                        spacing={15}
+                        boundsSize={20}
+                        swappableAlignment
+                    >
+                        <animated.div 
+                            className={twClassNames(baseClassName, className)}
+                            style={style}
+                            role='menu'
+                        >
+                            <ChildrenAsNodeOrFunction args={contextValues}>
+                                {children}
+                            </ChildrenAsNodeOrFunction>
+                        </animated.div>
+                    </RelativelyPositionedV3>
+                </OverlayItem>
+            )}
+        </AnimatedTransition>
+    );
+};
+
+const UseRef = <T extends HTMLElement = HTMLDivElement>({
+    children,
+}: PropsWithChildrenAsNodeOrFunction<{ref: MutableRefObject<T | null>}>) => {
+    const ref = useRef<T | null>(null);
+    
+    return (
+        <ChildrenAsNodeOrFunction args={{ ref }}>
+            {children}
+        </ChildrenAsNodeOrFunction>
+    );
+};
+
+const PlaygroundInner13: FC = () => {
+    return (
+        <div className='flex flex-col gap-20 p-20 [&>*]:bg-sky-900 overflow-scroll max-h-screen'>
+            <UseRef>
+                {({ ref }) => (
+                    <OverlayContextProvider>
+                        {({ toggleOverlay }) => (
+                            <>
+                                <div 
+                                    className='min-h-[150px]'
+                                    ref={ref}
+                                    tabIndex={0}
+                                    onClick={toggleOverlay}
+                                    onAuxClickCapture={toggleOverlay}
+                                >
+                                    <>right click on plate</>
+                                </div>
+    
+                                <ContextMenuV2 
+                                    className='bg-sky-600' 
+                                    preferredAlignment='right'
+                                    leaderElementRef={ref}
+                                    withContextMenuHandler
+                                >
+                                    <>qwe 3</>
+                                </ContextMenuV2>
+                      
+                                <TooltipV2 leaderElementRef={ref}>
+                                    <>qwezxc</>
+                                </TooltipV2>
+                            </>
+                        )}
+                    </OverlayContextProvider>
+                )}
+            </UseRef>
+
+            {/* <OverlayContextProvider>
+                {({ toggleOverlay }) => (
+                    <UseRef<HTMLButtonElement>>
+                        {({ ref }) => (
+                            <>
+                                <Button 
+                                    stylingPreset='brand' 
+                                    onLeftClick={toggleOverlay}
+                                    innerRef={ref}
+                                >
+                                    <>butt1</>
+                                </Button>
+
+                                <ContextMenuInnerV2 
+                                    className='bg-sky-600' 
+                                    preferredAlignment='right'
+                                    leaderElementRef={ref}
+                                >
+                                    <>qwe 3</>
+                                </ContextMenuInnerV2>
+                            </>
+                        )}
+                    </UseRef>
+                )}
+            </OverlayContextProvider> */}
+
+
+
+
+
+
+
+            <List list={Array(60).fill('')}>
+                <br/>
+            </List>
+        </div>
+    );
+};
+
+const FIRSTCOMP: FC<{inRef: RefObject<HTMLDivElement>}> = ({ inRef }) => {
+    return (
+        <div data-wow={1} ref={inRef}>
+            <>1</>
+        </div>
+    );
+};
+const SECONDCOMP: FC<{inRef: RefObject<HTMLDivElement>}> = ({ inRef }) => {
+    console.log('init', inRef, performance.now());
+    
+    useEffect(() => {
+        console.log('eff', inRef, performance.now());
+    }, [inRef]);
+
+    useLayoutEffect(() => {
+        console.log('lay eff', inRef, performance.now());
+    }, [inRef]);
+    
+    return (
+        <div data-wow={2}>
+            <>2</>
+        </div>
+    );
+};
+const THIRDCOMP: FC<{inRef: RefObject<HTMLDivElement>}> = ({ inRef }) => {
+    return (
+        <div data-wow={3}>
+            <>3</>
+        </div>
+    );
+};
+
+const UseRefAsState: FC<PropsWithChildrenAsNodeOrFunction<[HTMLDivElement | null, (node: HTMLDivElement) => void]>> = ({
+    children,
+}) => {
+    const [el, setEl] = useState<HTMLDivElement | null>(null);
+    return (
+        <ChildrenAsNodeOrFunction args={[el, setEl]}>
+            {children}
+        </ChildrenAsNodeOrFunction>
+    );
+};
+
+const PlaygroundInner14: FC = () => {
+    return (
+        <div className='flex flex-col gap-8 p-8'>
+            <UseRef>
+                {({ ref }) => (
+                    <>
+                        <FIRSTCOMP inRef={ref}/>
+                        <SECONDCOMP inRef={ref}/>
+                        <THIRDCOMP inRef={ref}/>
+                    </>
+                )}
+            </UseRef>
+        </div>
+    );
+};
+
+const TestComp: FC<PropsWithChildren & {which: number}> = ({ children, which }) => {
+    const { count, increment } = useCounter(0);
+
+    useEffect(() => {
+        console.log(`TestComp rerender ${which}`, children);
     });
 
     return (
-        <div>
-            <Scrollable followContentSize className='max-h-36'>
-                <div 
-                    className='flex flex-col gap-20 bg-slate-700 p-20' 
-                    ref={wrapperRef}
-                >
-                    <List list={Array(20).fill('')}>
-                        {() => (
-                            <br />
-                        )}
-                    </List>
+        <div className='flex flex-col gap-2'>
+            <div>test comp {which}</div>
 
-                    <RefContextProvider>
-                        <animated.button 
-                            className='mx-auto bg-brand p-2 rounded'
-                            style={{
-                                translateX: x.to((value) => {
-                                    return `${value}px`;
-                                }),
-                                translateY: x.to((value) => {
-                                    return `${value}px`;
-                                }),
-                            }}
-                        >
-                            <>first button</>
-                        </animated.button>
+            <p>count is {count}</p>
 
-                        <Tooltip preferredAlignment='right'>
-                            <>tooltip</>
-                        </Tooltip>
-                    </RefContextProvider>
+            <button onClick={increment}>
+                <>inc</>
+            </button>
 
-                    <RefContextProvider>
-                        <animated.button 
-                            className='mx-auto bg-brand p-2 rounded'
-                            style={{
-                                translateX: x.to((value) => {
-                                    return `${value}px`;
-                                }),
-                                translateY: x.to((value) => {
-                                    return `${value}px`;
-                                }),
-                            }}
-                        >
-                            <>second button</>
-                        </animated.button>
+            {children}
+        </div>
+    );
+};
 
-                        <TooltipV2>
-                            <>TooltipV2</>
-                        </TooltipV2>
-                    </RefContextProvider>
+const PlaygroundInner15: FC = () => {
+    const [count, countRef, setCount] = useStateAndRef(0);
+    const even = count % 2 === 0;
 
-                    <RefContextProvider>
-                        <animated.button 
-                            className='fixed mx-auto bg-brand p-2 rounded'
-                            ref={thirdbRef}
-                        >
-                            <>third button</>
-                        </animated.button>
+    const inc = useCallback(() => {
+        console.log(countRef.current);
+        setCount((v) => v + 1);
+    }, [setCount, countRef]);
 
-                        <Conditional isRendered={false}>
-                            <RelativelyPositionedV3>
-                                <>RelativelyPositionedV3 2</>
-                            </RelativelyPositionedV3>
-                        </Conditional>
-                    </RefContextProvider>
+    return (
+        <div className='flex flex-col gap-2'>
+            <span>count is: {count}</span>
+            
+            <button onClick={inc}>
+                <>inc</>
+            </button>
 
-                    <List list={Array(20).fill('')}>
-                        {() => (
-                            <br />
-                        )}
-                    </List>
-                </div>
-            </Scrollable>
+            <Memo>
+                <TestComp which={1}>
+                    <Memo>
+                        <div>
+                            <p>
+                                <>qwe</>
+                            </p>
+                        </div>
+                    </Memo>
+                </TestComp>
+            </Memo>
+
+            <Static>
+                <TestComp which={2}>
+                    <>zxc {count}</>
+                </TestComp>
+            </Static>
+        </div>
+    );
+};
+
+const PlaygroundInner16: FC = () => {
+    return (
+        <div className='flex flex-col gap-2'>
+            <>qwe</>
         </div>
     );
 };
@@ -1510,7 +1370,11 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                     {/* <PlaygroundInner9/> */}
                     {/* <PlaygroundInner10/> */}
                     {/* <PlaygroundInner11/> */}
-                    <PlaygroundInner12/>
+                    {/* <PlaygroundInner12/> */}
+                    {/* <PlaygroundInner13/> */}
+                    {/* <PlaygroundInner14/> */}
+                    {/* <PlaygroundInner15/> */}
+                    <PlaygroundInner16/>
                 </ReactFocusLock>
             </Conditional>
         </>

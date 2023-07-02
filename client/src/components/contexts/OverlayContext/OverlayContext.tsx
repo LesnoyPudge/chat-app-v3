@@ -1,15 +1,14 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
-import React, { createContext, FC, useCallback, useMemo } from 'react';
+import { createContext, FC, MutableRefObject, useCallback } from 'react';
 import { ChildrenAsNodeOrFunction } from '@components';
-import { useThrottle } from '@hooks';
+import { useStateAndRef, useThrottle } from '@hooks';
 import { fpsToMs } from '@utils';
-import { useToggle } from 'usehooks-ts';
 
 
 
 export interface OverlayContext {
     isOverlayExist: boolean;
-    closingThrottle: boolean;
+    closingThrottleRef: MutableRefObject<boolean>;
     openOverlay: () => void;
     closeOverlay: () => void;
     toggleOverlay: () => void;
@@ -25,33 +24,37 @@ export const OverlayContextProvider: FC<OverlayContextProvider> = ({
     children,
     isOverlayExistInitial = false,
 }) => {
-    const [isOverlayExist, toggle, setIsOverlayExist] = useToggle(isOverlayExistInitial);
-    const { isThrottling, throttle } = useThrottle();
+    const [
+        isOverlayExist,
+        isOverlayExistRef, 
+        setIsOverlayExist,
+    ] = useStateAndRef(isOverlayExistInitial);
+    const { isThrottlingRef, throttle } = useThrottle();
 
     const handleClose = useCallback(() => {
-        if (!isOverlayExist) return;
+        if (!isOverlayExistRef.current) return;
         throttle(() => {
             setIsOverlayExist(false);
         }, fpsToMs(60))();
-    }, [isOverlayExist, setIsOverlayExist, throttle]);
+    }, [isOverlayExistRef, setIsOverlayExist, throttle]);
 
     const handleOpen = useCallback(() => {
-        if (isThrottling) return;
+        if (isThrottlingRef.current) return;
         setIsOverlayExist(true);
-    }, [isThrottling, setIsOverlayExist]);
+    }, [isThrottlingRef, setIsOverlayExist]);
 
     const handleToggle = useCallback(() => {
-        if (isThrottling) return;
-        toggle();
-    }, [isThrottling, toggle]);
+        if (isThrottlingRef.current) return;
+        setIsOverlayExist((v) => !v);
+    }, [isThrottlingRef, setIsOverlayExist]);
 
-    const contextValues: OverlayContext = useMemo(() => ({
+    const contextValues: OverlayContext = {
         isOverlayExist,
-        closingThrottle: isThrottling,
+        closingThrottleRef: isThrottlingRef,
         openOverlay: handleOpen,
         closeOverlay: handleClose,
         toggleOverlay: handleToggle,
-    }), [handleClose, handleOpen, handleToggle, isOverlayExist, isThrottling]);
+    };
     
     return (
         <OverlayContext.Provider value={contextValues}>

@@ -111,8 +111,7 @@ export const NoUiSlider: FC<INoUiSlider> = ({
             sliderRef.current = null;
             pipListeners.clear();
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [pipListeners]);
 
     useEffect(() => {
         if (!sliderRef.current) return;
@@ -134,8 +133,7 @@ export const NoUiSlider: FC<INoUiSlider> = ({
         }, true);
 
         pipListeners.set();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [range, start]);
+    }, [pipListeners, range, start]);
 
     return (
         <div className={twClassNames('slider-input', className)}>

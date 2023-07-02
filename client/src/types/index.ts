@@ -1,6 +1,6 @@
 import { deepMerge } from '@reExport';
 import { PropsWithChildren, ReactNode, RefObject } from 'react';
-import { AnyArray, Entities, IsNever, ToType } from '@shared';
+import { AnyArray, Entities, StrictOmit, ToType } from '@shared';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
 
 
@@ -52,3 +52,5 @@ export interface ObjectWithId {
     id: string;
     [x: string | number | symbol]: any;
 }
+
+export type OmittedRect = StrictOmit<DOMRect, 'x' | 'y' | 'toJSON'>;

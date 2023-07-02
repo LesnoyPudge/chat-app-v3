@@ -5,18 +5,14 @@ import { isRef } from '@typeGuards';
 
 
 
-type ProvidedElement = RefObject<HTMLElement> | HTMLElement | null;
+type ProvidedElement = RefObject<HTMLElement> | HTMLElement | Document | Window | null;
 
-type UseEventListener = <T extends keyof HTMLElementEventMap>(
-    event: T, 
-    providedListener: (e: HTMLElementEventMap[T]) => void, 
+type EventMaps = HTMLElementEventMap | DocumentEventMap | WindowEventMap;
+
+export const useEventListener = <T extends keyof EventMaps>(
+    event: T,
+    providedListener: (e: EventMaps[T]) => void,
     providedElement?: ProvidedElement,
-) => React.Dispatch<React.SetStateAction<ProvidedElement>>;
-
-export const useEventListener: UseEventListener = (
-    event,
-    providedListener,
-    providedElement = null,
 ) => {
     const [element, setElement] = useProvidedValue(providedElement);
     const savedListener = useLatest(providedListener);
@@ -24,7 +20,8 @@ export const useEventListener: UseEventListener = (
     useEffect(() => {
         const target = isRef(element) ? element.current : element;
         if (!target) return;
-        const listener: typeof providedListener = (e) => savedListener.current(e);
+
+        const listener: EventListener = (e) => savedListener.current(e as EventMaps[T]);
 
         target.addEventListener(event, listener);
 

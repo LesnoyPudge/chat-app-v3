@@ -16,7 +16,6 @@ export * from './conditional';
 export * from './getTransitionOptions';
 export * from './encodeFiles';
 export * from './getDecodedImage';
-export * from './deepEqual';
 export * from './convertRGBToObject';
 export * from './isRGBLight';
 export * from './rgbToHex';

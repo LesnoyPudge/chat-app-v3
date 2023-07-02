@@ -1,5 +1,5 @@
 import { Button, CheckBoxIndicatorCheck, Conditional, Icon, Image, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
-import { FC, useContext, useMemo, useRef } from 'react';
+import { FC, useContext, useRef } from 'react';
 import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalSubtitle } from '../../components';
 import { useSet } from 'react-use';
 import { useKeyboardNavigation, useTextInput } from '@hooks';

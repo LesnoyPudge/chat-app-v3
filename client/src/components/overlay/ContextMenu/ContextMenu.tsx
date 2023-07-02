@@ -30,34 +30,34 @@ const ContextMenuInner: FC<ContextMenu> = ({
     const [targetRect, setTargetRect] = useState<TargetRect>();
 
     const handleContextMenu = (e: MouseEvent) => {
-        const { closingThrottle, openOverlay } = contextValues;
+        // const { closingThrottle, openOverlay } = contextValues;
         
-        if (closingThrottle) return;
+        // if (closingThrottle) return;
 
-        const withMouse = e.button !== -1;
-        const withKeyboard = !withMouse;
+        // const withMouse = e.button !== -1;
+        // const withKeyboard = !withMouse;
     
-        if (withMouse) {
-            const cursorSize = 1;
+        // if (withMouse) {
+        //     const cursorSize = 1;
     
-            const rect: TargetRect = {
-                top: e.clientY,
-                bottom: e.clientY + cursorSize,
-                left: e.clientX,
-                right: e.clientX + cursorSize,
-                width: cursorSize,
-                height: cursorSize,
-            };
+        //     const rect: TargetRect = {
+        //         top: e.clientY,
+        //         bottom: e.clientY + cursorSize,
+        //         left: e.clientX,
+        //         right: e.clientX + cursorSize,
+        //         width: cursorSize,
+        //         height: cursorSize,
+        //     };
 
-            setTargetRect(rect);
-        }
+        //     setTargetRect(rect);
+        // }
 
-        if (withKeyboard) {
-            const target = e.currentTarget as HTMLElement;
-            setTargetRect(target.getBoundingClientRect());
-        }
+        // if (withKeyboard) {
+        //     const target = e.currentTarget as HTMLElement;
+        //     setTargetRect(target.getBoundingClientRect());
+        // }
 
-        openOverlay();
+        // openOverlay();
     };
 
     useEventListener('contextmenu', handleContextMenu, targetRef);

@@ -1,6 +1,5 @@
-import isObject from 'is-object';
 import { memo, PropsWithChildren } from 'react';
-import { shallowEqual } from 'react-redux';
+import reactCompare from 'react-fast-compare';
 
 
 
@@ -10,12 +9,6 @@ export const Memo = memo<PropsWithChildren>(({ children }) => {
             {children}
         </>
     );
-}, (f, s) => {
-    if (isObject(f.children) && isObject(s.children)) {
-        return shallowEqual(f.children.props, s.children.props);
-    }
-
-    return shallowEqual(f.children, s.children);
-});
+}, reactCompare);
 
 Memo.displayName = 'Memo';
