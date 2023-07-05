@@ -6,7 +6,7 @@ type KeysType =
     'refreshToken'
 ;
 
-interface IValues {
+interface Values {
     refreshToken?: string;
 }
 
@@ -17,7 +17,7 @@ const get = (key: KeysType) => {
 };
 
 export const getCookie = () => {
-    const values: IValues = {
+    const values: Values = {
         refreshToken: get('refreshToken'),
     };
 

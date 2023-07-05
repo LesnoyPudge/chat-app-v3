@@ -1,12 +1,12 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { UserAvatar, RefContextProvider, Button, Icon, Tooltip } from '@components';
+import { UserAvatar, Button, Icon, Tooltip, Ref } from '@components';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 
 
-interface IPrivateChats {
+interface PrivateChats {
     id: string;
     username: string;
     avatar: string;
@@ -14,8 +14,8 @@ interface IPrivateChats {
     extraStatus: ExtraStatusType;
 }
 
-interface IPrivateChatItem extends Pick<ReturnType<typeof useKeyboardNavigation>, 'withFocusSet'> {
-    privateChat: IPrivateChats;
+interface PrivateChatItem extends Pick<ReturnType<typeof useKeyboardNavigation>, 'withFocusSet'> {
+    privateChat: PrivateChats;
     tabIndex: number;
 }
 
@@ -42,7 +42,7 @@ const styles = {
     hideChatIcon: 'h-5 w-5 m-auto transition-none',
 };
 
-export const PrivateChatItem: FC<IPrivateChatItem> = ({ 
+export const PrivateChatItem: FC<PrivateChatItem> = ({ 
     privateChat,
     tabIndex,
     withFocusSet,
@@ -90,26 +90,35 @@ export const PrivateChatItem: FC<IPrivateChatItem> = ({
                 </span>
             </Button>
 
-            <RefContextProvider>
-                <Button
-                    className={twClassNames(
-                        styles.hideChatButton.base,
-                        { [styles.hideChatButton.active]: isActive },
-                    )}
-                    tabIndex={tabIndex}
-                    onLeftClick={handleHideChat}
-                    label={`Скрыть личные сообщения с ${username}`}
-                >
-                    <Icon
-                        className={styles.hideChatIcon}
-                        iconId='cross-icon'
-                    />
-                </Button>
+            <Ref<HTMLButtonElement>>
+                {(ref) => (
+                    <>
+                        <Button
+                            className={twClassNames(
+                                styles.hideChatButton.base,
+                                { [styles.hideChatButton.active]: isActive },
+                            )}
+                            tabIndex={tabIndex}
+                            innerRef={ref}
+                            label={`Скрыть личные сообщения с ${username}`}
+                            onLeftClick={handleHideChat}
+                        >
+                            <Icon
+                                className={styles.hideChatIcon}
+                                iconId='cross-icon'
+                            />
+                        </Button>
 
-                <Tooltip preferredAlignment='right' spacing={16}>
-                    <>Срыть</>
-                </Tooltip>
-            </RefContextProvider>
+                        <Tooltip 
+                            preferredAlignment='right' 
+                            spacing={16}
+                            leaderElementRef={ref}
+                        >
+                            <>Срыть</>
+                        </Tooltip>
+                    </>
+                )}
+            </Ref>
         </div>
     );
 };

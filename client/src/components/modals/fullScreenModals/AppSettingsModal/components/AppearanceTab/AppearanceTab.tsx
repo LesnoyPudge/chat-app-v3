@@ -123,7 +123,7 @@ export const AppearanceTab: FC = () => {
                     </SettingsGroupTitle>
 
                     <SliderInput 
-                        name='message-font-size'
+                        // name='message-font-size'
                         start={14}
                         range={[12, 14, 15, 16, 18, 20]}
                     />
@@ -136,7 +136,7 @@ export const AppearanceTab: FC = () => {
                         </SettingsGroupTitle>
 
                         <SliderInput 
-                            name='message-group-gap'
+                            // name='message-group-gap'
                             start={4}
                             range={[0, 4, 8, 16, 24]}
                         />

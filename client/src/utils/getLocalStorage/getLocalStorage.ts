@@ -1,7 +1,7 @@
 
 
 
-interface ILocalStorageValues {
+interface LocalStorageValues {
     token?: string;
     some?: string;
 }
@@ -27,7 +27,7 @@ const get = (key: string) => {
 };
 
 export const getLocalStorage = () => {
-    const values: ILocalStorageValues = {
+    const values: LocalStorageValues = {
         token: get('token'),
         some: get('some'),
     };

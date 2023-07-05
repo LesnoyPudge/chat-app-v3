@@ -1,4 +1,4 @@
-import { Button, ContextMenu, RefContextProvider, Tooltip, UserAvatar } from '@components';
+import { Button, ContextMenu, Ref, Tooltip, UserAvatar } from '@components';
 import { useThrottle } from '@hooks';
 import { conditional, copyToClipboard, twClassNames } from '@utils';
 import { FC } from 'react';
@@ -26,49 +26,65 @@ export const UserInfo: FC = () => {
     );
     
     return (
-        <RefContextProvider>
-            <div className={styles.userInfo} tabIndex={0}>
-                <UserAvatar
-                    className={styles.avatar}
-                    avatar='https://i.pravatar.cc/52'
-                    status='online'
-                />
-
-                <RefContextProvider>
-                    <Button
-                        className={styles.username}
-                        onLeftClick={handleCopy}
-                        label={`Скопировать ${username}`}
+        <Ref<HTMLDivElement>>
+            {(ref) => (
+                <>
+                    <div 
+                        className={styles.userInfo} 
+                        tabIndex={0}
+                        ref={ref}
                     >
-                        {username + ' sdfsfasdasddsadasdasd'}
-                    </Button>
+                        <UserAvatar
+                            className={styles.avatar}
+                            avatar='https://i.pravatar.cc/52'
+                            status='online'
+                        />
 
-                    <Tooltip 
-                        className={twClassNames({ [styles.tooltipActive]: isThrottling })}
-                        preferredAlignment='top'
-                        dependencyList={[isThrottling]}
-                    >
-                        {copyUsernameTooltipText}
-                    </Tooltip>
-                </RefContextProvider>
-            </div>
+                        <Ref<HTMLButtonElement>>
+                            {(ref) => (
+                                <>
+                                    <Button
+                                        className={styles.username}
+                                        onLeftClick={handleCopy}
+                                        innerRef={ref}
+                                        label={`Скопировать ${username}`}
+                                    >
+                                        {username + ' sdfsfasdasddsadasdasd'}
+                                    </Button>
 
-            <ContextMenu preferredAlignment='top'>
-                {({ closeOverlay }) => (
-                    <div className='flex flex-col'>
-                        <Button onLeftClick={closeOverlay}>change status</Button>
-
-                        <Button 
-                            onLeftClick={() => {
-                                handleCopy();
-                                closeOverlay();
-                            }}
-                        >
-                            <>copy username</>
-                        </Button>
+                                    <Tooltip 
+                                        className={twClassNames({ [styles.tooltipActive]: isThrottling })}
+                                        preferredAlignment='top'
+                                        leaderElementRef={ref}
+                                    >
+                                        {copyUsernameTooltipText}
+                                    </Tooltip>
+                                </>
+                            )}
+                        </Ref>
                     </div>
-                )}
-            </ContextMenu>
-        </RefContextProvider>
+
+                    <ContextMenu 
+                        preferredAlignment='top'
+                        leaderElementRef={ref}
+                    >
+                        {({ closeOverlay }) => (
+                            <div className='flex flex-col'>
+                                <Button onLeftClick={closeOverlay}>change status</Button>
+
+                                <Button 
+                                    onLeftClick={() => {
+                                        handleCopy();
+                                        closeOverlay();
+                                    }}
+                                >
+                                    <>copy username</>
+                                </Button>
+                            </div>
+                        )}
+                    </ContextMenu>
+                </>
+            )}
+        </Ref>
     );
 };

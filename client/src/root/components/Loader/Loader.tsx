@@ -3,11 +3,11 @@ import { createContext, FC, PropsWithChildren, useState } from 'react';
 
 
 
-export interface ILoadingContext {
+export interface LoadingContext {
     finishLoading: () => void;
 }
 
-export const LoadingContext = createContext<ILoadingContext | undefined>(undefined);
+export const LoadingContext = createContext<LoadingContext | undefined>(undefined);
 
 export const Loader: FC<PropsWithChildren> = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);

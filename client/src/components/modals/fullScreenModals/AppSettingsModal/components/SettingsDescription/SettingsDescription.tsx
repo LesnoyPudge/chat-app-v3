@@ -4,14 +4,16 @@ import { FC } from 'react';
 
 
 
-const baseClassName = 'text-color-secondary text-sm';
+const styles = {
+    base: 'text-color-secondary text-sm',
+};
 
 export const SettingsDescription: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {
     return (
-        <p className={twClassNames(baseClassName, className)}>
+        <p className={twClassNames(styles.base, className)}>
             {children}
         </p>
     );

@@ -1,66 +1,81 @@
-import { FC, useContext, useState } from 'react';
-import { AnimatedTransition, ChildrenAsNodeOrFunction, OverlayContext, OverlayContextProvider, OverlayItem, RefContext, RelativelyPositioned } from '@components';
+import { AnimatedTransition, ChildrenAsNodeOrFunction, OverlayContext, OverlayItem, RelativelyPositioned } from '@components';
+import { useEventListener, UseRelativePositionArgs } from '@hooks';
 import { animated } from '@react-spring/web';
-import { Alignment, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
+import { OmittedRect, PropsWithChildrenAsNodeOrFunction, PropsWithClassName, PropsWithLeaderElementRef } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
-import { useEventListener } from 'usehooks-ts';
+import { FC, useContext, useEffect, useRef } from 'react';
 
 
 
-
-type TargetRect = Omit<DOMRect, 'x' | 'y' | 'toJSON'>
-
-interface ContextMenu extends 
-PropsWithClassName,
-PropsWithChildrenAsNodeOrFunction<OverlayContext> {
-    preferredAlignment: Alignment;
-}
+type ContextMenu = (
+    PropsWithClassName & 
+    PropsWithChildrenAsNodeOrFunction<OverlayContext> &
+    PropsWithLeaderElementRef &
+    Pick<UseRelativePositionArgs, 'preferredAlignment'> & {
+        withContextMenuHandler?: boolean;
+    }
+)
 
 const transitionOptions = getTransitionOptions.defaultContextMenu();
 
-const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-color-base p-5';
+const styles = {
+    base: 'pointer-events-auto bg-primary-500 rounded text-color-base p-5',
+};
 
-const ContextMenuInner: FC<ContextMenu> = ({
+export const ContextMenu: FC<ContextMenu> = ({
     className = '',
     preferredAlignment,
+    leaderElementRef,
+    withContextMenuHandler = false,
     children,
 }) => {
     const contextValues = useContext(OverlayContext) as OverlayContext;
-    const { targetRef } = useContext(RefContext) as RefContext;
-    const [targetRect, setTargetRect] = useState<TargetRect>();
+    const leaderElementOrRectRef = useRef<HTMLElement | OmittedRect | null>(leaderElementRef.current);
+    
+    const withRightClickRef = useRef(false);
+    
+    useEffect(() => {
+        if (withRightClickRef.current) {
+            withRightClickRef.current = false;
+            return;
+        }
+        
+        leaderElementOrRectRef.current = leaderElementRef.current;
+    }, [contextValues.isOverlayExist, leaderElementRef]);
+
 
     const handleContextMenu = (e: MouseEvent) => {
-        // const { closingThrottle, openOverlay } = contextValues;
+        if (!withContextMenuHandler) return;
+
+        const { closingThrottleRef, openOverlay } = contextValues;
         
-        // if (closingThrottle) return;
+        if (closingThrottleRef.current) return;
 
-        // const withMouse = e.button !== -1;
-        // const withKeyboard = !withMouse;
+        withRightClickRef.current = true;
+        const withMouse = e.button !== -1;
+        const withKeyboard = !withMouse;
     
-        // if (withMouse) {
-        //     const cursorSize = 1;
+        if (withMouse) {
+            const cursorSize = 1;
     
-        //     const rect: TargetRect = {
-        //         top: e.clientY,
-        //         bottom: e.clientY + cursorSize,
-        //         left: e.clientX,
-        //         right: e.clientX + cursorSize,
-        //         width: cursorSize,
-        //         height: cursorSize,
-        //     };
+            leaderElementOrRectRef.current = {
+                top: e.clientY,
+                bottom: e.clientY + cursorSize,
+                left: e.clientX,
+                right: e.clientX + cursorSize,
+                width: cursorSize,
+                height: cursorSize,
+            };
+        }
 
-        //     setTargetRect(rect);
-        // }
+        if (withKeyboard) {
+            leaderElementOrRectRef.current = e.currentTarget as HTMLElement;
+        }
 
-        // if (withKeyboard) {
-        //     const target = e.currentTarget as HTMLElement;
-        //     setTargetRect(target.getBoundingClientRect());
-        // }
-
-        // openOverlay();
+        openOverlay();
     };
 
-    useEventListener('contextmenu', handleContextMenu, targetRef);
+    useEventListener('contextmenu', handleContextMenu, leaderElementRef);
 
     return (
         <AnimatedTransition 
@@ -77,14 +92,14 @@ const ContextMenuInner: FC<ContextMenu> = ({
                     focused
                 >
                     <RelativelyPositioned
+                        leaderElementOrRectRef={leaderElementOrRectRef}
                         preferredAlignment={preferredAlignment}
-                        targetRefOrRect={targetRect}
                         spacing={15}
                         boundsSize={20}
                         swappableAlignment
                     >
                         <animated.div 
-                            className={twClassNames(baseClassName, className)}
+                            className={twClassNames(styles.base, className)}
                             style={style}
                             role='menu'
                         >
@@ -96,13 +111,5 @@ const ContextMenuInner: FC<ContextMenu> = ({
                 </OverlayItem>
             )}
         </AnimatedTransition>
-    );
-};
-
-export const ContextMenu: FC<ContextMenu> = (props) => {
-    return (
-        <OverlayContextProvider>
-            <ContextMenuInner {...props}/>
-        </OverlayContextProvider>
     );
 };

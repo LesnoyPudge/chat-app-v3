@@ -1,4 +1,4 @@
-import { Button, Conditional, Icon, RefContextProvider, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar } from '@components';
+import { Button, Conditional, Icon, Ref, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar } from '@components';
 import { useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
 import { useFormikContext } from 'formik';
@@ -94,24 +94,32 @@ export const AllowedRolesAndMembers: FC = () => {
                                             <span className={styles.name}>
                                                 {role.name}
                                             </span>
-
-                                            <RefContextProvider>
-                                                <Button
-                                                    className={styles.button}
-                                                    label='Лишить доступа к комнате'
-                                                    tabIndex={rolesNavigation.getTabIndex(role.id)}
-                                                    onLeftClick={handleRemove}
-                                                >
-                                                    <Icon
-                                                        className={styles.icon}
-                                                        iconId='garbage-can-icon'
-                                                    />
-                                                </Button>
+                                            
+                                            <Ref<HTMLButtonElement>>
+                                                {(ref) => (
+                                                    <>
+                                                        <Button
+                                                            className={styles.button}
+                                                            label='Лишить доступа к комнате'
+                                                            tabIndex={rolesNavigation.getTabIndex(role.id)}
+                                                            innerRef={ref}
+                                                            onLeftClick={handleRemove}
+                                                        >
+                                                            <Icon
+                                                                className={styles.icon}
+                                                                iconId='garbage-can-icon'
+                                                            />
+                                                        </Button>
                                     
-                                                <Tooltip preferredAlignment='top'>
-                                                    <>Лишить доступа к комнате</>
-                                                </Tooltip>
-                                            </RefContextProvider>
+                                                        <Tooltip 
+                                                            preferredAlignment='top'
+                                                            leaderElementRef={ref}
+                                                        >
+                                                            <>Лишить доступа к комнате</>
+                                                        </Tooltip>
+                                                    </>
+                                                )}
+                                            </Ref>
                                         </li>
                                     </MoveFocusInside>
                                 );
@@ -164,23 +172,31 @@ export const AllowedRolesAndMembers: FC = () => {
                                                 {member.username}
                                             </span>
 
-                                            <RefContextProvider>
-                                                <Button
-                                                    className={styles.button}
-                                                    label='Лишить доступа к комнате'
-                                                    tabIndex={membersNavigation.getTabIndex(member.id)}
-                                                    onLeftClick={handleRemove}
-                                                >
-                                                    <Icon
-                                                        className={styles.icon}
-                                                        iconId='garbage-can-icon'
-                                                    />
-                                                </Button>
+                                            <Ref<HTMLButtonElement>>
+                                                {(ref) => (
+                                                    <>
+                                                        <Button
+                                                            className={styles.button}
+                                                            label='Лишить доступа к комнате'
+                                                            tabIndex={membersNavigation.getTabIndex(member.id)}
+                                                            innerRef={ref}
+                                                            onLeftClick={handleRemove}
+                                                        >
+                                                            <Icon
+                                                                className={styles.icon}
+                                                                iconId='garbage-can-icon'
+                                                            />
+                                                        </Button>
                                     
-                                                <Tooltip preferredAlignment='top'>
-                                                    <>Лишить доступа к комнате</>
-                                                </Tooltip>
-                                            </RefContextProvider>
+                                                        <Tooltip 
+                                                            preferredAlignment='top'
+                                                            leaderElementRef={ref}
+                                                        >
+                                                            <>Лишить доступа к комнате</>
+                                                        </Tooltip>
+                                                    </>
+                                                )}
+                                            </Ref>
                                         </li>
                                     </MoveFocusInside>
                                 );

@@ -1,4 +1,4 @@
-import { AnimatedTransition, Button, ChannelSettingsModalFormValues, FieldLabel, Icon, OverlayContextProvider, OverlayItem, RefContextProvider, RelativelyPositioned, RequiredWildcard } from '@components';
+import { AnimatedTransition, Button, ChannelSettingsModalFormValues, FieldLabel, Icon, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, RequiredWildcard } from '@components';
 import { FormikColorPicker } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
@@ -102,14 +102,15 @@ export const RoleColor: FC<PropsWithClassName> = ({
 
                 <OverlayContextProvider>
                     {({ openOverlay, isOverlayExist }) => (
-                        <RefContextProvider>
-                            {({ targetRef }) => (
+                        <Ref<HTMLButtonElement>>
+                            {(ref) => (
                                 <>
                                     <Button 
                                         className={styles.button}
                                         style={{ backgroundColor: values.roleColorHEX }}
                                         hasPopup='dialog'
                                         label='Выбрать пользовательский цвет'
+                                        innerRef={ref}
                                         isActive={isOverlayExist}
                                         onLeftClick={openOverlay}
                                     >
@@ -149,7 +150,7 @@ export const RoleColor: FC<PropsWithClassName> = ({
                                                     <RelativelyPositioned 
                                                         preferredAlignment='right'
                                                         spacing={10}
-                                                        targetRefOrRect={targetRef}
+                                                        leaderElementOrRectRef={ref}
                                                     >
                                                         <div 
                                                             role='dialog' 
@@ -164,7 +165,7 @@ export const RoleColor: FC<PropsWithClassName> = ({
                                     </AnimatedTransition>
                                 </>
                             )}
-                        </RefContextProvider>
+                        </Ref>
                     )}
                 </OverlayContextProvider>
 

@@ -5,14 +5,16 @@ import { FC } from 'react';
 
 
 
-const baseClassName = 'text-xs uppercase mb-2 text-color-secondary';
+const styles = {
+    base: 'text-xs uppercase mb-2 text-color-secondary',
+};
 
 export const SettingsGroupTitle: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {
     return (
-        <Heading className={twClassNames(baseClassName, className)}>
+        <Heading className={twClassNames(styles.base, className)}>
             {children}
         </Heading>
     );

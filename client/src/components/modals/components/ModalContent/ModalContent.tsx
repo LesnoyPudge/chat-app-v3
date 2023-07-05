@@ -5,7 +5,9 @@ import { FC } from 'react';
 
 
 
-const baseClassName = 'flex flex-col pb-4 px-4';
+const styles = {
+    base: 'flex flex-col pb-4 px-4',
+};
 
 export const ModalContent: FC<PropsWithChildrenAndClassName> = ({
     className = '',
@@ -13,7 +15,7 @@ export const ModalContent: FC<PropsWithChildrenAndClassName> = ({
 }) => {
     return (
         <HeadingLevel>
-            <div className={twClassNames(baseClassName, className)}>
+            <div className={twClassNames(styles.base, className)}>
                 {children}
             </div>
         </HeadingLevel>

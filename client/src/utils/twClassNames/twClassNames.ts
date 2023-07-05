@@ -1,5 +1,6 @@
 import classNames, { Argument } from 'classnames';
 import { createTailwindMerge, getDefaultConfig, mergeConfigs } from 'tailwind-merge';
+import { ClassNameValue } from 'tailwind-merge/dist/lib/tw-join';
 
 
 

@@ -1,163 +1,133 @@
-import { RefObject, useCallback, useLayoutEffect, useState } from 'react';
-import { useResizeObserver } from '@hooks';
-import { isRef } from '@typeGuards';
-import { Alignment } from '@types';
-import { useWindowSize } from 'usehooks-ts';
+import { useAnimationFrame } from '@hooks';
+import { isOmittedRect } from '@typeGuards';
+import { Alignment, OmittedRect } from '@types';
+import { RefObject, useState } from 'react';
+import { useLatest } from 'react-use';
 
 
 
-interface TargetRect {
-    top: number; 
-    bottom: number; 
-    left: number; 
-    right: number;
-    width: number;
-    height: number;
-}
-
-interface WrapperRect {
-    width: number;
-    height: number;
-}
-
-interface GetRelativePositionReturn {
-    top: number;
-    left: number;
+export interface WithAlignment {
     alignment: Alignment;
 }
 
-type GetRelativePosition = (args: {
-    boundsSize?: number;
-    spacing?: number;
-    swappableAlignment?: boolean;
-    preferredAlignment: Alignment;
-    targetRect: TargetRect;
-    wrapperRect: WrapperRect;
-    centered?: boolean;
-}) => GetRelativePositionReturn;
+interface Position {
+    top: number;
+    left: number;
+}
 
-interface UseRelativePositionArgs {
+export interface RelativePositionOptions {
     preferredAlignment: Alignment;
-    targetRefOrRect?: RefObject<HTMLElement> | TargetRect;
-    wrapperRefOrRect?: RefObject<HTMLElement> | WrapperRect;
     swappableAlignment?: boolean;
     boundsSize?: number;
     spacing?: number;
     centered?: boolean;
-    dependencyList?: unknown[]
+    unbounded?: boolean;
+}
+
+interface WithRects {
+    followerRect: OmittedRect;
+    leaderRect: OmittedRect;
+}
+
+export interface UseRelativePositionArgs extends RelativePositionOptions {
+    followerElementRef: RefObject<HTMLElement>;
+    leaderElementOrRectRef: RefObject<HTMLElement | OmittedRect>;
 }
 
 export const useRelativePosition = ({
     preferredAlignment,
-    targetRefOrRect,
-    wrapperRefOrRect,
-    swappableAlignment,
-    boundsSize,
-    spacing,
-    centered,
-    dependencyList = [],
-}: UseRelativePositionArgs) => {
-    const windowSize = useWindowSize();
-    const [position, setPosition] = useState<GetRelativePositionReturn>({ 
-        top: boundsSize || 0, 
-        left: boundsSize || 0, 
-        alignment: preferredAlignment, 
-    });
-
-    const setNewPosition = useCallback(() => {
-        if (!targetRefOrRect) return;
-        if (!wrapperRefOrRect) return;
-        if (isRef(targetRefOrRect) && !targetRefOrRect.current) return;
-        if (isRef(wrapperRefOrRect) && !wrapperRefOrRect.current) return;
-        
-        const targetRect = (
-            isRef(targetRefOrRect) 
-                ? targetRefOrRect.current!.getBoundingClientRect() 
-                : targetRefOrRect
-        );
-        const wrapperRect = (
-            isRef(wrapperRefOrRect) 
-                ? wrapperRefOrRect.current!.getBoundingClientRect() 
-                : wrapperRefOrRect
-        );
-        
-        const newPosition = getRelativePosition({
-            preferredAlignment,
-            targetRect,
-            wrapperRect,
-            boundsSize,
-            spacing,
-            swappableAlignment,
-            centered,
-        });
-
-        setPosition(newPosition);
-    }, [
-        boundsSize, centered, preferredAlignment, 
-        spacing, swappableAlignment, targetRefOrRect, 
-        wrapperRefOrRect,
-    ]);
-
-    const resizeableWrapper = isRef(wrapperRefOrRect) ? wrapperRefOrRect.current : null;
-    useResizeObserver(resizeableWrapper, setNewPosition);
-
-    const resizeableTarget = isRef(targetRefOrRect) ? targetRefOrRect.current : null;
-    useResizeObserver(resizeableTarget, setNewPosition);
-
-    useLayoutEffect(() => setNewPosition(), [
-        setNewPosition, windowSize,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        ...dependencyList,
-    ]);
-
-    return position;
-};
-
-const getRelativePosition: GetRelativePosition = ({
+    followerElementRef,
+    leaderElementOrRectRef,
+    swappableAlignment = false,
     boundsSize = 0,
     spacing = 0,
-    swappableAlignment = false,
-    preferredAlignment,
-    targetRect,
-    wrapperRect,
     centered = false,
-}) => {
+    unbounded = false,
+}: UseRelativePositionArgs): WithAlignment => {
+    const [alignment, setAlignment] = useState(preferredAlignment);
+
+    const calculateRef = useLatest(() => {
+        if (!followerElementRef.current || !leaderElementOrRectRef.current) return;
+
+        const leaderRect = (
+            isOmittedRect(leaderElementOrRectRef.current)
+                ? leaderElementOrRectRef.current
+                : leaderElementOrRectRef.current.getBoundingClientRect()
+        );
+        
+        const { alignment: newAlignment, left, top } = calculateRelativePosition({
+            followerRect: followerElementRef.current.getBoundingClientRect(),
+            leaderRect: leaderRect,
+            boundsSize,
+            centered,
+            preferredAlignment,
+            spacing,
+            swappableAlignment,
+            unbounded,
+        });
+
+        if (alignment !== newAlignment) setAlignment(newAlignment);
+
+        const follower = followerElementRef.current;
+        if (follower.style.top === `${top}px` && follower.style.left === `${left}px`) return;
+  
+        follower.style.top = `${top}px`;
+        follower.style.left = `${left}px`;
+    });
+
+    useAnimationFrame(calculateRef.current);
+    
+    return {
+        alignment,
+    };
+};
+
+const calculateRelativePosition = ({
+    followerRect,
+    leaderRect,
+    preferredAlignment,
+    boundsSize,
+    centered,
+    spacing,
+    swappableAlignment,
+    unbounded,
+}: Required<RelativePositionOptions> & WithRects): Position & WithAlignment => {
     const centering = {
         vertical: (
             centered 
-                ? (wrapperRect.height - targetRect.height) / 2 
+                ? (followerRect.height - leaderRect.height) / 2 
                 : 0
         ),
         horizontal: (
             centered 
-                ? (wrapperRect.width - targetRect.width) / 2 
+                ? (followerRect.width - leaderRect.width) / 2 
                 : 0
         ),
     };
 
     const bounds = {
-        top: boundsSize,
-        bottom: window.innerHeight - boundsSize - wrapperRect.height,
-        left: boundsSize,
-        right: window.innerWidth - boundsSize - wrapperRect.width,
+        top: unbounded ? -9999 : boundsSize,
+        bottom: unbounded ? 9999 : window.innerHeight - boundsSize - followerRect.height,
+        left: unbounded ? -9999 : boundsSize,
+        right: unbounded ? 9999 : window.innerWidth - boundsSize - followerRect.width,
     };
 
     const unboundedPositions = {
         top: {
-            top: targetRect.top - wrapperRect.height - spacing,
-            left: targetRect.left - centering.horizontal,
+            top: leaderRect.top - followerRect.height - spacing,
+            left: leaderRect.left - centering.horizontal,
         },
         bottom: {
-            top: targetRect.bottom + spacing,
-            left: targetRect.left - centering.horizontal,
+            top: leaderRect.bottom + spacing,
+            left: leaderRect.left - centering.horizontal,
         },
         left: {
-            top: targetRect.top - centering.vertical,
-            left: targetRect.left - wrapperRect.width - spacing,
+            top: leaderRect.top - centering.vertical,
+            left: leaderRect.left - followerRect.width - spacing,
         },
         right: {
-            top: targetRect.top - centering.vertical,
-            left: targetRect.right + spacing,
+            top: leaderRect.top - centering.vertical,
+            left: leaderRect.right + spacing,
         },
     };
 
@@ -195,7 +165,7 @@ const getRelativePosition: GetRelativePosition = ({
 
     const positions = positionsInBounds();
     
-    const defaultResult: GetRelativePositionReturn = {
+    const defaultResult: Position & WithAlignment = {
         ...positions[preferredAlignment],
         alignment: preferredAlignment,
     };
@@ -215,19 +185,19 @@ const getRelativePosition: GetRelativePosition = ({
 
     if (noSpaceAvailable) return defaultResult;
 
-    const topResult: GetRelativePositionReturn = {
+    const topResult: Position & WithAlignment = {
         alignment: 'top',
         ...positions.top,
     };
-    const bottomResult: GetRelativePositionReturn = {
+    const bottomResult: Position & WithAlignment = {
         alignment: 'bottom',
         ...positions.bottom,
     };
-    const leftResult: GetRelativePositionReturn = {
+    const leftResult: Position & WithAlignment = {
         alignment: 'left',
         ...positions.left,
     };
-    const rightResult: GetRelativePositionReturn = {
+    const rightResult: Position & WithAlignment = {
         alignment: 'right',
         ...positions.right,
     };

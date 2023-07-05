@@ -15,7 +15,9 @@ type SlateLink = PropsWithChildrenAndClassName & {
     attributes?: never;
 })
 
-const baseClassName = 'text-color-link';
+const styles = {
+    base: 'text-color-link',
+};
 
 export const SlateLink: FC<SlateLink> = ({
     className = '',
@@ -25,7 +27,7 @@ export const SlateLink: FC<SlateLink> = ({
 }) => {
     return (
         <span 
-            className={twClassNames(baseClassName, className)} 
+            className={twClassNames(styles.base, className)} 
             data-url={url}
             {...attributes}
         >

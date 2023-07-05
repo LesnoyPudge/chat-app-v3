@@ -1,4 +1,4 @@
-import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, Tooltip, AnimatedTransition, RefContextProvider } from '@components';
+import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, Tooltip, AnimatedTransition, Ref } from '@components';
 import { FormikColorPicker } from '@libs';
 import { animated } from '@react-spring/web';
 import { getTransitionOptions, twClassNames } from '@utils';
@@ -33,8 +33,8 @@ export const Banner: FC = () => {
         <div className={styles.banner} style={{ backgroundColor: bannerColor }}>
             <OverlayContextProvider>
                 {({ isOverlayExist, openOverlay }) => (
-                    <RefContextProvider>
-                        {({ targetRef }) => (
+                    <Ref<HTMLButtonElement>>
+                        {(ref) => (
                             <>
                                 <Button
                                     className={twClassNames(
@@ -44,6 +44,7 @@ export const Banner: FC = () => {
                                     isActive={isOverlayExist}
                                     label='Выбрать цвет баннера'
                                     hasPopup='dialog'
+                                    innerRef={ref}
                                     onLeftClick={openOverlay}
                                 >
                                     <Icon
@@ -68,7 +69,7 @@ export const Banner: FC = () => {
                                                 <RelativelyPositioned 
                                                     preferredAlignment='left'
                                                     spacing={10}
-                                                    targetRefOrRect={targetRef}
+                                                    leaderElementOrRectRef={ref}
                                                 >
                                                     <div 
                                                         role='dialog' 
@@ -85,12 +86,15 @@ export const Banner: FC = () => {
                                     )}
                                 </AnimatedTransition>
 
-                                <Tooltip preferredAlignment='top'>
+                                <Tooltip 
+                                    preferredAlignment='top'
+                                    leaderElementRef={ref}
+                                >
                                     <>Изменить цвет баннера</>
                                 </Tooltip>
                             </>
                         )}
-                    </RefContextProvider>
+                    </Ref>
                 )}
             </OverlayContextProvider>
         </div>

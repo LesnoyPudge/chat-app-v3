@@ -1,6 +1,6 @@
 import { PropsWithChildrenAndClassName, PropsWithInnerRef } from '@types';
 import { conditional, twClassNames } from '@utils';
-import React, { ComponentPropsWithRef, FC, PropsWithRef } from 'react';
+import React, { FC } from 'react';
 
 
 

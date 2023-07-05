@@ -8,7 +8,7 @@ import { AnyRecord } from 'ts-essentials/dist/any-record';
 type ChildrenAsNodeOrFunction<
     T extends AnyRecord | AnyArray
 > = PropsWithChildrenAsNodeOrFunction<T> & {
-    args: ToType<AnyRecord>;
+    args: T;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

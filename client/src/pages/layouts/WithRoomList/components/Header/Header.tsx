@@ -1,4 +1,4 @@
-import { Button, Icon, OverlayContextProvider, RefContextProvider, TopBar } from '@components';
+import { Button, Icon, OverlayContextProvider, Ref, TopBar } from '@components';
 import { useNavigator } from '@hooks';
 import { conditional, twClassNames } from '@utils';
 import { FC } from 'react';
@@ -31,26 +31,31 @@ export const Header: FC = () => {
                         styles.topBar.base, 
                         { [styles.topBar.acvive]: isOverlayExist },
                     )}>
-                        <RefContextProvider>
-                            <Button
-                                className={styles.button}
-                                label='Открыть меню канала'
-                                hasPopup='menu'
-                                isActive={isOverlayExist}
-                                onLeftClick={openOverlay}
-                            >
-                                <span className={styles.buttonText}>
-                                    {channelLabel}
-                                </span>
+                        <Ref<HTMLButtonElement>>
+                            {(ref) => (
+                                <>
+                                    <Button
+                                        className={styles.button}
+                                        label='Открыть меню канала'
+                                        hasPopup='menu'
+                                        isActive={isOverlayExist}
+                                        innerRef={ref}
+                                        onLeftClick={openOverlay}
+                                    >
+                                        <span className={styles.buttonText}>
+                                            {channelLabel}
+                                        </span>
             
-                                <Icon
-                                    className={styles.buttonIcon}
-                                    iconId={iconId}
-                                />
-                            </Button>
+                                        <Icon
+                                            className={styles.buttonIcon}
+                                            iconId={iconId}
+                                        />
+                                    </Button>
 
-                            <ChannelMenu/>
-                        </RefContextProvider>
+                                    <ChannelMenu leaderElementRef={ref}/>
+                                </>
+                            )}
+                        </Ref>
                     </TopBar>
                 );
             }}

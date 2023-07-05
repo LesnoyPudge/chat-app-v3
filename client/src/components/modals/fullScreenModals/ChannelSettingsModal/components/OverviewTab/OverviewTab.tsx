@@ -57,7 +57,7 @@ export const OverviewTab: FC = () => {
                                         <>
                                             <Image
                                                 className={styles.channelImage}
-                                                src='https://picsum.photos/150'
+                                                src='https://i.pravatar.cc/150'
                                                 file={value[0]}
                                                 alt='Значок канала'
                                             />

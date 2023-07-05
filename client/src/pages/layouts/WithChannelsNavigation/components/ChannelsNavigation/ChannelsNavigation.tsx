@@ -1,5 +1,5 @@
 import { FC, useRef } from 'react';
-import { Icon, Tooltip, RefContextProvider, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List } from '@components';
+import { Icon, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List, Ref } from '@components';
 import { WrapperWithBullet } from './components';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -8,19 +8,19 @@ import { MoveFocusInside } from 'react-focus-lock';
 
 
 const channels = [
-    { avatar: 'https://picsum.photos/80', id: '1asd', name: 'amazing channel', rooms: [{ id: '1' }] }, 
-    { avatar: 'https://picsum.photos/81', id: '2yk', name: 'wow', rooms: [{ id: '2' }] },
+    { avatar: 'https://i.pravatar.cc/80', id: '1asd', name: 'amazing channel', rooms: [{ id: '1' }] }, 
+    { avatar: 'https://i.pravatar.cc/81', id: '2yk', name: 'wow', rooms: [{ id: '2' }] },
     { avatar: '', id: '3eh', name: 'first', rooms: [{ id: '2' }] },
     { avatar: '', id: '4tu.', name: '2', rooms: [{ id: '2' }] },
-    { avatar: 'https://picsum.photos/82', id: '5szb', name: '3', rooms: [{ id: '2' }] },
+    { avatar: 'https://i.pravatar.cc/82', id: '5szb', name: '3', rooms: [{ id: '2' }] },
     { avatar: '', id: '6tru', name: '4', rooms: [{ id: '2' }] },
     { avatar: '', id: '7nfk', name: '5', rooms: [{ id: '2' }] },
     { avatar: '', id: '8f.', name: '6', rooms: [{ id: '2' }] },
     { avatar: '', id: '9aerg', name: '7', rooms: [{ id: '2' }] },
-    { avatar: 'https://picsum.photos/83', id: '10uik', name: '8', rooms: [{ id: '2' }] },
+    { avatar: 'https://i.pravatar.cc/83', id: '10uik', name: '8', rooms: [{ id: '2' }] },
     { avatar: '', id: '11ou;', name: '9', rooms: [{ id: '2' }] },
-    { avatar: 'https://picsum.photos/84', id: '12wfEGA', name: '1 0', rooms: [{ id: '2' }] },
-    { avatar: 'https://picsum.photos/85', id: '13tyhd', name: '1 1', rooms: [{ id: '2' }] },
+    { avatar: 'https://i.pravatar.cc/84', id: '12wfEGA', name: '1 0', rooms: [{ id: '2' }] },
+    { avatar: 'https://i.pravatar.cc/85', id: '13tyhd', name: '1 1', rooms: [{ id: '2' }] },
     { avatar: '', id: '14zfbv', name: '1 2', rooms: [{ id: '2' }] },
     { avatar: '', id: '15sryth', name: '1 3', rooms: [{ id: '2' }] },
     { avatar: '', id: '16gra', name: '1 4 4 56 78 8', rooms: [{ id: '2' }] },
@@ -76,29 +76,37 @@ export const ChannelsNavigation: FC = () => {
                 <div className={styles.inner}>
                     <div className={twClassNames(styles.sticky, styles.header)} >
                         <WrapperWithBullet isActive={isInAppOrPrivateChatPage}>
-                            <RefContextProvider>
-                                <Button
-                                    className={twClassNames(
-                                        styles.button.base,
-                                        styles.brandButton.base,
-                                        { 
-                                            [styles.button.active]: isInAppOrPrivateChatPage,
-                                            [styles.brandButton.active]: isInAppOrPrivateChatPage, 
-                                        },
-                                    )}
-                                    label='Перейти на главную страницу'
-                                    onLeftClick={navigateTo.app}
-                                >
-                                    <Icon 
-                                        className={styles.icon}
-                                        iconId='discord-logo'
-                                    />
-                                </Button>
+                            <Ref<HTMLButtonElement>>
+                                {(ref) => (
+                                    <>
+                                        <Button
+                                            className={twClassNames(
+                                                styles.button.base,
+                                                styles.brandButton.base,
+                                                { 
+                                                    [styles.button.active]: isInAppOrPrivateChatPage,
+                                                    [styles.brandButton.active]: isInAppOrPrivateChatPage, 
+                                                },
+                                            )}
+                                            innerRef={ref}
+                                            label='Перейти на главную страницу'
+                                            onLeftClick={navigateTo.app}
+                                        >
+                                            <Icon 
+                                                className={styles.icon}
+                                                iconId='discord-logo'
+                                            />
+                                        </Button>
 
-                                <Tooltip preferredAlignment='right'>
-                                    <>Главная страница</>
-                                </Tooltip>
-                            </RefContextProvider>
+                                        <Tooltip 
+                                            preferredAlignment='right'
+                                            leaderElementRef={ref}
+                                        >
+                                            <>Главная страница</>
+                                        </Tooltip>
+                                    </>
+                                )}
+                            </Ref>
                         </WrapperWithBullet>
                 
                         <Conditional isRendered={showChannels}>
@@ -121,35 +129,49 @@ export const ChannelsNavigation: FC = () => {
                                     return (
                                         <MoveFocusInside disabled={!getIsFocused(channel.id)}>
                                             <WrapperWithBullet isActive={isInChannel}>
-                                                <RefContextProvider>
-                                                    <Button
-                                                        className={twClassNames(
-                                                            styles.button.base, 
-                                                            styles.brandButton.base,
-                                                            { 
-                                                                [styles.button.active]: isInChannel,
-                                                                [styles.brandButton.active]: isInChannel, 
-                                                            },
-                                                        )}
-                                                        tabIndex={getTabIndex(channel.id)}
-                                                        label={channel.name}
-                                                        onLeftClick={withFocusSet(channel.id, handleNavigateToChannel)}
-                                                    >
-                                                        <ChannelAvatar
-                                                            className={styles.channelAvatar}
-                                                            avatar={channel.avatar}
-                                                            name={channel.name}
-                                                        />
-                                                    </Button>
+                                                <Ref<HTMLButtonElement>>
+                                                    {(ref) => (
+                                                        <>
+                                                            <Button
+                                                                className={twClassNames(
+                                                                    styles.button.base, 
+                                                                    styles.brandButton.base,
+                                                                    { 
+                                                                        [styles.button.active]: isInChannel,
+                                                                        [styles.brandButton.active]: isInChannel, 
+                                                                    },
+                                                                )}
+                                                                tabIndex={getTabIndex(channel.id)}
+                                                                label={channel.name}
+                                                                innerRef={ref}
+                                                                onLeftClick={withFocusSet(channel.id, handleNavigateToChannel)}
+                                                            >
+                                                                <ChannelAvatar
+                                                                    className={styles.channelAvatar}
+                                                                    avatar={channel.avatar}
+                                                                    name={channel.name}
+                                                                />
+                                                            </Button>
 
-                                                    <Tooltip preferredAlignment='right'>
-                                                        <>{channel.name}</>
-                                                    </Tooltip>
+                                                            <Tooltip 
+                                                                preferredAlignment='right'
+                                                                leaderElementRef={ref}
+                                                            >
+                                                                <>{channel.name}</>
+                                                            </Tooltip>
 
-                                                    <ContextMenu preferredAlignment='right'>
-                                                        <>menu</>
-                                                    </ContextMenu>
-                                                </RefContextProvider>
+                                                            <OverlayContextProvider>
+                                                                <ContextMenu 
+                                                                    preferredAlignment='right'
+                                                                    leaderElementRef={ref}
+                                                                    withContextMenuHandler
+                                                                >
+                                                                    <>menu</>
+                                                                </ContextMenu>
+                                                            </OverlayContextProvider>
+                                                        </>
+                                                    )}
+                                                </Ref>
                                             </WrapperWithBullet>
                                         </MoveFocusInside>
                                     );
@@ -166,33 +188,41 @@ export const ChannelsNavigation: FC = () => {
                         <OverlayContextProvider>
                             {({ openOverlay, isOverlayExist }) => (
                                 <WrapperWithBullet isActive={isOverlayExist}>
-                                    <RefContextProvider>
-                                        <Button
-                                            className={twClassNames(
-                                                styles.button.base, 
-                                                styles.actionButton.base,
-                                                { 
-                                                    [styles.button.active]: isOverlayExist,
-                                                    [styles.actionButton.active]: isOverlayExist, 
-                                                },
-                                            )}
-                                            hasPopup='dialog'
-                                            isActive={isOverlayExist}
-                                            label='Найти публичный канал'
-                                            onLeftClick={openOverlay}
-                                        >
-                                            <Icon 
-                                                className={styles.icon}
-                                                iconId='navigator-icon'
-                                            />
-                                        </Button>
+                                    <Ref<HTMLButtonElement>>
+                                        {(ref) => (
+                                            <>
+                                                <Button
+                                                    className={twClassNames(
+                                                        styles.button.base, 
+                                                        styles.actionButton.base,
+                                                        { 
+                                                            [styles.button.active]: isOverlayExist,
+                                                            [styles.actionButton.active]: isOverlayExist, 
+                                                        },
+                                                    )}
+                                                    hasPopup='dialog'
+                                                    isActive={isOverlayExist}
+                                                    label='Найти публичный канал'
+                                                    innerRef={ref}
+                                                    onLeftClick={openOverlay}
+                                                >
+                                                    <Icon 
+                                                        className={styles.icon}
+                                                        iconId='navigator-icon'
+                                                    />
+                                                </Button>
 
-                                        <FindChannelModal/>
+                                                <FindChannelModal/>
 
-                                        <Tooltip preferredAlignment='right'>
-                                            <>Найти публичный канал</>
-                                        </Tooltip>
-                                    </RefContextProvider>
+                                                <Tooltip 
+                                                    preferredAlignment='right'
+                                                    leaderElementRef={ref}
+                                                >
+                                                    <>Найти публичный канал</>
+                                                </Tooltip>
+                                            </>
+                                        )}
+                                    </Ref>
                                 </WrapperWithBullet>  
                             )}
                         </OverlayContextProvider>
@@ -200,33 +230,41 @@ export const ChannelsNavigation: FC = () => {
                         <OverlayContextProvider>
                             {({ openOverlay, isOverlayExist }) => (
                                 <WrapperWithBullet isActive={isOverlayExist}>
-                                    <RefContextProvider>
-                                        <Button
-                                            className={twClassNames(
-                                                styles.button.base, 
-                                                styles.actionButton.base,
-                                                { 
-                                                    [styles.button.active]: isOverlayExist,
-                                                    [styles.actionButton.active]: isOverlayExist, 
-                                                },
-                                            )}
-                                            hasPopup='dialog'
-                                            isActive={isOverlayExist}
-                                            label='Добавить канал'
-                                            onLeftClick={openOverlay}
-                                        >
-                                            <Icon 
-                                                className={styles.icon}
-                                                iconId='add-channel-navigation-icon'
-                                            />
-                                        </Button>
+                                    <Ref<HTMLButtonElement>>
+                                        {(ref) => (
+                                            <>
+                                                <Button
+                                                    className={twClassNames(
+                                                        styles.button.base, 
+                                                        styles.actionButton.base,
+                                                        { 
+                                                            [styles.button.active]: isOverlayExist,
+                                                            [styles.actionButton.active]: isOverlayExist, 
+                                                        },
+                                                    )}
+                                                    hasPopup='dialog'
+                                                    isActive={isOverlayExist}
+                                                    label='Добавить канал'
+                                                    innerRef={ref}
+                                                    onLeftClick={openOverlay}
+                                                >
+                                                    <Icon 
+                                                        className={styles.icon}
+                                                        iconId='add-channel-navigation-icon'
+                                                    />
+                                                </Button>
 
-                                        <CreateChannelModal/>
+                                                <CreateChannelModal/>
 
-                                        <Tooltip preferredAlignment='right'>
-                                            <>Добавить канал</>
-                                        </Tooltip>
-                                    </RefContextProvider>
+                                                <Tooltip 
+                                                    preferredAlignment='right'
+                                                    leaderElementRef={ref}
+                                                >
+                                                    <>Добавить канал</>
+                                                </Tooltip>
+                                            </>
+                                        )}
+                                    </Ref>
                                 </WrapperWithBullet>  
                             )}
                         </OverlayContextProvider>

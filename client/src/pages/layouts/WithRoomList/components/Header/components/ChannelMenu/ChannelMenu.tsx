@@ -1,5 +1,6 @@
-import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, RefContext, Icon, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider, ChannelSettingsModal } from '@components';
+import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, Icon, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider, ChannelSettingsModal } from '@components';
 import { animated } from '@react-spring/web';
+import { PropsWithLeaderElementRef } from '@types';
 import { getTransitionOptions } from '@utils';
 import { FC, useContext } from 'react';
 
@@ -29,10 +30,9 @@ const styles = {
     buttonIcon: 'h-5 w-5 transition-none',
 };
 
-export const ChannelMenu: FC = () => {
+export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef }) => {
     const { isOverlayExist } = useContext(OverlayContext) as OverlayContext;
-    const { targetRef } = useContext(RefContext) as RefContext;
-    
+   
     return (
         <AnimatedTransition 
             isExist={isOverlayExist}
@@ -50,7 +50,7 @@ export const ChannelMenu: FC = () => {
                     <RelativelyPositioned
                         preferredAlignment='bottom'
                         centered
-                        targetRefOrRect={targetRef}
+                        leaderElementOrRectRef={leaderElementRef}
                         spacing={10}
                     >
                         <animated.div style={style}>

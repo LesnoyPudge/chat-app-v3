@@ -1,23 +1,21 @@
-import { FC, useEffect, useRef, useState } from 'react';
-// import Nouislider from 'nouislider-react';
+import { FC, useEffect, useState } from 'react';
 import { PropsWithClassName } from '@types';
-import noUiSlider, { PartialFormatter } from 'nouislider';
+import { PartialFormatter } from 'nouislider';
 import 'nouislider/dist/nouislider.css';
 import { NoUiSlider } from '@libs';
-// import 'nouislider/distribute/nouislider.css';
 
 
 
-interface ISliderInput extends PropsWithClassName {
-    name: string;
+interface SliderInput extends PropsWithClassName {
+    // name: string;
     start: number;
     range: number[];
     format?: PartialFormatter;
 }
 
-export const SliderInput: FC<ISliderInput> = ({
+export const SliderInput: FC<SliderInput> = ({
     className = '',
-    name,
+    // name,
     start,
     range,
     format,

@@ -58,7 +58,9 @@ export const emojiList: EmojiItem[] = [
 
 export const uniqueEmojiCodeList = emojiList.map((item) => item.code[0]);
 
-const baseClassName = 'inline-block w-6 h-6 shrink-0 object-contain';
+const styles = {
+    base: 'inline-block w-6 h-6 shrink-0 object-contain',
+};
 
 export const Emoji: FC<Emoji> = ({
     className = '',
@@ -69,7 +71,7 @@ export const Emoji: FC<Emoji> = ({
     
     return (
         <Image
-            className={twClassNames(baseClassName, className)}
+            className={twClassNames(styles.base, className)}
             src={src}
             alt={emoji?.label}
         />

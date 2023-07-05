@@ -1,4 +1,4 @@
-import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal, Icon, OverlayContextProvider, RefContextProvider, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip } from '@components';
+import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal, Icon, OverlayContextProvider, Ref, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip } from '@components';
 import { useKeyboardNavigation, useRefWithSetter, useTextInput } from '@hooks';
 import { HeadingLevel, Heading } from '@libs';
 import { ObjectWithId } from '@types';
@@ -109,30 +109,36 @@ export const RoleContent: FC = () => {
     
                                         <OverlayContextProvider>
                                             {({ isOverlayExist, openOverlay }) => (
-                                                <RefContextProvider>
-                                                    <Button
-                                                        className={styles.deleteRoleButton}
-                                                        label={`Удалить роль ${role.name}`}
-                                                        hasPopup='dialog'
-                                                        isActive={isOverlayExist}
-                                                        onLeftClick={openOverlay}
-                                                    >
-                                                        <Icon
-                                                            className={styles.deleteRoleIcon}
-                                                            iconId='garbage-can-icon'
-                                                        />
-                                                    </Button>
+                                                <Ref<HTMLButtonElement>>
+                                                    {(ref) => (
+                                                        <>
+                                                            <Button
+                                                                className={styles.deleteRoleButton}
+                                                                label={`Удалить роль ${role.name}`}
+                                                                hasPopup='dialog'
+                                                                isActive={isOverlayExist}
+                                                                innerRef={ref}
+                                                                onLeftClick={openOverlay}
+                                                            >
+                                                                <Icon
+                                                                    className={styles.deleteRoleIcon}
+                                                                    iconId='garbage-can-icon'
+                                                                />
+                                                            </Button>
         
-                                                    <Tooltip 
-                                                        preferredAlignment='top'
-                                                        spacing={8}
-                                                        boundsSize={0}
-                                                    >
-                                                        <>Удалить роль</>
-                                                    </Tooltip>
+                                                            <Tooltip 
+                                                                preferredAlignment='top'
+                                                                spacing={8}
+                                                                boundsSize={0}
+                                                                leaderElementRef={ref}
+                                                            >
+                                                                <>Удалить роль</>
+                                                            </Tooltip>
     
-                                                    <DeleteRoleModal roleId={role.id}/>
-                                                </RefContextProvider>
+                                                            <DeleteRoleModal roleId={role.id}/>
+                                                        </>
+                                                    )}
+                                                </Ref>
                                             )}
                                         </OverlayContextProvider>
                                     </div>

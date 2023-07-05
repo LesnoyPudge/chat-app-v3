@@ -1,5 +1,5 @@
 import { FC, useContext, useRef } from 'react';
-import { RefContextProvider, Button, Icon, TabList, Tooltip, TabContext, Scrollable, List } from '@components';
+import { Button, Icon, TabList, Tooltip, TabContext, Scrollable, List, Ref } from '@components';
 import { TabTitle } from '../../../../../components';
 import { objectKeysToIdArray, twClassNames } from '@utils';
 import { useKeyboardNavigation } from '@hooks';
@@ -48,26 +48,32 @@ export const RoleNavigation: FC = () => {
                     <>Роли</>
                 </TabTitle>
 
-                <RefContextProvider>
-                    <Button
-                        className={styles.createRoleButton}
-                        label='Создать роль'
-                        onLeftClick={handleCreateRole}
-                    >
-                        <Icon
-                            className={styles.createRoleIcon}
-                            iconId='plus-icon'
-                        />
-                    </Button>
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <Button
+                                className={styles.createRoleButton}
+                                label='Создать роль'
+                                innerRef={ref}
+                                onLeftClick={handleCreateRole}
+                            >
+                                <Icon
+                                    className={styles.createRoleIcon}
+                                    iconId='plus-icon'
+                                />
+                            </Button>
 
-                    <Tooltip
-                        preferredAlignment='top'
-                        spacing={5}
-                        boundsSize={0}
-                    >
-                        <>Создание роли</>
-                    </Tooltip>
-                </RefContextProvider>
+                            <Tooltip
+                                preferredAlignment='top'
+                                spacing={5}
+                                boundsSize={0}
+                                leaderElementRef={ref}
+                            >
+                                <>Создание роли</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
             </div>
 
             <Scrollable>

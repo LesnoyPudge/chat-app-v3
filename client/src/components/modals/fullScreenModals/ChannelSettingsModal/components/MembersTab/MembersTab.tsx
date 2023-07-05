@@ -1,4 +1,4 @@
-import { BanMemberModal, Button, ChangeChannelOwnerModal, ChannelSettingsModalFormValues, ChannelSettingsModalTabs, Icon, KickMemberModal, OverlayContextProvider, RefContextProvider, SearchBar, Separator, TabContext, TabPanel, Tooltip, UserAvatar } from '@components';
+import { BanMemberModal, Button, ChangeChannelOwnerModal, ChannelSettingsModalFormValues, ChannelSettingsModalTabs, Icon, KickMemberModal, OverlayContextProvider, Ref, SearchBar, Separator, TabContext, TabPanel, Tooltip, UserAvatar } from '@components';
 import { useTextInput } from '@hooks';
 import { twClassNames } from '@utils';
 import { useFormikContext } from 'formik';
@@ -82,95 +82,117 @@ export const MembersTab: FC = () => {
                             </div>
 
                             <div className={styles.buttonArea}>
-                                <RefContextProvider>
-                                    <OverlayContextProvider>
-                                        {({ openOverlay, isOverlayExist }) => (
-                                            <>
-                                                <Button
-                                                    className={twClassNames(styles.button, styles.dangerButton)}
-                                                    label='Выгнать пользователя'
-                                                    hasPopup='dialog'
-                                                    isActive={isOverlayExist}
-                                                    onLeftClick={openOverlay}
-                                                >
-                                                    <Icon
-                                                        className={styles.icon}
-                                                        iconId='doorway-icon'
-                                                    />
-                                                </Button>
+                                <Ref<HTMLButtonElement>>
+                                    {(ref) => (
+                                        <>
+                                            <OverlayContextProvider>
+                                                {({ openOverlay, isOverlayExist }) => (
+                                                    <>
+                                                        <Button
+                                                            className={twClassNames(styles.button, styles.dangerButton)}
+                                                            label='Выгнать пользователя'
+                                                            hasPopup='dialog'
+                                                            isActive={isOverlayExist}
+                                                            innerRef={ref}
+                                                            onLeftClick={openOverlay}
+                                                        >
+                                                            <Icon
+                                                                className={styles.icon}
+                                                                iconId='doorway-icon'
+                                                            />
+                                                        </Button>
 
-                                                <KickMemberModal 
-                                                    channelId={values.channelId} 
-                                                    memberId={member.id}
-                                                />
-                                            </>
-                                        )}
-                                    </OverlayContextProvider>
+                                                        <KickMemberModal 
+                                                            channelId={values.channelId} 
+                                                            memberId={member.id}
+                                                        />
+                                                    </>
+                                                )}
+                                            </OverlayContextProvider>
                                 
-                                    <Tooltip preferredAlignment='top'>
-                                        <>Выгнать</>
-                                    </Tooltip>
-                                </RefContextProvider>
+                                            <Tooltip 
+                                                preferredAlignment='top'
+                                                leaderElementRef={ref}
+                                            >
+                                                <>Выгнать</>
+                                            </Tooltip>
+                                        </>
+                                    )}
+                                </Ref>
 
-                                <RefContextProvider>
-                                    <OverlayContextProvider>
-                                        {({ openOverlay, isOverlayExist }) => (
-                                            <>
-                                                <Button
-                                                    className={twClassNames(styles.button, styles.dangerButton)}
-                                                    label='Забанить пользователя'
-                                                    hasPopup='dialog'
-                                                    isActive={isOverlayExist}
-                                                    onLeftClick={openOverlay}
-                                                >
-                                                    <Icon
-                                                        className={styles.icon}
-                                                        iconId='cross-icon'
-                                                    />
-                                                </Button>
+                                <Ref>
+                                    {(ref) => (
+                                        <>
+                                            <OverlayContextProvider>
+                                                {({ openOverlay, isOverlayExist }) => (
+                                                    <>
+                                                        <Button
+                                                            className={twClassNames(styles.button, styles.dangerButton)}
+                                                            label='Забанить пользователя'
+                                                            hasPopup='dialog'
+                                                            isActive={isOverlayExist}
+                                                            onLeftClick={openOverlay}
+                                                        >
+                                                            <Icon
+                                                                className={styles.icon}
+                                                                iconId='cross-icon'
+                                                            />
+                                                        </Button>
 
-                                                <BanMemberModal
-                                                    channelId={values.channelId}
-                                                    memberId={member.id}
-                                                />
-                                            </>
-                                        )}
-                                    </OverlayContextProvider>
+                                                        <BanMemberModal
+                                                            channelId={values.channelId}
+                                                            memberId={member.id}
+                                                        />
+                                                    </>
+                                                )}
+                                            </OverlayContextProvider>
 
-                                    <Tooltip preferredAlignment='top'>
-                                        <>Забанить</>
-                                    </Tooltip>
-                                </RefContextProvider>
+                                            <Tooltip 
+                                                preferredAlignment='top'
+                                                leaderElementRef={ref}
+                                            >
+                                                <>Забанить</>
+                                            </Tooltip>
+                                        </>
+                                    )}
+                                </Ref>
 
-                                <RefContextProvider>
-                                    <OverlayContextProvider>
-                                        {({ isOverlayExist, openOverlay }) => (
-                                            <>
-                                                <Button
-                                                    className={styles.button}
-                                                    label='Передать права на канал'
-                                                    hasPopup='dialog'
-                                                    isActive={isOverlayExist}
-                                                    onLeftClick={openOverlay}
-                                                >
-                                                    <Icon
-                                                        className={styles.icon}
-                                                        iconId='crown-icon'
-                                                    />
-                                                </Button>
+                                <Ref<HTMLButtonElement>>
+                                    {(ref) => (
+                                        <>
+                                            <OverlayContextProvider>
+                                                {({ isOverlayExist, openOverlay }) => (
+                                                    <>
+                                                        <Button
+                                                            className={styles.button}
+                                                            label='Передать права на канал'
+                                                            hasPopup='dialog'
+                                                            isActive={isOverlayExist}
+                                                            onLeftClick={openOverlay}
+                                                        >
+                                                            <Icon
+                                                                className={styles.icon}
+                                                                iconId='crown-icon'
+                                                            />
+                                                        </Button>
 
-                                                <ChangeChannelOwnerModal
-                                                    channelId={values.channelId}
-                                                    memberId={member.id}
-                                                />
-                                            </>
-                                        )}
-                                    </OverlayContextProvider>
+                                                        <ChangeChannelOwnerModal
+                                                            channelId={values.channelId}
+                                                            memberId={member.id}
+                                                        />
+                                                    </>
+                                                )}
+                                            </OverlayContextProvider>
 
-                                    <Tooltip preferredAlignment='top'>
-                                        <>Передать права на канал</>
-                                    </Tooltip>
-                                </RefContextProvider>
+                                            <Tooltip 
+                                                preferredAlignment='top'
+                                                leaderElementRef={ref}
+                                            >
+                                                <>Передать права на канал</>
+                                            </Tooltip>
+                                        </>
+                                    )}
+                                </Ref>
                             </div>
                         </div>
 

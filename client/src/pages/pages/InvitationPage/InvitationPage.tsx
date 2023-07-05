@@ -26,7 +26,7 @@ export const InvitationPage: FC = () => {
             <div className='flex flex-col items-center text-center p-8 max-[480px]:px-4 m-auto w-[480px] rounded bg-primary-200 shadow-elevation-high'>
                 <Image
                     className='w-16 h-16 rounded-full'
-                    src='https://picsum.photos/80'
+                    src='https://i.pravatar.cc/80'
                 />
 
                 <div className='flex flex-col mt-8'>

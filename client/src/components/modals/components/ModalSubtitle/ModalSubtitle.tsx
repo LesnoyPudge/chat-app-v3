@@ -4,14 +4,16 @@ import { FC } from 'react';
 
 
 
-const baseClassName = 'text-color-secondary text-center';
+const styles = {
+    base: 'text-color-secondary text-center',
+};
 
 export const ModalSubtitle: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {
     return (
-        <div className={twClassNames(baseClassName, className)}>
+        <div className={twClassNames(styles.base, className)}>
             {children}
         </div>
     );

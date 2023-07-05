@@ -1,4 +1,4 @@
-import { TopBar, UserStatus, RefContextProvider, Button, Icon, Tooltip, Conditional, UserAvatar } from '@components';
+import { TopBar, UserStatus, Button, Icon, Tooltip, Conditional, UserAvatar, Ref } from '@components';
 import { Heading } from '@libs';
 import { twClassNames } from '@utils';
 import { FC, useState } from 'react';
@@ -30,21 +30,29 @@ export const Header: FC = () => {
                     status='online'
                 />
 
-                <RefContextProvider>
-                    <Button 
-                        className='ml-auto fill-icon-200 hover:fill-icon-100'
-                        onLeftClick={handleClick}
-                    >
-                        <Icon
-                            className='w-6 h-6'
-                            iconId='call'
-                        />
-                    </Button>
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <Button 
+                                className='ml-auto fill-icon-200 hover:fill-icon-100'
+                                innerRef={ref}
+                                onLeftClick={handleClick}
+                            >
+                                <Icon
+                                    className='w-6 h-6'
+                                    iconId='call'
+                                />
+                            </Button>
 
-                    <Tooltip preferredAlignment='bottom'>
-                        <>Начать голосовой звонок</>
-                    </Tooltip>
-                </RefContextProvider>
+                            <Tooltip 
+                                preferredAlignment='bottom' 
+                                leaderElementRef={ref}
+                            >
+                                <>Начать голосовой звонок</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
             </TopBar>
 
             <Conditional isRendered={inCall}>

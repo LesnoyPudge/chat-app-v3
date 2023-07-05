@@ -1,4 +1,4 @@
-import { Button, Icon, OverlayContextProvider, RefContextProvider, RoomSettingsModal, Scrollable, Tooltip } from '@components';
+import { Button, Icon, OverlayContextProvider, Ref, RoomSettingsModal, Scrollable, Tooltip } from '@components';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { conditional, twClassNames } from '@utils';
 import { FC, useRef } from 'react';
@@ -133,30 +133,36 @@ export const RoomList: FC = () => {
         
                                     <OverlayContextProvider>
                                         {({ openOverlay, isOverlayExist }) => (
-                                            <RefContextProvider>
-                                                <Button
-                                                    className={styles.actionButton}
-                                                    tabIndex={tabIndex}
-                                                    isActive={isOverlayExist}
-                                                    hasPopup='dialog'
-                                                    label={settingsLabel}
-                                                    onLeftClick={setFocusedIdOnClick(openOverlay)}
-                                                >
-                                                    <Icon
-                                                        className={styles.actionIcon}
-                                                        iconId='settings-gear'
-                                                    />
-                                                </Button>
+                                            <Ref<HTMLButtonElement>>
+                                                {(ref) => (
+                                                    <>
+                                                        <Button
+                                                            className={styles.actionButton}
+                                                            tabIndex={tabIndex}
+                                                            isActive={isOverlayExist}
+                                                            hasPopup='dialog'
+                                                            label={settingsLabel}
+                                                            innerRef={ref}
+                                                            onLeftClick={setFocusedIdOnClick(openOverlay)}
+                                                        >
+                                                            <Icon
+                                                                className={styles.actionIcon}
+                                                                iconId='settings-gear'
+                                                            />
+                                                        </Button>
         
-                                                <RoomSettingsModal roomId={room.id}/>
+                                                        <RoomSettingsModal roomId={room.id}/>
         
-                                                <Tooltip 
-                                                    preferredAlignment='top'
-                                                    spacing={5}
-                                                >
-                                                    <>Настроить комнату</>
-                                                </Tooltip>
-                                            </RefContextProvider>
+                                                        <Tooltip 
+                                                            preferredAlignment='top'
+                                                            spacing={5}
+                                                            leaderElementRef={ref}
+                                                        >
+                                                            <>Настроить комнату</>
+                                                        </Tooltip>
+                                                    </>
+                                                )}
+                                            </Ref>
                                         )}
                                     </OverlayContextProvider>
                                 </li>

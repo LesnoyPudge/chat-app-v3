@@ -1,18 +1,17 @@
-import { FC, useContext, useState } from 'react';
-import { OverlayPortal, Conditional, RelativelyPositioned, RefContext, AnimatedTransition } from '@components';
-import { animated, to } from '@react-spring/web';
-import { useEventListener } from 'usehooks-ts';
-import { Alignment, PropsWithChildrenAndClassName } from '@types';
+import { AnimatedTransition, Conditional, OverlayPortal, RelativelyPositioned } from '@components';
+import { RelativePositionOptions, useEventListener, useRefWithSetter, UseRelativePositionArgs, useSharedIntersectionObserver } from '@hooks';
+import { animated } from '@react-spring/web';
+import { PropsWithChildrenAndClassName, PropsWithLeaderElementRef } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
+import { FC, useState } from 'react';
 
 
 
-interface Tooltip extends PropsWithChildrenAndClassName {
-    preferredAlignment: Alignment;
-    boundsSize?: number;
-    spacing?: number;
-    dependencyList?: unknown[];
-}
+type Tooltip = (
+    PropsWithChildrenAndClassName &
+    PropsWithLeaderElementRef & 
+    RelativePositionOptions
+);
 
 const transitionOptions = getTransitionOptions.withOpacity({
     from: {
@@ -29,33 +28,65 @@ const transitionOptions = getTransitionOptions.withOpacity({
     },
 });
 
-const baseClassName = `bg-primary-500 text-color-base font-bold 
-py-[5px] px-2.5 rounded-md w-max max-w-[300px] shadow-elevation-low`;
+const styles = {
+    base: `bg-primary-500 text-color-base font-bold 
+    py-[5px] px-2.5 rounded-md w-max max-w-[300px] shadow-elevation-low`,
+};
 
-export const Tooltip: FC<Tooltip> = ({
-    className,
-    preferredAlignment,
-    boundsSize = 20,
-    spacing = 20,
-    dependencyList,
-    children,
+export const Tooltip: FC<Tooltip> = ({ 
+    className = '',
+    leaderElementRef,
+    children, 
+    ...options
 }) => {
-    const { targetRef } = useContext(RefContext) as RefContext;
     const [isExist, setIsExist] = useState(false);
+    const [withKeyboardRef, setWithKeyboard] = useRefWithSetter(false);
+    const [withMouseRef, setWithMouse] = useRefWithSetter(false);
 
-    const open = () => setIsExist(true);
-    const close = () => setIsExist(false);
+    const changeState = () => {
+        const newState = withKeyboardRef.current || withMouseRef.current;
+        if (newState === isExist) return;
+
+        setIsExist(newState);
+    };
+
     const handleFocusIn = (e: FocusEvent) => {
-        if (e.target === targetRef.current) open();
+        if (!leaderElementRef.current) return;
+        if (e.target !== leaderElementRef.current) return;
+
+        setWithKeyboard(true);
+        changeState();
     };
+    
     const handleFocusOut = (e: FocusEvent) => {
-        if (e.target === targetRef.current) close();
+        if (!leaderElementRef.current) return;
+        if (e.target !== leaderElementRef.current) return;
+        
+        setWithKeyboard(false);
+        changeState();
+    };
+    
+    const handleMouseEnter = () => {
+        setWithMouse(true);
+        changeState();
     };
 
-    useEventListener('focusin', handleFocusIn, targetRef);
-    useEventListener('focusout', handleFocusOut, targetRef);
-    useEventListener('mouseenter', open, targetRef);
-    useEventListener('mouseleave', close, targetRef);
+    const handleMouseLeave = () => {
+        setWithMouse(false);
+        changeState();
+    };
+
+    useEventListener('focusin', handleFocusIn, leaderElementRef);
+    useEventListener('focusout', handleFocusOut, leaderElementRef);
+    useEventListener('mouseenter', handleMouseEnter, leaderElementRef);
+    useEventListener('mouseleave', handleMouseLeave, leaderElementRef);
+
+    useSharedIntersectionObserver(leaderElementRef, ({ isIntersecting }) => {
+        if (isIntersecting === isExist) return;
+        if (!withKeyboardRef.current && !withMouseRef.current) return;
+
+        setIsExist(isIntersecting);
+    });
 
     return (
         <AnimatedTransition
@@ -67,27 +98,22 @@ export const Tooltip: FC<Tooltip> = ({
                     <OverlayPortal>
                         <div className='overlay-item-wrapper'>
                             <RelativelyPositioned
-                                preferredAlignment={preferredAlignment} 
-                                targetRefOrRect={targetRef}
-                                boundsSize={boundsSize}
-                                spacing={spacing}
-                                swappableAlignment
-                                centered
-                                dependencyList={dependencyList}
+                                leaderElementOrRectRef={leaderElementRef}
+                                {...options}
                             >
                                 {({ alignment }) => {
                                     const alignmentStyles = {
                                         top: {
-                                            translateY: to([style.offset], (offset) => `-${offset}px`),
+                                            translateY: style.offset.to((offset => `-${offset}px`)),
                                         },
                                         bottom: {
-                                            translateY: to([style.offset], (offset) => `${offset}px`),
+                                            translateY: style.offset.to((offset) => `${offset}px`),
                                         },
                                         left: {
-                                            translateX: to([style.offset], (offset) => `-${offset}px`),
+                                            translateX: style.offset.to((offset) => `-${offset}px`),
                                         },
                                         right: {
-                                            translateX: to([style.offset], (offset) => `${offset}px`),
+                                            translateX: style.offset.to((offset) => `${offset}px`),
                                         },
                                     };
     
@@ -98,7 +124,7 @@ export const Tooltip: FC<Tooltip> = ({
       
                                     return (
                                         <animated.div 
-                                            className={twClassNames(baseClassName, className)}
+                                            className={twClassNames(styles.base, className)}
                                             style={styleWithOffset}
                                             role='tooltip'
                                         >

@@ -1,4 +1,4 @@
-import { AppSettingsModal, Button, Icon, OverlayContextProvider, RefContextProvider, Tooltip } from '@components';
+import { AppSettingsModal, Button, Icon, OverlayContextProvider, Ref, Tooltip } from '@components';
 import { conditional } from '@utils';
 import { FC } from 'react';
 import { useToggle } from 'usehooks-ts';
@@ -27,72 +27,88 @@ export const UserToolBar: FC = () => {
         <div className={styles.wrapper}>
             <UserInfo/>
 
-            <RefContextProvider>
-                <Button 
-                    className={styles.button}
-                    label='Переключить состояние микрофона'
-                    isActive={isVoiceMuted}
-                    onLeftClick={toggleVoice}
-                >
-                    <Icon
-                        className={styles.icon}
-                        iconId={voiceIconId}
-                    />
-                </Button>
+            <Ref<HTMLButtonElement>>
+                {(ref) => (
+                    <>
+                        <Button 
+                            className={styles.button}
+                            label='Переключить состояние микрофона'
+                            isActive={isVoiceMuted}
+                            innerRef={ref}
+                            onLeftClick={toggleVoice}
+                        >
+                            <Icon
+                                className={styles.icon}
+                                iconId={voiceIconId}
+                            />
+                        </Button>
 
-                <Tooltip 
-                    preferredAlignment='top'
-                    dependencyList={[isVoiceMuted]}
-                >
-                    {voiceTooltip}
-                </Tooltip>
-            </RefContextProvider>
+                        <Tooltip 
+                            preferredAlignment='top'
+                            leaderElementRef={ref}
+                        >
+                            {voiceTooltip}
+                        </Tooltip>
+                    </>
+                )}
+            </Ref>
 
-            <RefContextProvider>
-                <Button 
-                    className={styles.button}
-                    label='Переключить состояние звука'
-                    isActive={isSoundMuted}
-                    onLeftClick={toggleSound}
-                >
-                    <Icon
-                        className={styles.icon}
-                        iconId={soundIconId}
-                    />
-                </Button>
+            <Ref<HTMLButtonElement>>
+                {(ref) => (
+                    <>
+                        <Button 
+                            className={styles.button}
+                            label='Переключить состояние звука'
+                            isActive={isSoundMuted}
+                            innerRef={ref}
+                            onLeftClick={toggleSound}
+                        >
+                            <Icon
+                                className={styles.icon}
+                                iconId={soundIconId}
+                            />
+                        </Button>
 
-                <Tooltip 
-                    preferredAlignment='top'
-                    dependencyList={[isSoundMuted]}
-                >
-                    {soundTooltip}
-                </Tooltip>
-            </RefContextProvider>
+                        <Tooltip 
+                            preferredAlignment='top'
+                            leaderElementRef={ref}
+                        >
+                            {soundTooltip}
+                        </Tooltip>
+                    </>
+                )}
+            </Ref>
 
             <OverlayContextProvider>
                 {({ openOverlay, isOverlayExist }) => (
-                    <>
-                        <RefContextProvider>
-                            <Button 
-                                className={styles.button}
-                                label='Открыть настройки'
-                                hasPopup='dialog'
-                                isActive={isOverlayExist}
-                                onLeftClick={openOverlay}
-                            >
-                                <Icon
-                                    className={styles.icon}
-                                    iconId='settings-gear'
-                                />
-                            </Button>
+                    <Ref<HTMLButtonElement>>
+                        {(ref) => (
+                            <>
+                                <Button 
+                                    className={styles.button}
+                                    label='Открыть настройки'
+                                    hasPopup='dialog'
+                                    isActive={isOverlayExist}
+                                    innerRef={ref}
+                                    onLeftClick={openOverlay}
+                                >
+                                    <Icon
+                                        className={styles.icon}
+                                        iconId='settings-gear'
+                                    />
+                                </Button>
 
-                            <Tooltip preferredAlignment='top'>
-                                <>Настройки</>
-                            </Tooltip>
-                        </RefContextProvider>
+                                <Tooltip 
+                                    preferredAlignment='top'
+                                    leaderElementRef={ref}
+                                >
+                                    <>Настройки</>
+                                </Tooltip>
 
-                        <AppSettingsModal/>
-                    </>
+                                <AppSettingsModal/>
+                            </>
+                        )}
+                    </Ref>
                 )}
             </OverlayContextProvider>
         </div>

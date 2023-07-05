@@ -18,21 +18,23 @@ interface SlateEditor {
     onSubmit?: (value: Descendant[]) => void;
 }
 
-const baseClassName = 'w-full break-all px-2 h-fit min-h-[44px] message-font-size message-y-padding';
+const styles = {
+    base: 'w-full break-all px-2 h-fit min-h-[44px] message-font-size message-y-padding',
+};
 
 const renderElement = ({ attributes, children, element }: RenderElementProps) => {
     switch (element.type) {
-    case 'paragraph':
-        return <SlateParagraph attributes={attributes}>{children}</SlateParagraph>;
+        case 'paragraph':
+            return <SlateParagraph attributes={attributes}>{children}</SlateParagraph>;
 
-    case 'emoji':
-        return <SlateEmoji code={element.code} attributes={attributes}>{children}</SlateEmoji>;
+        case 'emoji':
+            return <SlateEmoji code={element.code} attributes={attributes}>{children}</SlateEmoji>;
 
-    case 'link': 
-        return <SlateLink url={element.url} attributes={attributes}>{children}</SlateLink>;
+        case 'link': 
+            return <SlateLink url={element.url} attributes={attributes}>{children}</SlateLink>;
 
-    default:
-        return <>{children}</>;
+        default:
+            return <>{children}</>;
     }
 };
 
@@ -66,7 +68,7 @@ export const SlateEditor: FC<SlateEditor> = ({
 
     return (
         <Editable
-            className={twClassNames(baseClassName, className)}
+            className={twClassNames(styles.base, className)}
             placeholder={placeholder}
             suppressContentEditableWarning
             renderElement={renderElement}

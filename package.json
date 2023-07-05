@@ -12,6 +12,8 @@
         "client:build": "npm run this:build --prefix client",
         "client:lint": "npm run this:lint --prefix client",
         "client:lintFix": "npm run this:lintFix --prefix client",
+        "client:generateImageTypes": "npm run this:generateImageTypes --prefix client",
+        "client:optimizeImages": "npm run this:optimizeImages --prefix client",
         "//1": "",
         "server:install": "npm run this:install --prefix server",
         "server:uninstall": "rimraf server/node_modules",
@@ -44,7 +46,8 @@
         "concurrently": "^7.6.0",
         "cross-env": "^7.0.3",
         "is-callable": "^1.2.7",
-        "is-odd": "^3.0.1"
+        "is-odd": "^3.0.1",
+        "json-schema-to-typescript": "^13.0.2"
     },
     "devDependencies": {
         "@types/is-odd": "^3.0.1",
@@ -54,6 +57,7 @@
         "eslint-plugin-import": "^2.27.5",
         "husky": "^8.0.3",
         "rimraf": "^4.1.2",
+        "svgo": "^3.0.2",
         "ts-essentials": "^9.3.2",
         "typescript": "^4.9.5"
     }

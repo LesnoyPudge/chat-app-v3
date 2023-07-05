@@ -11,7 +11,7 @@ interface Range {
     [key: `${number}%`]: [number, number];
 }
 
-interface INoUiSlider extends PropsWithClassName {
+interface NoUiSlider extends PropsWithClassName {
     range: number[];
     start: number;
     format?: PartialFormatter;
@@ -49,7 +49,7 @@ const toValidRange = (invalidRange: number[]) => {
     return values as unknown as Range;
 };
 
-export const NoUiSlider: FC<INoUiSlider> = ({
+export const NoUiSlider: FC<NoUiSlider> = ({
     className = '',
     range,
     start,

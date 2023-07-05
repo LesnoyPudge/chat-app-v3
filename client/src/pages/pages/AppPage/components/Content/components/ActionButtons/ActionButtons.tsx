@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Button, Conditional, Icon, RefContextProvider, TabContext, Tooltip } from '@components';
+import { Button, Conditional, Icon, Ref, TabContext, Tooltip } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { getRandomNumber, twClassNames } from '@utils';
 import { useNavigator } from '@hooks';
@@ -36,119 +36,166 @@ export const ActionButtons: FC<ActionButtons> = ({
     return (
         <>
             <Conditional isRendered={isActive.allFriends || isActive.onlineFriends}>
-                <RefContextProvider>
-                    <Button 
-                        className={styles.button}
-                        label='Перейти к сообщениям'
-                        tabIndex={tabIndex}
-                        onLeftClick={handleNavigateToChat}
-                    >
-                        <Icon
-                            className={styles.icon}
-                            iconId='message-bubble-icon'
-                        />
-                    </Button>
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <Button 
+                                className={styles.button}
+                                label='Перейти к сообщениям'
+                                tabIndex={tabIndex}
+                                innerRef={ref}
+                                onLeftClick={handleNavigateToChat}
+                            >
+                                <Icon
+                                    className={styles.icon}
+                                    iconId='message-bubble-icon'
+                                />
+                            </Button>
 
-                    <Tooltip preferredAlignment='top'>
-                        <>Сообщение</>
-                    </Tooltip>
-                </RefContextProvider>
+                            <Tooltip 
+                                preferredAlignment='top'
+                                leaderElementRef={ref}
+                            >
+                                <>Сообщение</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <Button 
+                                className={twClassNames(styles.button, styles.buttonDanger)}
+                                label='Удалить из друзей'
+                                tabIndex={tabIndex}
+                                innerRef={ref}
+                                onLeftClick={handleDeleteFriend}
+                            >
+                                <Icon
+                                    className={styles.icon}
+                                    iconId='garbage-can-icon'
+                                />
+                            </Button>
 
-                <RefContextProvider>
-                    <Button 
-                        className={twClassNames(styles.button, styles.buttonDanger)}
-                        label='Удалить из друзей'
-                        tabIndex={tabIndex}
-                        onLeftClick={handleDeleteFriend}
-                    >
-                        <Icon
-                            className={styles.icon}
-                            iconId='garbage-can-icon'
-                        />
-                    </Button>
-
-                    <Tooltip preferredAlignment='top'>
-                        <>Удалить из друзей</>
-                    </Tooltip>
-                </RefContextProvider>
+                            <Tooltip 
+                                preferredAlignment='top'
+                                leaderElementRef={ref}
+                            >
+                                <>Удалить из друзей</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
             </Conditional>
 
             <Conditional isRendered={isActive.friendRequests && isIncomingRequest}>
-                <RefContextProvider>
-                    <Button 
-                        className={styles.button}
-                        label='Принять запрос в друзья'
-                        tabIndex={tabIndex}
-                        onLeftClick={handleAcceptFriendRequest}
-                    >
-                        <Icon
-                            className={styles.icon}
-                            iconId='check-icon'
-                        />
-                    </Button>
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <Button 
+                                className={styles.button}
+                                label='Принять запрос в друзья'
+                                tabIndex={tabIndex}
+                                innerRef={ref}
+                                onLeftClick={handleAcceptFriendRequest}
+                            >
+                                <Icon
+                                    className={styles.icon}
+                                    iconId='check-icon'
+                                />
+                            </Button>
 
-                    <Tooltip preferredAlignment='top'>
-                        <>Принять</>
-                    </Tooltip>
-                </RefContextProvider>
+                            <Tooltip 
+                                preferredAlignment='top'
+                                leaderElementRef={ref}
+                            >
+                                <>Принять</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
 
-                <RefContextProvider>
-                    <Button 
-                        className={twClassNames(styles.button, styles.buttonDanger)}
-                        label='Отклонить запрос в друзья'
-                        tabIndex={tabIndex}
-                        onLeftClick={handleRejectFriendRequest}
-                    >
-                        <Icon
-                            className={styles.icon}
-                            iconId='cross-icon'
-                        />
-                    </Button>
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <Button 
+                                className={twClassNames(styles.button, styles.buttonDanger)}
+                                label='Отклонить запрос в друзья'
+                                tabIndex={tabIndex}
+                                innerRef={ref}
+                                onLeftClick={handleRejectFriendRequest}
+                            >
+                                <Icon
+                                    className={styles.icon}
+                                    iconId='cross-icon'
+                                />
+                            </Button>
 
-                    <Tooltip preferredAlignment='top'>
-                        <>Отклонить</>
-                    </Tooltip>
-                </RefContextProvider>
+                            <Tooltip 
+                                preferredAlignment='top'
+                                leaderElementRef={ref}
+                            >
+                                <>Отклонить</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
             </Conditional>
 
             <Conditional isRendered={isActive.friendRequests && !isIncomingRequest}>
-                <RefContextProvider>
-                    <Button 
-                        className={twClassNames(styles.button, styles.buttonDanger)}
-                        label='Отозвать запрос в друзья'
-                        tabIndex={tabIndex}
-                        onLeftClick={handleRevokeFriendRequest}
-                    >
-                        <Icon
-                            className={styles.icon}
-                            iconId='cross-icon'
-                        />
-                    </Button>
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <Button 
+                                className={twClassNames(styles.button, styles.buttonDanger)}
+                                label='Отозвать запрос в друзья'
+                                tabIndex={tabIndex}
+                                innerRef={ref}
+                                onLeftClick={handleRevokeFriendRequest}
+                            >
+                                <Icon
+                                    className={styles.icon}
+                                    iconId='cross-icon'
+                                />
+                            </Button>
 
-                    <Tooltip preferredAlignment='top'>
-                        <>Отозвать</>
-                    </Tooltip>
-                </RefContextProvider>
+                            <Tooltip 
+                                preferredAlignment='top'
+                                leaderElementRef={ref}
+                            >
+                                <>Отозвать</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
             </Conditional>
 
             <Conditional isRendered={isActive.blocked}>
-                <RefContextProvider>
-                    <Button 
-                        className={twClassNames(styles.button)}
-                        label='Разблокировать пользователя'
-                        tabIndex={tabIndex}
-                        onLeftClick={handleUnblock}
-                    >
-                        <Icon
-                            className={styles.icon}
-                            iconId='unblock-icon'
-                        />
-                    </Button>
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <Button 
+                                className={twClassNames(styles.button)}
+                                label='Разблокировать пользователя'
+                                tabIndex={tabIndex}
+                                innerRef={ref}
+                                onLeftClick={handleUnblock}
+                            >
+                                <Icon
+                                    className={styles.icon}
+                                    iconId='unblock-icon'
+                                />
+                            </Button>
 
-                    <Tooltip preferredAlignment='top'>
-                        <>Разблокировать</>
-                    </Tooltip>
-                </RefContextProvider>
+                            <Tooltip 
+                                preferredAlignment='top'
+                                leaderElementRef={ref}
+                            >
+                                <>Разблокировать</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
             </Conditional>
         </>
     );

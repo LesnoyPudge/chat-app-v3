@@ -8,13 +8,13 @@ interface RefContextProvider extends PropsWithChildrenAsNodeOrFunction<RefContex
     providedRef?: RefObject<HTMLElement>;
 }
 
-export interface RefContext {
+interface RefContext {
     targetRef: RefObject<HTMLElement>;
 }
 
-export const RefContext = createContext<RefContext | undefined>(undefined);
-
-export const RefContextProvider: FC<RefContextProvider> = ({
+const RefContext = createContext<RefContext | undefined>(undefined);
+export {};
+const RefContextProvider: FC<RefContextProvider> = ({
     providedRef,
     children,
 }) => {

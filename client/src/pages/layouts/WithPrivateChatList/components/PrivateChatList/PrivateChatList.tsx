@@ -8,7 +8,7 @@ import { PrivateChatItem } from './components';
 
 
 
-interface IPrivateChats {
+interface PrivateChats {
     id: string;
     username: string;
     avatar: string;
@@ -16,7 +16,7 @@ interface IPrivateChats {
     extraStatus: ExtraStatusType;
 }
 
-const privateChats: IPrivateChats[] = [
+const privateChats: PrivateChats[] = [
     {
         id: '1' + Math.random().toString(),
         username: 'friend 1 qweqweqweqweqweqweqweqweqweqweqweqweqweqwwew',
@@ -278,9 +278,7 @@ export const PrivateChatList: FC = () => {
     const {
         getIsFocused,
         getTabIndex,
-        setFocusedId,
         setRoot,
-        setViewportIndexes,
         withFocusSet,
     } = useKeyboardNavigation(privateChatsRef);
 

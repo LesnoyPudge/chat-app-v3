@@ -1,12 +1,11 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, RefContext, RefContextProvider, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
 import { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { Attachments, OpenEmojiPickerButton } from 'src/components/other/MessageInputBar/components';
 import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -82,7 +81,7 @@ const ImageV2: FC<ImageV2> = ({
                             'w-[600px] h-[600px] border-2 border-red-700 transition-all duration-200 mx-auto my-10 resize',
                             { 'opacity-0 pointer-events-none': imageState.loading },
                         )}
-                        src='https://picsum.photos/400/200'
+                        src='https://i.pravatar.cc/400/200'
                         alt={alt}
                         loading='lazy'
                         decoding='async'
@@ -106,9 +105,8 @@ const ImageV2: FC<ImageV2> = ({
 import getScrollableParent from 'scrollparent';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
 import { useLatest, useMeasure } from 'react-use';
-import { useRelativePositionV2 } from 'src/hooks/useRelativePositionV2/useRelativePositionV2';
 import { useFocus } from 'src/hooks/useFocus/useFocus';
-import { Formik } from 'formik';
+import { Form, Formik, useField, useFormikContext } from 'formik';
 import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
 // import { Chat } from 'src/components/other/Chat/Chat';
@@ -604,747 +602,103 @@ const PlaygroundInner11: FC = () => {
     );
 };
 
-
-import { AnyArray, IsNever, Primitive, AnyFunction, Tuple, Prettify, ToType, StrictExtract, StrictOmit, objectKeys } from '@shared';
-import isCallable from 'is-callable';
+import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
-import { isOmittedRect, isRef } from '@typeGuards';
 
 
 
-interface WithAlignment {
-    alignment: Alignment;
-}
 
-interface Position {
-    top: number;
-    left: number;
-}
-interface RelativePositionOptions {
-    preferredAlignment: Alignment;
-    swappableAlignment?: boolean;
-    boundsSize?: number;
-    spacing?: number;
-    centered?: boolean;
-    unbounded?: boolean;
-}
-
-interface WithRects {
-    followerRect: OmittedRect;
-    leaderRect: OmittedRect;
-}
-
-interface UseRelativePositionArgs extends RelativePositionOptions {
-    followerElementRef: RefObject<HTMLElement>;
-    leaderElementOrRectRef: RefObject<HTMLElement | OmittedRect>;
-}
-
-const useRelativePositionV3 = ({
-    preferredAlignment,
-    followerElementRef,
-    leaderElementOrRectRef,
-    swappableAlignment = false,
-    boundsSize = 0,
-    spacing = 0,
-    centered = false,
-    unbounded = false,
-}: UseRelativePositionArgs): WithAlignment => {
-    const [alignment, setAlignment] = useState(preferredAlignment);
-
-    const calculateRef = useLatest(() => {
-        if (!followerElementRef.current || !leaderElementOrRectRef.current) return;
-
-        const leaderRect = (
-            isOmittedRect(leaderElementOrRectRef.current)
-                ? leaderElementOrRectRef.current
-                : leaderElementOrRectRef.current.getBoundingClientRect()
-        );
-        
-        const { alignment: newAlignment, left, top } = calculateRelativePosition({
-            followerRect: followerElementRef.current.getBoundingClientRect(),
-            leaderRect: leaderRect,
-            boundsSize,
-            centered,
-            preferredAlignment,
-            spacing,
-            swappableAlignment,
-            unbounded,
-        });
-
-        if (alignment !== newAlignment) setAlignment(newAlignment);
-
-        const follower = followerElementRef.current;
-        if (follower.style.top === `${top}px` && follower.style.left === `${left}px`) return;
-  
-        follower.style.top = `${top}px`;
-        follower.style.left = `${left}px`;
-    });
-
-    // useLayoutEffect(() => {
-    //     console.log('calc 1');
-    //     calculateRef.current();
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
-
-
-    useAnimationFrame(calculateRef.current);
-    
-    return {
-        alignment,
-    };
-};
-
-const calculateRelativePosition = ({
-    followerRect,
-    leaderRect,
-    preferredAlignment,
-    boundsSize,
-    centered,
-    spacing,
-    swappableAlignment,
-    unbounded,
-}: Required<RelativePositionOptions> & WithRects): Position & WithAlignment => {
-    const centering = {
-        vertical: (
-            centered 
-                ? (followerRect.height - leaderRect.height) / 2 
-                : 0
-        ),
-        horizontal: (
-            centered 
-                ? (followerRect.width - leaderRect.width) / 2 
-                : 0
-        ),
-    };
-
-    const bounds = {
-        top: unbounded ? -9999 : boundsSize,
-        bottom: unbounded ? 9999 : window.innerHeight - boundsSize - followerRect.height,
-        left: unbounded ? -9999 : boundsSize,
-        right: unbounded ? 9999 : window.innerWidth - boundsSize - followerRect.width,
-    };
-
-    const unboundedPositions = {
-        top: {
-            top: leaderRect.top - followerRect.height - spacing,
-            left: leaderRect.left - centering.horizontal,
-        },
-        bottom: {
-            top: leaderRect.bottom + spacing,
-            left: leaderRect.left - centering.horizontal,
-        },
-        left: {
-            top: leaderRect.top - centering.vertical,
-            left: leaderRect.left - followerRect.width - spacing,
-        },
-        right: {
-            top: leaderRect.top - centering.vertical,
-            left: leaderRect.right + spacing,
-        },
-    };
-
-    const positionsInBounds = () => {
-        const { top, bottom, left, right } = unboundedPositions;
-
-        return {
-            top: {
-                top: Math.max(bounds.top, Math.min(bounds.bottom, top.top)),
-                left: Math.max(bounds.left, Math.min(bounds.right, top.left)),
-            },
-            bottom: {
-                top: Math.max(bounds.top, Math.min(bounds.bottom, bottom.top)),
-                left: Math.max(bounds.left, Math.min(bounds.right, bottom.left)),
-            },
-            left: {
-                top: Math.max(bounds.top, Math.min(bounds.bottom, left.top)),
-                left: Math.max(bounds.left, Math.min(bounds.right, left.left)),
-            },
-            right: {
-                top: Math.max(bounds.top, Math.min(bounds.bottom, right.top)),
-                left: Math.max(bounds.left, Math.min(bounds.right, right.left)),
-            },
-        };
-    };
-
-    const getAvailableAlignments = () => {
-        return {
-            top: unboundedPositions.top.top > bounds.top,
-            bottom: unboundedPositions.bottom.top < bounds.bottom,
-            left: unboundedPositions.left.left > bounds.left,
-            right: unboundedPositions.right.left < bounds.right,
-        };
-    };
-
-    const positions = positionsInBounds();
-    
-    const defaultResult: Position & WithAlignment = {
-        ...positions[preferredAlignment],
-        alignment: preferredAlignment,
-    };
-
-    if (!swappableAlignment) return defaultResult;
-
-    const availableAlignments = getAvailableAlignments();
-
-    if (availableAlignments[preferredAlignment]) return defaultResult;
-
-    const noSpaceAvailable = (
-        !availableAlignments.top && 
-        !availableAlignments.bottom && 
-        !availableAlignments.left && 
-        !availableAlignments.right
-    );
-
-    if (noSpaceAvailable) return defaultResult;
-
-    const topResult: Position & WithAlignment = {
-        alignment: 'top',
-        ...positions.top,
-    };
-    const bottomResult: Position & WithAlignment = {
-        alignment: 'bottom',
-        ...positions.bottom,
-    };
-    const leftResult: Position & WithAlignment = {
-        alignment: 'left',
-        ...positions.left,
-    };
-    const rightResult: Position & WithAlignment = {
-        alignment: 'right',
-        ...positions.right,
-    };
-    
-    const alternativeAlignmentOptions = {
-        top: (
-            (availableAlignments.bottom && bottomResult) || 
-            (availableAlignments.left && leftResult) || 
-            (availableAlignments.right && rightResult) || 
-            topResult
-        ),
-        bottom: (
-            (availableAlignments.top && topResult) ||
-            (availableAlignments.left && leftResult) || 
-            (availableAlignments.right && rightResult) || 
-            bottomResult
-        ),
-        left: (
-            (availableAlignments.right && rightResult) ||
-            (availableAlignments.top && topResult) || 
-            (availableAlignments.bottom && bottomResult) || 
-            leftResult
-        ),
-        right: (
-            (availableAlignments.left && leftResult) ||
-            (availableAlignments.top && topResult) || 
-            (availableAlignments.bottom && bottomResult) || 
-            rightResult
-        ),
-    };
-
-    return alternativeAlignmentOptions[preferredAlignment];
-};
-
-type RelativelyPositionedV3 = RelativePositionOptions & Pick<
-    UseRelativePositionArgs, 
-    'leaderElementOrRectRef'
-> & PropsWithChildrenAsNodeOrFunction<WithAlignment>;
-
-const RelativelyPositionedV3: FC<RelativelyPositionedV3> = ({ 
-    leaderElementOrRectRef,
-    preferredAlignment,
-    swappableAlignment,
-    centered,
-    spacing = 20,
-    boundsSize = 20,
-    unbounded,
-    children, 
-}) => {
-    const followerElementRef = useRef<HTMLDivElement>(null);
-    const { alignment } = useRelativePositionV3({
-        preferredAlignment,
-        followerElementRef,
-        leaderElementOrRectRef,
-        swappableAlignment,
-        centered,
-        spacing,
-        boundsSize,
-        unbounded,
-    });
-
-    const childrenArgs: WithAlignment = {
-        alignment,
-    };
-    
+const LocalImage: FC = () => {
     return (
-        <div className='fixed' ref={followerElementRef}>
-            <ChildrenAsNodeOrFunction args={childrenArgs}>
-                {children}
-            </ChildrenAsNodeOrFunction>
-        </div>
-    );
-};
-
-const transitionOptions = getTransitionOptions.withOpacity({
-    from: {
-        offset: 15,
-    },
-    enter: {
-        offset: 0,
-    },
-    leave: {
-        offset: 15,
-    },
-    config: {
-        duration: 150,
-    },
-});
-
-const TooltipV2: FC<PropsWithChildren & {leaderElementRef: RefObject<HTMLElement>}> = ({ children, leaderElementRef }) => {
-    const [isExist, setIsExist] = useState(false);
-    const [withKeyboardRef, setWithKeyboard] = useRefWithSetter(false);
-    const [withMouseRef, setWithMouse] = useRefWithSetter(false);
-    const styles = {
-        base: `bg-primary-500 text-color-base font-bold py-[5px] px-2.5 
-        rounded-md w-max max-w-[300px] shadow-elevation-low`,
-    };
-    const changeState = () => {
-        const newState = withKeyboardRef.current || withMouseRef.current;
-        if (newState === isExist) return;
-
-        setIsExist(newState);
-    };
-
-    const handleFocusIn = (e: FocusEvent) => {
-        if (!leaderElementRef.current) return;
-        if (e.target !== leaderElementRef.current) return;
-
-        setWithKeyboard(true);
-        changeState();
-    };
-    
-    const handleFocusOut = (e: FocusEvent) => {
-        if (!leaderElementRef.current) return;
-        if (e.target !== leaderElementRef.current) return;
-        
-        setWithKeyboard(false);
-        changeState();
-    };
-    
-    const handleMouseEnter = () => {
-        setWithMouse(true);
-        changeState();
-    };
-
-    const handleMouseLeave = () => {
-        setWithMouse(false);
-        changeState();
-    };
-
-    useEventListener('focusin', handleFocusIn, leaderElementRef);
-    useEventListener('focusout', handleFocusOut, leaderElementRef);
-    useEventListener('mouseenter', handleMouseEnter, leaderElementRef);
-    useEventListener('mouseleave', handleMouseLeave, leaderElementRef);
-
-    useSharedIntersectionObserver(leaderElementRef, ({ isIntersecting }) => {
-        if (isIntersecting === isExist) return;
-        if (!withKeyboardRef.current && !withMouseRef.current) return;
-
-        setIsExist(isIntersecting);
-    });
-
-    return (
-        <AnimatedTransition
-            isExist={isExist}
-            transitionOptions={transitionOptions}
-        >
-            {({ isAnimatedExist, style }) => (
-                <Conditional isRendered={isAnimatedExist}>
-                    <OverlayPortal>
-                        <div className='overlay-item-wrapper'>
-                            <RelativelyPositionedV3
-                                leaderElementOrRectRef={leaderElementRef}
-                                preferredAlignment='top'
-                            >
-                                {({ alignment }) => {
-                                    const alignmentStyles = {
-                                        top: {
-                                            translateY: style.offset.to((offset => `-${offset}px`)),
-                                        },
-                                        bottom: {
-                                            translateY: style.offset.to((offset) => `${offset}px`),
-                                        },
-                                        left: {
-                                            translateX: style.offset.to((offset) => `-${offset}px`),
-                                        },
-                                        right: {
-                                            translateX: style.offset.to((offset) => `${offset}px`),
-                                        },
-                                    };
-    
-                                    const styleWithOffset = {
-                                        opacity: style.opacity,
-                                        ...alignmentStyles[alignment],
-                                    };
-      
-                                    return (
-                                        <animated.div 
-                                            className={twClassNames(styles.base)}
-                                            style={styleWithOffset}
-                                            role='tooltip'
-                                        >
-                                            {children}
-                                        </animated.div>
-                                    );
-                                }}
-                            </RelativelyPositionedV3>
-                        </div>
-                    </OverlayPortal>
-                </Conditional>
-            )}
-        </AnimatedTransition>
-    );
-};
-
-const SynchronizedPlaceholder: FC<PropsWithChildrenAndClassName> = ({
-    className = '',
-    children,
-}) => {
-    const elementToSyncRef = useRef<HTMLDivElement>(null);
-    const styles = {
-        base: 'animate-pulse bg-sky-700',
-    };
-    useEffect(() => {
-        if (!elementToSyncRef.current) return;
-
-        elementToSyncRef.current.getAnimations().forEach((animation) => {
-            animation.startTime = 0;
-        });
-    }, []);
-
-    return (
-        <div 
-            className={twClassNames(styles.base, className)}
-            ref={elementToSyncRef}
-        >
-            {children}
-        </div>
-    );
-};
-
-
-type ContextMenuV2 = (
-    PropsWithClassName & 
-    PropsWithChildrenAsNodeOrFunction<OverlayContext> &
-    Pick<UseRelativePositionArgs, 'preferredAlignment'> & {
-        leaderElementRef: RefObject<HTMLElement>;
-        withContextMenuHandler?: boolean;
-    }
-)
-
-export const ContextMenuV2: FC<ContextMenuV2> = ({
-    className = '',
-    preferredAlignment,
-    leaderElementRef,
-    withContextMenuHandler = false,
-    children,
-}) => {
-    const contextValues = useContext(OverlayContext) as OverlayContext;
-    const leaderElementOrRectRef = useRef<HTMLElement | OmittedRect | null>(leaderElementRef.current);
-    const baseClassName = 'pointer-events-auto bg-primary-500 rounded text-color-base p-5';
-    const transitionOptions = getTransitionOptions.defaultContextMenu();
-    const withRightClickRef = useRef(false);
-    
-    useEffect(() => {
-        if (withRightClickRef.current) {
-            withRightClickRef.current = false;
-            return;
-        }
-        
-        leaderElementOrRectRef.current = leaderElementRef.current;
-    }, [contextValues.isOverlayExist, leaderElementRef]);
-
-
-    const handleContextMenu = (e: MouseEvent) => {
-        if (!withContextMenuHandler) return;
-
-        const { closingThrottleRef, openOverlay } = contextValues;
-        
-        if (closingThrottleRef.current) return;
-
-        withRightClickRef.current = true;
-        const withMouse = e.button !== -1;
-        const withKeyboard = !withMouse;
-    
-        if (withMouse) {
-            const cursorSize = 1;
-    
-            leaderElementOrRectRef.current = {
-                top: e.clientY,
-                bottom: e.clientY + cursorSize,
-                left: e.clientX,
-                right: e.clientX + cursorSize,
-                width: cursorSize,
-                height: cursorSize,
-            };
-        }
-
-        if (withKeyboard) {
-            leaderElementOrRectRef.current = e.currentTarget as HTMLElement;
-        }
-
-        openOverlay();
-    };
-
-    useEventListener('contextmenu', handleContextMenu, leaderElementRef);
-
-    return (
-        <AnimatedTransition 
-            isExist={contextValues.isOverlayExist}
-            transitionOptions={transitionOptions}
-        >
-            {({ isAnimatedExist, style }) => (
-                <OverlayItem 
-                    isRendered={isAnimatedExist}
-                    blockable
-                    blocking
-                    closeOnClickOutside
-                    closeOnEscape
-                    focused
-                >
-                    <RelativelyPositionedV3
-                        leaderElementOrRectRef={leaderElementOrRectRef}
-                        preferredAlignment={preferredAlignment}
-                        spacing={15}
-                        boundsSize={20}
-                        swappableAlignment
-                    >
-                        <animated.div 
-                            className={twClassNames(baseClassName, className)}
-                            style={style}
-                            role='menu'
-                        >
-                            <ChildrenAsNodeOrFunction args={contextValues}>
-                                {children}
-                            </ChildrenAsNodeOrFunction>
-                        </animated.div>
-                    </RelativelyPositionedV3>
-                </OverlayItem>
-            )}
-        </AnimatedTransition>
-    );
-};
-
-const UseRef = <T extends HTMLElement = HTMLDivElement>({
-    children,
-}: PropsWithChildrenAsNodeOrFunction<{ref: MutableRefObject<T | null>}>) => {
-    const ref = useRef<T | null>(null);
-    
-    return (
-        <ChildrenAsNodeOrFunction args={{ ref }}>
-            {children}
-        </ChildrenAsNodeOrFunction>
-    );
-};
-
-const PlaygroundInner13: FC = () => {
-    return (
-        <div className='flex flex-col gap-20 p-20 [&>*]:bg-sky-900 overflow-scroll max-h-screen'>
-            <UseRef>
-                {({ ref }) => (
-                    <OverlayContextProvider>
-                        {({ toggleOverlay }) => (
-                            <>
-                                <div 
-                                    className='min-h-[150px]'
-                                    ref={ref}
-                                    tabIndex={0}
-                                    onClick={toggleOverlay}
-                                    onAuxClickCapture={toggleOverlay}
-                                >
-                                    <>right click on plate</>
-                                </div>
-    
-                                <ContextMenuV2 
-                                    className='bg-sky-600' 
-                                    preferredAlignment='right'
-                                    leaderElementRef={ref}
-                                    withContextMenuHandler
-                                >
-                                    <>qwe 3</>
-                                </ContextMenuV2>
-                      
-                                <TooltipV2 leaderElementRef={ref}>
-                                    <>qwezxc</>
-                                </TooltipV2>
-                            </>
-                        )}
-                    </OverlayContextProvider>
-                )}
-            </UseRef>
-
-            {/* <OverlayContextProvider>
-                {({ toggleOverlay }) => (
-                    <UseRef<HTMLButtonElement>>
-                        {({ ref }) => (
-                            <>
-                                <Button 
-                                    stylingPreset='brand' 
-                                    onLeftClick={toggleOverlay}
-                                    innerRef={ref}
-                                >
-                                    <>butt1</>
-                                </Button>
-
-                                <ContextMenuInnerV2 
-                                    className='bg-sky-600' 
-                                    preferredAlignment='right'
-                                    leaderElementRef={ref}
-                                >
-                                    <>qwe 3</>
-                                </ContextMenuInnerV2>
-                            </>
-                        )}
-                    </UseRef>
-                )}
-            </OverlayContextProvider> */}
-
-
-
-
-
-
-
-            <List list={Array(60).fill('')}>
-                <br/>
-            </List>
-        </div>
-    );
-};
-
-const FIRSTCOMP: FC<{inRef: RefObject<HTMLDivElement>}> = ({ inRef }) => {
-    return (
-        <div data-wow={1} ref={inRef}>
-            <>1</>
-        </div>
-    );
-};
-const SECONDCOMP: FC<{inRef: RefObject<HTMLDivElement>}> = ({ inRef }) => {
-    console.log('init', inRef, performance.now());
-    
-    useEffect(() => {
-        console.log('eff', inRef, performance.now());
-    }, [inRef]);
-
-    useLayoutEffect(() => {
-        console.log('lay eff', inRef, performance.now());
-    }, [inRef]);
-    
-    return (
-        <div data-wow={2}>
-            <>2</>
-        </div>
-    );
-};
-const THIRDCOMP: FC<{inRef: RefObject<HTMLDivElement>}> = ({ inRef }) => {
-    return (
-        <div data-wow={3}>
-            <>3</>
-        </div>
-    );
-};
-
-const UseRefAsState: FC<PropsWithChildrenAsNodeOrFunction<[HTMLDivElement | null, (node: HTMLDivElement) => void]>> = ({
-    children,
-}) => {
-    const [el, setEl] = useState<HTMLDivElement | null>(null);
-    return (
-        <ChildrenAsNodeOrFunction args={[el, setEl]}>
-            {children}
-        </ChildrenAsNodeOrFunction>
-    );
-};
-
-const PlaygroundInner14: FC = () => {
-    return (
-        <div className='flex flex-col gap-8 p-8'>
-            <UseRef>
-                {({ ref }) => (
-                    <>
-                        <FIRSTCOMP inRef={ref}/>
-                        <SECONDCOMP inRef={ref}/>
-                        <THIRDCOMP inRef={ref}/>
-                    </>
-                )}
-            </UseRef>
-        </div>
-    );
-};
-
-const TestComp: FC<PropsWithChildren & {which: number}> = ({ children, which }) => {
-    const { count, increment } = useCounter(0);
-
-    useEffect(() => {
-        console.log(`TestComp rerender ${which}`, children);
-    });
-
-    return (
-        <div className='flex flex-col gap-2'>
-            <div>test comp {which}</div>
-
-            <p>count is {count}</p>
-
-            <button onClick={increment}>
-                <>inc</>
-            </button>
-
-            {children}
-        </div>
-    );
-};
-
-const PlaygroundInner15: FC = () => {
-    const [count, countRef, setCount] = useStateAndRef(0);
-    const even = count % 2 === 0;
-
-    const inc = useCallback(() => {
-        console.log(countRef.current);
-        setCount((v) => v + 1);
-    }, [setCount, countRef]);
-
-    return (
-        <div className='flex flex-col gap-2'>
-            <span>count is: {count}</span>
+        <>
+            <div className='relative w-1/2 h-3/4 bg-lime-600'>
+                <picture className=''>
+                    <source srcSet={imagesrc} className='' type='image/jpg'/>
+                    {/* <img src={imagesrc} className='absolute object-cover inset-0'/> */}
+                </picture>
+            </div>
+            {/* <img src={imagesrc} className='w-1/2 h-3/4'/> */}
             
-            <button onClick={inc}>
-                <>inc</>
-            </button>
-
-            <Memo>
-                <TestComp which={1}>
-                    <Memo>
-                        <div>
-                            <p>
-                                <>qwe</>
-                            </p>
-                        </div>
-                    </Memo>
-                </TestComp>
-            </Memo>
-
-            <Static>
-                <TestComp which={2}>
-                    <>zxc {count}</>
-                </TestComp>
-            </Static>
-        </div>
+        </>
     );
 };
+
+type ChildrenArgs<FormValues, Name> = ReturnType<typeof useField<FormValues[Name]>>;
+
+const FormikField = <FormValues extends AnyRecord>({
+    name,
+    children,
+}: {name: keyof FormValues} & PropsWithChildrenAsNodeOrFunction<ChildrenArgs<FormValues, keyof FormValues>>) => {
+    const [inputProps, metaProps, helperProps] = useField<FormValues[typeof name]>(String(name));
+    const { getFieldMeta } = useFormikContext<FormValues>();
+    const childrenArgs: ChildrenArgs<FormValues, keyof FormValues> = [inputProps, metaProps, helperProps]; 
+    const qwe = getFieldMeta<FormValues[typeof name]>(String(name));
+    
+    return (
+        <ChildrenAsNodeOrFunction args={childrenArgs}>
+            {children}
+        </ChildrenAsNodeOrFunction>
+    );
+};
+
+interface SomeForm {
+    username: string;
+    cool: boolean;
+    union: 'some' | 'data';
+}
 
 const PlaygroundInner16: FC = () => {
     return (
-        <div className='flex flex-col gap-2'>
-            <>qwe</>
+        <div className='flex flex-col gap-2 h-screen'>
+            {/* <Image 
+                placeholder={<div className='bg-red-700'>qwe</div>} 
+                src='https://images.placeholders.dev'
+            /> */}
+
+            <LocalImage/>
+
+            {/* <ImageV2 src='https://images.placeholders.dev'/> */}
         </div>
+    );
+};
+
+const initialValues: SomeForm = {
+    username: 'dick',
+    cool: false,
+    union: 'some',
+};
+
+const PlaygroundInner17: FC = () => {
+    return (
+        <Formik initialValues={initialValues} onSubmit={(v) => console.log(v)}>
+            <Form>
+                <FormikField<SomeForm> name='username'>
+                    {(o, t, th) => (
+                        <div className='grid gap-20'>
+                            <div>
+                                <>{JSON.stringify(o)}</>
+                            </div>
+
+                            <div>
+                                <>{JSON.stringify(t)}</>
+                            </div>
+
+                            <div>
+                                <>{JSON.stringify(th)}</>
+                            </div>
+                        </div>
+                    )}
+                </FormikField>
+
+                <FormikField<SomeForm> name='union'>
+                    {({ value }) => (
+                        <>
+                            {value}
+                        </>
+                    )}
+                </FormikField>
+            </Form>
+        </Formik>
     );
 };
 
@@ -1374,7 +728,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                     {/* <PlaygroundInner13/> */}
                     {/* <PlaygroundInner14/> */}
                     {/* <PlaygroundInner15/> */}
-                    <PlaygroundInner16/>
+                    {/* <PlaygroundInner16/> */}
+                    <PlaygroundInner17/>
                 </ReactFocusLock>
             </Conditional>
         </>

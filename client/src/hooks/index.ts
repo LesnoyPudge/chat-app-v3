@@ -1,7 +1,6 @@
 export * from './useNavigator';
 export * from './useThrottle';
 export * from './useDebounce';
-export * from './useAutoScroll';
 export * from './useResizeObserver';
 export * from './useRelativePosition';
 export * from './useMousePosition';

@@ -1,12 +1,12 @@
 import { FC, useContext, useEffect } from 'react';
 import { useIsFirstRender } from 'usehooks-ts';
-import { ILoadingContext, LoadingContext } from '../Loader';
+import { LoadingContext } from '../Loader';
 
 
 
 export const Loaded: FC = () => {
     const isFirstRender = useIsFirstRender();
-    const { finishLoading } = useContext(LoadingContext) as ILoadingContext;
+    const { finishLoading } = useContext(LoadingContext) as LoadingContext;
     
     useEffect(() => {
         isFirstRender && finishLoading();

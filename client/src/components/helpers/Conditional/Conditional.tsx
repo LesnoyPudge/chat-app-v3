@@ -2,11 +2,11 @@ import { FC, PropsWithChildren } from 'react';
 
 
 
-interface IConditional extends PropsWithChildren {
+interface Conditional extends PropsWithChildren {
     isRendered: boolean;
 }
 
-export const Conditional: FC<IConditional> = ({
+export const Conditional: FC<Conditional> = ({
     isRendered = true,
     children,
 }) => {

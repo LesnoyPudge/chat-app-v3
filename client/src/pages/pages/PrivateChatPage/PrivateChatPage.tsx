@@ -6,7 +6,7 @@ import { Header } from './components';
 
 
 
-interface IPrivateChat {
+interface PrivateChat {
     id: string;
     friend: {
         id: string;
@@ -17,7 +17,7 @@ interface IPrivateChat {
     }
 }
 
-const privateChats: IPrivateChat[] = [
+const privateChats: PrivateChat[] = [
     {
         id: '1',
         friend: {
