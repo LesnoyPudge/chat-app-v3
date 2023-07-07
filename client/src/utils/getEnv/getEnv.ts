@@ -2,4 +2,6 @@ import { ClientAccessibleEnv } from '@shared';
 
 
 
-export const getEnv = () => import.meta.env as unknown as ImportMetaEnv & ClientAccessibleEnv;
+export const getEnv = () => {
+    return import.meta.env as unknown as ImportMetaEnv & ClientAccessibleEnv;
+};

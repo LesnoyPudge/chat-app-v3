@@ -1,56 +1,15 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { optimize } from 'svgo';
+import { Folder, getFolderTree, imageExtensions } from './shared';
 
 
 
-const rawImagesPath = path.resolve(__dirname, '../src/rawImages');
-const optimizedImagesPath = path.join(__dirname, '../src/assets/optimizedImages');
-    
-const imageExtensions = [
-    '.jpg', '.jpeg', '.png', '.gif', '.bmp',
-    '.svg', '.webp', '.ico', '.heic', '.avif',
-];
-
-interface File {
-    name: string;
-    data: Buffer;
-}
-
-interface Folder {
-    name: string;
-    files: File[];
-    folders: Folder[];
-}
+const rawImagesPath = path.resolve(__dirname, '../src/assets/rawImages');
+const optimizedImagesPath = path.join(__dirname, '../src/assets/generatedImages');
 
 const main = async() => {
-    const getFolderTree = (
-        currentPath: string,
-        tree: Folder = { files: [], folders: [], name: '' },
-    ) => {
-        const files = fs.readdirSync(currentPath);
-
-        files.forEach((fileName) => {
-            const filePath = path.join(currentPath, fileName);
-            const stat = fs.statSync(filePath);
-            const isImage = imageExtensions.some((ext) => fileName.endsWith(ext));
-
-            if (stat.isFile() && isImage) {
-                const fileData = fs.readFileSync(filePath);
-                tree.files.push({ data: fileData, name: fileName });
-            }
-
-            if (stat.isDirectory()) {
-                const folder: Folder = { name: fileName, files: [], folders: [] };
-                tree.folders.push(folder);
-                getFolderTree(filePath, folder);
-            }
-        });
-
-        return tree;
-    };
-
-    const tree = getFolderTree(rawImagesPath);
+    const tree = getFolderTree(rawImagesPath, imageExtensions);
 
     fs.rmSync(optimizedImagesPath, { recursive: true, force: true });
     fs.mkdirSync(optimizedImagesPath);

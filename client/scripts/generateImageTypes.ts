@@ -1,41 +1,30 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { compile } from 'json-schema-to-typescript';
+import { Folder, getFolderTree, imageExtensions } from './shared';
 
 
 
 const assetsPath = path.resolve(__dirname, '../src/assets');
-const generatedTypesPath = path.resolve(__dirname, '../src/types/generated/index.ts');
-
-
-
-const imageExtensions = [
-    '.jpg', '.jpeg', '.png', '.gif', '.bmp',
-    '.svg', '.webp', '.ico', '.heic', '.avif',
-];
+const generatedTypesPath = path.resolve(__dirname, '../src/generated/types/imageNames.ts');
 
 const main = async() => {
     const fileNames: string[] = [];
     
-    const traverseDirectory = (currentPath: string) => {
-        const files = fs.readdirSync(currentPath);
-      
-        files.forEach((file) => {
-            const filePath = path.join(currentPath, file);
-            const stat = fs.statSync(filePath);
+    const tree = getFolderTree(assetsPath, imageExtensions);
 
-            if (stat.isDirectory()) return traverseDirectory(filePath);
-            if (!stat.isFile()) return;
-            if (!imageExtensions.some((ext) => file.endsWith(ext))) return;
+    const setFilenames = (folder: Folder) => {
+        fileNames.push(...folder.files.map((file) => file.name));
 
-            fileNames.push(file);
-        });          
+        folder.folders.forEach((nextFolder) => {
+            setFilenames(nextFolder);
+        });
     };
-      
-    traverseDirectory(assetsPath);
+
+    setFilenames(tree);
 
     fileNames.sort();
-
+    
     await compile({
         title: 'ImageNames',
         enum: fileNames,

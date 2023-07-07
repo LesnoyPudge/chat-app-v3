@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
@@ -106,7 +106,7 @@ import getScrollableParent from 'scrollparent';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
 import { useLatest, useMeasure } from 'react-use';
 import { useFocus } from 'src/hooks/useFocus/useFocus';
-import { Form, Formik, useField, useFormikContext } from 'formik';
+import { Field, Form, Formik, useField, useFormikContext } from 'formik';
 import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
 // import { Chat } from 'src/components/other/Chat/Chat';
@@ -491,68 +491,68 @@ import { Peer } from 'peerjs';
 
 
 
-const peer = new Peer({
-    host: 'localhost',
-    port: 9000,
-    path: '/api/v1/peer',
-    // debug: 3,
-    debug: 0,
-});
+// const peer = new Peer({
+//     host: 'localhost',
+//     port: 9000,
+//     path: '/api/v1/peer',
+//     // debug: 3,
+//     debug: 0,
+// });
 
-const socket = io('ws://localhost:5000', { autoConnect: false, auth: { id: '648835dfc82aa7e61fd0f39f' } });
+// const socket = io('ws://localhost:5000', { autoConnect: false, auth: { id: '648835dfc82aa7e61fd0f39f' } });
 
-let peerId: string | null = null;
+// let peerId: string | null = null;
 
-peer.on('open', (id) => {
-    console.log('My peer ID is: ' + id);
-    peerId = id;
-});
+// peer.on('open', (id) => {
+//     console.log('My peer ID is: ' + id);
+//     peerId = id;
+// });
 
-const getMediaStream = (() => {
-    let myMediaStream: MediaStream | null = null;
+// const getMediaStream = (() => {
+//     let myMediaStream: MediaStream | null = null;
     
-    return async(): Promise<MediaStream> => {
-        if (myMediaStream === null) {
-            myMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            return myMediaStream;
-        }
+//     return async(): Promise<MediaStream> => {
+//         if (myMediaStream === null) {
+//             myMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+//             return myMediaStream;
+//         }
 
-        return myMediaStream;
-    };
-})();
+//         return myMediaStream;
+//     };
+// })();
 
-const createAudio = (stream: MediaStream) => {
-    console.log('creating audio', [stream]);
-    const audio = document.createElement('audio');
-    audio.autoplay = true;
-    audio.srcObject = stream;
-    audio.controls = true;
-    audio.dataset.who = 'on call';
+// const createAudio = (stream: MediaStream) => {
+//     console.log('creating audio', [stream]);
+//     const audio = document.createElement('audio');
+//     audio.autoplay = true;
+//     audio.srcObject = stream;
+//     audio.controls = true;
+//     audio.dataset.who = 'on call';
                 
-    document.querySelector('.container')?.appendChild(audio);
-    console.log(document.querySelector('.container'));
-};
+//     document.querySelector('.container')?.appendChild(audio);
+//     console.log(document.querySelector('.container'));
+// };
 
-peer.on('call', (call) => {
-    getMediaStream().then((stream) => {
-        call.answer(stream); // Answer the call with an A/V stream.
-        call.on('stream', (receivedRemoteStream) => {
-            // Show stream in some <video> element.
-            console.log('got stream in CALL', receivedRemoteStream);
+// peer.on('call', (call) => {
+//     getMediaStream().then((stream) => {
+//         call.answer(stream); // Answer the call with an A/V stream.
+//         call.on('stream', (receivedRemoteStream) => {
+//             // Show stream in some <video> element.
+//             console.log('got stream in CALL', receivedRemoteStream);
     
-            createAudio(receivedRemoteStream);
-        });
-    });
-});
+//             createAudio(receivedRemoteStream);
+//         });
+//     });
+// });
 
-let connections: string[] = [];
+// let connections: string[] = [];
 
-socket.on('VoiceChat_data', (peers: string[]) => {
-    console.log('get connect', peers);
-    if (!peers.length) return;
+// socket.on('VoiceChat_data', (peers: string[]) => {
+//     console.log('get connect', peers);
+//     if (!peers.length) return;
 
-    connections = peers.filter((id) => id !== peerId);
-});
+//     connections = peers.filter((id) => id !== peerId);
+// });
 
 
 const useConversation = (conversationId: string) => {
@@ -560,50 +560,52 @@ const useConversation = (conversationId: string) => {
 };
 
 
-const PlaygroundInner11: FC = () => {
+// const PlaygroundInner11: FC = () => {
 
-    const handleJoin = () => {
-        console.log('join to voice chat', peerId);
-        socket.emit('VoiceChat_join', peerId);
-    };
+//     const handleJoin = () => {
+//         console.log('join to voice chat', peerId);
+//         socket.emit('VoiceChat_join', peerId);
+//     };
 
-    const handleCall = async() => {
-        if (!connections.length) return;
+//     const handleCall = async() => {
+//         if (!connections.length) return;
 
-        getMediaStream().then((stream) => {
-            connections.forEach((recivedPeerId) => {
-                if (recivedPeerId === peerId) return;
+//         getMediaStream().then((stream) => {
+//             connections.forEach((recivedPeerId) => {
+//                 if (recivedPeerId === peerId) return;
     
-                const call = peer.call(recivedPeerId, stream);
+//                 const call = peer.call(recivedPeerId, stream);
                 
-                call.on('stream', (receivedStream) => {
-                    createAudio(receivedStream);
-                });
-            });
-        });
-    };
+//                 call.on('stream', (receivedStream) => {
+//                     createAudio(receivedStream);
+//                 });
+//             });
+//         });
+//     };
 
-    const handleLeave = () => {
-        console.log('leave click');
-    };
+//     const handleLeave = () => {
+//         console.log('leave click');
+//     };
     
-    return (
-        <div className='flex flex-col gap-4 p-4'>
-            <button onClick={handleJoin}>join</button>
+//     return (
+//         <div className='flex flex-col gap-4 p-4'>
+//             <button onClick={handleJoin}>join</button>
 
-            <button onClick={handleCall}>call</button>
+//             <button onClick={handleCall}>call</button>
 
-            <button onClick={handleLeave}>leave</button>
+//             <button onClick={handleLeave}>leave</button>
 
-            <div className='container'>
+//             <div className='container'>
 
-            </div>
-        </div>
-    );
-};
+//             </div>
+//         </div>
+//     );
+// };
 
 import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
+import { Endpoints, Id, objectKeys, Prettify, SUBSCRIBABLE_ENTITIES, ValueOf } from '@shared';
+import { IMAGES } from '@generated';
 
 
 
@@ -623,16 +625,25 @@ const LocalImage: FC = () => {
     );
 };
 
-type ChildrenArgs<FormValues, Name> = ReturnType<typeof useField<FormValues[Name]>>;
+type ChildrenArgs<FormValues extends AnyRecord, Name extends keyof FormValues> = {
+    value: FormValues[Name];
+    error: string | null;
+    setValue: (val: FormValues[Name], shouldValidate?: boolean) => void;
+};
 
-const FormikField = <FormValues extends AnyRecord>({
+const FormikField = <FormValues extends AnyRecord, Name extends keyof FormValues>({
     name,
     children,
-}: {name: keyof FormValues} & PropsWithChildrenAsNodeOrFunction<ChildrenArgs<FormValues, keyof FormValues>>) => {
-    const [inputProps, metaProps, helperProps] = useField<FormValues[typeof name]>(String(name));
-    const { getFieldMeta } = useFormikContext<FormValues>();
-    const childrenArgs: ChildrenArgs<FormValues, keyof FormValues> = [inputProps, metaProps, helperProps]; 
-    const qwe = getFieldMeta<FormValues[typeof name]>(String(name));
+}: {name: Name} & PropsWithChildrenAsNodeOrFunction<ChildrenArgs<FormValues, Name>>) => {
+    const [inputProps, metaProps, helperProps] = useField<FormValues[Name]>(String(name));
+    
+    const isError = !!metaProps.error && metaProps.touched;
+
+    const childrenArgs: ChildrenArgs<FormValues, Name> = {
+        error: isError ? metaProps.error! : null,
+        value: inputProps.value,
+        setValue: helperProps.setValue,
+    };
     
     return (
         <ChildrenAsNodeOrFunction args={childrenArgs}>
@@ -640,6 +651,111 @@ const FormikField = <FormValues extends AnyRecord>({
         </ChildrenAsNodeOrFunction>
     );
 };
+
+
+
+// type FieldType = 'common' | 'radio' | 'checkbox';
+
+// type SafeProps = {
+
+// };
+
+type ChildrenArgs2<FormValues extends AnyRecord, Name extends keyof FormValues> = (
+    ReturnType<typeof useField<FormValues[Name]>>
+);
+
+const FormikField2 = <FormValues extends AnyRecord, Name extends keyof FormValues>({
+    name,
+    children,
+}: {name: keyof FormValues} & PropsWithChildrenAsNodeOrFunction<ChildrenArgs2<FormValues, Name>>) => {
+    const fieldProps = useField<FormValues[Name]>(String(name));
+    
+    return (
+        <ChildrenAsNodeOrFunction args={fieldProps}>
+            {children}
+        </ChildrenAsNodeOrFunction>
+    );
+};
+
+
+type SafeProps<FormValues extends AnyRecord, Name extends keyof FormValues> = {
+    common: {
+        name: Name;
+        value: FormValues[Name];
+        setValue: (value: FormValues[Name]) => void;
+    },
+    
+    radio: {
+        name: Name;
+        isChecked: (value: FormValues[Name]) => boolean;
+        setValue: (value: FormValues[Name]) => void;
+    },
+
+    checkbox: {
+        name: Name;
+        checked: FormValues[Name];
+        setValue: (value: FormValues[Name]) => void;
+    },
+}
+
+type SafePropsTypes = Prettify<keyof SafeProps<never, never>>;
+
+type ChildrenArgs3<
+    FormValues extends AnyRecord, 
+    Name extends keyof FormValues, 
+    FieldType extends SafePropsTypes
+> = (
+    [SafeProps<FormValues, Name>[FieldType], ...ReturnType<typeof useField<FormValues[Name]>>]
+);
+
+type FormikField3Args<
+    FormValues extends AnyRecord, 
+    Name extends keyof FormValues, 
+    FieldType extends SafePropsTypes
+> = PropsWithChildrenAsNodeOrFunction<ChildrenArgs3<FormValues, Name, FieldType>> & {
+    name: Name;
+    type: FieldType;
+    values: FormValues;
+};
+
+const FormikField3 = <FormValues extends AnyRecord, Name extends keyof FormValues, FieldType extends SafePropsTypes>({
+    name,
+    type,
+    values: _,
+    children,
+}: FormikField3Args<FormValues, Name, FieldType>) => {
+    const fieldProps = useField<FormValues[Name]>(String(name));
+    
+    const safeProps: SafeProps<FormValues, Name> = {
+        common: {
+            name,
+            value: fieldProps[0].value,
+            setValue: fieldProps[2].setValue,
+        },
+        radio: {
+            name,
+            isChecked: (v) => v === fieldProps[0].value,
+            setValue: fieldProps[2].setValue,
+        },
+        checkbox: {
+            name,
+            checked: fieldProps[0].value,
+            setValue: fieldProps[2].setValue,
+        },
+    };
+    
+    const childrenArgs: ChildrenArgs3<FormValues, Name, FieldType> = [
+        safeProps[type],
+        ...fieldProps,
+    ];
+
+    return (
+        <ChildrenAsNodeOrFunction args={childrenArgs}>
+            {children}
+        </ChildrenAsNodeOrFunction>
+    );
+};
+
 
 interface SomeForm {
     username: string;
@@ -671,11 +787,12 @@ const initialValues: SomeForm = {
 const PlaygroundInner17: FC = () => {
     return (
         <Formik initialValues={initialValues} onSubmit={(v) => console.log(v)}>
-            <Form>
-                <FormikField<SomeForm> name='username'>
-                    {(o, t, th) => (
-                        <div className='grid gap-20'>
-                            <div>
+            {({ values }) => (
+                <Form>
+                    <FormikField<SomeForm, 'username'> name='username'>
+                        {({ value }) => (
+                            <div className='grid gap-20'>
+                                {/* <div>
                                 <>{JSON.stringify(o)}</>
                             </div>
 
@@ -685,20 +802,139 @@ const PlaygroundInner17: FC = () => {
 
                             <div>
                                 <>{JSON.stringify(th)}</>
+                            </div> */}
                             </div>
-                        </div>
-                    )}
-                </FormikField>
+                        )}
+                    </FormikField>
+                        
+                    {/* <CheckBox checked label='' name='' onChange={() => {}}>
 
-                <FormikField<SomeForm> name='union'>
-                    {({ value }) => (
-                        <>
-                            {value}
-                        </>
-                    )}
-                </FormikField>
-            </Form>
+                </CheckBox> */}
+
+                    {/* <input type='checkbox' value='wow' name='che' onChange={(e) => console.log(e.target.checked)}/> */}
+
+                    {/* <input type='radio' value='r1' name='rtest'/> */}
+
+                    <FormikField2<SomeForm, 'cool'> name='cool'>
+                        {({ name, onChange, value }) => (
+                            <CheckBox checked={value} label='' name={name} onChange={onChange}>
+                                <>checkbox {String(value)}</>
+                            </CheckBox>
+                        )}
+                    </FormikField2>
+
+                    <FormikField2<SomeForm, 'union'> name='union'>
+                        {({ name, onChange, value }) => (
+                            <RadioInput checked={value === 'data'} label='' name={name} onChange={onChange} value='data'>
+                                <>radio 1 {String(value)}</>
+                            </RadioInput> 
+                        )}
+                    </FormikField2>
+
+                    <FormikField2<SomeForm, 'union'> name='union'>
+                        {({ name, onChange, value }) => (
+                            <RadioInput checked={value === 'some'} label='' name={name} onChange={onChange} value='some'>
+                                <>radio 2 {String(value)}</>
+                            </RadioInput> 
+                        )}
+                    </FormikField2>
+
+                    
+                    <FormikField2<SomeForm, 'username'> name='username'>
+                        {({ name, onChange, value }) => (
+                            <TextInput name={name} value={value} onChange={onChange} autoComplete/>
+                        )}
+                    </FormikField2>
+
+                    <div>
+                        {JSON.stringify(values)}
+                    </div>
+
+                    <FormikField3 values={initialValues} name='username' type='common'>
+                        {({ name, value }) => (
+                            <></>
+                        )}
+                    </FormikField3>
+
+                    <FormikField3 values={initialValues} name='union' type='common'>
+                        {({ name, value }) => (
+                            <></>
+                        )}
+                    </FormikField3>
+
+                    {/* <FormikField3<SomeForm> name='username' type='common'>
+                        {({ name, value }) => (
+                            <></>
+                        )}
+                    </FormikField3> */}
+                </Form>
+            )}
         </Formik>
+    );
+};
+
+
+const socket = io('ws://localhost:5000', { autoConnect: false, auth: { id: '648835dfc82aa7e61fd0f39f' } });
+
+const useSocket = () => {
+    const socketRef = useRef(socket);
+    
+
+};
+
+const useEntitySubscribe = (entityId: Id | Id[], entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>) => {
+    const socketRef = useRef(socket);
+    // const data = useReduxData();
+    const data = {};
+
+    const subscribeRef = useRef(() => {
+        socketRef.current.emit(entityName, entityId);
+    });
+
+    const ubsubscribeRef = useRef(() => {
+        socketRef.current.emit(entityName, entityId);
+    });
+
+    useEffect(() => {
+        subscribeRef.current();
+        
+        return () => {
+            ubsubscribeRef.current();
+        };
+    }, []);
+
+    return data;
+};
+
+const PlaygroundInner18: FC = () => {
+    const zxc = useEntitySubscribe('123', 'Channel');
+
+    return (
+        <div className='grid gap-20 p-20'>
+            <>wow</>
+        </div>
+    );
+};
+{/* <Icon iconId=''/>; */}
+
+const PlaygroundInner19: FC = () => {
+    // console.log(IMAGES);
+    return (
+        <Scrollable followContentSize className='max-h-screen'>
+            <div className='grid gap-20'>
+                <List list={objectKeys(IMAGES)}>
+                    {(key) => {
+                        return (
+                            <div className='[&>*]:w-1/2 h-screen [&>*]:h-auto [&>*]:object-contain flex [&>*]:bg-slate-300 [&>*]:outline [&>*]:outline-red-700 [&>*]:outline-4'>
+                                <img src={IMAGES[key].path.replace('generatedImages', 'rawImages')}/>
+                                
+                                <img src={IMAGES[key].path}/>
+                            </div>
+                        );
+                    }}
+                </List>
+            </div>
+        </Scrollable>
     );
 };
 
@@ -729,7 +965,9 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                     {/* <PlaygroundInner14/> */}
                     {/* <PlaygroundInner15/> */}
                     {/* <PlaygroundInner16/> */}
-                    <PlaygroundInner17/>
+                    {/* <PlaygroundInner17/> */}
+                    {/* <PlaygroundInner18/> */}
+                    <PlaygroundInner19/>
                 </ReactFocusLock>
             </Conditional>
         </>

@@ -14,6 +14,7 @@
         "client:lintFix": "npm run this:lintFix --prefix client",
         "client:generateImageTypes": "npm run this:generateImageTypes --prefix client",
         "client:optimizeImages": "npm run this:optimizeImages --prefix client",
+        "client:generateImageObject": "npm run this:generateImageObject --prefix client",
         "//1": "",
         "server:install": "npm run this:install --prefix server",
         "server:uninstall": "rimraf server/node_modules",
@@ -59,6 +60,6 @@
         "rimraf": "^4.1.2",
         "svgo": "^3.0.2",
         "ts-essentials": "^9.3.2",
-        "typescript": "^4.9.5"
+        "typescript": "^5.1.6"
     }
 }

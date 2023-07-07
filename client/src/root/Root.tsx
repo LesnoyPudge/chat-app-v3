@@ -43,8 +43,8 @@ const RootInner: FC = () => {
 
 export const Root: FC = () => {
     return (
-        // <StrictMode>
-        <RootInner/>
-        // </StrictMode>
+        <StrictMode>
+            <RootInner/>
+        </StrictMode>
     );
 };

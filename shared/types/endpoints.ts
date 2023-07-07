@@ -1,4 +1,4 @@
-import { Override, Prettify, Tokens, WithChannelId, WithChatId, WithFileId, WithMessageId, WithPrivateChannelId, WithRoleId, WithRoomId, WithTargetId } from './common';
+import { Override, Prettify, WithChannelId, WithChatId, WithFileId, WithMessageId, WithPrivateChannelId, WithRoleId, WithRoomId, WithTargetId } from './common';
 import { Entities } from './entities';
 
 

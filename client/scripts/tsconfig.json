@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
         "esModuleInterop": true,
-        "target": "ESNext",
         "module": "commonjs",
-        "lib": ["es6"],
-        "strict": true,
+        "lib": ["DOM", "ESNext", "ES2021.String"],
+        "target": "ESNext",
+        "strict": false,
         "resolveJsonModule": true,
     },
 }

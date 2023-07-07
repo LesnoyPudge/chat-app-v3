@@ -1,4 +1,4 @@
-import { Button, ContextMenu, Ref, Tooltip, UserAvatar } from '@components';
+import { Button, ContextMenu, OverlayContextProvider, Ref, Tooltip, UserAvatar } from '@components';
 import { useThrottle } from '@hooks';
 import { conditional, copyToClipboard, twClassNames } from '@utils';
 import { FC } from 'react';
@@ -64,25 +64,27 @@ export const UserInfo: FC = () => {
                         </Ref>
                     </div>
 
-                    <ContextMenu 
-                        preferredAlignment='top'
-                        leaderElementRef={ref}
-                    >
-                        {({ closeOverlay }) => (
-                            <div className='flex flex-col'>
-                                <Button onLeftClick={closeOverlay}>change status</Button>
+                    <OverlayContextProvider>
+                        <ContextMenu 
+                            preferredAlignment='top'
+                            leaderElementRef={ref}
+                        >
+                            {({ closeOverlay }) => (
+                                <div className='flex flex-col'>
+                                    <Button onLeftClick={closeOverlay}>change status</Button>
 
-                                <Button 
-                                    onLeftClick={() => {
-                                        handleCopy();
-                                        closeOverlay();
-                                    }}
-                                >
-                                    <>copy username</>
-                                </Button>
-                            </div>
-                        )}
-                    </ContextMenu>
+                                    <Button 
+                                        onLeftClick={() => {
+                                            handleCopy();
+                                            closeOverlay();
+                                        }}
+                                    >
+                                        <>copy username</>
+                                    </Button>
+                                </div>
+                            )}
+                        </ContextMenu>
+                    </OverlayContextProvider>
                 </>
             )}
         </Ref>
