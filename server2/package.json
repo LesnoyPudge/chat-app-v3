@@ -4,7 +4,7 @@
         "node": ">=19.8.1"
     },
     "scripts": {
-        "start": "nodemon --ignore **/*.test.* --exec ts-node -r tsconfig-paths/register ./src/server.ts"
+        "this:start": "nodemon --ignore **/*.test.* --exec ts-node -r tsconfig-paths/register ./src/server.ts"
     },
     "dependencies": {
         "auto-bind": "^4.0.0",

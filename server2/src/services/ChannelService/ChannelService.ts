@@ -1,4 +1,4 @@
-import { ChannelModel, transactionContainer } from '@database';
+import { ChannelModel, modelWithId, transactionContainer } from '@database';
 import { AuthorizedService } from '@types';
 import { getRandomString } from '@utils';
 import { UserServiceHelpers, RoleServiceHelpers, RoomServiceHelpers, FileServiceHelpers } from '@services';
@@ -61,13 +61,13 @@ export const ChannelService: ChannelService = {
             async({ session }) => {
                 const channelAvatar = !avatar ? null : (await FileServiceHelpers.create(avatar)).id;
 
-                const newChannel = new ChannelModel({
+                const newChannel = modelWithId(new ChannelModel({
                     identifier,
                     name,
                     avatar: channelAvatar,
                     owner: id,
                     members: [id],
-                });
+                }));
 
                 await UserServiceHelpers.addChannel({ userId: id, channelId: newChannel.id });
                

@@ -3,3 +3,4 @@ export * from './databaseConnection';
 export * from './getSchemaOptions';
 export * from './withPreSaveHook';
 export * from './transactionContainer';
+export * from './modelWithId';

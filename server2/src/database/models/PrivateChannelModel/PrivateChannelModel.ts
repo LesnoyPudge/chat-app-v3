@@ -14,4 +14,4 @@ const PrivateChannelSchema = new Schema<Entities.PrivateChannel.Default>({
 
 withPreSaveHook(PrivateChannelSchema);
 
-export const PrivateChannelModel = model(MODEL_NAMES.PRIVATE_CHANNEL, PrivateChannelSchema, MODEL_NAMES.MESSAGE);
+export const PrivateChannelModel = model(MODEL_NAMES.PRIVATE_CHANNEL, PrivateChannelSchema, MODEL_NAMES.PRIVATE_CHANNEL);

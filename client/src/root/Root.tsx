@@ -5,7 +5,7 @@ import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import './styles/main.scss';
 import { Provider } from 'react-redux';
-// import { store } from '@redux/store';
+import { store } from '@redux/store';
 
 
 
@@ -44,7 +44,9 @@ const RootInner: FC = () => {
 export const Root: FC = () => {
     return (
         <StrictMode>
-            <RootInner/>
+            <Provider store={store}>
+                <RootInner/>
+            </Provider>
         </StrictMode>
     );
 };

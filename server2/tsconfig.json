@@ -13,6 +13,7 @@
         "target": "ESNext",
         "strict": true,
         "alwaysStrict": true,
+        "skipLibCheck": true,
         "pretty": true,
         "noImplicitAny": true,
         "baseUrl": "./",
@@ -46,6 +47,6 @@
     },
     "include": [
         "src",
-        "declaration.d.ts", 
+        "decloration.d.ts"
     ]
 }

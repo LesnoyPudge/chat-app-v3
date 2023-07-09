@@ -32,17 +32,17 @@ const socketServer = new Server(server, {
     },
 }) as AuthorizedServer;
 
-// socketServer.use((socket, next) => {
-//     const data = socket.data;
-//     if (!data.accessToken) return next(ApiError.unauthorized());
+socketServer.use((socket, next) => {
+    const data = socket.data;
+    console.log('get socket message', socket.data);
+    if (!data.id) return next(ApiError.unauthorized());
+    if (!data.accessToken) return next(ApiError.unauthorized());
             
-//     const tokenData = token.validateAccessToken(data.accessToken);
-//     if (!tokenData) return next(ApiError.unauthorized());
+    const tokenData = token.validateAccessToken(data.accessToken);
+    if (!tokenData) return next(ApiError.unauthorized());
 
-//     data.tokenData = tokenData;
-
-//     next();
-// });
+    next();
+});
 
 export const sockets = new Sockets(socketServer);
 
@@ -123,7 +123,7 @@ app.use([
 app.use(errorHandlerMiddleware);
 
 (async() => {
-    // await databaseConnection();
+    await databaseConnection();
     server.listen(CUSTOM_SERVER_PORT, () => {
         console.log(`started at: ${CUSTOM_SERVER_PORT}`);
     });

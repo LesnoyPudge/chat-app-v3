@@ -5,11 +5,7 @@ import { Entities } from './entities';
 
 
 
-export type SocketData = Prettify<
-    Pick<Tokens, 'accessToken'> & 
-    WithId & 
-    { tokenData: Entities.User.Token; }
->;
+export type SocketData = Prettify<Pick<Tokens, 'accessToken'> & WithId>;
 
 type SubscribableEntities = typeof SUBSCRIBABLE_ENTITIES;
 

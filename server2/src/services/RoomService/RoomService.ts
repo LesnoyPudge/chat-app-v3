@@ -1,4 +1,4 @@
-import { RoomModel, transactionContainer } from '@database';
+import { RoomModel, modelWithId, transactionContainer } from '@database';
 import { ApiError } from '@errors';
 import { ChannelServiceHelpers, ChatServiceHelpers } from '@services';
 import { Endpoints, MODEL_NAMES } from '@shared';
@@ -30,10 +30,10 @@ export const RoomService: RoomService = {
     async create(_, { channelId, name }) {
         return transactionContainer(
             async({ session }) => {
-                const newRoom = new RoomModel({
+                const newRoom = modelWithId(new RoomModel({
                     name,
                     channel: channelId,
-                });
+                }));
 
                 const chat = await ChatServiceHelpers.create({
                     owner: MODEL_NAMES.ROOM,

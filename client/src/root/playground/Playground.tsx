@@ -604,8 +604,10 @@ const useConversation = (conversationId: string) => {
 
 import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
-import { Endpoints, Id, objectKeys, Prettify, SUBSCRIBABLE_ENTITIES, ValueOf } from '@shared';
+import { Endpoints, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, SUBSCRIBABLE_ENTITIES, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
+import { AppSlice, login, logout } from '@redux/features';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
 
 
 
@@ -874,44 +876,114 @@ const PlaygroundInner17: FC = () => {
 };
 
 
-const socket = io('ws://localhost:5000', { autoConnect: false, auth: { id: '648835dfc82aa7e61fd0f39f' } });
+const socket = io('ws://localhost:5000', { autoConnect: true }) as Socket<SocketServerEvents, SocketClientEvents>;
 
-const useSocket = () => {
-    const socketRef = useRef(socket);
-    
+socket.on('connect', () => {
+    console.log(`event: connect | session id: ${socket.id}`);
+});
 
-};
+socket.on('connect_error', (err) => {
+    console.log(`event: connect_error | reason: ${err.message}`);
+});
 
-const useEntitySubscribe = (entityId: Id | Id[], entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>) => {
+socket.on('disconnect', (reason) => {   
+    console.log(`event: disconnect | reason: ${reason}`);
+});
+
+socket.onAny((event, ...args) => {
+    console.log(`any event: ${event} | arguments: ${args}`);
+});
+
+const useEntitySubscribe = (entityId: Id, entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>) => {
     const socketRef = useRef(socket);
     // const data = useReduxData();
     const data = {};
 
     const subscribeRef = useRef(() => {
-        socketRef.current.emit(entityName, entityId);
+        socketRef.current.emit(`${entityName}_subscribe`, entityId);
     });
 
     const ubsubscribeRef = useRef(() => {
-        socketRef.current.emit(entityName, entityId);
+        socketRef.current.emit(`${entityName}_unsubscribe`, entityId);
     });
 
     useEffect(() => {
-        subscribeRef.current();
-        
-        return () => {
-            ubsubscribeRef.current();
-        };
+        // socketRef.current.connect();
+        // subscribeRef.current();
+
+        // const discListener = socketRef.current.disconnect;
+        // const unsubListener = ubsubscribeRef.current;
+
+        // return () => {
+        //     unsubListener();
+        //     discListener();
+        // };
     }, []);
 
     return data;
 };
 
+const Counter: FC = () => {
+    const { count, increment, decrement } = useCounter(0);
+
+    return (
+        <div className='grid gap-4 p-4'>
+            <div>count: {count}</div>
+
+            <button onClick={increment}>
+                <>inc</>
+            </button>
+
+            <button onClick={decrement}>
+                <>decr</>
+            </button>
+        </div>
+    );
+};
+
+const MyId: FC = () => {
+    const qwe = useAppSelector((state) => state.app.me);
+    
+    return (
+        <div>
+            <>{String(qwe)}</>
+        </div>
+    );
+};
+
+const IsAuthorized: FC = () => {
+    const qwe = useAppSelector((state) => state.app.isAuthorized);
+    
+    return (
+        <div>
+            <>{String(qwe)}</>
+        </div>
+    );
+};
+
 const PlaygroundInner18: FC = () => {
-    const zxc = useEntitySubscribe('123', 'Channel');
+    // const zxc = useEntitySubscribe('123', 'Channel');
+    const dispatch = useAppDispatch();
 
     return (
         <div className='grid gap-20 p-20'>
-            <>wow</>
+            <Counter/>
+
+            <MyId/>
+
+            <IsAuthorized/>
+
+            <button onClick={() => dispatch(AppSlice.actions.login())}>
+                <>login</>
+            </button>
+
+            <button onClick={() => dispatch(logout())}>
+                <>logout</>
+            </button>
+
+            <button onClick={() => dispatch(AppSlice.actions.authToggle())}>
+                <>toggle</>
+            </button>
         </div>
     );
 };
@@ -966,8 +1038,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                     {/* <PlaygroundInner15/> */}
                     {/* <PlaygroundInner16/> */}
                     {/* <PlaygroundInner17/> */}
-                    {/* <PlaygroundInner18/> */}
-                    <PlaygroundInner19/>
+                    <PlaygroundInner18/>
+                    {/* <PlaygroundInner19/> */}
                 </ReactFocusLock>
             </Conditional>
         </>

@@ -1,5 +1,5 @@
 import { UserDTO } from '@dto';
-import { transactionContainer, UserModel } from '@database';
+import { modelWithId, transactionContainer, UserModel } from '@database';
 import { UserServiceHelpers, FileServiceHelpers } from '@services';
 import { defaultAvatar, Endpoints, StrictOmit, Tokens, UserWithTokens } from '@shared';
 import { AuthorizedService, Service } from '@types';
@@ -91,7 +91,7 @@ export const UserService: UserService = {
                 const { code, expiresAt } = createAccessCode();
                 const avatar = defaultAvatar.getRandomAvatar();
 
-                const createdUser = new UserModel({
+                const createdUser = modelWithId(new UserModel({
                     avatar: avatar.name,
                     email,
                     login,
@@ -102,10 +102,10 @@ export const UserService: UserService = {
                         code,
                         expiresAt,
                     },
-                });
+                }));
 
                 const tokens = token.generateTokens(UserDTO.token(createdUser));
-                
+
                 createdUser.refreshToken = tokens.refreshToken;
 
                 const user = await createdUser.save({ session });
@@ -128,7 +128,6 @@ export const UserService: UserService = {
                 const tokens = token.generateTokens(UserDTO.token(user));
 
                 const tokenData = token.validateRefreshToken(user.refreshToken);
-
                 if (!tokenData) {
                     user.refreshToken = tokens.refreshToken;
                     await user.save({ session });

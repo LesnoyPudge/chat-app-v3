@@ -37,7 +37,12 @@ export const Tooltip: FC<Tooltip> = ({
     className = '',
     leaderElementRef,
     children, 
-    ...options
+    preferredAlignment,
+    boundsSize = 20,
+    centered = true,
+    spacing = 20,
+    swappableAlignment = true,
+    unbounded,
 }) => {
     const [isExist, setIsExist] = useState(false);
     const [withKeyboardRef, setWithKeyboard] = useRefWithSetter(false);
@@ -99,7 +104,12 @@ export const Tooltip: FC<Tooltip> = ({
                         <div className='overlay-item-wrapper'>
                             <RelativelyPositioned
                                 leaderElementOrRectRef={leaderElementRef}
-                                {...options}
+                                preferredAlignment={preferredAlignment}
+                                boundsSize={boundsSize}
+                                centered={centered}
+                                spacing={spacing}
+                                swappableAlignment={swappableAlignment}
+                                unbounded={unbounded}
                             >
                                 {({ alignment }) => {
                                     const alignmentStyles = {

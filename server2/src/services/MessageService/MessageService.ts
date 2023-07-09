@@ -1,4 +1,4 @@
-import { MessageModel, transactionContainer } from '@database';
+import { MessageModel, modelWithId, transactionContainer } from '@database';
 import { ApiError } from '@errors';
 import { ChatServiceHelpers, FileServiceHelpers, PrivateChannelServiceHelpers, RoomServiceHelpers } from '@services';
 import { Endpoints } from '@shared';
@@ -38,12 +38,12 @@ export const MessageService: MessageService = {
     async create({ id }, { chatId, content = '', attachments = [] }) {
         return transactionContainer(
             async({ session }) => {
-                const newMessage = new MessageModel({
+                const newMessage = modelWithId(new MessageModel({
                     user: id,
                     chat: chatId,
                     content,
                     attachments: [],
-                });
+                }));
 
                 if (attachments.length) {
                     await Promise.all(attachments.map(async(attachment) => {

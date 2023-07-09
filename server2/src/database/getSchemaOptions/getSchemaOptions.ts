@@ -1,8 +1,12 @@
 
 
 
-export const getSchemaOptions = () => ({
-    id: true,
-    versionKey: false,
-    timestamps: false,
-} as const);
+export const getSchemaOptions = () => {
+    const options = {
+        id: true,
+        versionKey: false,
+        timestamps: false,
+    };
+
+    return options;
+};

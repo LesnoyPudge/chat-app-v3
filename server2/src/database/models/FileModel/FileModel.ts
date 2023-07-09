@@ -17,4 +17,4 @@ const FileSchema = new Schema<Entities.File.Default>({
 
 withPreSaveHook(FileSchema);
 
-export const FileModel = model(MODEL_NAMES.FILE, FileSchema, MODEL_NAMES.MESSAGE);
+export const FileModel = model(MODEL_NAMES.FILE, FileSchema, MODEL_NAMES.FILE);

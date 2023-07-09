@@ -1,6 +1,5 @@
 export * from './getEnv';
 export * from './getLocalStorage';
-export * from './getCookie';
 export * from './log';
 export * from './setTitle';
 export * from './debounce';
@@ -28,3 +27,4 @@ export * from './noop';
 export * from './observers';
 export * from './chatMock';
 export * from './objectKeysToIdArray';
+export * from './firstLetterUppercase';

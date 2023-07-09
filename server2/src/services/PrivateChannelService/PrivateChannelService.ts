@@ -1,4 +1,4 @@
-import { PrivateChannelModel, transactionContainer } from '@database';
+import { PrivateChannelModel, modelWithId, transactionContainer } from '@database';
 import { ApiError } from '@errors';
 import { Endpoints, MODEL_NAMES } from '@shared';
 import { AuthorizedService } from '@types';
@@ -21,9 +21,9 @@ export const PrivateChannelService: PrivateChannelService = {
     async create({ id }, { targetId }) {
         return transactionContainer(
             async({ session }) => {
-                const privateChannel = new PrivateChannelModel({
+                const privateChannel = modelWithId(new PrivateChannelModel({
                     members: [id, targetId],
-                });
+                }));
                 
                 const chat = await ChatServiceHelpers.create({
                     owner: MODEL_NAMES.PRIVATE_CHANNEL,
