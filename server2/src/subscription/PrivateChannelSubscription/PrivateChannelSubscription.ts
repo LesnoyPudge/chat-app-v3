@@ -1,5 +1,5 @@
 import { sockets } from '@root';
-import { Entities } from '@shared';
+import { Entities, promiseToBoolean } from '@shared';
 import { customChains } from '@validators';
 import { EntitySubscription } from '../EntitySubscription';
 
@@ -11,7 +11,6 @@ export const PrivateChannelSubscription = new EntitySubscription<
     'PrivateChannel',
     sockets,
     async(userId, privateChannelId) => {
-        return customChains.privateChannelMember(userId, privateChannelId)()
-            .catch(() => false).then(() => true);
+        return promiseToBoolean(customChains.privateChannelMember(userId, privateChannelId)());
     },
 );

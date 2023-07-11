@@ -8,7 +8,7 @@ import { Endpoints } from '@shared';
 
 export const RoomRouter = Router();
 
-RoomRouter.post(
+RoomRouter[Endpoints.V1.Room.Create.Method](
     Endpoints.V1.Room.Create.Path,
     RoomValidator[Endpoints.V1.Room.Create.ActionName],
     authorizationMiddleware,
@@ -17,7 +17,7 @@ RoomRouter.post(
     ),
 );
 
-RoomRouter.post(
+RoomRouter[Endpoints.V1.Room.Delete.Method](
     Endpoints.V1.Room.Delete.Path,
     RoomValidator[Endpoints.V1.Room.Delete.ActionName],
     authorizationMiddleware,
@@ -26,7 +26,7 @@ RoomRouter.post(
     ),
 );
 
-RoomRouter.get(
+RoomRouter[Endpoints.V1.Room.GetOne.Method](
     Endpoints.V1.Room.GetOne.Path,
     RoomValidator[Endpoints.V1.Room.GetOne.ActionName],
     authorizationMiddleware,
@@ -35,7 +35,7 @@ RoomRouter.get(
     ),
 );
 
-RoomRouter.post(
+RoomRouter[Endpoints.V1.Room.Update.Method](
     Endpoints.V1.Room.Update.Path,
     RoomValidator[Endpoints.V1.Room.Update.ActionName],
     authorizationMiddleware,

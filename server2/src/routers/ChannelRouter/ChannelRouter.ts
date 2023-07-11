@@ -8,7 +8,7 @@ import { Endpoints } from '@shared';
 
 export const ChannelRouter = Router();
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.AcceptInvitation.Method](
     Endpoints.V1.Channel.AcceptInvitation.Path,
     ChannelValidator[Endpoints.V1.Channel.AcceptInvitation.ActionName],
     authorizationMiddleware,
@@ -17,7 +17,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.Ban.Method](
     Endpoints.V1.Channel.Ban.Path,
     ChannelValidator[Endpoints.V1.Channel.Ban.ActionName],
     authorizationMiddleware,
@@ -26,7 +26,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.Create.Method](
     Endpoints.V1.Channel.Create.Path,
     ChannelValidator[Endpoints.V1.Channel.Create.ActionName],
     authorizationMiddleware,
@@ -35,7 +35,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.CreateInvitation.Method](
     Endpoints.V1.Channel.CreateInvitation.Path,
     ChannelValidator[Endpoints.V1.Channel.CreateInvitation.ActionName],
     authorizationMiddleware,
@@ -44,7 +44,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.Delete.Method](
     Endpoints.V1.Channel.Delete.Path,
     ChannelValidator[Endpoints.V1.Channel.Delete.ActionName],
     authorizationMiddleware,
@@ -53,7 +53,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.DeleteInvitation.Method](
     Endpoints.V1.Channel.DeleteInvitation.Path,
     ChannelValidator[Endpoints.V1.Channel.DeleteInvitation.ActionName],
     authorizationMiddleware,
@@ -62,7 +62,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.get(
+ChannelRouter[Endpoints.V1.Channel.GetOne.Method](
     Endpoints.V1.Channel.GetOne.Path,
     ChannelValidator[Endpoints.V1.Channel.GetOne.ActionName],
     authorizationMiddleware,
@@ -71,7 +71,7 @@ ChannelRouter.get(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.Kick.Method](
     Endpoints.V1.Channel.Kick.Path,
     ChannelValidator[Endpoints.V1.Channel.Kick.ActionName],
     authorizationMiddleware,
@@ -80,7 +80,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.Leave.Method](
     Endpoints.V1.Channel.Leave.Path,
     ChannelValidator[Endpoints.V1.Channel.Leave.ActionName],
     authorizationMiddleware,
@@ -89,7 +89,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.Unban.Method](
     Endpoints.V1.Channel.Unban.Path,
     ChannelValidator[Endpoints.V1.Channel.Unban.ActionName],
     authorizationMiddleware,
@@ -98,7 +98,7 @@ ChannelRouter.post(
     ),
 );
 
-ChannelRouter.post(
+ChannelRouter[Endpoints.V1.Channel.Update.Method](
     Endpoints.V1.Channel.Update.Path,
     ChannelValidator[Endpoints.V1.Channel.Update.ActionName],
     authorizationMiddleware,

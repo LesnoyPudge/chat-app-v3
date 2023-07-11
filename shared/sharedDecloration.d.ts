@@ -9,10 +9,26 @@
 
 // type FromEntriesWithReadOnly<T> = FromEntries<DeepWriteable<T>>
 
+type Entries<T> = {
+    [K in keyof T]: [K, T[K]]
+}[keyof T][];
+
+// type qwe = Entries<[['some', 1], ['data', 2]]>
+
 interface ObjectConstructor {
     keys<T>(o: T): Array<keyof T>;
     
+    // fromEntries<K extends PropertyKey, T = any>(entries: Iterable<readonly [K, T]>): { [k in K]: T }; 
+    
     // fromEntries<A extends Iterable<readonly any[]>>(entries: A): { [V in A]: V };
+
+    // fromEntries<T extends Iterable<readonly any[]>>(entries: T): ReturnType<Entries<T>>;
+    // fromEntries(entries: Iterable<readonly any[]>): undefined;
+
+    // fromEntries<T>(entries: T): {
+    //     [K in keyof T]: [K, T[K]]
+    // }[keyof T][];
+    // fromEntries(entries: Iterable<readonly any[]>): undefined;
 
     // fromEntries(entries: Iterable<readonly any[]>): any;
     // fromEntries<T>(obj: T): FromEntriesWithReadOnly<T>

@@ -223,9 +223,7 @@ export const customChains = {
     oneOf(chains: ((value: any) => Promise<void>)[]) {
         return async(value?: unknown) => {
             const results = await Promise.all(chains.map(async(chain) => {
-                return await chain(value)
-                    .then(() => true)
-                    .catch(() => false);
+                return await promiseToBoolean(chain(value));
             }));
 
             const found = results.some((item) => item === true);
@@ -272,7 +270,7 @@ export const customChains = {
 
     not(chain: (value: any) => Promise<void>) {
         return async(value: unknown) => {
-            const success = await chain(value).then(() => true).catch(() => false);
+            const success = await promiseToBoolean(chain(value));
 
             if (success) return Promise.reject();
 
@@ -283,9 +281,7 @@ export const customChains = {
     all(chains: ((value: any) => Promise<void>)[]) {
         return async(value: unknown) => {
             const results = await Promise.all(chains.map(async(chain) => {
-                return await chain(value)
-                    .then(() => true)
-                    .catch(() => false);
+                return await promiseToBoolean(chain(value));
             }));
 
             const found = results.some((item) => item === false);
@@ -425,10 +421,10 @@ export const customChains = {
 
     ableToModifyMessage(userId: string, messageId: string) {
         return async() => {
-            const haveAccess = await this.ableToReadMessage(
+            const haveAccess = await promiseToBoolean(this.ableToReadMessage(
                 userId,
                 messageId,
-            )().then(() => true).catch(() => false);
+            )());
             if (!haveAccess) return Promise.reject();
 
             const message = await MessageServiceHelpers.getOne({ 
@@ -444,10 +440,10 @@ export const customChains = {
 
     ableToDeleteMessage(userId: string, messageId: string) {
         return async() => {
-            const haveAccess = await this.ableToReadMessage(
+            const haveAccess = await promiseToBoolean(this.ableToReadMessage(
                 userId,
                 messageId,
-            )().then(() => true).catch(() => false);
+            )());
             if (!haveAccess) return Promise.reject();
 
             const message = await MessageServiceHelpers.getOne({ 
@@ -462,10 +458,10 @@ export const customChains = {
             });
             if (!room) return Promise.reject();
 
-            const permissionToDelete = await this.oneOf([
+            const permissionToDelete = await promiseToBoolean(this.oneOf([
                 this.channelOwner(userId, room.channel),
                 this.permissionAdministrator(userId, room.channel),
-            ])().then(() => true).catch(() => false);
+            ])());
 
             if (permissionToDelete) return Promise.resolve();
 

@@ -6,7 +6,7 @@ import { EntitySubscription } from '../EntitySubscription';
 
 
 export const UserSubscription = new EntitySubscription<
-    Entities.User.WithoutCredentials
+    Entities.User.WithoutCredentials | Entities.User.Preview
 >(
     'User',
     sockets,

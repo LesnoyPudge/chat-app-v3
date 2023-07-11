@@ -1,5 +1,5 @@
 import { sockets } from '@root';
-import { Entities } from '@shared';
+import { Entities, promiseToBoolean } from '@shared';
 import { customChains } from '@validators';
 import { EntitySubscription } from '../EntitySubscription';
 
@@ -11,7 +11,6 @@ export const MessageSubscription = new EntitySubscription<
     'Message',
     sockets,
     async(userId, messageId) => {
-        return customChains.ableToReadMessage(userId, messageId)()
-            .catch(() => false).then(() => true);
+        return promiseToBoolean(customChains.ableToReadMessage(userId, messageId)());
     },
 );

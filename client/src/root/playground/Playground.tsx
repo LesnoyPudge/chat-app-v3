@@ -2,7 +2,7 @@ import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSe
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
-import { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs } from '@hooks';
@@ -104,7 +104,7 @@ const ImageV2: FC<ImageV2> = ({
 
 import getScrollableParent from 'scrollparent';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
-import { useLatest, useMeasure } from 'react-use';
+import { useLatest, useMeasure, useNetworkState } from 'react-use';
 import { useFocus } from 'src/hooks/useFocus/useFocus';
 import { Field, Form, Formik, useField, useFormikContext } from 'formik';
 import { FormikFileUploadContextProvider } from '@libs';
@@ -606,8 +606,9 @@ import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
 import { Endpoints, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, SUBSCRIBABLE_ENTITIES, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
-import { AppSlice, login, logout } from '@redux/features';
+import { AppSelectors, AppSlice, UserApi } from '@redux/features';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { store } from '@redux/store';
 
 
 
@@ -876,36 +877,53 @@ const PlaygroundInner17: FC = () => {
 };
 
 
-const socket = io('ws://localhost:5000', { autoConnect: true }) as Socket<SocketServerEvents, SocketClientEvents>;
 
-socket.on('connect', () => {
-    console.log(`event: connect | session id: ${socket.id}`);
-});
+// socket.on('connect', () => {
+//     console.log(`event: connect | session id: ${socket.id}`);
+// });
 
-socket.on('connect_error', (err) => {
-    console.log(`event: connect_error | reason: ${err.message}`);
-});
+// socket.on('connect_error', (err) => {
+//     console.log(`event: connect_error | reason: ${err.message}`);
+// });
 
-socket.on('disconnect', (reason) => {   
-    console.log(`event: disconnect | reason: ${reason}`);
-});
+// socket.on('disconnect', (reason) => {   
+//     console.log(`event: disconnect | reason: ${reason}`);
+// });
 
-socket.onAny((event, ...args) => {
-    console.log(`any event: ${event} | arguments: ${args}`);
-});
+// socket.onAny((event, ...args) => {
+//     console.log(`any event: ${event} | arguments: ${args}`);
+// });
+
+// const socket = io('ws://localhost:5000', { autoConnect: false }) as Socket<
+//     SocketServerEvents, 
+//     SocketClientEvents
+// >;
+
+// const useSocket = () => {
+//     const socketRef = useRef(socket);
+    
+//     // const isAuthorized = useAppSelector(AppSelectors.selectIsAuthorized);
+//     // const { online } = useNetworkState();
+    
+    
+// };
+
+
+
+
 
 const useEntitySubscribe = (entityId: Id, entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>) => {
-    const socketRef = useRef(socket);
+    // const socketRef = useRef(socket);
     // const data = useReduxData();
     const data = {};
 
-    const subscribeRef = useRef(() => {
-        socketRef.current.emit(`${entityName}_subscribe`, entityId);
-    });
+    // const subscribeRef = useRef(() => {
+    //     socketRef.current.emit(`${entityName}_subscribe`, entityId);
+    // });
 
-    const ubsubscribeRef = useRef(() => {
-        socketRef.current.emit(`${entityName}_unsubscribe`, entityId);
-    });
+    // const ubsubscribeRef = useRef(() => {
+    //     socketRef.current.emit(`${entityName}_unsubscribe`, entityId);
+    // });
 
     useEffect(() => {
         // socketRef.current.connect();
@@ -923,57 +941,19 @@ const useEntitySubscribe = (entityId: Id, entityName: ValueOf<typeof SUBSCRIBABL
     return data;
 };
 
-const Counter: FC = () => {
-    const { count, increment, decrement } = useCounter(0);
-
-    return (
-        <div className='grid gap-4 p-4'>
-            <div>count: {count}</div>
-
-            <button onClick={increment}>
-                <>inc</>
-            </button>
-
-            <button onClick={decrement}>
-                <>decr</>
-            </button>
-        </div>
-    );
-};
-
-const MyId: FC = () => {
-    const qwe = useAppSelector((state) => state.app.me);
-    
-    return (
-        <div>
-            <>{String(qwe)}</>
-        </div>
-    );
-};
-
-const IsAuthorized: FC = () => {
-    const qwe = useAppSelector((state) => state.app.isAuthorized);
-    
-    return (
-        <div>
-            <>{String(qwe)}</>
-        </div>
-    );
-};
 
 const PlaygroundInner18: FC = () => {
     // const zxc = useEntitySubscribe('123', 'Channel');
     const dispatch = useAppDispatch();
-
+    
     return (
         <div className='grid gap-20 p-20'>
-            <Counter/>
+            <button onClick={() => dispatch(UserApi.endpoints.UserRefresh.initiate())}>
+                <>refresh</>
+            </button>
 
-            <MyId/>
 
-            <IsAuthorized/>
-
-            <button onClick={() => dispatch(AppSlice.actions.login())}>
+            {/* <button onClick={() => dispatch(AppSlice.actions.login())}>
                 <>login</>
             </button>
 
@@ -983,7 +963,7 @@ const PlaygroundInner18: FC = () => {
 
             <button onClick={() => dispatch(AppSlice.actions.authToggle())}>
                 <>toggle</>
-            </button>
+            </button> */}
         </div>
     );
 };

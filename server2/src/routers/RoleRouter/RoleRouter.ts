@@ -8,7 +8,7 @@ import { Endpoints } from '@shared';
 
 export const RoleRouter = Router();
 
-RoleRouter.post(
+RoleRouter[Endpoints.V1.Role.AddMember.Method](
     Endpoints.V1.Role.AddMember.Path,
     RoleValidator[Endpoints.V1.Role.AddMember.ActionName],
     authorizationMiddleware,
@@ -17,7 +17,7 @@ RoleRouter.post(
     ),
 );
 
-RoleRouter.post(
+RoleRouter[Endpoints.V1.Role.Create.Method](
     Endpoints.V1.Role.Create.Path,
     RoleValidator[Endpoints.V1.Role.Create.ActionName],
     authorizationMiddleware,
@@ -26,7 +26,7 @@ RoleRouter.post(
     ),
 );
 
-RoleRouter.post(
+RoleRouter[Endpoints.V1.Role.Delete.Method](
     Endpoints.V1.Role.Delete.Path,
     RoleValidator[Endpoints.V1.Role.Delete.ActionName],
     authorizationMiddleware,
@@ -35,7 +35,7 @@ RoleRouter.post(
     ),
 );
 
-RoleRouter.get(
+RoleRouter[Endpoints.V1.Role.GetOne.Method](
     Endpoints.V1.Role.GetOne.Path,
     RoleValidator[Endpoints.V1.Role.GetOne.ActionName],
     authorizationMiddleware,
@@ -44,7 +44,7 @@ RoleRouter.get(
     ),
 );
 
-RoleRouter.post(
+RoleRouter[Endpoints.V1.Role.RemoveMember.Method](
     Endpoints.V1.Role.RemoveMember.Path,
     RoleValidator[Endpoints.V1.Role.RemoveMember.ActionName],
     authorizationMiddleware,
@@ -53,7 +53,7 @@ RoleRouter.post(
     ),
 );
 
-RoleRouter.post(
+RoleRouter[Endpoints.V1.Role.Update.Method](
     Endpoints.V1.Role.Update.Path,
     RoleValidator[Endpoints.V1.Role.Update.ActionName],
     authorizationMiddleware,

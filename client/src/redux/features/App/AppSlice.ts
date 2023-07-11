@@ -1,69 +1,83 @@
-import { CaseReducer, createEntityAdapter, createSlice, PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { Id, Timestamp } from '@shared';
+import { UserApi, UserSelectors } from '@redux/features';
+import { localStorageApi } from '@utils';
 import { RootState } from '@redux/store';
-import { firstLetterUppercase, objectKeys } from '@utils';
-import { Endpoints, Entities, ENTITY_NAMES, Id, Prettify, StrictExtract, StrictOmit, ValueOf } from '@shared';
+import { globalReset } from '@redux/globalReset';
 
 
 
 type AppState = {
     isInitialized: boolean;
-} & ({
-    isAuthorized: false;
-    me: null;
-} | {
-    isAuthorized: true;
-    me: Id;
-});
-
-type ActionNames = StrictExtract<
-    ValueOf<typeof Endpoints.V1.User>['ActionName'], 
-    'login' | 'logout' | 'refresh' | 'registration'
-> | 'authToggle';
-
-type Reducers = Record<ActionNames, CaseReducer<AppState, PayloadAction<void>>>;
-
-const initialState: AppState = {
-    isInitialized: false,
-    isAuthorized: false,
-    me: null,
+    myid: Id | null;
+    lastRefresh: Timestamp | null;
 };
 
-export const AppSlice = createSlice<AppState, Reducers>({
+const getInitialState = (): AppState => {
+    return {
+        isInitialized: false,
+        myid: null,
+        lastRefresh: localStorageApi.get('lastRefresh'),
+    };
+};
+
+export const AppSlice = createSlice({
     name: 'App',
-    initialState,           
+    initialState: getInitialState(),           
     reducers: {
-        authToggle: (state) => {
-            console.log('authToggle');
-            state.isAuthorized = !state.isAuthorized;
-        },
-
-        login: (state) => {
-            console.log('login');
-            state.isAuthorized = true;
-            state.isInitialized = true;
-            state.me = 'myId123';
-        },
-
-        logout: (state) => {
-            console.log('logout');
-            state.isAuthorized = false;
-            state.isInitialized = true;
-            state.me = null;
-        },
-
-        refresh: () => {
-
-        },
-
-        registration: () => {
-
-        },
     }, 
     extraReducers(builder) {
+        builder.addCase(globalReset, (state) => {
+            localStorageApi.set('lastRefresh', null);
+            Object.assign(state, {
+                ...getInitialState(),
+                isInitialized: true,
+            });
+        });
+
+        builder.addMatcher(
+            UserApi.endpoints.UserRefresh.matchPending,
+            (state) => {
+                if (state.isInitialized) return;
+                state.isInitialized = true;
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints.UserRefresh.matchFulfilled,
+            (state, { payload }) => {
+                state.myid = payload.id;
+                state.lastRefresh = Date.now();
+                localStorageApi.set('lastRefresh', state.lastRefresh);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints.UserRefresh.matchRejected,
+            (state) => {
+                state.myid = null;
+                state.lastRefresh = null;
+                localStorageApi.set('lastRefresh', state.lastRefresh);
+            },
+        );
     },
 });
 
-export const {
-    login,
-    logout,
-} = AppSlice.actions;
+const selectAppState = (state: RootState) => state.app;
+
+const selectIsAuthorized = createSelector([selectAppState], (state) => !!state.myid);
+
+const selectMyId = createSelector([selectAppState], (state) => state.myid);
+
+const selectMe = createSelector(
+    [UserSelectors.selectUserState, selectMyId], 
+    (users, id) => id ? users.entities[id] : null,
+);
+
+
+export const AppSelectors = {
+    selectAppState,
+    selectIsAuthorized,
+    selectMyId,
+    selectMe,
+};

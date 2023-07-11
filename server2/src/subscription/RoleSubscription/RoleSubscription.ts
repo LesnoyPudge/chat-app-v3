@@ -1,6 +1,6 @@
 import { sockets } from '@root';
 import { RoleServiceHelpers } from '@services';
-import { Entities } from '@shared';
+import { Entities, promiseToBoolean } from '@shared';
 import { customChains } from '@validators';
 import { EntitySubscription } from '../EntitySubscription';
 
@@ -15,7 +15,6 @@ export const RoleSubscription = new EntitySubscription<
         const role = await RoleServiceHelpers.getOne({ id: roleId });
         if (!role) return Promise.resolve(false);
 
-        return customChains.channelMember(userId, role.channel)()
-            .catch(() => false).then(() => true);
+        return promiseToBoolean(customChains.channelMember(userId, role.channel)());
     },
 );

@@ -8,7 +8,7 @@ import { Endpoints } from '@shared';
 
 export const UserRouter = Router();
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.AcceptFriendRequest.Method](
     Endpoints.V1.User.AcceptFriendRequest.Path,
     UserValidator[Endpoints.V1.User.AcceptFriendRequest.ActionName],
     authorizationMiddleware,
@@ -17,7 +17,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.Block.Method](
     Endpoints.V1.User.Block.Path,
     UserValidator[Endpoints.V1.User.Block.ActionName],
     authorizationMiddleware,
@@ -26,7 +26,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.CredentialsUpdate.Method](
     Endpoints.V1.User.CredentialsUpdate.Path,
     UserValidator[Endpoints.V1.User.CredentialsUpdate.ActionName],
     authorizationMiddleware,
@@ -35,7 +35,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.DeclineFriendRequest.Method](
     Endpoints.V1.User.DeclineFriendRequest.Path,
     UserValidator[Endpoints.V1.User.DeclineFriendRequest.ActionName],
     authorizationMiddleware,
@@ -44,7 +44,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.Delete.Method](
     Endpoints.V1.User.Delete.Path,
     authorizationMiddleware,
     errorCatcherMiddleware(
@@ -52,7 +52,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.DeleteFriend.Method](
     Endpoints.V1.User.DeleteFriend.Path,
     UserValidator[Endpoints.V1.User.DeleteFriend.ActionName],
     authorizationMiddleware,
@@ -61,7 +61,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.get(
+UserRouter[Endpoints.V1.User.GetOne.Method](
     Endpoints.V1.User.GetOne.Path,
     UserValidator[Endpoints.V1.User.GetOne.ActionName],
     authorizationMiddleware,
@@ -70,7 +70,7 @@ UserRouter.get(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.HidePrivateChannel.Method](
     Endpoints.V1.User.HidePrivateChannel.Path,
     UserValidator[Endpoints.V1.User.HidePrivateChannel.ActionName],
     authorizationMiddleware,
@@ -79,7 +79,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.Login.Method](
     Endpoints.V1.User.Login.Path,
     UserValidator[Endpoints.V1.User.Login.ActionName],
     errorCatcherMiddleware(
@@ -87,7 +87,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.Logout.Method](
     Endpoints.V1.User.Logout.Path,
     authorizationMiddleware,
     errorCatcherMiddleware(
@@ -95,7 +95,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.ProfileUpdate.Method](
     Endpoints.V1.User.ProfileUpdate.Path,
     UserValidator[Endpoints.V1.User.ProfileUpdate.ActionName],
     authorizationMiddleware,
@@ -104,14 +104,14 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.Refresh.Method](
     Endpoints.V1.User.Refresh.Path,
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.Refresh.ActionName],
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.Registration.Method](
     Endpoints.V1.User.Registration.Path,
     UserValidator[Endpoints.V1.User.Registration.ActionName],
     errorCatcherMiddleware(
@@ -119,7 +119,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.RequestAccessCode.Method](
     Endpoints.V1.User.RequestAccessCode.Path,
     authorizationMiddleware,
     errorCatcherMiddleware(
@@ -127,7 +127,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.RevokeFriendRequest.Method](
     Endpoints.V1.User.RevokeFriendRequest.Path,
     UserValidator[Endpoints.V1.User.RevokeFriendRequest.ActionName],
     authorizationMiddleware,
@@ -136,7 +136,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.SendFriendRequest.Method](
     Endpoints.V1.User.SendFriendRequest.Path,
     UserValidator[Endpoints.V1.User.SendFriendRequest.ActionName],
     authorizationMiddleware,
@@ -145,7 +145,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.Unblock.Method](
     Endpoints.V1.User.Unblock.Path,
     UserValidator[Endpoints.V1.User.Unblock.ActionName],
     authorizationMiddleware,
@@ -154,7 +154,7 @@ UserRouter.post(
     ),
 );
 
-UserRouter.post(
+UserRouter[Endpoints.V1.User.VerifyAccessCode.Method](
     Endpoints.V1.User.VerifyAccessCode.Path,
     UserValidator[Endpoints.V1.User.VerifyAccessCode.ActionName],
     authorizationMiddleware,

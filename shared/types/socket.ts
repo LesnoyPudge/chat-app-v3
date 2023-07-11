@@ -5,7 +5,7 @@ import { Entities } from './entities';
 
 
 
-export type SocketData = Prettify<Pick<Tokens, 'accessToken'> & WithId>;
+export type SocketAuth = Prettify<Pick<Tokens, 'accessToken'>>;
 
 type SubscribableEntities = typeof SUBSCRIBABLE_ENTITIES;
 
@@ -26,24 +26,24 @@ export type SocketServerEvents = Prettify<
         (entityId: string) => void
     > & Record<
         ToName<SubscribableEntities['CHANNEL'], typeof SOCKET_SERVER_EVENT_NAMES.DATA>,
-        (entityId: string, data: Partial<Entities.Channel.Default>) => void
+        (entityId: string, data: Entities.Channel.Default) => void
     > & Record<
         ToName<SubscribableEntities['CHAT'], typeof SOCKET_SERVER_EVENT_NAMES.DATA>,
-        (entityId: string, data: Partial<Entities.Chat.Default>) => void
+        (entityId: string, data: Entities.Chat.Default) => void
     > & Record<
         ToName<SubscribableEntities['MESSAGE'], typeof SOCKET_SERVER_EVENT_NAMES.DATA>,
-        (entityId: string, data: Partial<Entities.Message.Default>) => void
+        (entityId: string, data: Entities.Message.Default) => void
     > & Record<
         ToName<SubscribableEntities['PRIVATE_CHANNEL'], typeof SOCKET_SERVER_EVENT_NAMES.DATA>,
-        (entityId: string, data: Partial<Entities.PrivateChannel.Default>) => void
+        (entityId: string, data: Entities.PrivateChannel.Default) => void
     > & Record<
         ToName<SubscribableEntities['ROLE'], typeof SOCKET_SERVER_EVENT_NAMES.DATA>,
-        (entityId: string, data: Partial<Entities.Role.Default>) => void
+        (entityId: string, data: Entities.Role.Default) => void
     > & Record<
         ToName<SubscribableEntities['ROOM'], typeof SOCKET_SERVER_EVENT_NAMES.DATA>,
-        (entityId: string, data: Partial<Entities.Room.Default>) => void
+        (entityId: string, data: Entities.Room.Default) => void
     > & Record<
         ToName<SubscribableEntities['USER'], typeof SOCKET_SERVER_EVENT_NAMES.DATA>,
-        (entityId: string, data: Partial<Entities.User.WithoutCredentials>) => void
+        (entityId: string, data: Entities.User.WithoutCredentials | Entities.User.Preview) => void
     >
 >;

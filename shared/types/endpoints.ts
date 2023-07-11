@@ -1,9 +1,18 @@
-import { Override, Prettify, WithChannelId, WithChatId, WithFileId, WithMessageId, WithPrivateChannelId, WithRoleId, WithRoomId, WithTargetId } from './common';
+import { capitalize } from '../utils';
+import { ENTITY_NAMES } from '../vars';
+import { METHOD, Override, Prettify, WithChannelId, WithChatId, WithFileId, WithMessageId, WithPrivateChannelId, WithRoleId, WithRoomId, WithTargetId } from './common';
 import { Entities } from './entities';
 
 
 
 const v1 = <T extends string>(path: T): `/api/v1${T}` => `/api/v1${path}`;
+
+const actionNameWithEntity = <EntityName extends keyof typeof Endpoints.V1, Action extends string>(
+    entity: EntityName, 
+    action: Action,
+): `${EntityName}${Capitalize<Action>}` => {
+    return `${entity}${capitalize(action)}`;
+};
 
 export module Endpoints {
     export module V1 {
@@ -13,7 +22,11 @@ export module Endpoints {
                 
                 export const ActionName = 'registration';
                 
-                export interface RequestBody {
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
+                export type RequestBody = {
                     login: string;
                     username: string;
                     password: string;
@@ -28,7 +41,11 @@ export module Endpoints {
                 
                 export const ActionName = 'login';
                 
-                export interface RequestBody {
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
+                export type RequestBody = {
                     login: string;
                     password: string;
                 }
@@ -41,9 +58,13 @@ export module Endpoints {
                 
                 export const ActionName = 'logout';
                 
-                export type RequestBody = unknown;
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
+                export type RequestBody = void;
                 
-                export type Response = unknown;
+                export type Response = void;
             }
 
             export module Refresh {
@@ -51,7 +72,11 @@ export module Endpoints {
                 
                 export const ActionName = 'refresh';
                 
-                export type RequestBody = unknown;
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
+                export type RequestBody = void;
                 
                 export type Response = Entities.User.WithoutCredentials;
             }
@@ -61,6 +86,10 @@ export module Endpoints {
                 
                 export const ActionName = 'getOne';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.GET;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -70,6 +99,10 @@ export module Endpoints {
                 export const Path = v1('/user/profile/update');
                 
                 export const ActionName = 'profileUpdate';
+
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
 
                 export type RequestBody = Prettify<Partial<Pick<
                     Entities.User.Default, 
@@ -88,6 +121,10 @@ export module Endpoints {
                 
                 export const ActionName = 'credentialsUpdate';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<Pick<
                     Entities.User.Default,
                     'password'
@@ -105,9 +142,13 @@ export module Endpoints {
                 
                 export const ActionName = 'delete';
                 
-                export type RequestBody = unknown;
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
+                export type RequestBody = void;
                 
-                export type Response = unknown;
+                export type Response = void;
             }
 
             export module Block {
@@ -115,6 +156,10 @@ export module Endpoints {
                 
                 export const ActionName = 'block';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -125,6 +170,10 @@ export module Endpoints {
                 
                 export const ActionName = 'unblock';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -135,9 +184,13 @@ export module Endpoints {
                 
                 export const ActionName = 'requestAccessCode';
                 
-                export type RequestBody = unknown;
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
+                export type RequestBody = void;
                 
-                export type Response = unknown;
+                export type Response = void;
             }
 
             export module VerifyAccessCode {
@@ -145,9 +198,13 @@ export module Endpoints {
                 
                 export const ActionName = 'verifyAccessCode';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Override<Entities.User.Default, 'accessCode', string>;
                 
-                export type Response = unknown;
+                export type Response = void;
             }
 
             export module SendFriendRequest {
@@ -155,6 +212,10 @@ export module Endpoints {
                 
                 export const ActionName = 'sendFriendRequest';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -165,6 +226,10 @@ export module Endpoints {
                 
                 export const ActionName = 'acceptFriendRequest';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -175,6 +240,10 @@ export module Endpoints {
                 
                 export const ActionName = 'declineFriendRequest';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -185,6 +254,10 @@ export module Endpoints {
                 
                 export const ActionName = 'revokeFriendRequest';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -195,6 +268,10 @@ export module Endpoints {
                 
                 export const ActionName = 'deleteFriend';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -205,6 +282,10 @@ export module Endpoints {
                 
                 export const ActionName = 'hidePrivateChannel';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithPrivateChannelId;
                 
                 export type Response = Entities.User.WithoutCredentials;
@@ -217,6 +298,10 @@ export module Endpoints {
                 
                 export const ActionName = 'create';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<Pick<
                     Entities.Channel.Default,
                     'name' | 'identifier'
@@ -234,6 +319,10 @@ export module Endpoints {
                 
                 export const ActionName = 'getOne';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.GET;
+
                 export type RequestBody = WithChannelId;
                 
                 export type Response = Entities.Channel.Default;
@@ -244,6 +333,10 @@ export module Endpoints {
                 
                 export const ActionName = 'update';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithChannelId & Partial<Pick<
                     Entities.Channel.Default,
                     'name'
@@ -261,6 +354,10 @@ export module Endpoints {
                 
                 export const ActionName = 'delete';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChannelId;
                 
                 export type Response = Entities.Channel.Default;
@@ -271,6 +368,10 @@ export module Endpoints {
                 
                 export const ActionName = 'leave';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChannelId;
                 
                 export type Response = Entities.Channel.Default;
@@ -281,6 +382,10 @@ export module Endpoints {
                 
                 export const ActionName = 'kick';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChannelId & WithTargetId;
                 
                 export type Response = Entities.Channel.Default;
@@ -291,6 +396,10 @@ export module Endpoints {
                 
                 export const ActionName = 'ban';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithChannelId & WithTargetId & Pick<
                     Entities.Channel.Default['banned'][number], 
                     'reason'
@@ -304,6 +413,10 @@ export module Endpoints {
                 
                 export const ActionName = 'unban';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId & WithChannelId;
                 
                 export type Response = Entities.Channel.Default;
@@ -314,6 +427,10 @@ export module Endpoints {
                 
                 export const ActionName = 'createInvitation';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithChannelId & Pick<
                     Entities.Channel.Default['invitations'][number],
                     'expiresAt'
@@ -327,6 +444,10 @@ export module Endpoints {
                 
                 export const ActionName = 'acceptInvitation';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithChannelId & Pick<
                     Entities.Channel.Default['invitations'][number],
                     'code'
@@ -340,6 +461,10 @@ export module Endpoints {
                 
                 export const ActionName = 'deleteInvitation';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithChannelId & Pick<
                     Entities.Channel.Default['invitations'][number],
                     'code'
@@ -355,6 +480,10 @@ export module Endpoints {
                 
                 export const ActionName = 'create';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROOM, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithChannelId & Pick<
                     Entities.Room.Default,
                     'name' | 'type' | 'isPrivate' | 'whiteList'
@@ -368,6 +497,10 @@ export module Endpoints {
                 
                 export const ActionName = 'getOne';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROOM, ActionName);
+           
+                export const Method = METHOD.GET;
+
                 export type RequestBody = WithChannelId & WithRoomId;
                 
                 export type Response = Entities.Room.Default;
@@ -378,6 +511,10 @@ export module Endpoints {
                 
                 export const ActionName = 'update';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROOM, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithChannelId & WithRoomId & Partial<Pick<
                     Entities.Room.Default,
                     'name' | 'type' | 'isPrivate' | 'whiteList'
@@ -391,6 +528,10 @@ export module Endpoints {
                 
                 export const ActionName = 'delete';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROOM, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChannelId & WithRoomId;
                 
                 export type Response = Entities.Room.Default;
@@ -403,6 +544,10 @@ export module Endpoints {
                 
                 export const ActionName = 'create';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROLE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChannelId & Pick<
                     Entities.Role.Default,
                     'name'
@@ -416,6 +561,10 @@ export module Endpoints {
                 
                 export const ActionName = 'getOne';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROLE, ActionName);
+           
+                export const Method = METHOD.GET;
+
                 export type RequestBody = WithChannelId & WithRoleId;
                 
                 export type Response = Entities.Role.Default;
@@ -426,6 +575,10 @@ export module Endpoints {
                 
                 export const ActionName = 'update';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROLE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithChannelId & WithRoleId & Partial<Pick<
                     Entities.Role.Default,
                     'color' | 'isDefault' | 'name' | 'permissions'
@@ -443,9 +596,13 @@ export module Endpoints {
                 
                 export const ActionName = 'delete';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROLE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChannelId & WithRoleId;
                 
-                export type Response = unknown;
+                export type Response = void;
             }
 
             export module AddMember {
@@ -453,6 +610,10 @@ export module Endpoints {
                 
                 export const ActionName = 'addMember';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROLE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChannelId & WithRoleId & WithTargetId;
                 
                 export type Response = Entities.Role.Default;
@@ -463,6 +624,10 @@ export module Endpoints {
                 
                 export const ActionName = 'removeMember';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.ROLE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChannelId & WithRoleId & WithTargetId;
                 
                 export type Response = Entities.Role.Default;
@@ -475,6 +640,10 @@ export module Endpoints {
                 
                 export const ActionName = 'create';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.PRIVATE_CHANNEL, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithTargetId;
                 
                 export type Response = Entities.PrivateChannel.Default;
@@ -485,6 +654,10 @@ export module Endpoints {
                 
                 export const ActionName = 'getOne';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.PRIVATE_CHANNEL, ActionName);
+           
+                export const Method = METHOD.GET;
+
                 export type RequestBody = WithPrivateChannelId;
                 
                 export type Response = Entities.PrivateChannel.Default;
@@ -497,6 +670,10 @@ export module Endpoints {
                 
                 export const ActionName = 'create';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.MESSAGE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithChatId & Partial<Pick<
                     Entities.Message.Default,
                     'content'
@@ -514,6 +691,10 @@ export module Endpoints {
                 
                 export const ActionName = 'getOne';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.MESSAGE, ActionName);
+           
+                export const Method = METHOD.GET;
+
                 export type RequestBody = WithMessageId;
                 
                 export type Response = Entities.Message.Default;
@@ -524,6 +705,10 @@ export module Endpoints {
                 
                 export const ActionName = 'update';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.MESSAGE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = Prettify<WithMessageId & Pick<
                     Entities.Message.Default,
                     'content'
@@ -537,9 +722,13 @@ export module Endpoints {
                 
                 export const ActionName = 'delete';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.MESSAGE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithMessageId;
                 
-                export type Response = unknown;
+                export type Response = void;
             }
 
             export module Restore {
@@ -547,6 +736,10 @@ export module Endpoints {
                 
                 export const ActionName = 'restore';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.MESSAGE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithMessageId;
                 
                 export type Response = Entities.Message.Default;
@@ -557,6 +750,10 @@ export module Endpoints {
                 
                 export const ActionName = 'deleteAttachment';
                 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.MESSAGE, ActionName);
+           
+                export const Method = METHOD.POST;
+
                 export type RequestBody = WithMessageId & WithFileId;
                 
                 export type Response = Entities.Message.Default;
@@ -569,9 +766,13 @@ export module Endpoints {
                 
                 export const ActionName = 'read';
 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.FILE, ActionName);
+           
+                export const Method = METHOD.GET;
+
                 export type RequestBody = WithFileId;
 
-                export type Response = unknown;
+                export type Response = void;
             }
 
             export module Download {
@@ -579,9 +780,13 @@ export module Endpoints {
                 
                 export const ActionName = 'download';
 
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.FILE, ActionName);
+           
+                export const Method = METHOD.GET;
+
                 export type RequestBody = WithFileId;
 
-                export type Response = unknown;
+                export type Response = void;
             }
         }
 
@@ -590,6 +795,10 @@ export module Endpoints {
                 export const Path = v1('/chat');
                 
                 export const ActionName = 'getOne';
+
+                export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.CHAT, ActionName);
+           
+                export const Method = METHOD.POST;
 
                 export type RequestBody = WithChatId;
 

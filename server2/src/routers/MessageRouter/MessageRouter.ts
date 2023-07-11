@@ -8,7 +8,7 @@ import { Endpoints } from '@shared';
 
 export const MessageRouter = Router();
 
-MessageRouter.post(
+MessageRouter[Endpoints.V1.Message.Create.Method](
     Endpoints.V1.Message.Create.Path,
     MessageValidator[Endpoints.V1.Message.Create.ActionName],
     authorizationMiddleware,
@@ -17,7 +17,7 @@ MessageRouter.post(
     ),
 );
 
-MessageRouter.post(
+MessageRouter[Endpoints.V1.Message.Delete.Method](
     Endpoints.V1.Message.Delete.Path,
     MessageValidator[Endpoints.V1.Message.Delete.ActionName],
     authorizationMiddleware,
@@ -26,7 +26,7 @@ MessageRouter.post(
     ),
 );
 
-MessageRouter.post(
+MessageRouter[Endpoints.V1.Message.DeleteAttachment.Method](
     Endpoints.V1.Message.DeleteAttachment.Path,
     MessageValidator[Endpoints.V1.Message.DeleteAttachment.ActionName],
     authorizationMiddleware,
@@ -35,7 +35,7 @@ MessageRouter.post(
     ),
 );
 
-MessageRouter.get(
+MessageRouter[Endpoints.V1.Message.GetOne.Method](
     Endpoints.V1.Message.GetOne.Path,
     MessageValidator[Endpoints.V1.Message.GetOne.ActionName],
     authorizationMiddleware,
@@ -44,7 +44,7 @@ MessageRouter.get(
     ),
 );
 
-MessageRouter.post(
+MessageRouter[Endpoints.V1.Message.Restore.Method](
     Endpoints.V1.Message.Restore.Path,
     MessageValidator[Endpoints.V1.Message.Restore.ActionName],
     authorizationMiddleware,
@@ -53,7 +53,7 @@ MessageRouter.post(
     ),
 );
 
-MessageRouter.post(
+MessageRouter[Endpoints.V1.Message.Update.Method](
     Endpoints.V1.Message.Update.Path,
     MessageValidator[Endpoints.V1.Message.Update.ActionName],
     authorizationMiddleware,

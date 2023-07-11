@@ -1,4 +1,4 @@
-import { Id, Prettify, SocketClientEvents, SocketData, SocketServerEvents, Tokens } from '@shared';
+import { Entities, Id, Prettify, SocketClientEvents, SocketServerEvents, Tokens } from '@shared';
 import { 
     NextFunction, 
     Response as ExpressResponse,
@@ -8,6 +8,8 @@ import { Server, Socket } from 'socket.io';
 
 
 
+
+export type UserData = Prettify<Entities.User.Token & Pick<Tokens, 'accessToken'>>;
 
 interface WithAuthorizationCookies {
     cookies: Prettify<Pick<Tokens, 'accessToken'> & Partial<Pick<Tokens, 'refreshToken'>>>;
@@ -56,6 +58,6 @@ export type AuthorizedService<Body, Return> = (
         : (auth: Prettify<Pick<WithAuthorization, 'auth'>['auth']>, body: Body) => Promise<Return>
 );
 
-export type AuthorizedServer = Server<SocketClientEvents, SocketServerEvents, object, SocketData>;
+export type AuthorizedServer = Server<SocketClientEvents, SocketServerEvents, object, UserData>;
 
-export type AuthorizedSocket = Socket<SocketClientEvents, SocketServerEvents, object, SocketData>;
+export type AuthorizedSocket = Socket<SocketClientEvents, SocketServerEvents, object, UserData>;

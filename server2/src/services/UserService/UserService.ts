@@ -147,7 +147,7 @@ export const UserService: UserService = {
         if (!tokenData) throw ApiError.forbidden();
 
         const user = await UserModel.findOne({ id: tokenData.id }).lean();
-        if (!user) throw ApiError.notFound();
+        if (!user) throw ApiError.forbidden();
 
         const { accessToken } = token.generateTokens(UserDTO.token(user));
 

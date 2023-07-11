@@ -25,6 +25,7 @@
         "baseUrl": "./",
         "paths": {
             "@root": ["src/root"],
+            "@root/features": ["src/root/features"],
             "@backendTypes": ["../server/src/types/common"],
             "@assets/*": ["src/assets/*"],
             "@components": ["src/components"],
@@ -33,6 +34,7 @@
             "@redux/features": ["src/redux/features"],
             "@redux/rootApi": ["src/redux/store/rootApi"],
             "@redux/hooks": ["src/redux/hooks"],
+            "@redux/globalReset": ["src/redux/store/globalReset"],
             "@types": ["src/types"],
             "@utils": ["src/utils"],
             "@pages/*": ["src/pages/pages/*"],

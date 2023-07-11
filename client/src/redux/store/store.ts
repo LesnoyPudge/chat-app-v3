@@ -1,40 +1,13 @@
-import { configureStore, ThunkAction, Action, AnyAction, Reducer } from '@reduxjs/toolkit';
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { rootApi } from '@redux/rootApi';
 import { combinedReducer } from './combinedReducer';
-import { log } from '@utils';
+import { rootReducer } from './rootReducer';
 
 
 
-const rootReducer: Reducer = (state: RootState, action: AnyAction) => {
-    const isLogoutReducer = action.type === 'user/logout';
-    const isLogoutMutation = action?.meta?.arg?.endpointName === 'userLogout';
-    const isLogoutMutationPending = isLogoutMutation && action.type === 'api/executeMutation/pending';
-    const isLogoutMutationRejected = isLogoutMutation && action.type === 'api/executeMutation/rejected';
-    const isLogoutMutationFulfilled = isLogoutMutation && action.type === 'api/executeMutation/fulfilled';
-    
-    if (isLogoutReducer || isLogoutMutationFulfilled || isLogoutMutationRejected) {
-        log('user logout');
-        // getLocalStorage().clear();
-        
-        const apiState = state.api;
-        state = {
-            api: apiState,
-        } as RootState;
-    }
-
-    if (isLogoutMutationPending) {
-        log('prepare to logout');
-        const apiState = state.api;
-        state = {
-            api: apiState,
-        } as RootState;
-    }
-
-    return combinedReducer(state, action);
-};
-
-export const store = configureStore({
+export const store = configureStore<RootState>({
     reducer: rootReducer,
+    // @ts-ignore
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(rootApi.middleware),
 });
 

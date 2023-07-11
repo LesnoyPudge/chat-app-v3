@@ -8,7 +8,7 @@ import { Endpoints } from '@shared';
 
 export const ChatRouter = Router();
 
-ChatRouter.get(
+ChatRouter[Endpoints.V1.Chat.GetOne.Method](
     Endpoints.V1.Chat.GetOne.Path,
     ChatValidator[Endpoints.V1.Chat.GetOne.ActionName],
     authorizationMiddleware,

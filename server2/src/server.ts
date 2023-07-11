@@ -12,6 +12,7 @@ import { ApiError } from '@errors';
 import { Sockets } from './subscription/Sockets';
 import { ExpressPeerServer, PeerServer } from 'peer';
 import { AuthorizedServer } from '@types';
+import { METHOD, SocketAuth } from '@shared';
 
 
 
@@ -28,18 +29,23 @@ const server = http.createServer(app);
 const socketServer = new Server(server, {
     cors: {
         origin: CUSTOM_CLIENT_URL,
-        methods: ['GET', 'POST'],
+        methods: [METHOD.POST, METHOD.GET],
     },
 }) as AuthorizedServer;
 
 socketServer.use((socket, next) => {
-    const data = socket.data;
-    console.log('get socket message', socket.data);
-    if (!data.id) return next(ApiError.unauthorized());
-    if (!data.accessToken) return next(ApiError.unauthorized());
-            
-    const tokenData = token.validateAccessToken(data.accessToken);
+    const auth = socket.handshake.auth as SocketAuth;
+    console.log('get socket message', auth);
+    
+    if (!auth.accessToken) return next(ApiError.unauthorized());
+    
+    const tokenData = token.validateAccessToken(auth.accessToken);
     if (!tokenData) return next(ApiError.unauthorized());
+
+    socket.data = {
+        ...tokenData,
+        accessToken: auth.accessToken,
+    };
 
     next();
 });

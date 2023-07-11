@@ -73,3 +73,10 @@ export type UserId = Id;
 export type EntityId = Id;
 
 export type PeerId = Id;
+
+export enum METHOD {
+    POST = 'post',
+    GET = 'get',
+}
+
+export type PartialWithId<T> = WithId & Partial<T>;

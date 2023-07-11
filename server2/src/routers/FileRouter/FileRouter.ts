@@ -8,7 +8,7 @@ import { Endpoints } from '@shared';
 
 export const FileRouter = Router();
 
-FileRouter.post(
+FileRouter[Endpoints.V1.File.Download.Method](
     `${Endpoints.V1.File.Download.Path}/:fileId`,
     paramsToBodyMiddleware,
     FileValidator[Endpoints.V1.File.Download.ActionName],
@@ -18,7 +18,7 @@ FileRouter.post(
     ),
 );
 
-FileRouter.post(
+FileRouter[Endpoints.V1.File.Read.Method](
     `${Endpoints.V1.File.Read.Path}/:fileId`,
     paramsToBodyMiddleware,
     FileValidator[Endpoints.V1.File.Read.ActionName],

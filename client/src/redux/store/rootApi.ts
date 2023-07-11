@@ -1,8 +1,9 @@
 import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta, retry } from '@reduxjs/toolkit/query/react';
-import { IAuthResponse } from '@backendTypes';
 import { getEnv } from '@utils';
 import { Endpoints } from '@shared';
+import { store } from './store';
+import { globalReset } from './globalReset';
 
 
 
@@ -47,34 +48,35 @@ const retryHandlingBaseQueryWithReauth: BaseQueryFn<
     unknown,
     FetchBaseQueryError
 > = async(args, api, extraOptions) => {
-    let result = await retryHandlingBaseQuery(args, api, extraOptions);
+    const result = await retryHandlingBaseQuery(args, api, extraOptions);
 
-    if (result.meta?.response && result.meta.response.status !== 401) return result;
+    // if (result.meta?.response && result.meta.response.status !== 401) return result;
 
-    const refreshResponse = await retryHandlingBaseQuery(
-        Endpoints.V1.User.Refresh.Path, 
-        api, 
-        extraOptions,
-    );
-
-    if (refreshResponse.data) {
-        const data = refreshResponse.data as IAuthResponse;
-        // getLocalStorage().set('token', data.accessToken);
-        console.log('rootApi:', data);
-        result = await retryHandlingBaseQuery(args, api, extraOptions);
-        return result;
-    }
-    
-    await retryHandlingBaseQuery(
-        Endpoints.V1.User.Refresh.Path, 
-        api, 
-        extraOptions,
-    );
-
-    console.log('rootApi: logout');
-    // api.dispatch(
-    //     logout()
+    // const refreshResponse = await retryHandlingBaseQuery(
+    //     Endpoints.V1.User.Refresh.Path, 
+    //     api, 
+    //     extraOptions,
     // );
+
+    // if (refreshResponse.data) {
+    //     const data = refreshResponse.data;
+    //     // getLocalStorage().set('token', data.accessToken);
+    //     console.log('rootApi:', data);
+    //     result = await retryHandlingBaseQuery(args, api, extraOptions);
+    //     return result;
+    // }
+    
+    // await retryHandlingBaseQuery(
+    //     Endpoints.V1.User.Refresh.Path, 
+    //     api, 
+    //     extraOptions,
+    // );
+
+    // console.log('rootApi: logout');
+    // // store.dispatch(globalReset());
+    // // api.dispatch(
+    // //     logout()
+    // // );
 
     return result;
 };
