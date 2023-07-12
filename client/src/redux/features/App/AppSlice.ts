@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { Id, Timestamp } from '@shared';
+import { Endpoints, Id, Timestamp } from '@shared';
 import { UserApi, UserSelectors } from '@redux/features';
 import { localStorageApi } from '@utils';
 import { RootState } from '@redux/store';
@@ -23,9 +23,9 @@ const getInitialState = (): AppState => {
 
 export const AppSlice = createSlice({
     name: 'App',
-    initialState: getInitialState(),           
+    initialState: getInitialState(),
     reducers: {
-    }, 
+    },
     extraReducers(builder) {
         builder.addCase(globalReset, (state) => {
             localStorageApi.set('lastRefresh', null);
@@ -36,7 +36,7 @@ export const AppSlice = createSlice({
         });
 
         builder.addMatcher(
-            UserApi.endpoints.UserRefresh.matchPending,
+            UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchPending,
             (state) => {
                 if (state.isInitialized) return;
                 state.isInitialized = true;
@@ -44,7 +44,7 @@ export const AppSlice = createSlice({
         );
 
         builder.addMatcher(
-            UserApi.endpoints.UserRefresh.matchFulfilled,
+            UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchFulfilled,
             (state, { payload }) => {
                 state.myid = payload.id;
                 state.lastRefresh = Date.now();
@@ -53,7 +53,7 @@ export const AppSlice = createSlice({
         );
 
         builder.addMatcher(
-            UserApi.endpoints.UserRefresh.matchRejected,
+            UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchRejected,
             (state) => {
                 state.myid = null;
                 state.lastRefresh = null;
@@ -70,7 +70,7 @@ const selectIsAuthorized = createSelector([selectAppState], (state) => !!state.m
 const selectMyId = createSelector([selectAppState], (state) => state.myid);
 
 const selectMe = createSelector(
-    [UserSelectors.selectUserState, selectMyId], 
+    [UserSelectors.selectUserState, selectMyId],
     (users, id) => id ? users.entities[id] : null,
 );
 

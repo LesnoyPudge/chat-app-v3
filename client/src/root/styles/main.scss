@@ -12,17 +12,45 @@
 
 
 @layer base {
-    html {
-        @apply overflow-hidden;
-        text-rendering: optimizeLegibility;
+    * {
+        @apply min-w-0 outline-[3px] outline outline-transparent text-inherit;
+
+        scrollbar-width: thin;
+
+        &:focus:not(:focus-visible) {
+            @apply focus-hidden;
+        }
+
+        &:focus-visible {
+            @apply focused;
+        }
+
+        &::-webkit-scrollbar {
+            @apply w-3.5 h-3.5;
+        }
+
+        &::-webkit-scrollbar-corner {
+            border: none;
+            background: none;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            @apply bg-scrollbar-thumb;
+        }
+
+        &::-webkit-scrollbar-thumb,
+        &::-webkit-scrollbar-track {
+            border-radius: 7px;
+            background-clip: padding-box;
+            border: 3px solid transparent;
+        }
     }
 
     body {
         @apply bg-primary-500 text-color-base text-base h-screen w-screen overflow-hidden isolate;
-    }
-
-    * {
-        @apply text-inherit;
+        text-rendering: optimizeLegibility;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
 
     #app,
@@ -59,17 +87,6 @@
         @apply overflow-hidden;
     }
 
-    * {
-        @apply outline-focus outline-0 outline;
-    }
-
-    *:focus:not(:focus-visible) {
-        @apply focus-hidden;
-    }
-
-    *:focus-visible {
-        @apply focused;
-    }
 
     button,
     [role="button"] {
@@ -88,43 +105,14 @@
         box-shadow: inset 0 0 0px 0.5px red, 0 0 0px 0.5px red !important;
         // outline: 0.5px solid red !important;
         // background-color: rgba($color: limegreen, $alpha: 0.05) !important;
+        white-space: pre-wrap;
     }
 
     img[alt] {
         text-indent: -9999px;
     }
 
-    *::-webkit-scrollbar {
-        @apply w-2 h-2;
-    }
-
-    * {
-        scrollbar-width: thin;
-    }
-
-    *::-webkit-scrollbar {
-        @apply w-3.5 h-3.5;
-    }
-
-    *::-webkit-scrollbar-corner {
-        border: none;
-        background: none;
-    }
-
-    *::-webkit-scrollbar-thumb {
-        @apply bg-scrollbar-thumb;
-    }
-
-    *::-webkit-scrollbar-thumb,
-    *::-webkit-scrollbar-track {
-        border-radius: 7px;
-        background-clip: padding-box;
-        border: 3px solid transparent;
-    }
-
-    *::-webkit-scrollbar-track {
-        border-width: initial;
-    }
+    
 
     // input:-webkit-autofill,
     // input:-webkit-autofill:focus {

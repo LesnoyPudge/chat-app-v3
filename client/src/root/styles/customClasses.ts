@@ -34,11 +34,11 @@ const otherClasses = {
     },
 
     '.focused': {
-        '@apply outline-[3px]': {},
+        '@apply outline-focus': {},
     },
 
     '.focus-hidden': {
-        '@apply outline-0': {},
+        '@apply outline-transparent': {},
     },
 
     '.message-font-size': {

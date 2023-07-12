@@ -39,6 +39,13 @@
             }
         ],
         "@typescript-eslint/no-non-null-assertion": 0,
-        "react/prop-types": 0
+        "react/prop-types": 0,
+        "react/jsx-one-expression-per-line": [1, { 
+            "allow": "single-child" 
+        }],
+        "react/jsx-curly-newline": [1, {
+            "multiline": "consistent",
+            "singleline": "consistent"
+        }]
     }
 }

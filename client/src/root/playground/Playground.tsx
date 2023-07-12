@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
@@ -66,9 +66,17 @@ const ImageV2: FC<ImageV2> = ({
     return (
         <>
             <div>
-                <>loading: {`${imageState.loading}`} error: {`${imageState.error}`}</>
+                <>
+loading:
+                    {' '}
+                    {`${imageState.loading}`}
+                    {' '}
+error:
+                    {' '}
+                    {`${imageState.error}`}
+                </>
             </div>
-            
+
             <div>
                 <picture>
                     {/* <source srcSet='image.avif' type='image/avif'/> */}
@@ -138,8 +146,8 @@ class VoiceChatService {
     }[] | null;
     localStream: MediaStream | null;
     remoteStream: MediaStream | null;
-    
-    
+
+
     constructor(socket: Socket) {
         this.myId = String(Math.random());
         this.socket = socket;
@@ -178,7 +186,7 @@ class VoiceChatService {
         const audio = new Audio();
         audio.autoplay = true;
         audio.srcObject = this.remoteStream;
-    
+
 
         // const audio2 = new Audio();
         // audio2.autoplay = true;
@@ -186,13 +194,13 @@ class VoiceChatService {
 
         this.localStream.getTracks().forEach((track) => {
             if (!this.peerConnection || !this.localStream) return;
-            
+
             this.peerConnection.addTrack(track, this.localStream);
         });
 
         this.peerConnection.ontrack = (event) => {
             console.log('on track', event.streams);
-            
+
             event.streams[0].getTracks().forEach((track) => {
                 if (!this.remoteStream) return;
 
@@ -209,7 +217,7 @@ class VoiceChatService {
 
         const offerDescription = await this.peerConnection.createOffer();
         await this.peerConnection.setLocalDescription(offerDescription);
-        
+
 
         this.offer = {
             sdp: offerDescription.sdp,
@@ -243,7 +251,7 @@ class VoiceChatService {
         // audio.play();
 
         console.log('get in join');
-        
+
         // const localAudio = document.createElement('audio');
         // localAudio.autoplay = true;
         // localAudio.srcObject = this.localStream;
@@ -279,18 +287,18 @@ class VoiceChatService {
                 if (connection.myId === this.myId) return;
                 const answerDescription = new RTCSessionDescription(connection.offer);
                 this.peerConnection?.setRemoteDescription(answerDescription);
-    
+
                 const candidate = new RTCIceCandidate(connection.iceCandidate);
                 this.peerConnection?.addIceCandidate(candidate);
 
-                
+
 
             });
-            
+
             this.connections = connections;
         });
 
-        
+
         console.log('join end');
     }
 
@@ -318,7 +326,7 @@ class VoiceChatService {
 //     console.log(`event: connect_error | reason: ${err.message}`);
 // });
 
-// socket.on('disconnect', (reason) => {   
+// socket.on('disconnect', (reason) => {
 //     console.log(`event: disconnect | reason: ${reason}`);
 // });
 
@@ -329,9 +337,9 @@ class VoiceChatService {
 // let accessToken: string | undefined = undefined;
 
 // const PlaygroundInner9: FC = () => {
-//     const socketRef = useRef(io('ws://localhost:5000', { 
-//         autoConnect: false, 
-//         auth: { accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ODgzNWRmYzgyYWE3ZTYxZmQwZjM5ZiIsImVtYWlsIjpudWxsLCJwYXNzd29yZCI6IiQyYiQxMCRrckJGM3NpSk5EM2JpMUZMU1VKc2hlbWx0VS5vbTRHTUg0empNZmZYTENrdUxkNkpveHhPTyIsImlhdCI6MTY4NjY1OTY3OCwiZXhwIjoxNjg2NjYwNTc4fQ.jW1ZgxAz46YuER_Voxu6Iv8cmi2FtPLl_8T3IY_15_k' }, 
+//     const socketRef = useRef(io('ws://localhost:5000', {
+//         autoConnect: false,
+//         auth: { accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ODgzNWRmYzgyYWE3ZTYxZmQwZjM5ZiIsImVtYWlsIjpudWxsLCJwYXNzd29yZCI6IiQyYiQxMCRrckJGM3NpSk5EM2JpMUZMU1VKc2hlbWx0VS5vbTRHTUg0empNZmZYTENrdUxkNkpveHhPTyIsImlhdCI6MTY4NjY1OTY3OCwiZXhwIjoxNjg2NjYwNTc4fQ.jW1ZgxAz46YuER_Voxu6Iv8cmi2FtPLl_8T3IY_15_k' },
 //     }));
 
 //     useEffect(() => {
@@ -340,15 +348,15 @@ class VoiceChatService {
 //         socket.on('connect', () => {
 //             console.log(`event: connect | session id: ${socket.id}`);
 //         });
-        
+
 //         socket.on('connect_error', (err) => {
 //             console.log(`event: connect_error | reason: ${err.message}`);
 //         });
-        
-//         socket.on('disconnect', (reason) => {   
+
+//         socket.on('disconnect', (reason) => {
 //             console.log(`event: disconnect | reason: ${reason}`);
 //         });
-        
+
 //         socket.onAny((event, ...args) => {
 //             console.log(`any event: ${event} | arguments: ${args}`);
 //         });
@@ -408,7 +416,7 @@ class VoiceChatService {
 
 //     const handleStartCall = async() => {
 //         voiceChatService.join('asd');
-     
+
 //         // streams.local = await navigator.mediaDevices.getUserMedia({ audio: true });
 //         // streams.remote = new MediaStream();
 
@@ -449,7 +457,7 @@ class VoiceChatService {
 //         //         peerConnection.setRemoteDescription(answDesc);
 //         //     }
 //         // });
-        
+
 //     };
 
 //     const handleEndCall = () => {
@@ -465,13 +473,13 @@ class VoiceChatService {
 
 //                 <audio
 //                     ref={audioRef}
-//                     controls 
+//                     controls
 //                     autoPlay
 //                 ></audio>
 
 //                 <audio
 //                     ref={audioRef2}
-//                     controls 
+//                     controls
 //                     autoPlay
 //                 ></audio>
 
@@ -510,7 +518,7 @@ import { Peer } from 'peerjs';
 
 // const getMediaStream = (() => {
 //     let myMediaStream: MediaStream | null = null;
-    
+
 //     return async(): Promise<MediaStream> => {
 //         if (myMediaStream === null) {
 //             myMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -528,7 +536,7 @@ import { Peer } from 'peerjs';
 //     audio.srcObject = stream;
 //     audio.controls = true;
 //     audio.dataset.who = 'on call';
-                
+
 //     document.querySelector('.container')?.appendChild(audio);
 //     console.log(document.querySelector('.container'));
 // };
@@ -539,7 +547,7 @@ import { Peer } from 'peerjs';
 //         call.on('stream', (receivedRemoteStream) => {
 //             // Show stream in some <video> element.
 //             console.log('got stream in CALL', receivedRemoteStream);
-    
+
 //             createAudio(receivedRemoteStream);
 //         });
 //     });
@@ -556,7 +564,7 @@ import { Peer } from 'peerjs';
 
 
 const useConversation = (conversationId: string) => {
-    
+
 };
 
 
@@ -573,9 +581,9 @@ const useConversation = (conversationId: string) => {
 //         getMediaStream().then((stream) => {
 //             connections.forEach((recivedPeerId) => {
 //                 if (recivedPeerId === peerId) return;
-    
+
 //                 const call = peer.call(recivedPeerId, stream);
-                
+
 //                 call.on('stream', (receivedStream) => {
 //                     createAudio(receivedStream);
 //                 });
@@ -586,7 +594,7 @@ const useConversation = (conversationId: string) => {
 //     const handleLeave = () => {
 //         console.log('leave click');
 //     };
-    
+
 //     return (
 //         <div className='flex flex-col gap-4 p-4'>
 //             <button onClick={handleJoin}>join</button>
@@ -623,7 +631,7 @@ const LocalImage: FC = () => {
                 </picture>
             </div>
             {/* <img src={imagesrc} className='w-1/2 h-3/4'/> */}
-            
+
         </>
     );
 };
@@ -639,7 +647,7 @@ const FormikField = <FormValues extends AnyRecord, Name extends keyof FormValues
     children,
 }: {name: Name} & PropsWithChildrenAsNodeOrFunction<ChildrenArgs<FormValues, Name>>) => {
     const [inputProps, metaProps, helperProps] = useField<FormValues[Name]>(String(name));
-    
+
     const isError = !!metaProps.error && metaProps.touched;
 
     const childrenArgs: ChildrenArgs<FormValues, Name> = {
@@ -647,7 +655,7 @@ const FormikField = <FormValues extends AnyRecord, Name extends keyof FormValues
         value: inputProps.value,
         setValue: helperProps.setValue,
     };
-    
+
     return (
         <ChildrenAsNodeOrFunction args={childrenArgs}>
             {children}
@@ -672,7 +680,7 @@ const FormikField2 = <FormValues extends AnyRecord, Name extends keyof FormValue
     children,
 }: {name: keyof FormValues} & PropsWithChildrenAsNodeOrFunction<ChildrenArgs2<FormValues, Name>>) => {
     const fieldProps = useField<FormValues[Name]>(String(name));
-    
+
     return (
         <ChildrenAsNodeOrFunction args={fieldProps}>
             {children}
@@ -687,7 +695,7 @@ type SafeProps<FormValues extends AnyRecord, Name extends keyof FormValues> = {
         value: FormValues[Name];
         setValue: (value: FormValues[Name]) => void;
     },
-    
+
     radio: {
         name: Name;
         isChecked: (value: FormValues[Name]) => boolean;
@@ -704,16 +712,16 @@ type SafeProps<FormValues extends AnyRecord, Name extends keyof FormValues> = {
 type SafePropsTypes = Prettify<keyof SafeProps<never, never>>;
 
 type ChildrenArgs3<
-    FormValues extends AnyRecord, 
-    Name extends keyof FormValues, 
+    FormValues extends AnyRecord,
+    Name extends keyof FormValues,
     FieldType extends SafePropsTypes
 > = (
     [SafeProps<FormValues, Name>[FieldType], ...ReturnType<typeof useField<FormValues[Name]>>]
 );
 
 type FormikField3Args<
-    FormValues extends AnyRecord, 
-    Name extends keyof FormValues, 
+    FormValues extends AnyRecord,
+    Name extends keyof FormValues,
     FieldType extends SafePropsTypes
 > = PropsWithChildrenAsNodeOrFunction<ChildrenArgs3<FormValues, Name, FieldType>> & {
     name: Name;
@@ -728,7 +736,7 @@ const FormikField3 = <FormValues extends AnyRecord, Name extends keyof FormValue
     children,
 }: FormikField3Args<FormValues, Name, FieldType>) => {
     const fieldProps = useField<FormValues[Name]>(String(name));
-    
+
     const safeProps: SafeProps<FormValues, Name> = {
         common: {
             name,
@@ -746,7 +754,7 @@ const FormikField3 = <FormValues extends AnyRecord, Name extends keyof FormValue
             setValue: fieldProps[2].setValue,
         },
     };
-    
+
     const childrenArgs: ChildrenArgs3<FormValues, Name, FieldType> = [
         safeProps[type],
         ...fieldProps,
@@ -769,8 +777,8 @@ interface SomeForm {
 const PlaygroundInner16: FC = () => {
     return (
         <div className='flex flex-col gap-2 h-screen'>
-            {/* <Image 
-                placeholder={<div className='bg-red-700'>qwe</div>} 
+            {/* <Image
+                placeholder={<div className='bg-red-700'>qwe</div>}
                 src='https://images.placeholders.dev'
             /> */}
 
@@ -809,7 +817,7 @@ const PlaygroundInner17: FC = () => {
                             </div>
                         )}
                     </FormikField>
-                        
+
                     {/* <CheckBox checked label='' name='' onChange={() => {}}>
 
                 </CheckBox> */}
@@ -821,7 +829,11 @@ const PlaygroundInner17: FC = () => {
                     <FormikField2<SomeForm, 'cool'> name='cool'>
                         {({ name, onChange, value }) => (
                             <CheckBox checked={value} label='' name={name} onChange={onChange}>
-                                <>checkbox {String(value)}</>
+                                <>
+checkbox
+                                    {' '}
+                                    {String(value)}
+                                </>
                             </CheckBox>
                         )}
                     </FormikField2>
@@ -829,20 +841,28 @@ const PlaygroundInner17: FC = () => {
                     <FormikField2<SomeForm, 'union'> name='union'>
                         {({ name, onChange, value }) => (
                             <RadioInput checked={value === 'data'} label='' name={name} onChange={onChange} value='data'>
-                                <>radio 1 {String(value)}</>
-                            </RadioInput> 
+                                <>
+radio 1
+                                    {' '}
+                                    {String(value)}
+                                </>
+                            </RadioInput>
                         )}
                     </FormikField2>
 
                     <FormikField2<SomeForm, 'union'> name='union'>
                         {({ name, onChange, value }) => (
                             <RadioInput checked={value === 'some'} label='' name={name} onChange={onChange} value='some'>
-                                <>radio 2 {String(value)}</>
-                            </RadioInput> 
+                                <>
+radio 2
+                                    {' '}
+                                    {String(value)}
+                                </>
+                            </RadioInput>
                         )}
                     </FormikField2>
 
-                    
+
                     <FormikField2<SomeForm, 'username'> name='username'>
                         {({ name, onChange, value }) => (
                             <TextInput name={name} value={value} onChange={onChange} autoComplete/>
@@ -886,7 +906,7 @@ const PlaygroundInner17: FC = () => {
 //     console.log(`event: connect_error | reason: ${err.message}`);
 // });
 
-// socket.on('disconnect', (reason) => {   
+// socket.on('disconnect', (reason) => {
 //     console.log(`event: disconnect | reason: ${reason}`);
 // });
 
@@ -895,17 +915,17 @@ const PlaygroundInner17: FC = () => {
 // });
 
 // const socket = io('ws://localhost:5000', { autoConnect: false }) as Socket<
-//     SocketServerEvents, 
+//     SocketServerEvents,
 //     SocketClientEvents
 // >;
 
 // const useSocket = () => {
 //     const socketRef = useRef(socket);
-    
+
 //     // const isAuthorized = useAppSelector(AppSelectors.selectIsAuthorized);
 //     // const { online } = useNetworkState();
-    
-    
+
+
 // };
 
 
@@ -945,25 +965,44 @@ const useEntitySubscribe = (entityId: Id, entityName: ValueOf<typeof SUBSCRIBABL
 const PlaygroundInner18: FC = () => {
     // const zxc = useEntitySubscribe('123', 'Channel');
     const dispatch = useAppDispatch();
-    
+    const { count, increment, decrement } = useCounter(1);
+
     return (
         <div className='grid gap-20 p-20'>
-            <button onClick={() => dispatch(UserApi.endpoints.UserRefresh.initiate())}>
+            <button onClick={() => dispatch(
+                UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].initiate(),
+            )}>
                 <>refresh</>
             </button>
 
+            <button onClick={increment}>inc</button>
 
-            {/* <button onClick={() => dispatch(AppSlice.actions.login())}>
-                <>login</>
-            </button>
+            <button onClick={decrement}>decr</button>
 
-            <button onClick={() => dispatch(logout())}>
-                <>logout</>
-            </button>
+            <div>
+                count is:
+                {' '}
+                {count}
+            </div>
 
-            <button onClick={() => dispatch(AppSlice.actions.authToggle())}>
-                <>toggle</>
-            </button> */}
+            <div>
+                <>qwe1</>
+                <Space/>
+                <>qwe2</>
+                {' '}
+                <>qwe3</>
+
+                <span> qwe4</span>
+                <span className=''>
+                    <>qwe5</>
+                    <Space/>
+                    <>qwe6</>
+                </span>
+
+                <div className='long'>
+                    <span>{Array(count).fill('qwe').map((v) => v).join('')}</span>
+                </div>
+            </div>
         </div>
     );
 };
@@ -979,7 +1018,7 @@ const PlaygroundInner19: FC = () => {
                         return (
                             <div className='[&>*]:w-1/2 h-screen [&>*]:h-auto [&>*]:object-contain flex [&>*]:bg-slate-300 [&>*]:outline [&>*]:outline-red-700 [&>*]:outline-4'>
                                 <img src={IMAGES[key].path.replace('generatedImages', 'rawImages')}/>
-                                
+
                                 <img src={IMAGES[key].path}/>
                             </div>
                         );
@@ -990,7 +1029,7 @@ const PlaygroundInner19: FC = () => {
     );
 };
 
-const enabled = !!1;
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

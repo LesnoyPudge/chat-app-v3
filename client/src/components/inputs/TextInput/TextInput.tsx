@@ -23,6 +23,7 @@ export interface TextInput {
     value?: string;
     inputRef?: RefObject<HTMLInputElement>;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const styles = {
@@ -49,6 +50,7 @@ export const TextInput: FC<TextInput> = ({
     value,
     inputRef,
     onChange,
+    onBlur,
 }) => {
     const autoCompleteValue = conditional('on', 'off', autoComplete);
 
@@ -66,7 +68,7 @@ export const TextInput: FC<TextInput> = ({
                         maxLength={maxLength}
                         spellCheck={spellCheck}
                         inputMode={inputMode}
-                        required={required}
+                        aria-required={required}
                         readOnly={readOnly}
                         disabled={disabled}
                         autoComplete={autoCompleteValue}
@@ -75,6 +77,7 @@ export const TextInput: FC<TextInput> = ({
                         aria-invalid={!!error}
                         aria-describedby={errorId}
                         ref={inputRef}
+                        onBlur={onBlur}
                         onChange={onChange}
                     />
 

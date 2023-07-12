@@ -1,18 +1,33 @@
-import { Button, FieldLabel, PasswordTypeToggle, PasswordTypeToggleButton, RequiredWildcard, TabContext, TextInput, TextInputWrapper } from '@components';
+import { Button, ErrorInLabel, FieldLabel, PasswordTypeToggle, PasswordTypeToggleButton, RequiredWildcard, TabContext, TextInput, TextInputWrapper } from '@components';
 import { FormikTextInput, Heading } from '@libs';
 import { AuthPageTabs } from '@pages/AuthPage/AuthPage';
+import { UserApi } from '@redux/features';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
+import { Endpoints } from '@shared';
+import { yup } from '@reExport';
 
 
+
+const initialValues: Endpoints.V1.User.Login.RequestBody = {
+    login: '',
+    password: '',
+};
+
+const validationSchema: yup.ObjectSchema<typeof initialValues> = yup.object({
+    login: yup.string().trim().required('Логин не указан'),
+    password: yup.string().trim().required('Пароль не указан'),
+});
 
 export const LoginForm: FC = () => {
     const { changeTab } = useContext(TabContext) as TabContext<AuthPageTabs>;
+    const [login, helpers] = UserApi.useUserLoginMutation();
 
     return (
         <Formik
-            initialValues={{ login: '', password: '' }}
-            onSubmit={(values) => {console.log(values);}}
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={(values, {}) => {console.log('submitted', values);}}
         >
             {() => (
                 <Form>
@@ -36,8 +51,10 @@ export const LoginForm: FC = () => {
                                     {props.label}
 
                                     <RequiredWildcard/>
-                                </FieldLabel>
 
+                                    <ErrorInLabel error={props.error}/>
+                                </FieldLabel>
+                            
                                 <TextInput {...props}/>
                             </div>
                         )}
@@ -58,6 +75,8 @@ export const LoginForm: FC = () => {
                                             {props.label}
 
                                             <RequiredWildcard/>
+
+                                            <ErrorInLabel error={props.error}/>
                                         </FieldLabel>
 
                                         <TextInputWrapper>

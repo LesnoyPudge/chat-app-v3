@@ -1,5 +1,5 @@
 export * from './FieldLabel';
-export * from './ErrorMessage';
+export * from './ErrorInLabel';
 export * from './PasswordTypeToggle';
 export * from './PasswordTypeToggleButton';
 export * from './RequiredWildcard';

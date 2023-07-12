@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorMessage, TextInput, CreateRoomModalTabs, CheckBox } from '@components';
+import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorInLabel, TextInput, CreateRoomModalTabs, CheckBox } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
@@ -120,10 +120,8 @@ export const CreateRoomTab: FC = () => {
                                 {props.label}
     
                                 <RequiredWildcard/>
-    
-                                <ErrorMessage hidden={!props.error}>
-                                    {props.error}
-                                </ErrorMessage>
+
+                                <ErrorInLabel error={props.error}/>
                             </FieldLabel>
         
                             <TextInput {...props}/>

@@ -16,7 +16,7 @@ export const FormikTextInput: FC<FormikTextInput> = ({
     children,
     ...props
 }) => {
-    const [{ value, onChange }, meta] = useField(props.name);
+    const [{ value, onChange, onBlur }, meta] = useField(props.name);
     const id = useId();
     const error = conditional(meta.error!, '', !!meta.error && meta.touched);
 
@@ -26,6 +26,7 @@ export const FormikTextInput: FC<FormikTextInput> = ({
         error,
         value,
         onChange,
+        onBlur,
     };
     
     return (
