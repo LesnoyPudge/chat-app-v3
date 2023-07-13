@@ -5,29 +5,36 @@ import { getTransitionOptions } from '@utils';
 
 
 
-type AnimatedTransition<T extends UseTransitionProps<boolean>> = PropsWithChildrenAsNodeOrFunction<{
+type ChildrenArgs<T extends UseTransitionProps<boolean>> = {
     style: SpringValues<PickAnimated<T>>;
     isAnimatedExist: boolean;
-}> & {
-    isExist?: boolean;
-    transitionOptions?: T;
-}
+};
 
-const defaultTransitionOptions = getTransitionOptions.withOpacity();
+type AnimatedTransition<T extends UseTransitionProps<boolean> | object> = PropsWithChildrenAsNodeOrFunction<
+    ChildrenArgs<T>
+> & {
+    isExist?: boolean;
+    transitionOptions: T;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const AnimatedTransition = <T extends UseTransitionProps<boolean> | object>(props: AnimatedTransition<T>) => {
     const {
-        transitionOptions = defaultTransitionOptions,
+        transitionOptions,
         isExist = true,
         children,
     } = props;
 
     const transition = useTransition(isExist, transitionOptions);
-    
-    return transition((style, isAnimatedExist) => (
-        <ChildrenAsNodeOrFunction args={{ style, isAnimatedExist }}>
-            {children}
-        </ChildrenAsNodeOrFunction>
-    ));
+
+
+    return transition((style, isAnimatedExist) => {
+        const childrenArgs: ChildrenArgs<T> = { style, isAnimatedExist };
+
+        return (
+            <ChildrenAsNodeOrFunction args={childrenArgs}>
+                {children}
+            </ChildrenAsNodeOrFunction>
+        );
+    });
 };

@@ -1,0 +1,21 @@
+
+@keyframes loading-pulse {
+    0% {
+        scale: 0.8;
+        opacity: 0.3;
+    }
+
+    50% {
+        scale: 1;
+        opacity: 1;
+    }
+
+    100% {
+        scale: 0.8;
+        opacity: 0.3;
+    }
+}
+
+:root {
+    --loading-pulse-animation: loading-pulse 1.4s ease-in-out infinite;
+}

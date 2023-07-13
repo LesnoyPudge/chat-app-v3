@@ -1,7 +1,8 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { PayloadAction, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { Entities, ENTITY_NAMES } from '@shared';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
+import { UserApi } from '@redux/features';
 
 
 
@@ -13,16 +14,112 @@ const initialState = adapter.getInitialState();
 
 export const UserSlice = createSlice({
     name: ENTITY_NAMES.USER,
-    initialState,           
+    initialState,
     reducers: {
-        upsertOne: (state, { payload }: PayloadAction<UserState>) => {
-            adapter.upsertOne(state, payload);
-        },
-    }, 
+        upsertOne: adapter.upsertOne,
+    },
     extraReducers(builder) {
         builder.addCase(globalReset, () => {
             return initialState;
         });
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.AcceptFriendRequest.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Block.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.CredentialsUpdate.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.DeclineFriendRequest.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.DeleteFriend.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.GetOne.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.HidePrivateChannel.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Login.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.ProfileUpdate.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Registration.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.RevokeFriendRequest.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.SendFriendRequest.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Unblock.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
     },
 });
 

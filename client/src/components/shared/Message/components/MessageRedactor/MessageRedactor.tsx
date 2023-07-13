@@ -2,7 +2,7 @@ import { AnimatedTransition, Button, Conditional, EmojiPicker, EmojiSwitcher, Me
 import { SlateContainer, SlateEditor, useSlateAddEmoji } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
-import { parseSlateContent, twClassNames } from '@utils';
+import { getTransitionOptions, parseSlateContent, twClassNames } from '@utils';
 import { FC, useContext, useRef, useState } from 'react';
 import { Descendant } from 'slate';
 import { useEventListener } from 'usehooks-ts';
@@ -23,14 +23,16 @@ const styles = {
     controlButton: 'inline',
 };
 
+const transitionOptions = getTransitionOptions.withOpacity();
+
 export const MessageRedactor: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { 
-        message, 
-        isInRedactorMode, 
-        handleSaveEditor, 
-        handleCloseEditor, 
+    const {
+        message,
+        isInRedactorMode,
+        handleSaveEditor,
+        handleCloseEditor,
     } = useContext(MessageContext) as MessageContext;
     const [redactorValue, setRedactorValue] = useState<Descendant[]>(() => (parseSlateContent(message.content)));
 
@@ -43,10 +45,10 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
     return (
         <Conditional isRendered={isInRedactorMode}>
             <SlateContainer
-                value={redactorValue} 
+                value={redactorValue}
                 onChange={setRedactorValue}
             >
-                <MessageRedactorInner 
+                <MessageRedactorInner
                     className={className}
                     onSave={handleSave}
                     onCancel={handleCancel}
@@ -67,7 +69,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
     useEventListener('keydown', (e) => {
         if (isEmojiPickerOpenRef.current) return;
         if (e.key !== 'Escape') return;
-        
+
         onCancel();
     });
 
@@ -91,9 +93,9 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                                         <>
                                             <EmojiSwitcher isActive={isOverlayExist}>
                                                 {({ emojiComponent, switchEmojiCode, wrapperClassName }) => (
-                                                    <Button 
+                                                    <Button
                                                         className={twClassNames(
-                                                            styles.emojiButton, 
+                                                            styles.emojiButton,
                                                             wrapperClassName,
                                                         )}
                                                         label='Выбрать эмодзи'
@@ -108,7 +110,10 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                                                 )}
                                             </EmojiSwitcher>
 
-                                            <AnimatedTransition isExist={isOverlayExist}>
+                                            <AnimatedTransition
+                                                isExist={isOverlayExist}
+                                                transitionOptions={transitionOptions}
+                                            >
                                                 {({ isAnimatedExist, style }) => (
                                                     <OverlayItem
                                                         isRendered={isAnimatedExist}
@@ -146,7 +151,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
             <div className={styles.controlWrapper}>
                 <>Esc для </>
 
-                <Button 
+                <Button
                     className={styles.controlButton}
                     stylingPreset='link'
                     label='Отменить редактирование'
@@ -157,7 +162,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
 
                 <> | Enter чтобы </>
 
-                <Button 
+                <Button
                     className={styles.controlButton}
                     stylingPreset='link'
                     label='Сохранить отредактированное сообщение'

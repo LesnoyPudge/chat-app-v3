@@ -2,7 +2,7 @@ import { AnimatedTransition, Button, OverlayContextProvider, OverlayItem, Relati
 import { useSlateAddEmoji } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
-import { twClassNames } from '@utils';
+import { getTransitionOptions, twClassNames } from '@utils';
 import { FC } from 'react';
 
 
@@ -11,6 +11,9 @@ import { FC } from 'react';
 const styles = {
     switcher: 'w-full h-full',
 };
+
+const transitionOptions = getTransitionOptions.withOpacity();
+
 export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
     className = '',
 }) => {
@@ -22,7 +25,7 @@ export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
-                            <EmojiSwitcher 
+                            <EmojiSwitcher
                                 className={styles.switcher}
                                 isActive={isOverlayExist}
                             >
@@ -43,17 +46,20 @@ export const OpenEmojiPickerButton: FC<PropsWithClassName> = ({
                                 }}
                             </EmojiSwitcher>
 
-                            <AnimatedTransition isExist={isOverlayExist}>
+                            <AnimatedTransition
+                                isExist={isOverlayExist}
+                                transitionOptions={transitionOptions}
+                            >
                                 {({ style, isAnimatedExist }) => (
-                                    <OverlayItem 
+                                    <OverlayItem
                                         isRendered={isAnimatedExist}
                                         closeOnClickOutside
                                         closeOnEscape
                                         focused
                                     >
                                         <animated.div style={style}>
-                                            <RelativelyPositioned 
-                                                preferredAlignment='top' 
+                                            <RelativelyPositioned
+                                                preferredAlignment='top'
                                                 leaderElementOrRectRef={ref}
                                             >
                                                 <EmojiPicker onEmojiAdd={addEmoji}/>

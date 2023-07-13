@@ -1,6 +1,7 @@
 import { RoomService } from '@services';
 import { Endpoints } from '@shared';
 import { AuthorizedMiddleware } from '@types';
+import HTTP_STATUS_CODES from 'http-status-enum';
 
 
 
@@ -28,7 +29,7 @@ export const RoomController: RoomController = {
         const room = await RoomService.create(req.auth, req.body);
         res.json(room);
     },
-    
+
     async getOne(req, res) {
         const room = await RoomService.getOne(req.auth, req.body);
         res.json(room);
@@ -40,7 +41,7 @@ export const RoomController: RoomController = {
     },
 
     async delete(req, res) {
-        const room = await RoomService.delete(req.auth, req.body);
-        res.json(room);
+        await RoomService.delete(req.auth, req.body);
+        res.sendStatus(HTTP_STATUS_CODES.OK);
     },
 };

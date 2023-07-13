@@ -1,4 +1,4 @@
-import { Button, ErrorInLabel, FieldLabel, PasswordTypeToggle, PasswordTypeToggleButton, RequiredWildcard, TabContext, TextInput, TextInputWrapper } from '@components';
+import { Button, ContentWithLoading, ErrorInLabel, FieldLabel, FormError, PasswordTypeToggle, PasswordTypeToggleButton, RequiredWildcard, TabContext, TextInput, TextInputWrapper } from '@components';
 import { FormikTextInput, Heading } from '@libs';
 import { AuthPageTabs } from '@pages/AuthPage/AuthPage';
 import { UserApi } from '@redux/features';
@@ -27,7 +27,7 @@ export const LoginForm: FC = () => {
         <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={(values, {}) => {console.log('submitted', values);}}
+            onSubmit={login}
         >
             {() => (
                 <Form>
@@ -54,7 +54,7 @@ export const LoginForm: FC = () => {
 
                                     <ErrorInLabel error={props.error}/>
                                 </FieldLabel>
-                            
+
                                 <TextInput {...props}/>
                             </div>
                         )}
@@ -67,7 +67,7 @@ export const LoginForm: FC = () => {
                                 name='password'
                                 type={type}
                                 required
-                                placeholder='qwertyuiop'
+                                placeholder='myPassword'
                             >
                                 {(props) => (
                                     <div className='mb-5'>
@@ -81,7 +81,7 @@ export const LoginForm: FC = () => {
 
                                         <TextInputWrapper>
                                             <TextInput {...props}/>
-                                    
+
                                             <PasswordTypeToggleButton
                                                 type={type}
                                                 onToggle={toggleType}
@@ -92,13 +92,21 @@ export const LoginForm: FC = () => {
                             </FormikTextInput>
                         )}
                     </PasswordTypeToggle>
-                        
-                    <Button 
+
+                    <FormError
+                        className='mb-2'
+                        error={helpers.error}
+                    />
+
+                    <Button
                         className='w-full h-11 mb-2'
-                        type='submit' 
-                        stylingPreset='brand' 
+                        type='submit'
+                        stylingPreset='brand'
+                        isLoading={helpers.isLoading}
                     >
-                        <>Вход</>
+                        <ContentWithLoading isLoading={helpers.isLoading}>
+                            <>Вход</>
+                        </ContentWithLoading>
                     </Button>
 
                     <div className='self-start flex items-center flex-wrap'>
@@ -106,8 +114,8 @@ export const LoginForm: FC = () => {
                             <>Нужна учётная запись?</>
                         </span>
 
-                        <Button 
-                            stylingPreset='link' 
+                        <Button
+                            stylingPreset='link'
                             onLeftClick={changeTab.registrationForm}
                         >
                             <>Зарегистрироваться</>

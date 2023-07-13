@@ -1,7 +1,8 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { PayloadAction, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { Entities, ENTITY_NAMES } from '@shared';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
+import { ChannelApi } from '@redux/features';
 
 
 
@@ -11,16 +12,84 @@ const initialState = adapter.getInitialState();
 
 export const ChannelSlice = createSlice({
     name: ENTITY_NAMES.CHANNEL,
-    initialState,           
+    initialState,
     reducers: {
-        upsertOne: (state, { payload }: PayloadAction<Entities.Channel.Default>) => {
-            adapter.upsertOne(state, payload);
-        },
-    }, 
+        upsertOne: adapter.upsertOne,
+    },
     extraReducers(builder) {
         builder.addCase(globalReset, () => {
             return initialState;
         });
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.AcceptInvitation.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.Ban.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.Create.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.Delete.ActionNameWithEntity].matchFulfilled,
+            (state, { meta }) => {
+                adapter.removeOne(state, meta.arg.originalArgs.channelId);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.AcceptInvitation.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.AcceptInvitation.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.AcceptInvitation.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.AcceptInvitation.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.AcceptInvitation.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            ChannelApi.endpoints[Endpoints.V1.Channel.AcceptInvitation.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
     },
 });
 

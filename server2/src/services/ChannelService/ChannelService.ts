@@ -70,10 +70,10 @@ export const ChannelService: ChannelService = {
                 }));
 
                 await UserServiceHelpers.addChannel({ userId: id, channelId: newChannel.id });
-               
+
                 const adminRole = await RoleServiceHelpers.createAdminRole({ userId: id, channelId: newChannel.id });
                 const defaultRole = await RoleServiceHelpers.createDefaultRole({ userId: id, channelId: newChannel.id });
-                
+
                 newChannel.roles = [adminRole.id, defaultRole.id];
 
                 const room = await RoomServiceHelpers.createDefaultRoom({ channelId: newChannel.id });
@@ -142,12 +142,10 @@ export const ChannelService: ChannelService = {
                 await UserServiceHelpers.removeChannelFromMany({ channelId });
                 await RoleServiceHelpers.deleteManyByChannelId({ channelId });
                 await RoomServiceHelpers.deleteManyByChannelId({ channelId });
-                
+
                 onCommit(() => {
                     ChannelSubscription.delete(channelId);
                 });
-
-                return deletedChannel;
             },
         );
     },
@@ -156,7 +154,7 @@ export const ChannelService: ChannelService = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedChannel = await ChannelModel.findOneAndUpdate(
-                    { id: channelId }, 
+                    { id: channelId },
                     { $pull: { members: id } },
                     { new: true },
                 ).session(session).lean();
@@ -168,8 +166,6 @@ export const ChannelService: ChannelService = {
                 onCommit(() => {
                     ChannelSubscription.update(updatedChannel);
                 });
-
-                return updatedChannel;
             },
         );
     },
@@ -178,7 +174,7 @@ export const ChannelService: ChannelService = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedChannel = await ChannelModel.findOneAndUpdate(
-                    { id: channelId }, 
+                    { id: channelId },
                     { $pull: { members: targetId } },
                     { new: true },
                 ).session(session).lean();
@@ -200,8 +196,8 @@ export const ChannelService: ChannelService = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedChannel = await ChannelModel.findOneAndUpdate(
-                    { id: channelId }, 
-                    { 
+                    { id: channelId },
+                    {
                         $pull: { members: targetId },
                         $push: { banList: {
                             user: targetId,
@@ -241,7 +237,7 @@ export const ChannelService: ChannelService = {
             },
         );
     },
-    
+
     async createInvitation({ id }, { channelId, expiresAt }) {
         return transactionContainer(
             async({ session, onCommit }) => {

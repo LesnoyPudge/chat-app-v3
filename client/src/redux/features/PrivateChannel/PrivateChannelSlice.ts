@@ -1,7 +1,8 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { PayloadAction, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { Entities, ENTITY_NAMES } from '@shared';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
+import { PrivateChannelApi } from '@redux/features';
 
 
 
@@ -11,16 +12,28 @@ const initialState = adapter.getInitialState();
 
 export const PrivateChannelSlice = createSlice({
     name: ENTITY_NAMES.PRIVATE_CHANNEL,
-    initialState,           
+    initialState,
     reducers: {
-        upsertOne: (state, { payload }: PayloadAction<Entities.PrivateChannel.Default>) => {
-            adapter.upsertOne(state, payload);
-        },
-    }, 
+        upsertOne: adapter.upsertOne,
+    },
     extraReducers(builder) {
         builder.addCase(globalReset, () => {
             return initialState;
         });
+
+        builder.addMatcher(
+            PrivateChannelApi.endpoints[Endpoints.V1.PrivateChannel.Create.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
+
+        builder.addMatcher(
+            PrivateChannelApi.endpoints[Endpoints.V1.PrivateChannel.GetOne.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
     },
 });
 

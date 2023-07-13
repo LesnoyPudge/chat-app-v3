@@ -1,6 +1,8 @@
 import { RoleService } from '@services';
 import { Endpoints } from '@shared';
 import { AuthorizedMiddleware } from '@types';
+import HTTP_STATUS_CODES from 'http-status-enum';
+
 
 
 interface RoleController {
@@ -35,7 +37,7 @@ export const RoleController: RoleController = {
         const role = await RoleService.create(req.auth, req.body);
         res.json(role);
     },
-    
+
     async getOne(req, res) {
         const role = await RoleService.getOne(req.auth, req.body);
         res.json(role);
@@ -47,8 +49,8 @@ export const RoleController: RoleController = {
     },
 
     async delete(req, res) {
-        const role = await RoleService.delete(req.auth, req.body);
-        res.json(role);
+        await RoleService.delete(req.auth, req.body);
+        res.sendStatus(HTTP_STATUS_CODES.OK);
     },
 
     async addMember(req, res) {

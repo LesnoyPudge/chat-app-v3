@@ -2,6 +2,7 @@ import { deepMerge } from '@reExport';
 import { PropsWithChildren, ReactNode, RefObject } from 'react';
 import { AnyArray, Entities, StrictOmit, ToType } from '@shared';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
+import { FormikHelpers } from 'formik';
 
 
 
@@ -13,7 +14,7 @@ export type PropsWithChildrenAsNodeOrFunction<
     T extends AnyRecord | AnyArray
 > = {
     children?: ReactNode | (
-        ToType<T> extends Record<string | number, unknown> 
+        ToType<T> extends Record<string | number, unknown>
             ? ((arg: T) => ReactNode)
             : T extends AnyArray
                 ? ((...args: T) => ReactNode)

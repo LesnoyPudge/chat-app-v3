@@ -7,14 +7,14 @@ import { globalReset } from './globalReset';
 
 
 
-const baseQuery = fetchBaseQuery({ 
+const baseQuery = fetchBaseQuery({
     baseUrl: getEnv().CUSTOM_SERVER_URL,
     credentials: 'include',
 });
 
 const retryHandlingBaseQuery = async(
-    args: string | FetchArgs, 
-    api: BaseQueryApi, 
+    args: string | FetchArgs,
+    api: BaseQueryApi,
     extraOptions: Record<string, unknown>,
 ) => {
     const basicRetry = retry(
@@ -24,11 +24,11 @@ const retryHandlingBaseQuery = async(
                 api,
                 extraOptions,
             );
-        
+
             if (result.meta?.response && result.meta.response.status !== 500) {
                 retry.fail(result);
             }
-        
+
             return result;
         },
         {
@@ -53,8 +53,8 @@ const retryHandlingBaseQueryWithReauth: BaseQueryFn<
     // if (result.meta?.response && result.meta.response.status !== 401) return result;
 
     // const refreshResponse = await retryHandlingBaseQuery(
-    //     Endpoints.V1.User.Refresh.Path, 
-    //     api, 
+    //     Endpoints.V1.User.Refresh.Path,
+    //     api,
     //     extraOptions,
     // );
 
@@ -65,10 +65,10 @@ const retryHandlingBaseQueryWithReauth: BaseQueryFn<
     //     result = await retryHandlingBaseQuery(args, api, extraOptions);
     //     return result;
     // }
-    
+
     // await retryHandlingBaseQuery(
-    //     Endpoints.V1.User.Refresh.Path, 
-    //     api, 
+    //     Endpoints.V1.User.Refresh.Path,
+    //     api,
     //     extraOptions,
     // );
 

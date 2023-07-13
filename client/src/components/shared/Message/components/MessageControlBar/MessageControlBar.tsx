@@ -2,7 +2,7 @@ import { animated } from '@react-spring/web';
 import { FC, useContext } from 'react';
 import { Tooltip, OverlayItem, AnimatedTransition, Button, EmojiPicker, Icon, OverlayContextProvider, RelativelyPositioned, Ref } from '@components';
 import { PropsWithClassName } from '@types';
-import { twClassNames } from '@utils';
+import { getTransitionOptions, twClassNames } from '@utils';
 import { MessageContext } from '../../Message';
 
 
@@ -20,13 +20,15 @@ const styles = {
     tooltip: 'text-sm',
 };
 
+const transitionOptions = getTransitionOptions.withOpacity();
+
 export const MessageControlBar: FC<PropsWithClassName> = ({
     className = '',
 }) => {
     const { tabIndex, handleAddReaction, handleOpenEditor } = useContext(MessageContext) as MessageContext;
 
     return (
-        <div 
+        <div
             className={twClassNames(styles.buttonsWrapper, className)}
             role='group'
             aria-label='Действия c сообщением'
@@ -37,7 +39,7 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                         <OverlayContextProvider>
                             {({ isOverlayExist, openOverlay }) => (
                                 <>
-                                    <Button 
+                                    <Button
                                         className={styles.button}
                                         label='Добавить реакцию'
                                         hasPopup='dialog'
@@ -52,16 +54,19 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                                         />
                                     </Button>
 
-                                    <Tooltip 
+                                    <Tooltip
                                         className={styles.tooltip}
-                                        preferredAlignment='top' 
+                                        preferredAlignment='top'
                                         spacing={5}
                                         leaderElementRef={ref}
                                     >
                                         <>Добавить реакцию</>
                                     </Tooltip>
-                                
-                                    <AnimatedTransition isExist={isOverlayExist}>
+
+                                    <AnimatedTransition
+                                        isExist={isOverlayExist}
+                                        transitionOptions={transitionOptions}
+                                    >
                                         {({ isAnimatedExist, style }) => (
                                             <OverlayItem
                                                 isRendered={isAnimatedExist}
@@ -70,13 +75,13 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                                                 closeOnEscape
                                                 focused
                                             >
-                                                <animated.div 
+                                                <animated.div
                                                     style={style}
-                                                    role='dialog' 
+                                                    role='dialog'
                                                     aria-label='Выбор реакции'
                                                 >
-                                                    <RelativelyPositioned 
-                                                        preferredAlignment='top' 
+                                                    <RelativelyPositioned
+                                                        preferredAlignment='top'
                                                         swappableAlignment
                                                         leaderElementOrRectRef={ref}
                                                     >
@@ -96,7 +101,7 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
             <Ref<HTMLButtonElement>>
                 {(ref) => (
                     <>
-                        <Button 
+                        <Button
                             className={styles.button}
                             label='Редактировать сообщение'
                             tabIndex={tabIndex}
@@ -109,9 +114,9 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                             />
                         </Button>
 
-                        <Tooltip 
+                        <Tooltip
                             className={styles.tooltip}
-                            preferredAlignment='top' 
+                            preferredAlignment='top'
                             spacing={5}
                             leaderElementRef={ref}
                         >
@@ -124,7 +129,7 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
             <Ref<HTMLButtonElement>>
                 {(ref) => (
                     <>
-                        <Button 
+                        <Button
                             className={styles.button}
                             label='Показать больше опций'
                             hasPopup='dialog'
@@ -139,9 +144,9 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                             />
                         </Button>
 
-                        <Tooltip 
+                        <Tooltip
                             className={styles.tooltip}
-                            preferredAlignment='top' 
+                            preferredAlignment='top'
                             spacing={5}
                             leaderElementRef={ref}
                         >

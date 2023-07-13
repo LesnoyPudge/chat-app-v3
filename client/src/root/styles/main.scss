@@ -4,9 +4,7 @@
 
 @import './fonts.scss';
 @import './font-noto-sans.scss';
-@import './theme-main.scss';
-@import './theme-light.scss';
-@import './message-vars.scss';
+@import './vars/index.scss';
 @import './components/index.scss';
 
 
@@ -93,7 +91,7 @@
         @apply cursor-pointer;
 
         &:disabled {
-            @apply opacity-50 cursor-not-allowed;
+            @apply cursor-not-allowed;
         }
     }
 

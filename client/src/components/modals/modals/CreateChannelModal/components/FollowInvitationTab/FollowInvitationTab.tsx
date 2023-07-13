@@ -27,8 +27,8 @@ export const FollowInvitationTab: FC = () => {
     };
 
     return (
-        <Formik 
-            initialValues={initialValues} 
+        <Formik
+            initialValues={initialValues}
             onSubmit={handleSubmit}
         >
             <Form className='flex flex-col'>
@@ -41,7 +41,7 @@ export const FollowInvitationTab: FC = () => {
                         <>Введите приглашение, чтобы присоединиться к существующему каналу.</>
                     </ModalSubtitle>
                 </ModalHeader>
-        
+
                 <ModalContent className='gap-2.5'>
                     <FormikTextInput
                         name='invitation'
@@ -59,12 +59,8 @@ export const FollowInvitationTab: FC = () => {
                             </div>
                         )}
                     </FormikTextInput>
-
-                    {/* <ErrorBlock isError={true}>
-                        <p>Errro: приглашение не действительно</p>
-                    </ErrorBlock> */}
                 </ModalContent>
-        
+
                 <ModalFooter>
                     <Button
                         stylingPreset='lite'

@@ -1,7 +1,7 @@
 import { AnimatedTransition, Button, Conditional, Emoji, EmojiPicker, Icon, List, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, Tooltip } from '@components';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
-import { conditional, twClassNames } from '@utils';
+import { conditional, getTransitionOptions, twClassNames } from '@utils';
 import { FC, useContext } from 'react';
 import { MessageContext } from '../../Message';
 
@@ -20,6 +20,8 @@ const styles = {
     tooltip: 'text-sm',
 };
 
+const transitionOptions = getTransitionOptions.withOpacity();
+
 export const MessageReactions: FC<PropsWithClassName> = ({
     className = '',
 }) => {
@@ -28,7 +30,7 @@ export const MessageReactions: FC<PropsWithClassName> = ({
 
     return (
         <Conditional isRendered={showReactions}>
-            <div 
+            <div
                 className={twClassNames(styles.wrapper, className)}
                 role='group'
                 aria-label='Реакции'
@@ -37,7 +39,7 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                     {({ code, users }) => {
                         const isActive = users.includes('3');
                         const label = conditional(
-                            `Убрать эмодзи ${code}`, 
+                            `Убрать эмодзи ${code}`,
                             `Добавить эмодзи ${code}`,
                             isActive,
                         );
@@ -46,7 +48,7 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                             <Ref<HTMLButtonElement>>
                                 {(ref) => (
                                     <>
-                                        <Button 
+                                        <Button
                                             className={twClassNames(
                                                 styles.emojiButton.base,
                                                 { [styles.emojiButton.active]: isActive },
@@ -64,9 +66,9 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                                             <div>{users.length}</div>
                                         </Button>
 
-                                        <Tooltip 
+                                        <Tooltip
                                             className={styles.tooltip}
-                                            preferredAlignment='top' 
+                                            preferredAlignment='top'
                                             spacing={5}
                                             leaderElementRef={ref}
                                         >
@@ -78,7 +80,7 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                         );
                     }}
                 </List>
-                        
+
                 <OverlayContextProvider>
                     {({ isOverlayExist, openOverlay }) => (
                         <Ref<HTMLButtonElement>>
@@ -98,7 +100,7 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                                         />
                                     </Button>
 
-                                    <Tooltip 
+                                    <Tooltip
                                         className={styles.tooltip}
                                         preferredAlignment='top'
                                         spacing={5}
@@ -107,16 +109,19 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                                         <>Выбрать реакцию</>
                                     </Tooltip>
 
-                                    <AnimatedTransition isExist={isOverlayExist}>
+                                    <AnimatedTransition
+                                        isExist={isOverlayExist}
+                                        transitionOptions={transitionOptions}
+                                    >
                                         {({ isAnimatedExist, style }) => (
-                                            <OverlayItem 
+                                            <OverlayItem
                                                 isRendered={isAnimatedExist}
                                                 blocking
                                                 closeOnClickOutside
                                                 closeOnEscape
                                                 focused
                                             >
-                                                <animated.div 
+                                                <animated.div
                                                     role='dialog'
                                                     aria-label='Добавьте реакцию'
                                                     style={style}

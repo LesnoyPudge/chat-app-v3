@@ -1,6 +1,7 @@
 import { ChannelService } from '@services';
 import { Endpoints } from '@shared';
 import { AuthorizedMiddleware } from '@types';
+import HTTP_STATUS_CODES from 'http-status-enum';
 
 
 
@@ -56,7 +57,7 @@ export const ChannelController: ChannelController = {
         const channel = await ChannelService.create(req.auth, req.body);
         res.json(channel);
     },
-    
+
     async getOne(req, res) {
         const channel = await ChannelService.getOne(req.auth, req.body);
         res.json(channel);
@@ -68,13 +69,13 @@ export const ChannelController: ChannelController = {
     },
 
     async delete(req, res) {
-        const channel = await ChannelService.delete(req.auth, req.body);
-        res.json(channel);
+        await ChannelService.delete(req.auth, req.body);
+        res.sendStatus(HTTP_STATUS_CODES.OK);
     },
 
     async leave(req, res) {
-        const channel = await ChannelService.leave(req.auth, req.body);
-        res.json(channel);
+        await ChannelService.leave(req.auth, req.body);
+        res.sendStatus(HTTP_STATUS_CODES.OK);
     },
 
     async kick(req, res) {

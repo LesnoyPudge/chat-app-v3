@@ -1,7 +1,8 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { PayloadAction, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { Entities, ENTITY_NAMES } from '@shared';
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
+import { ChatApi } from '@redux/features';
 
 
 
@@ -11,16 +12,21 @@ const initialState = adapter.getInitialState();
 
 export const ChatSlice = createSlice({
     name: ENTITY_NAMES.CHAT,
-    initialState,           
+    initialState,
     reducers: {
-        upsertOne: (state, { payload }: PayloadAction<Entities.Chat.Default>) => {
-            adapter.upsertOne(state, payload);
-        },
-    }, 
+        upsertOne: adapter.upsertOne,
+    },
     extraReducers(builder) {
         builder.addCase(globalReset, () => {
             return initialState;
         });
+
+        builder.addMatcher(
+            ChatApi.endpoints[Endpoints.V1.Chat.GetOne.ActionNameWithEntity].matchFulfilled,
+            (state, { payload }) => {
+                adapter.upsertOne(state, payload);
+            },
+        );
     },
 });
 

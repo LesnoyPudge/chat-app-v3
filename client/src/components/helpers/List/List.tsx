@@ -4,7 +4,9 @@ import { isObjectWithId } from '@typeGuards';
 
 
 
-interface List<T> extends PropsWithChildrenAsNodeOrFunction<[item: T, index: number, array: T[]]> {
+type ChildrenArgs<T> = [item: T, index: number, array: T[]];
+
+interface List<T> extends PropsWithChildrenAsNodeOrFunction<ChildrenArgs<T>> {
     list: T[];
 }
 
@@ -17,10 +19,11 @@ export const List = <T,>({
         <>
             {list.map((item, index, array) => {
                 const key = isObjectWithId(item) ? item.id : index;
-                
+                const childrenArgs: ChildrenArgs<T> = [item, index, array];
+
                 return (
-                    <ChildrenAsNodeOrFunction 
-                        args={[item, index, array]} 
+                    <ChildrenAsNodeOrFunction
+                        args={childrenArgs}
                         key={key}
                     >
                         {children}

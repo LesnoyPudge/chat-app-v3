@@ -45,7 +45,7 @@ export const RoomService: RoomService = {
                 const room = await newRoom.save({ session });
 
                 await ChannelServiceHelpers.addRoom({ channelId, roomId: room.id });
-                
+
                 return room;
             },
         );
@@ -86,7 +86,7 @@ export const RoomService: RoomService = {
                     { id: roomId },
                     { new: true },
                 ).session(session).lean();
-            
+
                 if (!deletedRoom) throw ApiError.internal();
 
                 await ChannelServiceHelpers.removeRoom({ roomId });
@@ -94,8 +94,6 @@ export const RoomService: RoomService = {
                 onCommit(() => {
                     RoomSubscription.delete(deletedRoom.id);
                 });
-                
-                return deletedRoom;
             },
         );
     },

@@ -35,28 +35,28 @@ const styles = {
     brand: {
         base: `text-white font-medium bg-brand 
         hover:bg-brand-hover focus-visible:bg-brand-hover 
-        active:bg-brand-active`,
+        active:bg-brand-active data-[loading=true]:bg-brand-active`,
         active: 'bg-brand-active',
     },
 
     brandNeutral: {
         base: `text-white font-medium bg-neutral 
         hover:bg-neutral-hover focus-visible:bg-neutral-hover 
-        active:bg-neutral-active`,
+        active:bg-neutral-active data-[loading=true]:bg-neutral-active`,
         active: 'bg-neutral-active',
     },
 
     brandDanger: {
         base: `text-white font-medium bg-danger
         hover:bg-danger-hover focus-visible:bg-danger-hover 
-        active:bg-danger-active`,
+        active:bg-danger-active data-[loading=true]:bg-danger-active`,
         active: 'bg-danger-active',
     },
 
     brandPositive: {
         base: `text-white font-medium bg-positive 
         hover:bg-positive-hover focus-visible:bg-positive-hover 
-        active:bg-positive-active`,
+        active:bg-positive-active data-[loading=true]:bg-positive-active`,
         active: 'bg-positive-active',
     },
 
@@ -102,8 +102,6 @@ export const Button: FC<Button> = ({
     onMouseEnter,
     onFocus,
 }) => {
-    // if (!size && !!stylingPreset) size = 'small';
-
     const handleLeftClickWithKeyboard = (e: React.KeyboardEvent) => {
         if (e.code !== 'Enter' && e.code !== 'Space') return;
 
@@ -155,6 +153,8 @@ export const Button: FC<Button> = ({
 
     const validTabIndex = conditional(-1, tabIndex, hidden);
 
+    const disabledState = (isDisabled || isLoading) ? true : false;
+
     return (
         <button
             className={twClassNames({
@@ -168,9 +168,9 @@ export const Button: FC<Button> = ({
             style={style}
             type={type}
             data-active={isActive}
-            data-disabled={isDisabled}
+            data-disabled={disabledState}
             data-loading={isLoading}
-            disabled={isDisabled}
+            disabled={disabledState}
             tabIndex={validTabIndex}
             aria-label={label}
             aria-pressed={isPressed}
@@ -179,7 +179,7 @@ export const Button: FC<Button> = ({
             aria-haspopup={hasPopup}
             aria-controls={controls}
             aria-hidden={hidden}
-            aria-disabled={isDisabled}
+            aria-disabled={disabledState}
             role={role}
             ref={innerRef}
             onKeyDown={handleLeftClickWithKeyboard}

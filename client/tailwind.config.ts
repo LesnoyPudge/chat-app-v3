@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import { getCustomClasses } from './src/root/styles/customClasses';
+import { animationDelay } from './src/root/styles/animationDelay';
 import containerQueries from '@tailwindcss/container-queries';
 
 
@@ -18,18 +19,15 @@ export default {
     plugins: [
         containerQueries,
         getCustomClasses(),
+        animationDelay(),
     ],
 
     theme: {
         extend: {
             fontFamily: {
-                // "Noto Sans","Helvetica Neue",Helvetica,Arial,sans-serif
                 sans: [ 'Inter', 'Arial', 'Helvetica', ...defaultTheme.fontFamily.sans],
-                // sans: ['Noto Sans', 'Helvetica Neue', 'Helvetica', 'Arial', ...defaultTheme.fontFamily.sans],
-                // sans: ['"Noto Sans"'],
-                // sans: ['Inter'],
             },
-            
+
             colors: {
                 primary: {
                     100: 'var(--color-primary-100)',
@@ -42,7 +40,7 @@ export default {
                     active: 'var(--color-primary-active)',
                     selected: 'var(--color-primary-selected)',
                 },
-                
+
                 brand: 'var(--color-brand)',
                 'brand-hover': 'var(--color-brand-hover)',
                 'brand-active': 'var(--color-brand-active)',
@@ -58,7 +56,7 @@ export default {
                 neutral: 'var(--color-neutral)',
                 'neutral-hover': 'var(--color-neutral-hover)',
                 'neutral-active': 'var(--color-neutral-active)',
-                
+
                 focus: 'var(--color-focus)',
                 warn: 'var(--color-warn)',
 
@@ -67,10 +65,10 @@ export default {
                     200: 'var(--color-icon-200)',
                     300: 'var(--color-icon-300)',
                 },
-                
+
                 'white-black': 'var(--color-white-black)',
                 'black-white': 'var(--color-black-white)',
- 
+
                 status: {
                     online: 'var(--status-online)',
                     afk: 'var(--status-afk)',
@@ -83,7 +81,7 @@ export default {
                     thumb: 'var(--scrollbar-thumb)',
                 },
             },
-              
+
             textColor: {
                 color: {
                     primary: 'var(--color-font-primary)',
@@ -110,6 +108,10 @@ export default {
                 'elevation-low': 'var(--elevation-low)',
                 'elevation-medium': 'var(--elevation-medium)',
                 'elevation-high': 'var(--elevation-high)',
+            },
+
+            animation: {
+                'loading-pulse': 'var(--loading-pulse-animation)',
             },
 
             screens: {

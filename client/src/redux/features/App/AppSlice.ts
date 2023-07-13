@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { Endpoints, Id, Timestamp } from '@shared';
+import { Endpoints, Entities, Id, Timestamp } from '@shared';
 import { UserApi, UserSelectors } from '@redux/features';
 import { localStorageApi } from '@utils';
 import { RootState } from '@redux/store';
@@ -25,6 +25,9 @@ export const AppSlice = createSlice({
     name: 'App',
     initialState: getInitialState(),
     reducers: {
+        triggerGlobalReset: () => {
+            // store => globalReset
+        },
     },
     extraReducers(builder) {
         builder.addCase(globalReset, (state) => {
@@ -54,10 +57,22 @@ export const AppSlice = createSlice({
 
         builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchRejected,
-            (state) => {
-                state.myid = null;
-                state.lastRefresh = null;
-                localStorageApi.set('lastRefresh', state.lastRefresh);
+            () => {
+                AppSlice.caseReducers.triggerGlobalReset();
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Logout.ActionNameWithEntity].matchPending,
+            () => {
+                AppSlice.caseReducers.triggerGlobalReset();
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Delete.ActionNameWithEntity].matchFulfilled,
+            () => {
+                AppSlice.caseReducers.triggerGlobalReset();
             },
         );
     },
@@ -71,7 +86,14 @@ const selectMyId = createSelector([selectAppState], (state) => state.myid);
 
 const selectMe = createSelector(
     [UserSelectors.selectUserState, selectMyId],
-    (users, id) => id ? users.entities[id] : null,
+    (users, id) => {
+        if (!id) return null;
+
+        const user = users.entities[id];
+        if (!user) return null;
+
+        return user as Entities.User.WithoutCredentials;
+    },
 );
 
 
