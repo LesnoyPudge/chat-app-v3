@@ -14,13 +14,13 @@ const styles = {
 
 export const Header: FC = () => {
     const { navigateTo, myLocationIs } = useNavigator();
-    const isActive = myLocationIs.app;
+    const isActive = myLocationIs.app();
 
     return (
         <TopBar>
             <Button
                 className={twClassNames(
-                    styles.button, 
+                    styles.button,
                     { 'bg-primary-hover': isActive },
                 )}
                 isActive={isActive}
@@ -28,7 +28,7 @@ export const Header: FC = () => {
             >
                 <Icon
                     className={twClassNames(
-                        styles.icon, 
+                        styles.icon,
                         { 'fill-icon-200': isActive },
                     )}
                     iconId='friend-icon'

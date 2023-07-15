@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLatest } from 'react-use';
 
 
 
@@ -13,42 +14,49 @@ export const useNavigator = () => {
     const navigate = useNavigate();
     const params = useParams() as Params;
     const { pathname } = useLocation();
+    const latestPathRef = useLatest(pathname);
 
-    const myLocationIs = useMemo(() => ({
-        auth: pathname === '/auth',
-        app: pathname === '/app',
-        anyPrivateChat: pathname.includes('/app/private-chat'),
-        privateChat: (privateChatId: string) => pathname === `/app/private-chat/${privateChatId}`,
-        channel: (channelId: string) => pathname.includes(`/app/channel/${channelId}`),
-        room: (channelId: string, roomId: string) => pathname === `/app/channel/${channelId}/room/${roomId}`,
-    }), [pathname]);
+    const myLocationIsRef = useRef({
+        auth: () => latestPathRef.current === '/auth',
+        app: () => latestPathRef.current === '/app',
+        anyPrivateChat: () => latestPathRef.current.includes('/app/private-chat'),
+        privateChat: (privateChatId: string) => {
+            return latestPathRef.current === `/app/private-chat/${privateChatId}`;
+        },
+        channel: (channelId: string) => {
+            return latestPathRef.current.includes(`/app/channel/${channelId}`);
+        },
+        room: (channelId: string, roomId: string) => {
+            return latestPathRef.current === `/app/channel/${channelId}/room/${roomId}`;
+        },
+    });
 
-    const navigateTo = useMemo(() => ({
+    const navigateToRef = useRef({
         auth: () => {
-            const alreadyHere = myLocationIs.auth;
+            const alreadyHere = myLocationIsRef.current.auth();
             !alreadyHere && navigate('/auth');
         },
         app: () => {
-            const alreadyHere = myLocationIs.app;
+            const alreadyHere = myLocationIsRef.current.app();
             !alreadyHere && navigate('/app');
         },
         privateChat: (privateChatId: string) => {
-            const alreadyHere = myLocationIs.privateChat(privateChatId);
+            const alreadyHere = myLocationIsRef.current.privateChat(privateChatId);
             !alreadyHere && navigate(`/app/private-chat/${privateChatId}`);
         },
         channel: (channelId: string) => {
-            const alreadyHere = myLocationIs.channel(channelId);
+            const alreadyHere = myLocationIsRef.current.channel(channelId);
             !alreadyHere && navigate(`/app/channel/${channelId}`);
         },
         room: (channelId: string, roomId: string) => {
-            const alreadyHere = myLocationIs.room(channelId, roomId);
+            const alreadyHere = myLocationIsRef.current.room(channelId, roomId);
             !alreadyHere && navigate(`/app/channel/${channelId}/room/${roomId}`);
         },
-    }), [myLocationIs, navigate]);
-    
+    });
+
     return {
-        myLocationIs,
-        navigateTo,
+        myLocationIs: myLocationIsRef.current,
+        navigateTo: navigateToRef.current,
         params,
     };
 };

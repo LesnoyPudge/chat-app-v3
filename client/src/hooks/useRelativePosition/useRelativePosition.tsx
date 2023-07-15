@@ -46,7 +46,7 @@ export const useRelativePosition = ({
 }: UseRelativePositionArgs): WithAlignment => {
     const [alignment, setAlignment] = useState(preferredAlignment);
 
-    const calculateRef = useLatest(() => {
+    const calculate = () => {
         if (!followerElementRef.current || !leaderElementOrRectRef.current) return;
 
         const leaderRect = (
@@ -54,7 +54,7 @@ export const useRelativePosition = ({
                 ? leaderElementOrRectRef.current
                 : leaderElementOrRectRef.current.getBoundingClientRect()
         );
-        
+
         const { alignment: newAlignment, left, top } = calculateRelativePosition({
             followerRect: followerElementRef.current.getBoundingClientRect(),
             leaderRect: leaderRect,
@@ -69,14 +69,15 @@ export const useRelativePosition = ({
         if (alignment !== newAlignment) setAlignment(newAlignment);
 
         const follower = followerElementRef.current;
-        if (follower.style.top === `${top}px` && follower.style.left === `${left}px`) return;
-  
-        follower.style.top = `${top}px`;
-        follower.style.left = `${left}px`;
-    });
+        const transformValue = `translate(${left}px, ${top}px)`;
 
-    useAnimationFrame(calculateRef.current);
-    
+        if (follower.style.transform === transformValue) return;
+
+        follower.style.transform = transformValue;
+    };
+
+    useAnimationFrame(calculate);
+
     return {
         alignment,
     };
@@ -94,13 +95,13 @@ const calculateRelativePosition = ({
 }: Required<RelativePositionOptions> & WithRects): Position & WithAlignment => {
     const centering = {
         vertical: (
-            centered 
-                ? (followerRect.height - leaderRect.height) / 2 
+            centered
+                ? (followerRect.height - leaderRect.height) / 2
                 : 0
         ),
         horizontal: (
-            centered 
-                ? (followerRect.width - leaderRect.width) / 2 
+            centered
+                ? (followerRect.width - leaderRect.width) / 2
                 : 0
         ),
     };
@@ -131,40 +132,25 @@ const calculateRelativePosition = ({
         },
     };
 
-    const positionsInBounds = () => {
-        const { top, bottom, left, right } = unboundedPositions;
-
-        return {
-            top: {
-                top: Math.max(bounds.top, Math.min(bounds.bottom, top.top)),
-                left: Math.max(bounds.left, Math.min(bounds.right, top.left)),
-            },
-            bottom: {
-                top: Math.max(bounds.top, Math.min(bounds.bottom, bottom.top)),
-                left: Math.max(bounds.left, Math.min(bounds.right, bottom.left)),
-            },
-            left: {
-                top: Math.max(bounds.top, Math.min(bounds.bottom, left.top)),
-                left: Math.max(bounds.left, Math.min(bounds.right, left.left)),
-            },
-            right: {
-                top: Math.max(bounds.top, Math.min(bounds.bottom, right.top)),
-                left: Math.max(bounds.left, Math.min(bounds.right, right.left)),
-            },
-        };
+    const positions = {
+        top: {
+            top: Math.max(bounds.top, Math.min(bounds.bottom, unboundedPositions.top.top)),
+            left: Math.max(bounds.left, Math.min(bounds.right, unboundedPositions.top.left)),
+        },
+        bottom: {
+            top: Math.max(bounds.top, Math.min(bounds.bottom, unboundedPositions.bottom.top)),
+            left: Math.max(bounds.left, Math.min(bounds.right, unboundedPositions.bottom.left)),
+        },
+        left: {
+            top: Math.max(bounds.top, Math.min(bounds.bottom, unboundedPositions.left.top)),
+            left: Math.max(bounds.left, Math.min(bounds.right, unboundedPositions.left.left)),
+        },
+        right: {
+            top: Math.max(bounds.top, Math.min(bounds.bottom, unboundedPositions.right.top)),
+            left: Math.max(bounds.left, Math.min(bounds.right, unboundedPositions.right.left)),
+        },
     };
 
-    const getAvailableAlignments = () => {
-        return {
-            top: unboundedPositions.top.top > bounds.top,
-            bottom: unboundedPositions.bottom.top < bounds.bottom,
-            left: unboundedPositions.left.left > bounds.left,
-            right: unboundedPositions.right.left < bounds.right,
-        };
-    };
-
-    const positions = positionsInBounds();
-    
     const defaultResult: Position & WithAlignment = {
         ...positions[preferredAlignment],
         alignment: preferredAlignment,
@@ -172,14 +158,19 @@ const calculateRelativePosition = ({
 
     if (!swappableAlignment) return defaultResult;
 
-    const availableAlignments = getAvailableAlignments();
+    const availableAlignments = {
+        top: unboundedPositions.top.top > bounds.top,
+        bottom: unboundedPositions.bottom.top < bounds.bottom,
+        left: unboundedPositions.left.left > bounds.left,
+        right: unboundedPositions.right.left < bounds.right,
+    };
 
     if (availableAlignments[preferredAlignment]) return defaultResult;
 
     const noSpaceAvailable = (
-        !availableAlignments.top && 
-        !availableAlignments.bottom && 
-        !availableAlignments.left && 
+        !availableAlignments.top &&
+        !availableAlignments.bottom &&
+        !availableAlignments.left &&
         !availableAlignments.right
     );
 
@@ -201,30 +192,30 @@ const calculateRelativePosition = ({
         alignment: 'right',
         ...positions.right,
     };
-    
+
     const alternativeAlignmentOptions = {
         top: (
-            (availableAlignments.bottom && bottomResult) || 
-            (availableAlignments.left && leftResult) || 
-            (availableAlignments.right && rightResult) || 
+            (availableAlignments.bottom && bottomResult) ||
+            (availableAlignments.left && leftResult) ||
+            (availableAlignments.right && rightResult) ||
             topResult
         ),
         bottom: (
             (availableAlignments.top && topResult) ||
-            (availableAlignments.left && leftResult) || 
-            (availableAlignments.right && rightResult) || 
+            (availableAlignments.left && leftResult) ||
+            (availableAlignments.right && rightResult) ||
             bottomResult
         ),
         left: (
             (availableAlignments.right && rightResult) ||
-            (availableAlignments.top && topResult) || 
-            (availableAlignments.bottom && bottomResult) || 
+            (availableAlignments.top && topResult) ||
+            (availableAlignments.bottom && bottomResult) ||
             leftResult
         ),
         right: (
             (availableAlignments.left && leftResult) ||
-            (availableAlignments.top && topResult) || 
-            (availableAlignments.bottom && bottomResult) || 
+            (availableAlignments.top && topResult) ||
+            (availableAlignments.bottom && bottomResult) ||
             rightResult
         ),
     };

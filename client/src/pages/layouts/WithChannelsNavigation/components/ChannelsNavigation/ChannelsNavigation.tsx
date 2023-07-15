@@ -8,7 +8,7 @@ import { MoveFocusInside } from 'react-focus-lock';
 
 
 const channels = [
-    { avatar: 'https://i.pravatar.cc/80', id: '1asd', name: 'amazing channel', rooms: [{ id: '1' }] }, 
+    { avatar: 'https://i.pravatar.cc/80', id: '1asd', name: 'amazing channel', rooms: [{ id: '1' }] },
     { avatar: 'https://i.pravatar.cc/81', id: '2yk', name: 'wow', rooms: [{ id: '2' }] },
     { avatar: '', id: '3eh', name: 'first', rooms: [{ id: '2' }] },
     { avatar: '', id: '4tu.', name: '2', rooms: [{ id: '2' }] },
@@ -59,7 +59,7 @@ const styles = {
 
 export const ChannelsNavigation: FC = () => {
     const { myLocationIs, navigateTo } = useNavigator();
-    const isInAppOrPrivateChatPage = myLocationIs.app || myLocationIs.anyPrivateChat;
+    const isInAppOrPrivateChatPage = myLocationIs.app() || myLocationIs.anyPrivateChat();
     const showChannels = !!channels.length;
 
     const channelsRef = useRef(channels);
@@ -83,22 +83,22 @@ export const ChannelsNavigation: FC = () => {
                                             className={twClassNames(
                                                 styles.button.base,
                                                 styles.brandButton.base,
-                                                { 
+                                                {
                                                     [styles.button.active]: isInAppOrPrivateChatPage,
-                                                    [styles.brandButton.active]: isInAppOrPrivateChatPage, 
+                                                    [styles.brandButton.active]: isInAppOrPrivateChatPage,
                                                 },
                                             )}
                                             innerRef={ref}
                                             label='Перейти на главную страницу'
                                             onLeftClick={navigateTo.app}
                                         >
-                                            <Icon 
+                                            <Icon
                                                 className={styles.icon}
                                                 iconId='discord-logo'
                                             />
                                         </Button>
 
-                                        <Tooltip 
+                                        <Tooltip
                                             preferredAlignment='right'
                                             leaderElementRef={ref}
                                         >
@@ -108,14 +108,14 @@ export const ChannelsNavigation: FC = () => {
                                 )}
                             </Ref>
                         </WrapperWithBullet>
-                
+
                         <Conditional isRendered={showChannels}>
                             <Separator className={styles.separator} spacing={0}/>
                         </Conditional>
                     </div>
 
                     <Conditional isRendered={showChannels}>
-                        <ul 
+                        <ul
                             className={styles.list}
                             tabIndex={0}
                             aria-label='Список каналов'
@@ -134,11 +134,11 @@ export const ChannelsNavigation: FC = () => {
                                                         <>
                                                             <Button
                                                                 className={twClassNames(
-                                                                    styles.button.base, 
+                                                                    styles.button.base,
                                                                     styles.brandButton.base,
-                                                                    { 
+                                                                    {
                                                                         [styles.button.active]: isInChannel,
-                                                                        [styles.brandButton.active]: isInChannel, 
+                                                                        [styles.brandButton.active]: isInChannel,
                                                                     },
                                                                 )}
                                                                 tabIndex={getTabIndex(channel.id)}
@@ -153,7 +153,7 @@ export const ChannelsNavigation: FC = () => {
                                                                 />
                                                             </Button>
 
-                                                            <Tooltip 
+                                                            <Tooltip
                                                                 preferredAlignment='right'
                                                                 leaderElementRef={ref}
                                                             >
@@ -161,7 +161,7 @@ export const ChannelsNavigation: FC = () => {
                                                             </Tooltip>
 
                                                             <OverlayContextProvider>
-                                                                <ContextMenu 
+                                                                <ContextMenu
                                                                     preferredAlignment='right'
                                                                     leaderElementRef={ref}
                                                                     withContextMenuHandler
@@ -193,11 +193,11 @@ export const ChannelsNavigation: FC = () => {
                                             <>
                                                 <Button
                                                     className={twClassNames(
-                                                        styles.button.base, 
+                                                        styles.button.base,
                                                         styles.actionButton.base,
-                                                        { 
+                                                        {
                                                             [styles.button.active]: isOverlayExist,
-                                                            [styles.actionButton.active]: isOverlayExist, 
+                                                            [styles.actionButton.active]: isOverlayExist,
                                                         },
                                                     )}
                                                     hasPopup='dialog'
@@ -206,7 +206,7 @@ export const ChannelsNavigation: FC = () => {
                                                     innerRef={ref}
                                                     onLeftClick={openOverlay}
                                                 >
-                                                    <Icon 
+                                                    <Icon
                                                         className={styles.icon}
                                                         iconId='navigator-icon'
                                                     />
@@ -214,7 +214,7 @@ export const ChannelsNavigation: FC = () => {
 
                                                 <FindChannelModal/>
 
-                                                <Tooltip 
+                                                <Tooltip
                                                     preferredAlignment='right'
                                                     leaderElementRef={ref}
                                                 >
@@ -223,7 +223,7 @@ export const ChannelsNavigation: FC = () => {
                                             </>
                                         )}
                                     </Ref>
-                                </WrapperWithBullet>  
+                                </WrapperWithBullet>
                             )}
                         </OverlayContextProvider>
 
@@ -235,11 +235,11 @@ export const ChannelsNavigation: FC = () => {
                                             <>
                                                 <Button
                                                     className={twClassNames(
-                                                        styles.button.base, 
+                                                        styles.button.base,
                                                         styles.actionButton.base,
-                                                        { 
+                                                        {
                                                             [styles.button.active]: isOverlayExist,
-                                                            [styles.actionButton.active]: isOverlayExist, 
+                                                            [styles.actionButton.active]: isOverlayExist,
                                                         },
                                                     )}
                                                     hasPopup='dialog'
@@ -248,7 +248,7 @@ export const ChannelsNavigation: FC = () => {
                                                     innerRef={ref}
                                                     onLeftClick={openOverlay}
                                                 >
-                                                    <Icon 
+                                                    <Icon
                                                         className={styles.icon}
                                                         iconId='add-channel-navigation-icon'
                                                     />
@@ -256,7 +256,7 @@ export const ChannelsNavigation: FC = () => {
 
                                                 <CreateChannelModal/>
 
-                                                <Tooltip 
+                                                <Tooltip
                                                     preferredAlignment='right'
                                                     leaderElementRef={ref}
                                                 >
@@ -265,7 +265,7 @@ export const ChannelsNavigation: FC = () => {
                                             </>
                                         )}
                                     </Ref>
-                                </WrapperWithBullet>  
+                                </WrapperWithBullet>
                             )}
                         </OverlayContextProvider>
                     </div>

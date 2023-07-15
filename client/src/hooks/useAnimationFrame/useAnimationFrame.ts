@@ -1,4 +1,3 @@
-import { useRefWithSetter } from '@hooks';
 import { useRef, useCallback, useEffect } from 'react';
 import { useLatest } from 'react-use';
 
@@ -6,52 +5,67 @@ import { useLatest } from 'react-use';
 
 type Callback = (time: number) => void;
 
+type Options = {
+    initialState?: boolean;
+    logDuration?: boolean;
+}
+
+const defaultOption: Required<Options> = {
+    initialState: true,
+    logDuration: false,
+};
+
 export const useAnimationFrame = (
-    callback: Callback, 
-    initialState = true,
+    callback: Callback,
+    options?: Options,
 ) => {
-    const frameRef = useRef<number>();
-    const savedCallbackRef = useLatest<Callback>(callback);  
-    const [isWorkingRef, setIsWorkingRef] = useRefWithSetter(initialState);
+    const frameRef = useRef<number | null>(null);
+    const optionsRef = useRef(Object.assign({}, defaultOption, options));
+    const isWorkingRef = useRef(optionsRef.current.initialState);
+
+    const animateRef = useLatest<Callback>((time) => {
+        if (!isWorkingRef.current) return;
+
+        if (optionsRef.current.logDuration) {
+            console.time('logDuration');
+        }
+
+        callback(time);
+
+        if (optionsRef.current.logDuration) {
+            console.timeLog('logDuration');
+            console.timeEnd('logDuration');
+        }
+
+        frameRef.current = requestAnimationFrame(animateRef.current);
+    });
 
     const start = useCallback(() => {
         if (isWorkingRef.current) return;
 
-        setIsWorkingRef(true);
-
-        const animate: Callback = (time) => {
-            savedCallbackRef.current(time);
-            frameRef.current = requestAnimationFrame(animate);
-        };
-        
-        frameRef.current = requestAnimationFrame(animate);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        isWorkingRef.current = true;
+        frameRef.current = requestAnimationFrame(animateRef.current);
+    }, [animateRef]);
 
     const stop = useCallback(() => {
-        if (!isWorkingRef.current) return;
+        if (!isWorkingRef.current || !frameRef.current) return;
 
-        setIsWorkingRef(false);
+        cancelAnimationFrame(frameRef.current);
 
-        frameRef.current && cancelAnimationFrame(frameRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        isWorkingRef.current = false;
+        frameRef.current = null;
     }, []);
 
     useEffect(() => {
         if (!isWorkingRef.current) return;
 
-        const animate: Callback = (time) => {
-            savedCallbackRef.current(time);
-            frameRef.current = requestAnimationFrame(animate);
-        };
-        
-        frameRef.current = requestAnimationFrame(animate);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        frameRef.current = requestAnimationFrame(animateRef.current);
+    }, [animateRef]);
 
     useEffect(() => {
         return () => {
-            frameRef.current && cancelAnimationFrame(frameRef.current);
+            if (!frameRef.current) return;
+            cancelAnimationFrame(frameRef.current);
         };
     }, []);
 

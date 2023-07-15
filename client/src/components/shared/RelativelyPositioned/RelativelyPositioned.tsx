@@ -6,11 +6,11 @@ import { FC, useRef } from 'react';
 
 
 type RelativelyPositioned = RelativePositionOptions & Pick<
-    UseRelativePositionArgs, 
+    UseRelativePositionArgs,
     'leaderElementOrRectRef'
 > & PropsWithChildrenAsNodeOrFunction<WithAlignment>;
 
-export const RelativelyPositioned: FC<RelativelyPositioned> = ({ 
+export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     leaderElementOrRectRef,
     preferredAlignment,
     swappableAlignment,
@@ -18,7 +18,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     spacing = 20,
     boundsSize = 20,
     unbounded,
-    children, 
+    children,
 }) => {
     const followerElementRef = useRef<HTMLDivElement>(null);
     const { alignment } = useRelativePosition({
@@ -35,7 +35,7 @@ export const RelativelyPositioned: FC<RelativelyPositioned> = ({
     const childrenArgs: WithAlignment = {
         alignment,
     };
-    
+
     return (
         <div className='fixed' ref={followerElementRef}>
             <ChildrenAsNodeOrFunction args={childrenArgs}>

@@ -11,7 +11,7 @@ interface ContentWithLoading extends PropsWithChildren {
 const styles = {
     wrapper: 'relative',
     indicator: 'absolute inset-0',
-    child: 'opacity-0 invisible',
+    child: 'invisible',
 };
 
 export const ContentWithLoading: FC<ContentWithLoading> = ({

@@ -1,6 +1,5 @@
 import { Button, Conditional, Emoji, EmojiCode, emojiList, List, Scrollable, SearchBar } from '@components';
 import { useTextInput } from '@hooks';
-import { useSlateAddEmoji } from '@libs';
 import { PropsWithClassName } from '@types';
 import { conditional, getRandomNumber, twClassNames } from '@utils';
 import { FC, useMemo, useState } from 'react';
@@ -44,7 +43,7 @@ export const EmojiPicker: FC<EmojiPicker> = ({
     const emojiCode = currentEmoji.code[0];
     const emojiCodes = currentEmoji.code.join(' ');
 
-    return (      
+    return (
         <div className={twClassNames(styles.wrapper, className)}>
             <SearchBar
                 className={styles.searchBar}
@@ -75,7 +74,7 @@ export const EmojiPicker: FC<EmojiPicker> = ({
                                                 onMouseEnter={changeCurrentEmoji}
                                                 onFocus={changeCurrentEmoji}
                                             >
-                                                <Emoji 
+                                                <Emoji
                                                     className={styles.emojiListEmoji}
                                                     code={emojiCode}
                                                 />
@@ -94,9 +93,9 @@ export const EmojiPicker: FC<EmojiPicker> = ({
                     </Conditional>
                 </div>
             </Scrollable>
-            
+
             <div className={styles.previewWrapper}>
-                <Emoji 
+                <Emoji
                     className={styles.previewEmoji}
                     code={emojiCode}
                 />

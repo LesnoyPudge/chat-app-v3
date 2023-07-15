@@ -112,7 +112,7 @@ error:
 
 import getScrollableParent from 'scrollparent';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
-import { useLatest, useMeasure, useNetworkState } from 'react-use';
+import { useLatest, useMeasure, useNetworkState, useRendersCount } from 'react-use';
 import { useFocus } from 'src/hooks/useFocus/useFocus';
 import { Field, Form, Formik, useField, useFormikContext } from 'formik';
 import { FormikFileUploadContextProvider } from '@libs';
@@ -1029,6 +1029,57 @@ const PlaygroundInner19: FC = () => {
     );
 };
 
+const Tmp2: FC = () => {
+    useEffect(() => {
+        console.log('some2');
+    });
+
+    return (
+        <>
+        </>
+    );
+};
+
+const Tmp: FC<{inc: React.MouseEventHandler<HTMLButtonElement>}> = ({ inc }) => {
+    useEffect(() => {
+        console.log('some');
+    });
+
+    return (
+        <>
+            <button onClick={inc}>
+                <>inc</>
+            </button>
+
+            <Tmp2/>
+        </>
+    );
+};
+
+const PlaygroundInner20: FC = () => {
+    const [count, setCount] = useState(0);
+    const countRef = useLatest(count);
+    const inc = () => {
+        setCount((v) => v + 1);
+    };
+
+    const incRef = useRef(() => {
+        setCount(countRef.current + 1);
+    });
+
+    return (
+        <div>
+            <div>
+                <>count is {count}</>
+            </div>
+
+            <Memo>
+                <Tmp inc={incRef.current}/>
+            </Memo>
+        </div>
+    );
+};
+
 const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
@@ -1057,8 +1108,9 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                     {/* <PlaygroundInner15/> */}
                     {/* <PlaygroundInner16/> */}
                     {/* <PlaygroundInner17/> */}
-                    <PlaygroundInner18/>
+                    {/* <PlaygroundInner18/> */}
                     {/* <PlaygroundInner19/> */}
+                    <PlaygroundInner20/>
                 </ReactFocusLock>
             </Conditional>
         </>

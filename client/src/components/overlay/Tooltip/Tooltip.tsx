@@ -9,7 +9,7 @@ import { FC, useState } from 'react';
 
 type Tooltip = (
     PropsWithChildrenAndClassName &
-    PropsWithLeaderElementRef & 
+    PropsWithLeaderElementRef &
     RelativePositionOptions
 );
 
@@ -33,10 +33,10 @@ const styles = {
     py-[5px] px-2.5 rounded-md w-max max-w-[300px] shadow-elevation-low`,
 };
 
-export const Tooltip: FC<Tooltip> = ({ 
+export const Tooltip: FC<Tooltip> = ({
     className = '',
     leaderElementRef,
-    children, 
+    children,
     preferredAlignment,
     boundsSize = 20,
     centered = true,
@@ -62,15 +62,15 @@ export const Tooltip: FC<Tooltip> = ({
         setWithKeyboard(true);
         changeState();
     };
-    
+
     const handleFocusOut = (e: FocusEvent) => {
         if (!leaderElementRef.current) return;
         if (e.target !== leaderElementRef.current) return;
-        
+
         setWithKeyboard(false);
         changeState();
     };
-    
+
     const handleMouseEnter = () => {
         setWithMouse(true);
         changeState();
@@ -126,14 +126,14 @@ export const Tooltip: FC<Tooltip> = ({
                                             translateX: style.offset.to((offset) => `${offset}px`),
                                         },
                                     };
-    
+
                                     const styleWithOffset = {
                                         opacity: style.opacity,
                                         ...alignmentStyles[alignment],
                                     };
-      
+
                                     return (
-                                        <animated.div 
+                                        <animated.div
                                             className={twClassNames(styles.base, className)}
                                             style={styleWithOffset}
                                             role='tooltip'
