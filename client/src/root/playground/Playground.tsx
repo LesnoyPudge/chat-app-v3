@@ -1,11 +1,11 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space, Ref } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -112,7 +112,6 @@ error:
 
 import getScrollableParent from 'scrollparent';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
-import { useLatest, useMeasure, useNetworkState, useRendersCount } from 'react-use';
 import { useFocus } from 'src/hooks/useFocus/useFocus';
 import { Field, Form, Formik, useField, useFormikContext } from 'formik';
 import { FormikFileUploadContextProvider } from '@libs';
@@ -612,7 +611,7 @@ const useConversation = (conversationId: string) => {
 
 import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
-import { Endpoints, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, SUBSCRIBABLE_ENTITIES, ValueOf } from '@shared';
+import { AnyArray, AnyFunction, Endpoints, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
 import { AppSelectors, AppSlice, UserApi } from '@redux/features';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
@@ -1056,31 +1055,93 @@ const Tmp: FC<{inc: React.MouseEventHandler<HTMLButtonElement>}> = ({ inc }) => 
     );
 };
 
-const PlaygroundInner20: FC = () => {
-    const [count, setCount] = useState(0);
-    const countRef = useLatest(count);
-    const inc = () => {
-        setCount((v) => v + 1);
-    };
-
-    const incRef = useRef(() => {
-        setCount(countRef.current + 1);
+const TmpSetTest: FC<{add: AnyFunction}> = ({ add }) => {
+    useEffect(() => {
+        console.log('rerender');
     });
+
+    return (
+        <button onClick={() => add(String(Math.random()))}>
+            <>add</>
+        </button>
+    );
+};
+
+const PlaygroundInner20: FC = () => {
+    const { _actions, _value } = useSet(['0']);
+    const {
+        add,
+        has,
+        remove,
+        reset,
+        toggle,
+    } = _actions;
 
     return (
         <div>
             <div>
-                <>count is {count}</>
+                <>value is {JSON.stringify(Array.from(_value))}</>
             </div>
 
             <Memo>
-                <Tmp inc={incRef.current}/>
+                <TmpSetTest add={add}/>
             </Memo>
+
+
+            <button onClick={() => console.log(has('0'))}>
+                <>has</>
+            </button>
+
+            <button onClick={() => remove('0')}>
+                <>remove</>
+            </button>
+
+            <button onClick={reset}>
+                <>reset</>
+            </button>
+
+            <button onClick={() => toggle('0')}>
+                <>toggle</>
+            </button>
         </div>
     );
 };
 
-const enabled = !!0;
+const PlaygroundInner21: FC = () => {
+    return (
+        <div className='h-screen w-screen overflow-scroll bg-slate-400'>
+            <div className='w-[3000px] h-[3000px]'>
+                <div className='overflow-scroll h-[50vh] w-[50vw]'>
+                    <div className='w-[3000px] h-[3000px] p-20'>
+                        <Ref<HTMLDivElement>>
+                            {(ref) => (
+                                <>
+                                    <div ref={ref} className='w-[70px]'>leader</div>
+
+                                    <OverlayContextProvider isOverlayExistInitial>
+                                        <OverlayItem>
+                                            <RelativelyPositioned
+                                                leaderElementOrRectRef={ref}
+                                                preferredAlignment='right'
+                                                swappableAlignment
+                                                spacing={20}
+                                                boundsSize={20}
+                                            >
+                                                <div className='pointer-events-auto bg-rose-700'>qwezxc</div>
+                                            </RelativelyPositioned>
+                                        </OverlayItem>
+                                    </OverlayContextProvider>
+                                </>
+                            )}
+                        </Ref>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -1110,7 +1171,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                     {/* <PlaygroundInner17/> */}
                     {/* <PlaygroundInner18/> */}
                     {/* <PlaygroundInner19/> */}
-                    <PlaygroundInner20/>
+                    {/* <PlaygroundInner20/> */}
+                    <PlaygroundInner21/>
                 </ReactFocusLock>
             </Conditional>
         </>

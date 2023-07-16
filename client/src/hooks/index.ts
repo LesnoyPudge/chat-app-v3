@@ -17,3 +17,5 @@ export * from './useEventListener';
 export * from './useStateAndRef';
 export * from './useRefWithSetter';
 export * from './useKeyboardNavigation';
+export * from './useSet';
+export * from './useLatest';

@@ -1,6 +1,5 @@
-import { useEventListener, useStateAndRef } from '@hooks';
+import { useEventListener, useStateAndRef, useLatest } from '@hooks';
 import { useRef, RefObject } from 'react';
-import { useLatest } from 'react-use';
 
 
 
@@ -29,11 +28,11 @@ export const useFileDrop: UseFileDrop = (
         if (newState === isDragOverRef.current) return;
         setIsDragOver(newState);
     });
- 
+
     const listenersRef = useRef({
         handleDragEnter: (e: Event) => {
             const event = e as DragEvent;
-            
+
             if (!event.dataTransfer || event.dataTransfer.types.indexOf('Files') === -1) return;
 
             counterHelpersRef.current.increase();
@@ -58,6 +57,6 @@ export const useFileDrop: UseFileDrop = (
     useEventListener('dragenter', listenersRef.current.handleDragEnter, element || document);
     useEventListener('dragleave', listenersRef.current.handleDragEnter, element || document);
     useEventListener('drop', listenersRef.current.handleDragEnter, element || document);
-    
+
     return isDragOver;
 };

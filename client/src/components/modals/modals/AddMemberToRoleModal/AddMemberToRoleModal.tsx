@@ -1,8 +1,7 @@
 import { Button, CheckBoxIndicatorCheck, Conditional, Icon, Image, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
 import { FC, useContext, useRef } from 'react';
 import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalSubtitle } from '../../components';
-import { useSet } from 'react-use';
-import { useKeyboardNavigation, useTextInput } from '@hooks';
+import { useKeyboardNavigation, useTextInput, useSet } from '@hooks';
 import notFoundImage from '@assets/not-found-image.svg';
 import { twClassNames } from '@utils';
 import { MoveFocusInside } from 'react-focus-lock';
@@ -72,8 +71,8 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
     };
 
     return (
-        <ModalWindow 
-            label='Добавить участников' 
+        <ModalWindow
+            label='Добавить участников'
             withBackdrop
         >
             <ModalContainer>
@@ -106,7 +105,7 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
                     <div className={styles.contentBlock}>
                         <Conditional isRendered={!noMembers}>
                             <Conditional isRendered={showFilteredMembers}>
-                                <Scrollable 
+                                <Scrollable
                                     className={styles.scrollable}
                                     small
                                 >
@@ -169,7 +168,7 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
                                         <>Участники не найдены</>
                                     </div>
                                 </div>
-                            </Conditional>   
+                            </Conditional>
                         </Conditional>
 
                         <Conditional isRendered={noMembers}>

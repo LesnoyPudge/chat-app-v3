@@ -1,6 +1,5 @@
 import { RefObject, useEffect } from 'react';
-import { useLatest } from 'react-use';
-import { useProvidedValue } from '@hooks';
+import { useProvidedValue, useLatest } from '@hooks';
 import { isRef } from '@typeGuards';
 
 
@@ -16,7 +15,7 @@ export const useEventListener = <T extends keyof EventMaps>(
 ) => {
     const [element, setElement] = useProvidedValue(providedElement);
     const savedListener = useLatest(providedListener);
-    
+
     useEffect(() => {
         const target = isRef(element) ? element.current : element;
         if (!target) return;
@@ -29,6 +28,6 @@ export const useEventListener = <T extends keyof EventMaps>(
             target.removeEventListener(event, listener);
         };
     }, [element, event, savedListener]);
-    
+
     return setElement;
 };

@@ -2,7 +2,7 @@ import { FC, useEffect, useRef } from 'react';
 import noUiSlider, { API, Options, PartialFormatter } from 'nouislider';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
-import { useLatest } from 'react-use';
+import { useLatest } from '@hooks';
 
 
 

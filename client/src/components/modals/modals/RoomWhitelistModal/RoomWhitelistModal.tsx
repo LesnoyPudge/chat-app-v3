@@ -1,8 +1,7 @@
-import { FC, useContext, useRef } from 'react';
+import { FC, useContext } from 'react';
 import { Button, ModalWindow, OverlayContext, RolesAndMembersCheckList, SearchBar } from '@components';
 import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../components';
-import { useTextInput } from '@hooks';
-import { useSet } from 'react-use';
+import { useTextInput, useSet } from '@hooks';
 
 
 
@@ -40,7 +39,7 @@ export const RoomWhitelistModal: FC<RoomWhitelistModal> = ({
     const filteredRoles = roles.filter((role) => role.name.includes(value));
 
     return (
-        <ModalWindow 
+        <ModalWindow
             label='Добавить участников или роли'
             withBackdrop
         >

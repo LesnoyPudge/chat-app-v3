@@ -1,10 +1,8 @@
-import { ObjectWithId } from '@types';
-import { RefObject, useCallback, useRef, useState } from 'react';
-import { useLatest } from 'react-use';
+import { RefObject, useRef, useState } from 'react';
 import { useChatLoad, useChatScroll } from '..';
 import { IMessage } from '@backendTypes';
 import { ViewportListRef } from 'react-viewport-list';
-import { useRefWithSetter, useKeyboardNavigation } from '@hooks';
+import { useKeyboardNavigation, useLatest } from '@hooks';
 
 
 
@@ -20,7 +18,7 @@ export const useChat = (messages: IMessage[]) => {
     const messagesLengthRef = useLatest(messages.length);
     const firstMessageCreationDateRef = useLatest(messages.at(0)?.createdAt || null);
     const normalizedViewportItemRefs = useRef<NormalizedViewportItemRefs>(new Map());
-    
+
     const [contentWrapperElement, setContentWrapperElement] = useState<HTMLElement | null>(null);
     const [contentElement, setContentElement] = useState<HTMLElement | null>(null);
     const [placeholderElement, setPlaceholderElement] = useState<HTMLElement | null>(null);
@@ -51,7 +49,7 @@ export const useChat = (messages: IMessage[]) => {
         setViewportIndexes,
     } = useKeyboardNavigation(
         messagesRef,
-        contentWrapperElement, 
+        contentWrapperElement,
         {
             direction: 'vertical',
             loop: false,

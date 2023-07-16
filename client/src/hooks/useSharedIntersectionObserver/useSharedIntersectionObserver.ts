@@ -1,21 +1,20 @@
 import { isRef } from '@typeGuards';
 import { IntersectionObserverListener, noop, sharedIntersectionObserver } from '@utils';
 import { RefObject, useLayoutEffect, useRef } from 'react';
-import { useLatest } from 'react-use';
-import { useProvidedValue } from '@hooks';
+import { useProvidedValue, useLatest } from '@hooks';
 
 
 
 type UseSharedIntersectionObserverResult<T extends Element> = [
-    entry: Partial<IntersectionObserverEntry>, 
+    entry: Partial<IntersectionObserverEntry>,
     setTarget: (node: T | null) => void,
 ] & {
-    entry: Partial<IntersectionObserverEntry>; 
+    entry: Partial<IntersectionObserverEntry>;
     setTarget: (node: T | null) => void;
 }
 
 export const useSharedIntersectionObserver = <T extends Element>(
-    providedTargetRef?: RefObject<T> | T | null, 
+    providedTargetRef?: RefObject<T> | T | null,
     providedListener?: IntersectionObserverListener,
 ): UseSharedIntersectionObserverResult<T> => {
     const intersectionEntryRef = useRef<Partial<IntersectionObserverEntry>>({});
@@ -39,7 +38,7 @@ export const useSharedIntersectionObserver = <T extends Element>(
     }, [savedListenerRef, target]);
 
     const result = [
-        intersectionEntryRef.current, 
+        intersectionEntryRef.current,
         setTarget,
     ] as UseSharedIntersectionObserverResult<T>;
 

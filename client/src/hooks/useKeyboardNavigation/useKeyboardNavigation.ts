@@ -1,8 +1,7 @@
-import { useEventListener, useProvidedValue, useRefWithSetter, useStateAndRef, useThrottle } from '@hooks';
+import { useEventListener, useProvidedValue, useRefWithSetter, useStateAndRef, useThrottle, useLatest } from '@hooks';
 import { ObjectWithId } from '@types';
 import { noop } from '@utils';
 import { RefObject, useCallback } from 'react';
-import { useLatest } from 'react-use';
 import { Key } from 'ts-key-enum';
 
 
@@ -16,7 +15,7 @@ interface Options {
     virtualized?: boolean;
     overscan?: number;
     onFocusChange?: (
-        item: ObjectWithId | undefined, 
+        item: ObjectWithId | undefined,
         stepType: 'forward' | 'backward',
         focusedIdRef: RefObject<string | null>,
     ) => void;
@@ -46,10 +45,10 @@ export const useKeyboardNavigation = (
 
     const providedListRef = useLatest(providedFocusableListRef.current ? providedFocusableListRef.current : []);
     const [virtualListRef, setVirtualListRef] = useRefWithSetter<ObjectWithId[]>([]);
-    
+
     const focusableListRef = useLatest(
-        virtualized 
-            ? (virtualListRef.current || []) 
+        virtualized
+            ? (virtualListRef.current || [])
             : (providedListRef.current || []),
     );
 
@@ -58,7 +57,7 @@ export const useKeyboardNavigation = (
         const endIndex = Math.min(providedListRef.current.length, second + 1 + overscan);
 
         setVirtualListRef(providedListRef.current.slice(
-            startIndex, 
+            startIndex,
             endIndex,
         ));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,7 +118,7 @@ export const useKeyboardNavigation = (
 
         if (direction === 'horizontal' && !isHorizontalMove) return;
         if (direction === 'vertical' && !isVerticalMove) return;
-        
+
         e.preventDefault();
 
         const isEmptyList = !focusableListRef.current.length;
@@ -128,10 +127,10 @@ export const useKeyboardNavigation = (
         if (isThrottling) return;
 
         throttle(noop, 0)();
-        
+
         const noFocusedId = focusedIdRef.current === null && initialIdRef.current === null;
         const isItemInArray = focusableListRef.current.some((item) => (
-            item.id === focusedIdRef.current || 
+            item.id === focusedIdRef.current ||
             item.id === initialIdRef.current
         ));
 

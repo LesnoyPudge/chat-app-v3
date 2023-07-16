@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useLatest } from 'react-use';
+import { useLatest } from '@hooks';
 
 
 

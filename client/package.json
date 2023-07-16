@@ -61,7 +61,6 @@
         "react-redux": "^8.1.1",
         "react-responsive-carousel": "^3.2.23",
         "react-router-dom": "^6.9.0",
-        "react-use": "^17.4.0",
         "react-use-measure": "^2.1.1",
         "react-viewport-list": "^7.0.0",
         "react-virtualized-auto-sizer": "^1.0.7",
