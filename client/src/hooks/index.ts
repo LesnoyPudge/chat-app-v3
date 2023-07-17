@@ -3,7 +3,6 @@ export * from './useThrottle';
 export * from './useDebounce';
 export * from './useResizeObserver';
 export * from './useRelativePosition';
-export * from './useMousePosition';
 export * from './useFileDrop';
 export * from './useTextInput';
 export * from './useFocus';

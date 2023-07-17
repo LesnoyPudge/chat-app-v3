@@ -90,7 +90,7 @@ export const ChannelsNavigation: FC = () => {
                                             )}
                                             innerRef={ref}
                                             label='Перейти на главную страницу'
-                                            onLeftClick={navigateTo.app}
+                                            onLeftClick={() => navigateTo.app()}
                                         >
                                             <Icon
                                                 className={styles.icon}

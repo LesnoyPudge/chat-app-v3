@@ -1,4 +1,4 @@
-import HTTP_STATUS_CODES from 'http-status-enum';
+import { HTTP_STATUS_CODES } from '@shared';
 
 
 
@@ -17,10 +17,6 @@ export class ApiError extends Error {
 
     static unauthorized(message = 'Не авторизован') {
         return new ApiError(HTTP_STATUS_CODES.UNAUTHORIZED, message);
-    }
-    
-    static forbidden(message = 'Доступ запрещён') {
-        return new ApiError(HTTP_STATUS_CODES.FORBIDDEN, message);
     }
 
     static notFound(message = 'Не найдено') {

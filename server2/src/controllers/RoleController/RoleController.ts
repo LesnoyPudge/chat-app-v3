@@ -1,7 +1,6 @@
 import { RoleService } from '@services';
-import { Endpoints } from '@shared';
+import { Endpoints, HTTP_STATUS_CODES } from '@shared';
 import { AuthorizedMiddleware } from '@types';
-import HTTP_STATUS_CODES from 'http-status-enum';
 
 
 

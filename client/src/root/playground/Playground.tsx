@@ -613,7 +613,7 @@ import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
 import { AnyArray, AnyFunction, Endpoints, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
-import { AppSelectors, AppSlice, UserApi } from '@redux/features';
+import { AppSelectors, AppSlice, ChannelApi, UserApi } from '@redux/features';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { store } from '@redux/store';
 
@@ -1141,7 +1141,23 @@ const PlaygroundInner21: FC = () => {
     );
 };
 
-const enabled = !!1;
+const PlaygroundInner22: FC = () => {
+    ChannelApi.useChannelGetOneQuery({ channelId: 'qwe' });
+
+    return (
+        <>
+            <button>
+                <>make request</>
+            </button>
+
+            <button>
+                <>zxc</>
+            </button>
+        </>
+    );
+};
+
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -1172,7 +1188,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                     {/* <PlaygroundInner18/> */}
                     {/* <PlaygroundInner19/> */}
                     {/* <PlaygroundInner20/> */}
-                    <PlaygroundInner21/>
+                    {/* <PlaygroundInner21/> */}
+                    <PlaygroundInner22/>
                 </ReactFocusLock>
             </Conditional>
         </>

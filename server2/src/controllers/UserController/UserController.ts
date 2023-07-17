@@ -1,10 +1,9 @@
 import { UserService } from '@services';
 import { getEnv } from '@utils';
-import { Endpoints, Tokens } from '@shared';
+import { Endpoints, Tokens, HTTP_STATUS_CODES } from '@shared';
 import { AuthorizedMiddleware, Middleware } from '@types';
 import ms from 'ms';
 import { ApiError } from '@errors';
-import HTTP_STATUS_CODES from 'http-status-enum';
 
 
 
@@ -83,9 +82,9 @@ interface UserController {
     >;
 }
 
-const { 
-    REFRESH_TOKEN_DURATION, 
-    CUSTOM_NODE_ENV, 
+const {
+    REFRESH_TOKEN_DURATION,
+    CUSTOM_NODE_ENV,
     ACCESS_TOKEN_DURATION,
 } = getEnv();
 
@@ -117,7 +116,7 @@ const secureCookiesOptions = {
 export const UserController: UserController = {
     async registration(req, res) {
         const data = await UserService.registration(req.body);
-        
+
         res.cookie(refreshTokenName, data.refreshToken, secureCookiesOptions.refresh());
         res.cookie(accessTokenName, data.accessToken, secureCookiesOptions.access());
         res.json(data.user);

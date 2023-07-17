@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { WithChannelsNavigation, WithPrivateChatList, WithRoomList } from '@layouts';
 import { Loaded } from '../components';
-import { NavigateToRoom, ProtectedRoute } from './components';
+import { NavigateToRoom, OnlyUnauthorizedRoute, ProtectedRoute } from './components';
 
 import AppPage from '@pages/AppPage';
 import AuthPage from '@pages/AuthPage';
@@ -29,57 +29,59 @@ export const Router: FC = () => {
 
                             <Outlet/>
                         </>
-                    } /* element={<SuspenseWithLoader/>} */>                      
-                        <Route 
-                            path='auth' 
-                            element={<AuthPage/>}
-                        />
+                    } /* element={<SuspenseWithLoader/>} */>
+                        <Route element={<OnlyUnauthorizedRoute/>}>
+                            <Route
+                                path='auth'
+                                element={<AuthPage/>}
+                            />
+                        </Route>
 
                         <Route element={<ProtectedRoute/>}>
-                            <Route 
-                                path='app' 
+                            <Route
+                                path='app'
                                 element={<WithChannelsNavigation/>}
                             >
                                 <Route element={<WithPrivateChatList/>}>
                                     <Route index element={<AppPage/>}/>
 
-                                    <Route 
-                                        path='private-chat/:privateChatId' 
+                                    <Route
+                                        path='private-chat/:privateChatId'
                                         element={<PrivateChatPage/>}
                                     />
                                 </Route>
 
-                                <Route 
-                                    path='channel/:channelId' 
+                                <Route
+                                    path='channel/:channelId'
                                     element={<WithRoomList/>}
                                 >
-                                    <Route 
+                                    <Route
                                         index
                                         element={<NavigateToRoom/>}
                                     />
 
-                                    <Route 
-                                        path='room/:roomId' 
+                                    <Route
+                                        path='room/:roomId'
                                         element={<ChannelPage/>}
                                     />
                                 </Route>
 
-                                <Route 
-                                    path='*' 
+                                <Route
+                                    path='*'
                                     element={<Navigate to={'/app'} replace/>}
                                 />
                             </Route>
                         </Route>
 
-                        <Route 
-                            path='invitation/:invitationLink' 
+                        <Route
+                            path='invitation/:invitationLink'
                             element={<InvitationPage/>}
                         />
                     </Route>
                 </Route>
 
                 {/* <Route path='account-activation/:activationLink' element={<>activation page</>}/> */}
-            
+
                 <Route path='*' element={<Navigate to={'/app'} replace/>}/>
             </Routes>
         </BrowserRouter>

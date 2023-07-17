@@ -139,15 +139,15 @@ export const UserService: UserService = {
                     refreshToken: !tokenData ? tokens.refreshToken : user.refreshToken,
                 };
             },
-        );  
+        );
     },
 
     async refresh({ refreshToken }) {
         const tokenData = token.validateRefreshToken(refreshToken);
-        if (!tokenData) throw ApiError.forbidden();
+        if (!tokenData) throw ApiError.unauthorized();
 
         const user = await UserModel.findOne({ id: tokenData.id }).lean();
-        if (!user) throw ApiError.forbidden();
+        if (!user) throw ApiError.unauthorized();
 
         const { accessToken } = token.generateTokens(UserDTO.token(user));
 
@@ -160,7 +160,7 @@ export const UserService: UserService = {
     async getOne(_, { targetId }) {
         const user = await UserModel.findOne({ id: targetId }).lean();
         if (!user) throw ApiError.internal();
-        
+
         return UserDTO.withoutCredentials(user);
     },
 
@@ -170,7 +170,7 @@ export const UserService: UserService = {
                 const partiallyUpdatedUser = await UserModel.findOneAndUpdate(
                     { id }, newValues, { new: true },
                 ).session(session);
-                
+
                 if (!partiallyUpdatedUser) throw ApiError.internal();
 
                 const isNewAvatarProvided = avatar !== undefined;
@@ -192,7 +192,7 @@ export const UserService: UserService = {
                 const updatedUser = await partiallyUpdatedUser.save({ session });
 
                 if (!updatedUser) throw ApiError.internal();
-                
+
                 onCommit(() => {
                     UserSubscription.update(updatedUser);
                 });
@@ -210,14 +210,14 @@ export const UserService: UserService = {
                 }
 
                 const updatedUser = await UserModel.findOneAndUpdate(
-                    { id }, 
+                    { id },
                     {
                         password: newPassword,
                         email: newEmail,
                         login: newLogin,
                     },
                 ).session(session).lean();
-                
+
                 if (!updatedUser) throw ApiError.internal();
 
                 return UserDTO.withoutCredentials(updatedUser);
@@ -229,11 +229,11 @@ export const UserService: UserService = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedUser = await UserModel.findOneAndUpdate(
-                    { id }, 
-                    { isDeleted: true }, 
+                    { id },
+                    { isDeleted: true },
                     { new: true },
                 ).session(session).lean();
-                
+
                 if (!updatedUser) throw ApiError.internal();
 
                 onCommit(() => {
@@ -247,7 +247,7 @@ export const UserService: UserService = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const userToUpdate = await UserModel.findOne({ id });
-                
+
                 if (!userToUpdate) throw ApiError.internal();
 
                 await UserServiceHelpers.removeFriend({ userId: id, targetId });
@@ -259,7 +259,7 @@ export const UserService: UserService = {
                 await UserServiceHelpers.removeOutgoingFriendRequest({ userId: targetId, targetId: id });
 
                 userToUpdate.blocked.push(targetId);
-                
+
                 const updatedUser = await userToUpdate.save({ session });
 
                 onCommit(() => {
@@ -299,12 +299,12 @@ export const UserService: UserService = {
                 const user = await UserModel.findOneAndUpdate(
                     { id }, accessCode, { new: true },
                 ).session(session).lean();
-                
+
                 if (!user || !user.email) throw ApiError.internal();
-                
-                await emails.sendAccessCode({ 
-                    email: user.email, 
-                    code: accessCode.code, 
+
+                await emails.sendAccessCode({
+                    email: user.email,
+                    code: accessCode.code,
                 });
             },
         );
@@ -313,14 +313,14 @@ export const UserService: UserService = {
     async sendFriendRequest({ id }, { targetId }) {
         return transactionContainer(
             async() => {
-                await UserServiceHelpers.addIncomingFriendRequest({ 
-                    userId: targetId, 
-                    targetId: id, 
+                await UserServiceHelpers.addIncomingFriendRequest({
+                    userId: targetId,
+                    targetId: id,
                 });
-                
-                const updatedUser = await UserServiceHelpers.addOutgoingFriendRequest({ 
-                    userId: id, 
-                    targetId, 
+
+                const updatedUser = await UserServiceHelpers.addOutgoingFriendRequest({
+                    userId: id,
+                    targetId,
                 });
 
                 return UserDTO.withoutCredentials(updatedUser);
@@ -334,13 +334,13 @@ export const UserService: UserService = {
                 await UserServiceHelpers.addFriend({ userId: id, targetId });
                 await UserServiceHelpers.addFriend({ userId: targetId, targetId: id });
 
-                await UserServiceHelpers.removeOutgoingFriendRequest({ 
-                    userId: targetId, 
-                    targetId: id, 
+                await UserServiceHelpers.removeOutgoingFriendRequest({
+                    userId: targetId,
+                    targetId: id,
                 });
-                const updatedUser = await UserServiceHelpers.removeIncomingFriendRequest({ 
-                    userId: id, 
-                    targetId, 
+                const updatedUser = await UserServiceHelpers.removeIncomingFriendRequest({
+                    userId: id,
+                    targetId,
                 });
 
                 return UserDTO.withoutCredentials(updatedUser);
@@ -351,13 +351,13 @@ export const UserService: UserService = {
     async declineFriendRequest({ id }, { targetId }) {
         return transactionContainer(
             async() => {
-                await UserServiceHelpers.removeOutgoingFriendRequest({ 
-                    userId: targetId, 
-                    targetId: id, 
+                await UserServiceHelpers.removeOutgoingFriendRequest({
+                    userId: targetId,
+                    targetId: id,
                 });
-                const updatedUser = await UserServiceHelpers.removeIncomingFriendRequest({ 
-                    userId: id, 
-                    targetId, 
+                const updatedUser = await UserServiceHelpers.removeIncomingFriendRequest({
+                    userId: id,
+                    targetId,
                 });
 
                 return UserDTO.withoutCredentials(updatedUser);
@@ -368,13 +368,13 @@ export const UserService: UserService = {
     async revokeFriendRequest({ id }, { targetId }) {
         return transactionContainer(
             async() => {
-                await UserServiceHelpers.removeIncomingFriendRequest({ 
-                    userId: targetId, 
-                    targetId: id, 
+                await UserServiceHelpers.removeIncomingFriendRequest({
+                    userId: targetId,
+                    targetId: id,
                 });
-                const updatedUser = await UserServiceHelpers.removeOutgoingFriendRequest({ 
-                    userId: id, 
-                    targetId, 
+                const updatedUser = await UserServiceHelpers.removeOutgoingFriendRequest({
+                    userId: id,
+                    targetId,
                 });
 
                 return UserDTO.withoutCredentials(updatedUser);
@@ -404,9 +404,7 @@ export const UserService: UserService = {
         const user = await UserModel.findOne({ id });
 
         if (!user) throw ApiError.internal();
-
-        if (user.accessCode.expiresAt <= Date.now()) throw ApiError.forbidden();
-        if (user.accessCode.code !== accessCode) throw ApiError.forbidden();
+        if (user.accessCode.code !== accessCode) throw ApiError.badRequest();
     },
 
     async hidePrivateChannel({ id }, { privateChannelId }) {

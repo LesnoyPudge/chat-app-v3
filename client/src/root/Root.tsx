@@ -1,6 +1,6 @@
 import { FC, lazy, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, Loader, Masks } from './components';
-import { useDebug, usePreventDefault, useSocketStateHandler, useThemeSwitcher } from './hooks';
+import { useDebug, useOutline, usePreventDefault, useSocketStateHandler, useThemeSwitcher } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import './styles/main.scss';
@@ -16,7 +16,8 @@ const RootInner: FC = () => {
     useThemeSwitcher();
     useDebug();
     useSocketStateHandler();
-    
+    useOutline();
+
     return (
         <>
             <Heading className='sr-only'>

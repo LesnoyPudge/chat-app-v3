@@ -1,87 +1,54 @@
-import { BaseQueryApi, QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
-import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta, retry } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 import { getEnv } from '@utils';
-import { Endpoints } from '@shared';
-import { store } from './store';
+import { Endpoints, HTTP_STATUS_CODES } from '@shared';
 import { globalReset } from './globalReset';
 
 
+
+const { CUSTOM_NODE_ENV } = getEnv();
+const maxRetries = CUSTOM_NODE_ENV === 'production' ? 5 : 2;
 
 const baseQuery = fetchBaseQuery({
     baseUrl: getEnv().CUSTOM_SERVER_URL,
     credentials: 'include',
 });
 
-const retryHandlingBaseQuery = async(
-    args: string | FetchArgs,
-    api: BaseQueryApi,
-    extraOptions: Record<string, unknown>,
-) => {
-    const basicRetry = retry(
-        async() => {
-            const result = await baseQuery(
-                args,
-                api,
-                extraOptions,
-            );
+const retryHandlingQuery = retry(async(...args) => {
+    const result = await baseQuery(...args);
 
-            if (result.meta?.response && result.meta.response.status !== 500) {
-                retry.fail(result);
-            }
-
-            return result;
-        },
-        {
-            maxRetries: 3,
-        },
+    const shouldRetry = (
+        result.meta?.response
+            ? result.meta.response.status === HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
+            : true
     );
 
-    const response = await basicRetry(args, api, extraOptions as never);
-    if (response?.meta) return response;
+    if (!shouldRetry) retry.fail(result.error);
 
-    const normalizedResponse = response.error as QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>;
-    return normalizedResponse;
-};
+    return result;
+}, { maxRetries });
 
-const retryHandlingBaseQueryWithReauth: BaseQueryFn<
-    string | FetchArgs,
-    unknown,
-    FetchBaseQueryError
-> = async(args, api, extraOptions) => {
-    const result = await retryHandlingBaseQuery(args, api, extraOptions);
+const reAuthHandlingQuery = async(...args: Parameters<typeof baseQuery>) => {
+    const result = await retryHandlingQuery(...args);
 
-    // if (result.meta?.response && result.meta.response.status !== 401) return result;
+    if (result.meta?.response?.status !== HTTP_STATUS_CODES.UNAUTHORIZED) {
+        return result;
+    }
 
-    // const refreshResponse = await retryHandlingBaseQuery(
-    //     Endpoints.V1.User.Refresh.Path,
-    //     api,
-    //     extraOptions,
-    // );
+    const refreshResponse = await retryHandlingQuery(
+        Endpoints.V1.User.Refresh,
+        args[1],
+        args[2],
+    );
 
-    // if (refreshResponse.data) {
-    //     const data = refreshResponse.data;
-    //     // getLocalStorage().set('token', data.accessToken);
-    //     console.log('rootApi:', data);
-    //     result = await retryHandlingBaseQuery(args, api, extraOptions);
-    //     return result;
-    // }
+    if (!refreshResponse.error) return retryHandlingQuery(...args);
 
-    // await retryHandlingBaseQuery(
-    //     Endpoints.V1.User.Refresh.Path,
-    //     api,
-    //     extraOptions,
-    // );
-
-    // console.log('rootApi: logout');
-    // // store.dispatch(globalReset());
-    // // api.dispatch(
-    // //     logout()
-    // // );
+    const api = args[1];
+    api.dispatch(globalReset);
 
     return result;
 };
 
 export const rootApi = createApi({
-    baseQuery: retryHandlingBaseQueryWithReauth,
+    baseQuery: reAuthHandlingQuery,
     endpoints: () => ({}),
 });

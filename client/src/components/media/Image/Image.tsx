@@ -1,4 +1,5 @@
 import { Conditional } from '@components';
+import { useEventListener } from '@hooks';
 import { EncodedFile, PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC, ReactNode, useEffect, useRef, useState } from 'react';
@@ -23,9 +24,9 @@ type Image = PropsWithClassName & OptionalValues & {
 }
 
 const states = {
-    initial: { 
-        error: false, 
-        loading: true, 
+    initial: {
+        error: false,
+        loading: true,
     },
     success: {
         error: false,
@@ -55,16 +56,16 @@ export const Image: FC<Image> = ({
 }) => {
     const imageRef = useRef<HTMLImageElement | null>(null);
     const [imageState, setImageState] = useState(states.initial);
-        
+
     useEffect(() => {
         if (!imageRef.current) return;
         if (!src && !file) return;
-        
+
         const source = file ? file.base64 : (src || '');
         const image = imageRef.current;
-        
+
         image.src = source;
-    
+
         const handleLoad = () => setImageState(states.success);
         const handleError = () => setImageState(states.failure);
 
@@ -78,8 +79,8 @@ export const Image: FC<Image> = ({
     }, [src, file]);
 
     const showImage = (
-        (!imageState.loading && !imageState.error) || 
-        (!placeholder && imageState.loading) || 
+        (!imageState.loading && !imageState.error) ||
+        (!placeholder && imageState.loading) ||
         (!fallback && imageState.error)
     );
     const showPlaceholder = !showImage && imageState.loading && !!placeholder;
@@ -87,10 +88,10 @@ export const Image: FC<Image> = ({
 
     return (
         <>
-            <img 
+            <img
                 className={twClassNames(
-                    styles.image.base, 
-                    { 
+                    styles.image.base,
+                    {
                         [styles.image.active]: showImage,
                         [styles.image.error]: imageState.error,
                     },

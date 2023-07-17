@@ -24,7 +24,7 @@ export const Header: FC = () => {
                     { 'bg-primary-hover': isActive },
                 )}
                 isActive={isActive}
-                onLeftClick={navigateTo.app}
+                onLeftClick={() => navigateTo.app()}
             >
                 <Icon
                     className={twClassNames(
