@@ -1,7 +1,8 @@
 import { deepMerge } from '@reExport';
 import { PropsWithChildren, ReactNode, RefObject } from 'react';
-import { AnyArray, Entities, StrictOmit, ToType } from '@shared';
+import { AnyArray, Entities, Prettify, StrictOmit, ToType } from '@shared';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
 
 
@@ -58,3 +59,13 @@ export type OmittedRect = StrictOmit<DOMRect, 'x' | 'y' | 'toJSON'>;
 export type PropsWithLeaderElementRef = {
     leaderElementRef: RefObject<HTMLElement>;
 }
+
+export type CustomQueryError = Prettify<
+    Exclude<FetchBaseQueryError, {status: number, data: unknown}> |
+    {
+        status: number;
+        data: {
+            message: string;
+        };
+    }
+>;

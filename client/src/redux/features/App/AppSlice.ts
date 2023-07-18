@@ -1,4 +1,4 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
 import { Endpoints, Entities, Id, Timestamp } from '@shared';
 import { UserApi, UserSelectors } from '@redux/features';
 import { localStorageApi } from '@utils';
@@ -28,6 +28,12 @@ export const AppSlice = createSlice({
         triggerGlobalReset: () => {
             // store => globalReset
         },
+
+        refreshAuth: (state, { payload }: PayloadAction<Entities.User.WithoutCredentials>) => {
+            state.myid = payload.id;
+            state.lastRefresh = Date.now();
+            localStorageApi.set('lastRefresh', state.lastRefresh);
+        },
     },
     extraReducers(builder) {
         builder.addCase(globalReset, (state) => {
@@ -39,6 +45,20 @@ export const AppSlice = createSlice({
         });
 
         builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Login.ActionNameWithEntity].matchFulfilled,
+            (state, data) => {
+                AppSlice.caseReducers.refreshAuth(state, data);
+            },
+        );
+
+        builder.addMatcher(
+            UserApi.endpoints[Endpoints.V1.User.Registration.ActionNameWithEntity].matchFulfilled,
+            (state, data) => {
+                AppSlice.caseReducers.refreshAuth(state, data);
+            },
+        );
+
+        builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchPending,
             (state) => {
                 if (state.isInitialized) return;
@@ -48,10 +68,8 @@ export const AppSlice = createSlice({
 
         builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchFulfilled,
-            (state, { payload }) => {
-                state.myid = payload.id;
-                state.lastRefresh = Date.now();
-                localStorageApi.set('lastRefresh', state.lastRefresh);
+            (state, data) => {
+                AppSlice.caseReducers.refreshAuth(state, data);
             },
         );
 

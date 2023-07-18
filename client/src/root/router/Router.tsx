@@ -22,61 +22,56 @@ export const Router: FC = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route /*element={<ProtectedRoute/>}*/>
-                    <Route element={
-                        <>
-                            <Loaded/>
+                <Route element={<OnlyUnauthorizedRoute/>}>
+                    <Route element={<Loaded/>}>
+                        <Route
+                            path='auth'
+                            element={<AuthPage/>}
+                        />
+                    </Route>
+                </Route>
 
-                            <Outlet/>
-                        </>
-                    } /* element={<SuspenseWithLoader/>} */>
-                        <Route element={<OnlyUnauthorizedRoute/>}>
-                            <Route
-                                path='auth'
-                                element={<AuthPage/>}
-                            />
-                        </Route>
-
-                        <Route element={<ProtectedRoute/>}>
-                            <Route
-                                path='app'
-                                element={<WithChannelsNavigation/>}
-                            >
-                                <Route element={<WithPrivateChatList/>}>
-                                    <Route index element={<AppPage/>}/>
-
-                                    <Route
-                                        path='private-chat/:privateChatId'
-                                        element={<PrivateChatPage/>}
-                                    />
-                                </Route>
+                <Route element={<ProtectedRoute/>}>
+                    <Route
+                        path='app'
+                        element={<WithChannelsNavigation/>}
+                    >
+                        <Route element={<Loaded/>}>
+                            <Route element={<WithPrivateChatList/>}>
+                                <Route index element={<AppPage/>}/>
 
                                 <Route
-                                    path='channel/:channelId'
-                                    element={<WithRoomList/>}
-                                >
-                                    <Route
-                                        index
-                                        element={<NavigateToRoom/>}
-                                    />
-
-                                    <Route
-                                        path='room/:roomId'
-                                        element={<ChannelPage/>}
-                                    />
-                                </Route>
-
-                                <Route
-                                    path='*'
-                                    element={<Navigate to={'/app'} replace/>}
+                                    path='private-chat/:privateChatId'
+                                    element={<PrivateChatPage/>}
                                 />
                             </Route>
-                        </Route>
 
-                        <Route
-                            path='invitation/:invitationLink'
-                            element={<InvitationPage/>}
-                        />
+                            <Route
+                                path='channel/:channelId'
+                                element={<WithRoomList/>}
+                            >
+                                <Route
+                                    index
+                                    element={<NavigateToRoom/>}
+                                />
+
+                                <Route
+                                    path='room/:roomId'
+                                    element={<ChannelPage/>}
+                                />
+                            </Route>
+
+                            <Route
+                                path='*'
+                                element={<Navigate to={'/app'} replace/>}
+                            />
+                        </Route>
+                    </Route>
+                </Route>
+
+                <Route path='invitation/:invitationLink'>
+                    <Route element={<Loaded/>}>
+                        <Route element={<InvitationPage/>}/>
                     </Route>
                 </Route>
 

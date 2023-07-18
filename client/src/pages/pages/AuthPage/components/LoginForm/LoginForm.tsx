@@ -29,100 +29,98 @@ export const LoginForm: FC = () => {
             validationSchema={validationSchema}
             onSubmit={login}
         >
-            {() => (
-                <Form>
-                    <Heading className='text-heading-xl text-color-primary font-semibold mb-2 text-center'>
-                        <>С возвращением</>
-                    </Heading>
+            <Form>
+                <Heading className='text-heading-xl text-color-primary font-semibold mb-2 text-center'>
+                    <>С возвращением</>
+                </Heading>
 
-                    <div className='text-color-secondary mb-5 text-center'>
-                        <>Мы так рады видеть вас снова!</>
-                    </div>
+                <div className='text-color-secondary mb-5 text-center'>
+                    <>Мы так рады видеть вас снова!</>
+                </div>
 
-                    <FormikTextInput
-                        label='Логин'
-                        name='login'
-                        placeholder='myLogin'
-                        required
-                    >
-                        {(props) => (
-                            <div className='mb-5'>
-                                <FieldLabel htmlFor={props.id}>
-                                    {props.label}
+                <FormikTextInput
+                    label='Логин'
+                    name='login'
+                    placeholder='myLogin'
+                    required
+                >
+                    {(props) => (
+                        <div className='mb-5'>
+                            <FieldLabel htmlFor={props.id}>
+                                {props.label}
 
-                                    <RequiredWildcard/>
+                                <RequiredWildcard/>
 
-                                    <ErrorInLabel error={props.error}/>
-                                </FieldLabel>
+                                <ErrorInLabel error={props.error}/>
+                            </FieldLabel>
 
-                                <TextInput {...props}/>
-                            </div>
-                        )}
-                    </FormikTextInput>
+                            <TextInput {...props}/>
+                        </div>
+                    )}
+                </FormikTextInput>
 
-                    <PasswordTypeToggle>
-                        {({ toggleType, type }) => (
-                            <FormikTextInput
-                                label='Пароль'
-                                name='password'
-                                type={type}
-                                required
-                                placeholder='myPassword'
-                            >
-                                {(props) => (
-                                    <div className='mb-5'>
-                                        <FieldLabel htmlFor={props.id}>
-                                            {props.label}
+                <PasswordTypeToggle>
+                    {({ toggleType, type }) => (
+                        <FormikTextInput
+                            label='Пароль'
+                            name='password'
+                            type={type}
+                            required
+                            placeholder='myPassword'
+                        >
+                            {(props) => (
+                                <div className='mb-5'>
+                                    <FieldLabel htmlFor={props.id}>
+                                        {props.label}
 
-                                            <RequiredWildcard/>
+                                        <RequiredWildcard/>
 
-                                            <ErrorInLabel error={props.error}/>
-                                        </FieldLabel>
+                                        <ErrorInLabel error={props.error}/>
+                                    </FieldLabel>
 
-                                        <TextInputWrapper>
-                                            <TextInput {...props}/>
+                                    <TextInputWrapper>
+                                        <TextInput {...props}/>
 
-                                            <PasswordTypeToggleButton
-                                                type={type}
-                                                onToggle={toggleType}
-                                            />
-                                        </TextInputWrapper>
-                                    </div>
-                                )}
-                            </FormikTextInput>
-                        )}
-                    </PasswordTypeToggle>
+                                        <PasswordTypeToggleButton
+                                            type={type}
+                                            onToggle={toggleType}
+                                        />
+                                    </TextInputWrapper>
+                                </div>
+                            )}
+                        </FormikTextInput>
+                    )}
+                </PasswordTypeToggle>
 
-                    <FormError
-                        className='mb-2'
-                        error={helpers.error}
-                    />
+                <FormError
+                    className='mb-2'
+                    error={helpers.error}
+                />
+
+                <Button
+                    className='w-full h-11 mb-2'
+                    type='submit'
+                    stylingPreset='brand'
+                    isLoading={helpers.isLoading}
+                >
+                    <ContentWithLoading isLoading={helpers.isLoading}>
+                        <>Вход</>
+                    </ContentWithLoading>
+                </Button>
+
+                <div className='self-start flex items-center flex-wrap'>
+                    <span className='text-sm text-color-muted mr-1'>
+                        <>Нужна учётная запись?</>
+                    </span>
 
                     <Button
-                        className='w-full h-11 mb-2'
-                        type='submit'
-                        stylingPreset='brand'
-                        isLoading={helpers.isLoading}
+                        stylingPreset='link'
+                        onLeftClick={changeTab.registrationForm}
                     >
-                        <ContentWithLoading isLoading={helpers.isLoading}>
-                            <>Вход</>
-                        </ContentWithLoading>
+                        <>Зарегистрироваться</>
                     </Button>
-
-                    <div className='self-start flex items-center flex-wrap'>
-                        <span className='text-sm text-color-muted mr-1'>
-                            <>Нужна учётная запись?</>
-                        </span>
-
-                        <Button
-                            stylingPreset='link'
-                            onLeftClick={changeTab.registrationForm}
-                        >
-                            <>Зарегистрироваться</>
-                        </Button>
-                    </div>
-                </Form>
-            )}
+                </div>
+            </Form>
         </Formik>
     );
 };

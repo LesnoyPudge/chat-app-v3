@@ -16,17 +16,17 @@ type Sanitizers = Record<string, (value: any) => any>;
 const validators = {
     async _unoccupiedLogin(value: string) {
         const exists = await UserServiceHelpers.isUserExist({ login: value });
-        
+
         if (!exists) return Promise.resolve();
-        
+
         return Promise.reject('Указанный логин уже используется');
     },
 
     async _unoccupiedEmail(value: string) {
         const exists = await UserServiceHelpers.isUserExist({ email: value });
-        
+
         if (!exists) return Promise.resolve();
-        
+
         return Promise.reject('Указанный email уже используется');
     },
 
@@ -34,55 +34,55 @@ const validators = {
         const exists = await UserServiceHelpers.isUserExist({ login: value });
 
         if (exists) return Promise.resolve();
-        
+
         return Promise.reject('Неверный логин');
     },
 
     async _userExistsById(value: string) {
         const exists = await UserServiceHelpers.isUserExist({ id: value });
-        
+
         if (exists) return Promise.resolve();
-        
+
         return Promise.reject('Пользователь не найден');
     },
 
     async _privateChannelExistsById(value: string) {
         const exists = await PrivateChannelServiceHelpers.isExist({ id: value });
-        
+
         if (exists) return Promise.resolve();
-        
+
         return Promise.reject('Канал не найден');
     },
 
     async _fileExistsById(value: string) {
         const exists = await FileServiceHelpers.isExist({ id: value });
-        
+
         if (exists) return Promise.resolve();
-        
+
         return Promise.reject('Файл не найден');
     },
 
     async _validIdentifier(value: string) {
         const exists = await ChannelServiceHelpers.isExist({ invitations: value });
-        
+
         if (!exists) return Promise.resolve();
-        
+
         return Promise.reject('Идентификатор уже используется');
     },
 
     async _roomExistById(value: string) {
         const exists = await RoomServiceHelpers.isExist({ id: value });
-        
+
         if (exists) return Promise.resolve();
-        
+
         return Promise.reject('Комната не найдена');
     },
 
     async _channelExistById(value: string) {
         const exists = await ChannelServiceHelpers.isExist({ id: value });
-        
+
         if (exists) return Promise.resolve();
-        
+
         return Promise.reject('Канал не найдена');
     },
 
@@ -94,15 +94,15 @@ const validators = {
 
     async _roleExistById(value: string) {
         const exists = await RoleServiceHelpers.isExist({ id: value });
-        
+
         if (exists) return Promise.resolve();
-        
+
         return Promise.reject('Роль не найдена');
     },
 
     async _messageExistById(value: string) {
         const exists = await MessageServiceHelpers.isExist({ id: value });
-        
+
         if (exists) return Promise.resolve();
 
         return Promise.reject('Сообщение не найдено');
@@ -110,7 +110,7 @@ const validators = {
 
     async _chatExistById(value: string) {
         const exists = await ChatServiceHelpers.isExist({ id: value });
-        
+
         if (exists) return Promise.resolve();
 
         return Promise.reject('Чат не найден');

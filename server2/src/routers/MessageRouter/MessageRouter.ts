@@ -10,8 +10,8 @@ export const MessageRouter = Router();
 
 MessageRouter[Endpoints.V1.Message.Create.Method](
     Endpoints.V1.Message.Create.Path,
-    MessageValidator[Endpoints.V1.Message.Create.ActionName],
     authorizationMiddleware,
+    MessageValidator[Endpoints.V1.Message.Create.ActionName],
     errorCatcherMiddleware(
         MessageController[Endpoints.V1.Message.Create.ActionName],
     ),
@@ -19,8 +19,8 @@ MessageRouter[Endpoints.V1.Message.Create.Method](
 
 MessageRouter[Endpoints.V1.Message.Delete.Method](
     Endpoints.V1.Message.Delete.Path,
-    MessageValidator[Endpoints.V1.Message.Delete.ActionName],
     authorizationMiddleware,
+    MessageValidator[Endpoints.V1.Message.Delete.ActionName],
     errorCatcherMiddleware(
         MessageController[Endpoints.V1.Message.Delete.ActionName],
     ),
@@ -28,8 +28,8 @@ MessageRouter[Endpoints.V1.Message.Delete.Method](
 
 MessageRouter[Endpoints.V1.Message.DeleteAttachment.Method](
     Endpoints.V1.Message.DeleteAttachment.Path,
-    MessageValidator[Endpoints.V1.Message.DeleteAttachment.ActionName],
     authorizationMiddleware,
+    MessageValidator[Endpoints.V1.Message.DeleteAttachment.ActionName],
     errorCatcherMiddleware(
         MessageController[Endpoints.V1.Message.DeleteAttachment.ActionName],
     ),
@@ -37,8 +37,8 @@ MessageRouter[Endpoints.V1.Message.DeleteAttachment.Method](
 
 MessageRouter[Endpoints.V1.Message.GetOne.Method](
     Endpoints.V1.Message.GetOne.Path,
-    MessageValidator[Endpoints.V1.Message.GetOne.ActionName],
     authorizationMiddleware,
+    MessageValidator[Endpoints.V1.Message.GetOne.ActionName],
     errorCatcherMiddleware(
         MessageController[Endpoints.V1.Message.GetOne.ActionName],
     ),
@@ -46,8 +46,8 @@ MessageRouter[Endpoints.V1.Message.GetOne.Method](
 
 MessageRouter[Endpoints.V1.Message.Restore.Method](
     Endpoints.V1.Message.Restore.Path,
-    MessageValidator[Endpoints.V1.Message.Restore.ActionName],
     authorizationMiddleware,
+    MessageValidator[Endpoints.V1.Message.Restore.ActionName],
     errorCatcherMiddleware(
         MessageController[Endpoints.V1.Message.Restore.ActionName],
     ),
@@ -55,8 +55,8 @@ MessageRouter[Endpoints.V1.Message.Restore.Method](
 
 MessageRouter[Endpoints.V1.Message.Update.Method](
     Endpoints.V1.Message.Update.Path,
-    MessageValidator[Endpoints.V1.Message.Update.ActionName],
     authorizationMiddleware,
+    MessageValidator[Endpoints.V1.Message.Update.ActionName],
     errorCatcherMiddleware(
         MessageController[Endpoints.V1.Message.Update.ActionName],
     ),

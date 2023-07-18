@@ -4,6 +4,7 @@ import { Endpoints, Tokens, HTTP_STATUS_CODES } from '@shared';
 import { AuthorizedMiddleware, Middleware } from '@types';
 import ms from 'ms';
 import { ApiError } from '@errors';
+import { CookieOptions } from 'express';
 
 
 
@@ -88,51 +89,60 @@ const {
     ACCESS_TOKEN_DURATION,
 } = getEnv();
 
-const refreshTokenName: keyof Pick<Tokens, 'refreshToken'> = 'refreshToken';
-const accessTokenName: keyof Pick<Tokens, 'accessToken'> = 'accessToken';
-
-const secureCookiesOptions = {
-    access: () => {
-        return {
+const sendTokenData = {
+    access: (token) => ([
+        'accessToken',
+        token,
+        {
             maxAge: ms(ACCESS_TOKEN_DURATION),
             httpOnly: true,
             secure: CUSTOM_NODE_ENV === 'production',
-        };
-    },
-    refresh: () => ({
-        maxAge: ms(REFRESH_TOKEN_DURATION),
-        httpOnly: true,
-        secure: CUSTOM_NODE_ENV === 'production',
-        path: Endpoints.V1.User.Refresh.Path,
-    }),
-    resetRefresh: () => ({
-        httpOnly: true,
-        secure: CUSTOM_NODE_ENV === 'production',
-        path: Endpoints.V1.User.Refresh.Path,
-        expires: new Date(0),
-    }),
-};
+        },
+    ]),
+
+    refresh: (token) => ([
+        'refreshToken',
+        token,
+        {
+            maxAge: ms(REFRESH_TOKEN_DURATION),
+            httpOnly: true,
+            secure: CUSTOM_NODE_ENV === 'production',
+            path: Endpoints.V1.User.Refresh.Path,
+        },
+    ]),
+
+    resetRefresh: (token) => [
+        'refreshToken',
+        token,
+        {
+            httpOnly: true,
+            secure: CUSTOM_NODE_ENV === 'production',
+            path: Endpoints.V1.User.Refresh.Path,
+            expires: new Date(0),
+        },
+    ],
+} satisfies Record<string, (token: string) => [keyof Tokens, string, CookieOptions]>;
 
 export const UserController: UserController = {
     async registration(req, res) {
         const data = await UserService.registration(req.body);
 
-        res.cookie(refreshTokenName, data.refreshToken, secureCookiesOptions.refresh());
-        res.cookie(accessTokenName, data.accessToken, secureCookiesOptions.access());
+        res.cookie(...sendTokenData.refresh(data.refreshToken));
+        res.cookie(...sendTokenData.access(data.accessToken));
         res.json(data.user);
     },
 
     async login(req, res) {
         const data = await UserService.login(req.body);
 
-        res.cookie(refreshTokenName, data.refreshToken, secureCookiesOptions.refresh());
-        res.cookie(accessTokenName, data.accessToken, secureCookiesOptions.access());
+        res.cookie(...sendTokenData.refresh(data.refreshToken));
+        res.cookie(...sendTokenData.access(data.accessToken));
         res.json(data.user);
     },
 
     async logout(req, res) {
-        res.cookie(refreshTokenName, '', secureCookiesOptions.resetRefresh());
-        res.clearCookie(accessTokenName);
+        res.cookie(...sendTokenData.resetRefresh(''));
+        res.clearCookie(sendTokenData.access('')[0]);
         res.sendStatus(HTTP_STATUS_CODES.OK);
     },
 
@@ -142,7 +152,8 @@ export const UserController: UserController = {
 
         const data = await UserService.refresh({ refreshToken });
 
-        res.cookie(accessTokenName, data.accessToken, secureCookiesOptions.access());
+        res.cookie(...sendTokenData.refresh(refreshToken));
+        res.cookie(...sendTokenData.access(data.accessToken));
         res.json(data.user);
     },
 
@@ -163,6 +174,8 @@ export const UserController: UserController = {
 
     async delete(req, res) {
         await UserService.delete(req.auth);
+        res.cookie(...sendTokenData.resetRefresh(''));
+        res.clearCookie(sendTokenData.access('')[0]);
         res.sendStatus(HTTP_STATUS_CODES.OK);
     },
 

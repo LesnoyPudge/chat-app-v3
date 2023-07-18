@@ -48,7 +48,7 @@ export const MessageService: MessageService = {
                 if (attachments.length) {
                     await Promise.all(attachments.map(async(attachment) => {
                         const { id, name, type, size } = await FileServiceHelpers.create(attachment);
-                        
+
                         newMessage.attachments.push({
                             id,
                             name,
@@ -99,7 +99,7 @@ export const MessageService: MessageService = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedMessage = await MessageModel.findOneAndUpdate(
-                    { id: messageId }, 
+                    { id: messageId },
                     { isDeleted: true },
                     { new: true },
                 ).session(session).lean();
@@ -109,6 +109,8 @@ export const MessageService: MessageService = {
                 onCommit(() => {
                     MessageSubscription.update(updatedMessage);
                 });
+
+                return updatedMessage;
             },
         );
     },
@@ -117,7 +119,7 @@ export const MessageService: MessageService = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedMessage = await MessageModel.findOneAndUpdate(
-                    { id: messageId }, 
+                    { id: messageId },
                     { isDeleted: false },
                     { new: true },
                 ).session(session).lean();
@@ -138,15 +140,15 @@ export const MessageService: MessageService = {
             async({ session, onCommit }) => {
                 const updatedMessage = await MessageModel.findOneAndUpdate(
                     { id: messageId },
-                    { 
+                    {
                         $set: { isChanged: true, updatedAt: Date.now() },
-                        $pull: { attachments: fileId }, 
+                        $pull: { attachments: fileId },
                     },
                     { new: true },
                 ).session(session).lean();
 
                 if (!updatedMessage) throw ApiError.internal();
-                
+
                 onCommit(() => {
                     MessageSubscription.update(updatedMessage);
                 });

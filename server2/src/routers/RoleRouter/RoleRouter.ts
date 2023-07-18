@@ -10,8 +10,8 @@ export const RoleRouter = Router();
 
 RoleRouter[Endpoints.V1.Role.AddMember.Method](
     Endpoints.V1.Role.AddMember.Path,
-    RoleValidator[Endpoints.V1.Role.AddMember.ActionName],
     authorizationMiddleware,
+    RoleValidator[Endpoints.V1.Role.AddMember.ActionName],
     errorCatcherMiddleware(
         RoleController[Endpoints.V1.Role.AddMember.ActionName],
     ),
@@ -19,8 +19,8 @@ RoleRouter[Endpoints.V1.Role.AddMember.Method](
 
 RoleRouter[Endpoints.V1.Role.Create.Method](
     Endpoints.V1.Role.Create.Path,
-    RoleValidator[Endpoints.V1.Role.Create.ActionName],
     authorizationMiddleware,
+    RoleValidator[Endpoints.V1.Role.Create.ActionName],
     errorCatcherMiddleware(
         RoleController[Endpoints.V1.Role.Create.ActionName],
     ),
@@ -28,8 +28,8 @@ RoleRouter[Endpoints.V1.Role.Create.Method](
 
 RoleRouter[Endpoints.V1.Role.Delete.Method](
     Endpoints.V1.Role.Delete.Path,
-    RoleValidator[Endpoints.V1.Role.Delete.ActionName],
     authorizationMiddleware,
+    RoleValidator[Endpoints.V1.Role.Delete.ActionName],
     errorCatcherMiddleware(
         RoleController[Endpoints.V1.Role.Delete.ActionName],
     ),
@@ -37,8 +37,8 @@ RoleRouter[Endpoints.V1.Role.Delete.Method](
 
 RoleRouter[Endpoints.V1.Role.GetOne.Method](
     Endpoints.V1.Role.GetOne.Path,
-    RoleValidator[Endpoints.V1.Role.GetOne.ActionName],
     authorizationMiddleware,
+    RoleValidator[Endpoints.V1.Role.GetOne.ActionName],
     errorCatcherMiddleware(
         RoleController[Endpoints.V1.Role.GetOne.ActionName],
     ),
@@ -46,8 +46,8 @@ RoleRouter[Endpoints.V1.Role.GetOne.Method](
 
 RoleRouter[Endpoints.V1.Role.RemoveMember.Method](
     Endpoints.V1.Role.RemoveMember.Path,
-    RoleValidator[Endpoints.V1.Role.RemoveMember.ActionName],
     authorizationMiddleware,
+    RoleValidator[Endpoints.V1.Role.RemoveMember.ActionName],
     errorCatcherMiddleware(
         RoleController[Endpoints.V1.Role.RemoveMember.ActionName],
     ),
@@ -55,8 +55,8 @@ RoleRouter[Endpoints.V1.Role.RemoveMember.Method](
 
 RoleRouter[Endpoints.V1.Role.Update.Method](
     Endpoints.V1.Role.Update.Path,
-    RoleValidator[Endpoints.V1.Role.Update.ActionName],
     authorizationMiddleware,
+    RoleValidator[Endpoints.V1.Role.Update.ActionName],
     errorCatcherMiddleware(
         RoleController[Endpoints.V1.Role.Update.ActionName],
     ),

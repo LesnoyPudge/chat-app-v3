@@ -10,8 +10,8 @@ export const UserRouter = Router();
 
 UserRouter[Endpoints.V1.User.AcceptFriendRequest.Method](
     Endpoints.V1.User.AcceptFriendRequest.Path,
-    UserValidator[Endpoints.V1.User.AcceptFriendRequest.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.AcceptFriendRequest.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.AcceptFriendRequest.ActionName],
     ),
@@ -19,8 +19,8 @@ UserRouter[Endpoints.V1.User.AcceptFriendRequest.Method](
 
 UserRouter[Endpoints.V1.User.Block.Method](
     Endpoints.V1.User.Block.Path,
-    UserValidator[Endpoints.V1.User.Block.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.Block.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.Block.ActionName],
     ),
@@ -28,8 +28,8 @@ UserRouter[Endpoints.V1.User.Block.Method](
 
 UserRouter[Endpoints.V1.User.CredentialsUpdate.Method](
     Endpoints.V1.User.CredentialsUpdate.Path,
-    UserValidator[Endpoints.V1.User.CredentialsUpdate.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.CredentialsUpdate.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.CredentialsUpdate.ActionName],
     ),
@@ -37,8 +37,8 @@ UserRouter[Endpoints.V1.User.CredentialsUpdate.Method](
 
 UserRouter[Endpoints.V1.User.DeclineFriendRequest.Method](
     Endpoints.V1.User.DeclineFriendRequest.Path,
-    UserValidator[Endpoints.V1.User.DeclineFriendRequest.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.DeclineFriendRequest.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.DeclineFriendRequest.ActionName],
     ),
@@ -54,8 +54,8 @@ UserRouter[Endpoints.V1.User.Delete.Method](
 
 UserRouter[Endpoints.V1.User.DeleteFriend.Method](
     Endpoints.V1.User.DeleteFriend.Path,
-    UserValidator[Endpoints.V1.User.DeleteFriend.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.DeleteFriend.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.DeleteFriend.ActionName],
     ),
@@ -63,8 +63,8 @@ UserRouter[Endpoints.V1.User.DeleteFriend.Method](
 
 UserRouter[Endpoints.V1.User.GetOne.Method](
     Endpoints.V1.User.GetOne.Path,
-    UserValidator[Endpoints.V1.User.GetOne.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.GetOne.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.GetOne.ActionName],
     ),
@@ -72,8 +72,8 @@ UserRouter[Endpoints.V1.User.GetOne.Method](
 
 UserRouter[Endpoints.V1.User.HidePrivateChannel.Method](
     Endpoints.V1.User.HidePrivateChannel.Path,
-    UserValidator[Endpoints.V1.User.HidePrivateChannel.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.HidePrivateChannel.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.HidePrivateChannel.ActionName],
     ),
@@ -97,8 +97,8 @@ UserRouter[Endpoints.V1.User.Logout.Method](
 
 UserRouter[Endpoints.V1.User.ProfileUpdate.Method](
     Endpoints.V1.User.ProfileUpdate.Path,
-    UserValidator[Endpoints.V1.User.ProfileUpdate.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.ProfileUpdate.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.ProfileUpdate.ActionName],
     ),
@@ -129,8 +129,8 @@ UserRouter[Endpoints.V1.User.RequestAccessCode.Method](
 
 UserRouter[Endpoints.V1.User.RevokeFriendRequest.Method](
     Endpoints.V1.User.RevokeFriendRequest.Path,
-    UserValidator[Endpoints.V1.User.RevokeFriendRequest.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.RevokeFriendRequest.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.RevokeFriendRequest.ActionName],
     ),
@@ -138,8 +138,8 @@ UserRouter[Endpoints.V1.User.RevokeFriendRequest.Method](
 
 UserRouter[Endpoints.V1.User.SendFriendRequest.Method](
     Endpoints.V1.User.SendFriendRequest.Path,
-    UserValidator[Endpoints.V1.User.SendFriendRequest.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.SendFriendRequest.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.SendFriendRequest.ActionName],
     ),
@@ -147,8 +147,8 @@ UserRouter[Endpoints.V1.User.SendFriendRequest.Method](
 
 UserRouter[Endpoints.V1.User.Unblock.Method](
     Endpoints.V1.User.Unblock.Path,
-    UserValidator[Endpoints.V1.User.Unblock.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.Unblock.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.Unblock.ActionName],
     ),
@@ -156,8 +156,8 @@ UserRouter[Endpoints.V1.User.Unblock.Method](
 
 UserRouter[Endpoints.V1.User.VerifyAccessCode.Method](
     Endpoints.V1.User.VerifyAccessCode.Path,
-    UserValidator[Endpoints.V1.User.VerifyAccessCode.ActionName],
     authorizationMiddleware,
+    UserValidator[Endpoints.V1.User.VerifyAccessCode.ActionName],
     errorCatcherMiddleware(
         UserController[Endpoints.V1.User.VerifyAccessCode.ActionName],
     ),

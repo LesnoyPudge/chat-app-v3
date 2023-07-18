@@ -1,26 +1,46 @@
 import { Conditional } from '@components';
-import { PropsWithClassName } from '@types';
+import { SerializedError } from '@reduxjs/toolkit';
+import { CustomQueryError, PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
+import isObject from 'is-object';
 import { FC } from 'react';
 
 
 
 interface FormError extends PropsWithClassName {
-    error: any;
+    error?: CustomQueryError | SerializedError;
 }
+
+const isCustomQueryError = (
+    error: unknown,
+): error is CustomQueryError => {
+    return isObject(error) && 'status' in error;
+};
 
 const styles = {
     wrapper: 'bg-danger text-white font-semibold p-2 rounded-md',
 };
 
+const unexpected = 'Непредвиденная ошибка';
+
 export const FormError: FC<FormError> = ({
     className = '',
     error,
 }) => {
+    const errorText = (
+        error
+            ? isCustomQueryError(error)
+                ? typeof error.status === 'number'
+                    ? error.data.message
+                    : unexpected
+                : unexpected
+            : null
+    );
+
     return (
-        <Conditional isRendered={!!error}>
+        <Conditional isRendered={!!errorText}>
             <div className={twClassNames(styles.wrapper, className)}>
-                {error?.error}
+                {errorText}
             </div>
         </Conditional>
     );

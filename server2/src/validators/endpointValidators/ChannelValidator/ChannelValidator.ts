@@ -59,7 +59,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ))
                 .not()
                 .custom(customChains.inBanList(
-                    req.auth.id, 
+                    req.auth.id,
                     req.body.channelId,
                 ))
         ),
@@ -137,7 +137,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ]))
         ),
     }),
-    
+
     create: () => ({
         avatar: chainPresets.validEncodedImage('avatar'),
         identifier: (
@@ -156,7 +156,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 .notEmpty()
         ),
     }),
-    
+
     createInvitation: (req) => ({
         channelId: (
             body('channelId')
@@ -189,7 +189,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 .isInt({ min: Date.now() })
         ),
     }),
-    
+
     delete: (req) => ({
         channelId: (
             body('channelId')
@@ -203,7 +203,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     deleteInvitation: (req) => ({
         channelId: (
             body('channelId')
@@ -238,7 +238,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     getOne: (req) => ({
         channelId: (
             body('channelId')
@@ -252,7 +252,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     kick: (req) => ({
         targetId: (
             body('targetId')
@@ -307,7 +307,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ]))
         ),
     }),
-    
+
     leave: (req) => ({
         channelId: (
             body('channelId')
@@ -321,7 +321,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     unban: (req) => ({
         targetId: (
             body('targetId')
@@ -363,10 +363,10 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     update: (req) => ({
         avatar: chainPresets.validEncodedImage('avatar'),
-        
+
         name: (
             body('name')
                 .optional()
@@ -374,7 +374,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ._sanitize()
                 .notEmpty()
         ),
-        
+
         channelId: (
             body('channelId')
                 .exists()

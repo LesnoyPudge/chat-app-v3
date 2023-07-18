@@ -74,7 +74,7 @@ export module Endpoints {
 
                 export const ActionNameWithEntity = actionNameWithEntity(ENTITY_NAMES.USER, ActionName);
 
-                export const Method = METHOD.POST;
+                export const Method = METHOD.GET;
 
                 export type RequestBody = void;
 

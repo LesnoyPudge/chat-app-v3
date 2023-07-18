@@ -10,8 +10,8 @@ export const PrivateChannelRouter = Router();
 
 PrivateChannelRouter[Endpoints.V1.PrivateChannel.Create.Method](
     Endpoints.V1.PrivateChannel.Create.Path,
-    PrivateChannelValidator[Endpoints.V1.PrivateChannel.Create.ActionName],
     authorizationMiddleware,
+    PrivateChannelValidator[Endpoints.V1.PrivateChannel.Create.ActionName],
     errorCatcherMiddleware(
         PrivateChannelController[Endpoints.V1.PrivateChannel.Create.ActionName],
     ),
@@ -19,8 +19,8 @@ PrivateChannelRouter[Endpoints.V1.PrivateChannel.Create.Method](
 
 PrivateChannelRouter[Endpoints.V1.PrivateChannel.GetOne.Method](
     Endpoints.V1.PrivateChannel.GetOne.Path,
-    PrivateChannelValidator[Endpoints.V1.PrivateChannel.GetOne.ActionName],
     authorizationMiddleware,
+    PrivateChannelValidator[Endpoints.V1.PrivateChannel.GetOne.ActionName],
     errorCatcherMiddleware(
         PrivateChannelController[Endpoints.V1.PrivateChannel.GetOne.ActionName],
     ),

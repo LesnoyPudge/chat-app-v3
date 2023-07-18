@@ -2,6 +2,7 @@ import { ApiError } from '@errors';
 import { objectKeys } from '@shared';
 import { AuthorizedRequest, Middleware } from '@types';
 import { ValidationChain, validationResult } from 'express-validator';
+import { ContextBuilder } from 'express-validator/src/context-builder';
 import { ContextItem } from 'express-validator/src/context-items';
 import { Bail } from 'express-validator/src/context-items/bail';
 
@@ -16,11 +17,51 @@ type Schema<InitialSchema extends NestedObject> = {
     >
 };
 
+const addBailToStack = (builder: ContextBuilder) => {
+    const stack = (builder as unknown as {stack: ContextItem[]}).stack;
+    (builder as unknown as {stack: ContextItem[]}).stack = stack.map((item) => {
+        return [item, new Bail()];
+    }).flat();
+};
+
+const shareMessageInStack = (builder: ContextBuilder) => {
+    const stack = (builder as unknown as {stack: ContextItem[]}).stack;
+    const reversedStack = [...stack].reverse();
+    const lastValidator = reversedStack.find((item) => {
+        return 'validator' in item;
+    });
+
+    if (!lastValidator) return;
+
+    const lastMessage = (
+        'message' in lastValidator && typeof lastValidator.message === 'string'
+            ? lastValidator.message || ApiError.badRequest().message
+            : ApiError.badRequest().message
+    );
+
+    let currentMessage = lastMessage;
+
+    const newStack = reversedStack.map((item) => {
+        if (!('validator' in item)) return item;
+
+        if ('message' in item && typeof item.message === 'string') {
+            currentMessage = item.message;
+            return item;
+        }
+
+        (item as unknown as ContextItem & {message: string}).message = currentMessage;
+
+        return item;
+    }).reverse();
+
+    (builder as unknown as {stack: ContextItem[]}).stack = newStack;
+};
+
 export const createValidator = <InitialSchema extends NestedObject>(
     rawValidator: Schema<InitialSchema>,
 ) => {
     const result = {} as Record<
-        keyof InitialSchema, 
+        keyof InitialSchema,
         Middleware<InitialSchema[keyof InitialSchema]>
     >;
 
@@ -29,14 +70,13 @@ export const createValidator = <InitialSchema extends NestedObject>(
             const values = Object.values(rawValidator[key](req as AuthorizedRequest<InitialSchema[keyof InitialSchema]>)).flat();
 
             for (const chain of values) {
-                const modifiedChain = (chain.builder as unknown as {stack: ContextItem[]}).stack.map((item) => [item, new Bail()]).flat();
-
-                (chain.builder as unknown as {stack: ContextItem[]}).stack = modifiedChain;
+                addBailToStack(chain.builder);
+                shareMessageInStack(chain.builder);
 
                 chain.builder.setRequestBail();
-                
+
                 const result = await chain.run(req);
-                if (result.context.errors.length) break; 
+                if (result.context.errors.length) break;
             }
 
             const errors = validationResult(req).array();
@@ -44,16 +84,10 @@ export const createValidator = <InitialSchema extends NestedObject>(
 
             const firstError = errors[0];
 
-            let errorMessage: string;
+            let errorMessage: string | undefined = undefined;
 
-            switch (firstError.type) {
-            case 'field':
-                errorMessage = `There's an error with field ${firstError.path} in the request ${firstError.location}`;
-                break;
-            
-            default:
+            if (typeof firstError.msg === 'string') {
                 errorMessage = firstError.msg;
-                break;
             }
 
             const error = ApiError.badRequest(errorMessage);

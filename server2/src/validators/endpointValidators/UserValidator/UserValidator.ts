@@ -87,7 +87,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ._unoccupiedEmail()
         ),
     }),
-    
+
     acceptFriendRequest: (req) => ({
         targetId: (
             body('targetId')
@@ -101,7 +101,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     block: (req) => ({
         targetId: (
             body('targetId')
@@ -116,7 +116,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     credentialsUpdate: (req) => ({
         accessCode: (
             body('accessCode')
@@ -162,7 +162,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 .notEmpty()
         ),
     }),
-    
+
     declineFriendRequest: (req) => ({
         targetId: (
             body('targetId')
@@ -176,7 +176,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     deleteFriend: (req) => ({
         targetId: (
             body('targetId')
@@ -190,7 +190,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     getOne: () => ({
         targetId: (
             body('targetId')
@@ -201,7 +201,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ._userExistsById()
         ),
     }),
-    
+
     hidePrivateChannel: (req) => ({
         privateChannelId: (
             body('privateChannelId')
@@ -216,7 +216,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     login: (req) => ({
         login: (
             body('login')
@@ -225,6 +225,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ._sanitize()
                 .notEmpty()
                 ._correctLogin()
+                .withMessage('Неверный логин или пароль')
         ),
         password: (
             body('password')
@@ -236,6 +237,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                     req.body.password,
                     { login: req.body.login },
                 ))
+                .withMessage('Неверный логин или пароль')
         ),
     }),
 
@@ -256,7 +258,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 .if(body('settings').exists({ values: 'null' }))
                 .exists()
                 .isIn([12, 14, 16, 18, 20]),
-            
+
             body('settings.messageGroupSpacing')
                 .if(body('settings').exists({ values: 'null' }))
                 .exists()
@@ -270,7 +272,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 .notEmpty()
         ),
     }),
-    
+
     revokeFriendRequest: (req) => ({
         targetId: (
             body('targetId')
@@ -285,7 +287,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     sendFriendRequest: (req) => ({
         targetId: (
             body('targetId')
@@ -316,7 +318,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     unblock: (req) => ({
         targetId: (
             body('targetId')
@@ -331,7 +333,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ))
         ),
     }),
-    
+
     verifyAccessCode: () => ({
         accessCode: (
             body('accessCode')

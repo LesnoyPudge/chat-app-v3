@@ -10,8 +10,8 @@ export const RoomRouter = Router();
 
 RoomRouter[Endpoints.V1.Room.Create.Method](
     Endpoints.V1.Room.Create.Path,
-    RoomValidator[Endpoints.V1.Room.Create.ActionName],
     authorizationMiddleware,
+    RoomValidator[Endpoints.V1.Room.Create.ActionName],
     errorCatcherMiddleware(
         RoomController[Endpoints.V1.Room.Create.ActionName],
     ),
@@ -19,8 +19,8 @@ RoomRouter[Endpoints.V1.Room.Create.Method](
 
 RoomRouter[Endpoints.V1.Room.Delete.Method](
     Endpoints.V1.Room.Delete.Path,
-    RoomValidator[Endpoints.V1.Room.Delete.ActionName],
     authorizationMiddleware,
+    RoomValidator[Endpoints.V1.Room.Delete.ActionName],
     errorCatcherMiddleware(
         RoomController[Endpoints.V1.Room.Delete.ActionName],
     ),
@@ -28,8 +28,8 @@ RoomRouter[Endpoints.V1.Room.Delete.Method](
 
 RoomRouter[Endpoints.V1.Room.GetOne.Method](
     Endpoints.V1.Room.GetOne.Path,
-    RoomValidator[Endpoints.V1.Room.GetOne.ActionName],
     authorizationMiddleware,
+    RoomValidator[Endpoints.V1.Room.GetOne.ActionName],
     errorCatcherMiddleware(
         RoomController[Endpoints.V1.Room.GetOne.ActionName],
     ),
@@ -37,8 +37,8 @@ RoomRouter[Endpoints.V1.Room.GetOne.Method](
 
 RoomRouter[Endpoints.V1.Room.Update.Method](
     Endpoints.V1.Room.Update.Path,
-    RoomValidator[Endpoints.V1.Room.Update.ActionName],
     authorizationMiddleware,
+    RoomValidator[Endpoints.V1.Room.Update.ActionName],
     errorCatcherMiddleware(
         RoomController[Endpoints.V1.Room.Update.ActionName],
     ),

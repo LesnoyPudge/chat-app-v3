@@ -9,9 +9,10 @@ export const ChatApi = rootApi.injectEndpoints({
             Endpoints.V1.Chat.GetOne.Response,
             Endpoints.V1.Chat.GetOne.RequestBody
         >({
-            query: () => ({
+            query: (body) => ({
                 url: Endpoints.V1.Chat.GetOne.Path,
                 method: Endpoints.V1.Chat.GetOne.Method,
+                body,
             }),
         }),
     }),

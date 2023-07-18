@@ -10,8 +10,8 @@ export const ChatRouter = Router();
 
 ChatRouter[Endpoints.V1.Chat.GetOne.Method](
     Endpoints.V1.Chat.GetOne.Path,
-    ChatValidator[Endpoints.V1.Chat.GetOne.ActionName],
     authorizationMiddleware,
+    ChatValidator[Endpoints.V1.Chat.GetOne.ActionName],
     errorCatcherMiddleware(
         ChatController[Endpoints.V1.Chat.GetOne.ActionName],
     ),
