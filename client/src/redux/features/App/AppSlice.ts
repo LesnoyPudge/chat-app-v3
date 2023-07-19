@@ -3,20 +3,23 @@ import { Endpoints, Entities, Id, Timestamp } from '@shared';
 import { UserApi, UserSelectors } from '@redux/features';
 import { localStorageApi } from '@utils';
 import { RootState } from '@redux/store';
-import { globalReset } from '@redux/globalReset';
+import { globalReset, triggerGlobalReset } from '@redux/globalReset';
+
 
 
 
 type AppState = {
     isInitialized: boolean;
-    myid: Id | null;
+    isRefreshing: boolean;
+    myId: Id | null;
     lastRefresh: Timestamp | null;
 };
 
 const getInitialState = (): AppState => {
     return {
         isInitialized: false,
-        myid: null,
+        isRefreshing: false,
+        myId: null,
         lastRefresh: localStorageApi.get('lastRefresh'),
     };
 };
@@ -25,23 +28,21 @@ export const AppSlice = createSlice({
     name: 'App',
     initialState: getInitialState(),
     reducers: {
-        triggerGlobalReset: () => {
-            // store => globalReset
-        },
-
         refreshAuth: (state, { payload }: PayloadAction<Entities.User.WithoutCredentials>) => {
-            state.myid = payload.id;
+            state.isRefreshing = false;
+            state.myId = payload.id;
             state.lastRefresh = Date.now();
             localStorageApi.set('lastRefresh', state.lastRefresh);
         },
     },
     extraReducers(builder) {
-        builder.addCase(globalReset, (state) => {
+        builder.addCase(globalReset, () => {
             localStorageApi.set('lastRefresh', null);
-            Object.assign(state, {
+
+            return {
                 ...getInitialState(),
                 isInitialized: true,
-            });
+            };
         });
 
         builder.addMatcher(
@@ -61,8 +62,8 @@ export const AppSlice = createSlice({
         builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchPending,
             (state) => {
-                if (state.isInitialized) return;
                 state.isInitialized = true;
+                state.isRefreshing = true;
             },
         );
 
@@ -76,21 +77,21 @@ export const AppSlice = createSlice({
         builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchRejected,
             () => {
-                AppSlice.caseReducers.triggerGlobalReset();
+                triggerGlobalReset();
             },
         );
 
         builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Logout.ActionNameWithEntity].matchPending,
             () => {
-                AppSlice.caseReducers.triggerGlobalReset();
+                triggerGlobalReset();
             },
         );
 
         builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Delete.ActionNameWithEntity].matchFulfilled,
             () => {
-                AppSlice.caseReducers.triggerGlobalReset();
+                triggerGlobalReset();
             },
         );
     },
@@ -98,9 +99,9 @@ export const AppSlice = createSlice({
 
 const selectAppState = (state: RootState) => state.app;
 
-const selectIsAuthorized = createSelector([selectAppState], (state) => !!state.myid);
+const selectIsAuthorized = createSelector([selectAppState], (state) => !!state.myId);
 
-const selectMyId = createSelector([selectAppState], (state) => state.myid);
+const selectMyId = createSelector([selectAppState], (state) => state.myId);
 
 const selectMe = createSelector(
     [UserSelectors.selectUserState, selectMyId],
@@ -114,10 +115,15 @@ const selectMe = createSelector(
     },
 );
 
+const selectIsInitialized = createSelector([selectAppState], (state) => state.isInitialized);
+
+const selectIsRefreshing = createSelector([selectAppState], (state) => state.isRefreshing);
 
 export const AppSelectors = {
     selectAppState,
     selectIsAuthorized,
     selectMyId,
     selectMe,
+    selectIsInitialized,
+    selectIsRefreshing,
 };

@@ -42,10 +42,12 @@
     "dependencies": {
         "@reach/observe-rect": "^1.2.0",
         "@types/is-callable": "^1.1.0",
+        "@types/js-cookie": "^3.0.3",
         "concurrently": "^7.6.0",
         "cross-env": "^7.0.3",
         "is-callable": "^1.2.7",
         "is-odd": "^3.0.1",
+        "js-cookie": "^3.0.5",
         "json-schema-to-typescript": "^13.0.2"
     },
     "devDependencies": {

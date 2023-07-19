@@ -1,25 +1,45 @@
 import { Conditional } from '@components';
 import { useNavigator } from '@hooks';
-import { AppSelectors } from '@redux/features';
+import { AppSelectors, UserApi } from '@redux/features';
 import { useAppSelector } from '@redux/hooks';
 import { FC, PropsWithChildren, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 
 
 export const OnlyUnauthorizedRoute: FC<PropsWithChildren> = () => {
     const isAuthorized = useAppSelector(AppSelectors.selectIsAuthorized);
-    const navigator = useNavigator();
-    const navigate = useNavigate();
+    const isInitialized = useAppSelector(AppSelectors.selectIsInitialized);
+    const isRefreshing = useAppSelector(AppSelectors.selectIsRefreshing);
+    const { navigate, stateRef } = useNavigator();
+    const [refresh] = UserApi.useUserRefreshMutation();
+
+    const showOutlet = (
+        isInitialized &&
+        !isRefreshing &&
+        !isAuthorized
+    );
+
+    const navigateOutside = (
+        isInitialized &&
+        !isRefreshing &&
+        isAuthorized
+    );
 
     useEffect(() => {
-        if (!isAuthorized) return;
+        if (isInitialized) return;
 
-        navigate(navigator.stateRef.current.from, { replace: true });
-    }, [isAuthorized, navigate, navigator]);
+        refresh();
+    }, [isInitialized, refresh]);
+
+    useEffect(() => {
+        if (!navigateOutside) return;
+
+        navigate(stateRef.current.from, { replace: true });
+    }, [navigateOutside, navigate, stateRef]);
 
     return (
-        <Conditional isRendered={!isAuthorized}>
+        <Conditional isRendered={showOutlet}>
             <Outlet/>
         </Conditional>
     );

@@ -6,7 +6,7 @@ import { Conditional } from '@components';
 
 
 interface ErrorInLabel extends PropsWithClassName {
-    error?: string;
+    error: string | undefined;
 }
 
 const styles = {

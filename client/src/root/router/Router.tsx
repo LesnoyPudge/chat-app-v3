@@ -75,7 +75,7 @@ export const Router: FC = () => {
                     </Route>
                 </Route>
 
-                {/* <Route path='account-activation/:activationLink' element={<>activation page</>}/> */}
+                <Route path='account-activation/:activationLink' element={<>activation page</>}/>
 
                 <Route path='*' element={<Navigate to={'/app'} replace/>}/>
             </Routes>

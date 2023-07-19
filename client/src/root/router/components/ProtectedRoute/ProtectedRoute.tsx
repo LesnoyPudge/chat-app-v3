@@ -9,14 +9,28 @@ import { Outlet } from 'react-router-dom';
 
 export const ProtectedRoute: FC<PropsWithChildren> = () => {
     const isAuthorized = useAppSelector(AppSelectors.selectIsAuthorized);
-    const navigator = useNavigator();
-    const { isLoading } = UserApi.useUserRefreshQuery();
+    const isInitialized = useAppSelector(AppSelectors.selectIsInitialized);
+    const isRefreshing = useAppSelector(AppSelectors.selectIsRefreshing);
+    const { navigateTo } = useNavigator();
+    const [refresh] = UserApi.useUserRefreshMutation();
+
+    const shouldNavigateToAuth = (
+        isInitialized &&
+        !isRefreshing &&
+        !isAuthorized
+    );
 
     useEffect(() => {
-        if (isLoading || isAuthorized) return;
+        if (isInitialized) return;
 
-        navigator.navigateTo.auth({ replace: true, withState: true });
-    }, [isAuthorized, navigator, isLoading]);
+        refresh();
+    }, [isInitialized, refresh]);
+
+    useEffect(() => {
+        if (!shouldNavigateToAuth) return;
+
+        navigateTo.auth({ replace: true, withState: true });
+    }, [navigateTo, shouldNavigateToAuth]);
 
     return (
         <Conditional isRendered={isAuthorized}>

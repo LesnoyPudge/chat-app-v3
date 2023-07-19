@@ -44,6 +44,7 @@
             "@typeGuards": ["src/typeGuards"],
             "@shared": ["../shared"],
             "@generated": ["src/generated"],
+            "@vars": ["src/vars"],
         },
     },
     "include": [

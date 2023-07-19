@@ -25,16 +25,16 @@ export const Loader: FC<PropsWithChildren> = ({ children }) => {
                     <div className='grid place-items-center w-full h-full bg-primary-300 pointer-events-auto'>
                         <div className='h-full flex flex-col text-center'>
                             <div className='mt-auto'>
-                                <p>Loading...</p>
+                                <>Загрузка</>
                             </div>
 
-                            <div className='mt-auto grid mb-8'>
-                                <p>Проблемы с подключением? Сообщите нам! </p>
+                            <div className='mt-auto mb-8'>
+                                <>Проблемы с подключением? Сообщите нам!</>
                             </div>
                         </div>
                     </div>
                 </OverlayPortal>
             </Conditional>
-        </LoadingContext.Provider> 
+        </LoadingContext.Provider>
     );
 };

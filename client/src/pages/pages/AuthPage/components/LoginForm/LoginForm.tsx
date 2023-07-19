@@ -6,6 +6,7 @@ import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
 import { Endpoints } from '@shared';
 import { yup } from '@reExport';
+import { VALIDATION_MESSAGES } from '@vars';
 
 
 
@@ -15,8 +16,8 @@ const initialValues: Endpoints.V1.User.Login.RequestBody = {
 };
 
 const validationSchema: yup.ObjectSchema<typeof initialValues> = yup.object({
-    login: yup.string().trim().required('Логин не указан'),
-    password: yup.string().trim().required('Пароль не указан'),
+    login: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
+    password: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
 });
 
 export const LoginForm: FC = () => {

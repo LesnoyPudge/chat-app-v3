@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { NavigateOptions, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLatest } from '@hooks';
 
@@ -24,11 +24,18 @@ const paths = {
 };
 
 export const useNavigator = () => {
-    const navigate = useNavigate();
+    const navigateInner = useNavigate();
     const params = useParams() as Params;
     const { pathname } = useLocation();
     const latestPathRef = useLatest(pathname);
     const stateRef = useRef({ from: '/app' });
+    const latestNavigate = useLatest(navigateInner);
+
+    const navigate = useCallback((to: string, options?: NavigateOptions) => {
+        console.log(`Navigate to: ${to}`);
+
+        latestNavigate.current(to, options);
+    }, [latestNavigate]);
 
     const myLocationIsRef = useRef({
         auth: () => latestPathRef.current === paths.auth(),
@@ -98,5 +105,6 @@ export const useNavigator = () => {
         navigateTo: navigateToRef.current,
         params,
         stateRef,
+        navigate,
     };
 };

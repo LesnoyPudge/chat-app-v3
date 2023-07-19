@@ -27,3 +27,4 @@ export * from './noop';
 export * from './observers';
 export * from './chatMock';
 export * from './objectKeysToIdArray';
+export * from './cookies';

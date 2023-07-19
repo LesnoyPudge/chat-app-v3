@@ -11,7 +11,7 @@ type EventMaps = HTMLElementEventMap | DocumentEventMap | WindowEventMap;
 export const useEventListener = <T extends keyof EventMaps>(
     event: T,
     providedListener: (e: EventMaps[T]) => void,
-    providedElement?: ProvidedElement,
+    providedElement: ProvidedElement,
 ) => {
     const [element, setElement] = useProvidedValue(providedElement);
     const savedListener = useLatest(providedListener);

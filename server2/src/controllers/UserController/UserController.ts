@@ -95,7 +95,7 @@ const sendTokenData = {
         token,
         {
             maxAge: ms(ACCESS_TOKEN_DURATION),
-            httpOnly: true,
+            httpOnly: false,
             secure: CUSTOM_NODE_ENV === 'production',
         },
     ]),
@@ -105,7 +105,7 @@ const sendTokenData = {
         token,
         {
             maxAge: ms(REFRESH_TOKEN_DURATION),
-            httpOnly: true,
+            httpOnly: false,
             secure: CUSTOM_NODE_ENV === 'production',
             path: Endpoints.V1.User.Refresh.Path,
         },
@@ -115,7 +115,7 @@ const sendTokenData = {
         'refreshToken',
         token,
         {
-            httpOnly: true,
+            httpOnly: false,
             secure: CUSTOM_NODE_ENV === 'production',
             path: Endpoints.V1.User.Refresh.Path,
             expires: new Date(0),

@@ -14,7 +14,7 @@ const styles = {
 };
 
 const DURATION = 125;
-    
+
 const getOptions = (show: boolean) => {
     return getTransitionOptions.inOut({
         delay: show ? DURATION : 0,
@@ -48,16 +48,16 @@ export const Inner: FC = () => {
 
     return (
         <>
-            <AnimatedTransition 
-                isExist={showLoginForm} 
+            <AnimatedTransition
+                isExist={showLoginForm}
                 transitionOptions={getOptions(showLoginForm)}
             >
                 {({ isAnimatedExist, style }) => (
                     <Conditional isRendered={isAnimatedExist}>
                         <MoveFocusInside>
                             <div className={styles.wrapper}>
-                                <animated.div 
-                                    className={styles.item} 
+                                <animated.div
+                                    className={styles.item}
                                     style={getStyle(style, showLoginForm)}
                                 >
                                     {tabs.loginForm.tab}
@@ -68,16 +68,16 @@ export const Inner: FC = () => {
                 )}
             </AnimatedTransition>
 
-            <AnimatedTransition 
-                isExist={showRegistrationForm} 
+            <AnimatedTransition
+                isExist={showRegistrationForm}
                 transitionOptions={getOptions(showRegistrationForm)}
             >
                 {({ isAnimatedExist, style }) => (
                     <Conditional isRendered={isAnimatedExist}>
                         <MoveFocusInside>
                             <div className={styles.wrapper}>
-                                <animated.div 
-                                    className={styles.item} 
+                                <animated.div
+                                    className={styles.item}
                                     style={getStyle(style, showRegistrationForm)}
                                 >
                                     {tabs.registrationForm.tab}

@@ -1142,7 +1142,14 @@ const PlaygroundInner21: FC = () => {
 };
 
 const PlaygroundInner22: FC = () => {
-    ChannelApi.useChannelGetOneQuery({ channelId: 'qwe' });
+    const [refresh] = UserApi.useUserRefreshMutation();
+    const qwe = useAppSelector(AppSelectors.selectAppState);
+
+    useEffect(() => {
+        if (qwe.isInitialized) return;
+        console.log('refresh');
+        refresh();
+    }, [refresh, qwe]);
 
     return (
         <>

@@ -65,7 +65,7 @@ export const UserApi = rootApi.injectEndpoints({
                 body,
             }),
         }),
-        [Endpoints.V1.User.GetOne.ActionNameWithEntity]: build.query<
+        [Endpoints.V1.User.GetOne.ActionNameWithEntity]: build.mutation<
             Endpoints.V1.User.GetOne.Response,
             Endpoints.V1.User.GetOne.RequestBody
         >({
@@ -115,7 +115,7 @@ export const UserApi = rootApi.injectEndpoints({
                 body,
             }),
         }),
-        [Endpoints.V1.User.Refresh.ActionNameWithEntity]: build.query<
+        [Endpoints.V1.User.Refresh.ActionNameWithEntity]: build.mutation<
             Endpoints.V1.User.Refresh.Response,
             Endpoints.V1.User.Refresh.RequestBody
         >({

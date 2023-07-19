@@ -57,25 +57,26 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
     registration: () => ({
         login: (
             body('login')
-                .exists()
-                .isString()
-                ._sanitize()
-                .notEmpty()
-                ._unoccupiedLogin()
+        // .exists()
+        // .isString()
+        // ._sanitize()
+        // .notEmpty()
+        // ._unoccupiedLogin()
+        // .withMessage('Логин уже используется')
         ),
         password: (
             body('password')
-                .exists()
-                .isString()
-                ._sanitize()
-                .notEmpty()
+        // .exists()
+        // .isString()
+        // ._sanitize()
+        // .notEmpty()
         ),
         username: (
             body('username')
-                .exists()
-                .isString()
-                ._sanitize()
-                .notEmpty()
+        // .exists()
+        // .isString()
+        // ._sanitize()
+        // .notEmpty()
         ),
         email: (
             body('email')
@@ -84,7 +85,9 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
                 ._sanitize()
                 .notEmpty()
                 .isEmail()
+
                 ._unoccupiedEmail()
+                .withMessage('Email уже используется')
         ),
     }),
 

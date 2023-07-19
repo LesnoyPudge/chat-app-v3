@@ -40,6 +40,6 @@ export const useOutline = () => {
         // outline.remove();
     };
 
-    useEventListener('focusin', onFocusIn);
-    useEventListener('focusout', onFocusOut);
+    useEventListener('focusin', onFocusIn, document);
+    useEventListener('focusout', onFocusOut, document);
 };

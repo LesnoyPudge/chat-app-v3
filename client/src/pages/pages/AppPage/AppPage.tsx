@@ -21,11 +21,11 @@ const styles = {
 
 export const AppPage: FC = () => {
     const { value, handleChange, handleReset } = useTextInput();
-    
+
     return (
         <TabContextProvider tabs={tabs}>
             <Navigation/>
-            
+
             <div className={styles.wrapper + ''}>
                 <SearchBar
                     className={styles.searchBar}
@@ -38,7 +38,7 @@ export const AppPage: FC = () => {
 
                 <Content value={value}/>
             </div>
-            
+
         </TabContextProvider>
     );
 };

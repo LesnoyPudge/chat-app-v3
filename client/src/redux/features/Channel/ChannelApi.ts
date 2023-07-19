@@ -65,7 +65,7 @@ export const ChannelApi = rootApi.injectEndpoints({
                 body,
             }),
         }),
-        [Endpoints.V1.Channel.GetOne.ActionNameWithEntity]: build.query<
+        [Endpoints.V1.Channel.GetOne.ActionNameWithEntity]: build.mutation<
             Endpoints.V1.Channel.GetOne.Response,
             Endpoints.V1.Channel.GetOne.RequestBody
         >({
