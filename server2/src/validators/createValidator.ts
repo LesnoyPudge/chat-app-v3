@@ -32,27 +32,25 @@ const shareMessageInStack = (builder: ContextBuilder) => {
     });
 
     if (!lastValidator) return;
-    console.log('--------------------------------------');
+
+    const incorrectValueMessage = 'Указано некорректное значение';
+
     const lastMessage = (
         'message' in lastValidator && typeof lastValidator.message === 'string'
-            ? lastValidator.message || ApiError.badRequest().message
-            : ApiError.badRequest().message
+            ? lastValidator.message || incorrectValueMessage
+            : incorrectValueMessage
     );
 
     let currentMessage = lastMessage;
-    console.log('last', currentMessage);
-    console.log(stack);
+
     const newStack = reversedStack.map((item) => {
         if (!('validator' in item)) return item;
-        // console.log(item);
         if ('message' in item && typeof item.message === 'string') {
-
-            currentMessage = item.message || ApiError.badRequest().message;
-            console.log(currentMessage);
-            return item;
+            currentMessage = item.message || incorrectValueMessage;
         }
-        // console.log(item);
+
         (item as unknown as ContextItem & {message: string}).message = currentMessage;
+
         return item;
     }).reverse();
 
