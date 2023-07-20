@@ -52,7 +52,19 @@ const queryWithReAuth = async(...args: Parameters<typeof baseQuery>) => {
     return result;
 };
 
+const queryWithDelay = async(...args: Parameters<typeof baseQuery>) => {
+    const result = await queryWithRetry(...args);
+
+    await new Promise<void>((resolve) => {
+        setTimeout(() => {
+            resolve();
+        }, 300);
+    });
+
+    return result;
+};
+
 export const rootApi = createApi({
-    baseQuery: queryWithReAuth,
+    baseQuery: getEnv().CUSTOM_NODE_ENV === 'production' ? queryWithReAuth : queryWithDelay,
     endpoints: () => ({}),
 });

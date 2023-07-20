@@ -55,18 +55,19 @@ export const OverlayItem: FC<OverlayItem> = ({
     return (
         <Conditional isRendered={isRendered}>
             <OverlayPortal>
-                <div 
+                <div
                     className='overlay-item-wrapper'
                     data-blocking={blocking && isOverlayExist}
                     ref={wrapperRef}
                 >
-                    <ReactFocusLock 
+                    <ReactFocusLock
                         returnFocus
+                        autoFocus={focused}
                         disabled={!isOverlayExist || !focused}
                     >
-                        <FocusHolder>
-                            {children}
-                        </FocusHolder>
+                        {/* <FocusHolder> */}
+                        {children}
+                        {/* </FocusHolder> */}
                     </ReactFocusLock>
                 </div>
             </OverlayPortal>

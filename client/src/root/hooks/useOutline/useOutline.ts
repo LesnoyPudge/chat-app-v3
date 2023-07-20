@@ -6,15 +6,15 @@ import { useEffect } from 'react';
 
 const outline = document.createElement('div');
 const modalRoot = getHTML().overlay;
-modalRoot.append(outline);
+// modalRoot.append(outline);
 
 export const useOutline = () => {
     const onFocusIn = (e: FocusEvent) => {
         // return;
         // (e.target as HTMLElement).getBoundingClientRect()
-        return;
-        // console.log(e, e.target);
         // return;
+        // console.log(e, e.target);
+        return;
         const target = e.target as HTMLElement;
         const targetRect = target.getBoundingClientRect();
         const targetStyle = window.getComputedStyle(target);
@@ -36,8 +36,8 @@ export const useOutline = () => {
     const onFocusOut = () => {
         return;
         console.log('focus out');
-        outline.className = '';
-        // outline.remove();
+        // outline.className = '';
+        outline.remove();
     };
 
     useEventListener('focusin', onFocusIn, document);

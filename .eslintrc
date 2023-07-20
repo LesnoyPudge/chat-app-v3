@@ -38,8 +38,9 @@
         ],
         "linebreak-style": 0,
         "quotes": [
-            "warn",
-            "single"
+            "warn", 
+            "single", 
+            // { "allowTemplateLiterals": true }
         ],
         "semi": [
             "warn",

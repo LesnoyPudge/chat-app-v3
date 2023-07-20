@@ -616,6 +616,7 @@ import { IMAGES } from '@generated';
 import { AppSelectors, AppSlice, ChannelApi, UserApi } from '@redux/features';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { store } from '@redux/store';
+import { Key } from 'ts-key-enum';
 
 
 
@@ -1164,6 +1165,118 @@ const PlaygroundInner22: FC = () => {
     );
 };
 
+
+type UseFocusVisibleArgs = {
+    providedElement: RefObject<HTMLElement> | HTMLElement | null;
+}
+
+// const arrowKeys = [Key.ArrowDown, Key.ArrowLeft, Key.ArrowRight, Key.ArrowUp];
+
+// const keyboardInteractionTimeoutDuration = 50;
+
+// const outline = document.createElement('div');
+// const devRoot = getHTML().dev;
+// devRoot.append(outline);
+
+// const useFocusVisible = () => {
+//     const isInKeyboardInteractionModeRef = useRef(false);
+//     const keyboardInteractionTimeoutRef = useRef(0);
+
+//     const isValidTarget = (target: EventTarget | null): target is HTMLElement => {
+//         if (!target) return false;
+//         if (!(target instanceof HTMLElement)) return false;
+//         if (target.hasAttribute('data-focus-guard')) return false;
+
+//         return true;
+//     };
+
+//     const handleKeydown = (e: KeyboardEvent) => {
+//         if (e.metaKey || e.altKey || e.ctrlKey) {
+//             return;
+//         }
+
+//         const isTabForward = (e.key === Key.Tab) && !e.shiftKey;
+//         const isTabBackward = (e.key === Key.Tab) && e.shiftKey;
+//         const isArrowKey = arrowKeys.includes(e.key);
+
+//         if (!isTabBackward && !isTabForward && !isArrowKey) return;
+
+//         // console.log(e.key, e.shiftKey);
+
+//         clearTimeout(keyboardInteractionTimeoutRef.current);
+
+//         isInKeyboardInteractionModeRef.current = true;
+
+//         keyboardInteractionTimeoutRef.current = setTimeout(() => {
+//             isInKeyboardInteractionModeRef.current = false;
+//         }, keyboardInteractionTimeoutDuration);
+//     };
+
+//     const handleFocus = (e: FocusEvent) => {
+//         if (!isInKeyboardInteractionModeRef.current) return;
+
+//         const target = e.target;
+//         if (!isValidTarget(target)) return;
+
+//         console.log('focus', target);
+//         console.log(outline);
+//         const targetRect = target.getBoundingClientRect();
+//         const targetStyle = window.getComputedStyle(target);
+
+//         outline.style.width = targetRect.width + 'px';
+//         outline.style.height = targetRect.height + 'px';
+//         // outline.style.outlineWidth = '4px';
+//         // outline.style.outlineColor = '#00aff4';
+//         // outline.style.outlineStyle = 'solid';
+//         outline.className = 'focused';
+//         outline.style.borderRadius = targetStyle.borderRadius;
+//         outline.style.position = 'fixed';
+//         outline.style.top = Math.max(targetRect.top, 4) + 'px';
+//         outline.style.left = Math.max(targetRect.left, 4) + 'px';
+
+//     };
+
+//     const handleBlur = (e: FocusEvent) => {
+//         // if (!isInKeyboardInteractionModeRef.current) return;
+
+//         const target = e.target;
+//         if (!isValidTarget(target)) return;
+
+//         console.log('blur', target);
+//         outline.className = '';
+//     };
+
+//     useEventListener('keydown', handleKeydown, document);
+//     useEventListener('focusin', handleFocus, document);
+//     useEventListener('focusout', handleBlur, document);
+
+//     useEffect(() => {
+//         return () => {
+//             clearTimeout(keyboardInteractionTimeoutRef.current);
+//         };
+//     }, []);
+
+//     // return setElement;
+// };
+
+const PlaygroundInner23: FC = () => {
+    // useFocusVisible();
+
+    return (
+        <div className='flex flex-col gap-8 p-8 items-start [&>*]:bg-rose-800 [&>*]:text-white'>
+            <button>
+                <>qwe</>
+            </button>
+
+            <button>
+                <>zxc</>
+            </button>
+
+            <input type='text'/>
+        </div>
+    );
+};
+
 const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
@@ -1196,7 +1309,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                     {/* <PlaygroundInner19/> */}
                     {/* <PlaygroundInner20/> */}
                     {/* <PlaygroundInner21/> */}
-                    <PlaygroundInner22/>
+                    {/* <PlaygroundInner22/> */}
+                    <PlaygroundInner23/>
                 </ReactFocusLock>
             </Conditional>
         </>

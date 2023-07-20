@@ -33,16 +33,16 @@ export const ModalWindow: FC<ModalWindow> = ({
     const overlayValues = useContext(OverlayContext) as OverlayContext;
     const { closeOverlay, isOverlayExist } = overlayValues;
 
-    const withPointerEvents = isOverlayExist && !noPointerEvents;
+    // const withPointerEvents = isOverlayExist && !noPointerEvents;
     const pointerClass = noPointerEvents ? 'pointer-events-none' : 'pointer-events-auto';
 
     return (
-        <AnimatedTransition 
+        <AnimatedTransition
             isExist={isOverlayExist}
             transitionOptions={transitionOptions}
         >
             {({ style, isAnimatedExist }) => (
-                <OverlayItem 
+                <OverlayItem
                     isRendered={isAnimatedExist}
                     blockable
                     blocking
@@ -50,7 +50,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                     closeOnClickOutside
                     focused
                 >
-                    <animated.div 
+                    <animated.div
                         className={styles.wrapper}
                         style={style}
                         role='dialog'
@@ -66,7 +66,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                                     onClick={closeOverlay}
                                 ></div>
                             </Conditional>
-                        
+
                             <div className={styles.contentWrapper}>
                                 <div className={twClassNames(
                                     styles.contentScrollable,
@@ -80,7 +80,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                         </div>
                     </animated.div>
                 </OverlayItem>
-            )}   
+            )}
         </AnimatedTransition>
     );
 };

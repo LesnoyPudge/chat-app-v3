@@ -99,11 +99,11 @@
         @apply sr-only;
     }
 
-    [data-debug=true] * {
+    [data-outline=true] * {
         box-shadow: inset 0 0 0px 0.5px red, 0 0 0px 0.5px red !important;
         // outline: 0.5px solid red !important;
         // background-color: rgba($color: limegreen, $alpha: 0.05) !important;
-        white-space: pre-wrap;
+        // white-space: pre-wrap;
     }
 
     img[alt] {

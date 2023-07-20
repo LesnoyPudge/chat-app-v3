@@ -1,6 +1,6 @@
 import { FC, lazy, StrictMode, Suspense } from 'react';
-import { ErrorBoundary, Loader, Masks } from './components';
-import { useDebug, useOutline, usePreventDefault, useSocketStateHandler, useThemeSwitcher } from './hooks';
+import { ErrorBoundary, Loader, Masks, DevDebug } from './components';
+import { useOutline, usePreventDefault, useSocketStateHandler, useThemeSwitcher } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import './styles/main.scss';
@@ -14,12 +14,13 @@ const Router = lazy(() => import('./router'));
 const RootInner: FC = () => {
     usePreventDefault();
     useThemeSwitcher();
-    useDebug();
     useSocketStateHandler();
     useOutline();
 
     return (
         <>
+            <DevDebug/>
+
             <Heading className='sr-only'>
                 <>ChatApp</>
             </Heading>
