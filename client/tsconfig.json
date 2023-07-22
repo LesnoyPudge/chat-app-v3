@@ -49,6 +49,6 @@
     },
     "include": [
         "src", 
-        "decloration.d.ts",
+        "decloration.d.ts", "../tmp/FocusHolder",
     ]
 }

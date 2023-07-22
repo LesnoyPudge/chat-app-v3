@@ -1,11 +1,11 @@
-import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal, Icon, OverlayContextProvider, Ref, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip } from '@components';
+import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal, Icon, List, OverlayContextProvider, Ref, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip , MoveFocusInside } from '@components';
 import { useKeyboardNavigation, useRefWithSetter, useTextInput } from '@hooks';
 import { HeadingLevel, Heading } from '@libs';
 import { ObjectWithId } from '@types';
 import { objectKeys, objectKeysToIdArray, twClassNames } from '@utils';
 import { useFormikContext } from 'formik';
 import { FC, useContext, useEffect } from 'react';
-import { MoveFocusInside } from 'react-focus-lock';
+
 import { RoleMembersTab, RoleAppearanceTab, RolePermissionsTab } from './components';
 
 
@@ -98,7 +98,7 @@ export const RoleContent: FC = () => {
                 <TabContextProvider tabs={providedTabs}>
                     {({ currentTab, tabs, changeTab, isActive, tabProps }) => {
                         setRolesRef(objectKeysToIdArray(tabs));
-                        
+
                         return (
                             <>
                                 <div className={styles.header}>
@@ -106,7 +106,7 @@ export const RoleContent: FC = () => {
                                         <Heading className={styles.title}>
                                             <>Редактировать роль — {role.name}</>
                                         </Heading>
-    
+
                                         <OverlayContextProvider>
                                             {({ isOverlayExist, openOverlay }) => (
                                                 <Ref<HTMLButtonElement>>
@@ -125,8 +125,8 @@ export const RoleContent: FC = () => {
                                                                     iconId='garbage-can-icon'
                                                                 />
                                                             </Button>
-        
-                                                            <Tooltip 
+
+                                                            <Tooltip
                                                                 preferredAlignment='top'
                                                                 spacing={8}
                                                                 boundsSize={0}
@@ -134,7 +134,7 @@ export const RoleContent: FC = () => {
                                                             >
                                                                 <>Удалить роль</>
                                                             </Tooltip>
-    
+
                                                             <DeleteRoleModal roleId={role.id}/>
                                                         </>
                                                     )}
@@ -142,37 +142,36 @@ export const RoleContent: FC = () => {
                                             )}
                                         </OverlayContextProvider>
                                     </div>
-                            
-                                    <TabList 
+
+                                    <TabList
                                         className={styles.tabList}
-                                        label='Настройки роли' 
+                                        label='Настройки роли'
                                         orientation='horizontal'
                                         tabIndex={0}
                                         innerRef={setRoot}
                                     >
                                         <div className={styles.headerDivider}></div>
-    
-                                        {objectKeys(tabs).map((tab) => (
-                                            <MoveFocusInside 
-                                                disabled={!getIsFocused(tab)}
-                                                key={tab}
-                                            >
-                                                <Button
-                                                    className={twClassNames(
-                                                        styles.button.base,
-                                                        { [styles.button.active]: isActive[tab] },
-                                                    )}
-                                                    label={labels[tab]}
-                                                    tabIndex={getTabIndex(tab)}
-                                                    {...tabProps[tab]}
-                                                    onLeftClick={withFocusSet(tab, changeTab[tab])}
-                                                >
-                                                    {tabNames[tab]}
-                                                </Button>
-                                            </MoveFocusInside>
-                                        ))}
+
+                                        <List list={Object.keys(tabs)}>
+                                            {(tab) => (
+                                                <MoveFocusInside enabled={getIsFocused(tab)}>
+                                                    <Button
+                                                        className={twClassNames(
+                                                            styles.button.base,
+                                                            { [styles.button.active]: isActive[tab] },
+                                                        )}
+                                                        label={labels[tab]}
+                                                        tabIndex={getTabIndex(tab)}
+                                                        {...tabProps[tab]}
+                                                        onLeftClick={withFocusSet(tab, changeTab[tab])}
+                                                    >
+                                                        {tabNames[tab]}
+                                                    </Button>
+                                                </MoveFocusInside>
+                                            )}
+                                        </List>
                                     </TabList>
-                                
+
                                     <Conditional isRendered={isActive.permissions}>
                                         <SearchBar
                                             className={styles.permissionsSearchBar}
@@ -183,7 +182,7 @@ export const RoleContent: FC = () => {
                                             onReset={permissionsSearch.handleReset}
                                         />
                                     </Conditional>
-    
+
                                     <Conditional isRendered={isActive.members}>
                                         <div className={styles.membersSearchWrapper}>
                                             <SearchBar
@@ -194,7 +193,7 @@ export const RoleContent: FC = () => {
                                                 onChange={membersSearch.handleChange}
                                                 onReset={membersSearch.handleReset}
                                             />
-                                        
+
                                             <OverlayContextProvider>
                                                 {({ isOverlayExist, openOverlay }) => (
                                                     <>
@@ -207,7 +206,7 @@ export const RoleContent: FC = () => {
                                                         >
                                                             <>Добавить участников</>
                                                         </Button>
-    
+
                                                         <AddMemberToRoleModal roleId={values.roleId}/>
                                                     </>
                                                 )}
@@ -215,7 +214,7 @@ export const RoleContent: FC = () => {
                                         </div>
                                     </Conditional>
                                 </div>
-    
+
                                 {providedTabs[currentTab.identifier]}
                             </>
                         );

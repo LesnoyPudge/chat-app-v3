@@ -159,7 +159,8 @@ export const useKeyboardNavigation = (
 
     const getTabIndex = useCallback((id: string) => {
         const isInitial = (id === initialIdRef.current) && !focusedIdRef.current;
-        return ((id === focusedIdRef.current) || isInitial) ? 0 : -1;
+        const index = ((id === focusedIdRef.current) || isInitial) ? 0 : -1;
+        return index;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     } , []);
 

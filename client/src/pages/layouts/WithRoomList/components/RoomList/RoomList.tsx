@@ -1,8 +1,8 @@
-import { Button, Icon, OverlayContextProvider, Ref, RoomSettingsModal, Scrollable, Tooltip } from '@components';
+import { Button, Icon, OverlayContextProvider, Ref, RoomSettingsModal, Scrollable, Tooltip , MoveFocusInside } from '@components';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { conditional, twClassNames } from '@utils';
 import { FC, useRef } from 'react';
-import { MoveFocusInside } from 'react-focus-lock';
+
 import { ViewportList } from 'react-viewport-list';
 
 
@@ -42,17 +42,17 @@ export const RoomList: FC = () => {
     const { params, navigateTo, myLocationIs } = useNavigator();
 
     const roomListRef = useRef(rooms);
-    const { 
-        setRoot, 
-        setFocusedId, 
-        getIsFocused, 
+    const {
+        setRoot,
+        setFocusedId,
+        getIsFocused,
         getTabIndex,
         setViewportIndexes,
     } = useKeyboardNavigation(roomListRef, undefined, {
         virtualized: true,
     });
 
-    const handleRoomNavigation = (roomId: string) => {                  
+    const handleRoomNavigation = (roomId: string) => {
         if (!params.channelId) return;
         navigateTo.room(params.channelId, roomId);
     };
@@ -63,21 +63,21 @@ export const RoomList: FC = () => {
     };
 
     return (
-        <Scrollable 
-            className={styles.wrapper} 
+        <Scrollable
+            className={styles.wrapper}
             label='Комнаты'
             withOppositeGutter
             small
             focusable
             autoHide
         >
-            <ul 
+            <ul
                 className={styles.list}
                 tabIndex={0}
                 aria-label='Список комнат'
                 ref={setRoot}
             >
-                <ViewportList 
+                <ViewportList
                     items={rooms}
                     onViewportIndexesChange={setViewportIndexes}
                     withCache
@@ -86,8 +86,8 @@ export const RoomList: FC = () => {
                 >
                     {(room) => {
                         const roomTypeIconId = conditional(
-                            'voice-room-icon', 
-                            'text-room-icon', 
+                            'voice-room-icon',
+                            'text-room-icon',
                             room.type === 'voice',
                         );
                         const isRoomActive = getIsActive(room.id);
@@ -95,7 +95,7 @@ export const RoomList: FC = () => {
                         const settingsLabel = `Настройки комнаты ${room.name}`;
                         const tabIndex = getTabIndex(room.id);
                         const isFocused = getIsFocused(room.id);
-                
+
                         const handleNavigation = () => handleRoomNavigation(room.id);
                         const setFocusedIdOnClick = (cb: CallableFunction) => {
                             return () => {
@@ -103,13 +103,13 @@ export const RoomList: FC = () => {
                                 cb();
                             };
                         };
-                        
+
                         return (
-                            <MoveFocusInside 
-                                disabled={!isFocused}
+                            <MoveFocusInside
+                                enabled={isFocused}
                                 key={room.id}
                             >
-                                <li 
+                                <li
                                     className={twClassNames(
                                         styles.item.base,
                                         { [styles.item.selected]: isRoomActive },
@@ -121,16 +121,16 @@ export const RoomList: FC = () => {
                                         tabIndex={tabIndex}
                                         onLeftClick={setFocusedIdOnClick(handleNavigation)}
                                     ></Button>
-        
+
                                     <Icon
-                                        className={styles.roomTypeIcon} 
+                                        className={styles.roomTypeIcon}
                                         iconId={roomTypeIconId}
                                     />
-        
+
                                     <span className={styles.name}>
                                         {room.name} {room.name}{room.name}{room.name}{room.name}{room.name}
                                     </span>
-        
+
                                     <OverlayContextProvider>
                                         {({ openOverlay, isOverlayExist }) => (
                                             <Ref<HTMLButtonElement>>
@@ -150,10 +150,10 @@ export const RoomList: FC = () => {
                                                                 iconId='settings-gear'
                                                             />
                                                         </Button>
-        
+
                                                         <RoomSettingsModal roomId={room.id}/>
-        
-                                                        <Tooltip 
+
+                                                        <Tooltip
                                                             preferredAlignment='top'
                                                             spacing={5}
                                                             leaderElementRef={ref}

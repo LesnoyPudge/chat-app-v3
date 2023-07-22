@@ -1,4 +1,4 @@
-import { Conditional, FocusHolder, OverlayContext, OverlayPortal } from '@components';
+import { Conditional, OverlayContext, OverlayPortal } from '@components';
 import { getHTML } from '@utils';
 import { FC, PropsWithChildren, useContext, useRef } from 'react';
 import ReactFocusLock from 'react-focus-lock';
@@ -26,6 +26,7 @@ export const OverlayItem: FC<OverlayItem> = ({
 }) => {
     const { closeOverlay, isOverlayExist } = useContext(OverlayContext) as OverlayContext;
     const wrapperRef = useRef<HTMLDivElement | null>(null);
+    const isLockDisabled = !focused || !isRendered;
 
     const isBlocked = () => {
         const wrapper = wrapperRef.current;
@@ -63,11 +64,9 @@ export const OverlayItem: FC<OverlayItem> = ({
                     <ReactFocusLock
                         returnFocus
                         autoFocus={focused}
-                        disabled={!isOverlayExist || !focused}
+                        disabled={isLockDisabled}
                     >
-                        {/* <FocusHolder> */}
                         {children}
-                        {/* </FocusHolder> */}
                     </ReactFocusLock>
                 </div>
             </OverlayPortal>

@@ -1,4 +1,4 @@
-import { Conditional, Scrollable, Image, Button, CheckBoxIndicatorCheck, Icon, UserAvatar } from '@components';
+import { Conditional, Scrollable, Image, Button, CheckBoxIndicatorCheck, Icon, UserAvatar , MoveFocusInside } from '@components';
 import { Heading } from '@libs';
 import { ObjectWithId, PropsWithClassName } from '@types';
 import { FC, useRef } from 'react';
@@ -6,7 +6,7 @@ import { ViewportList } from 'react-viewport-list';
 import notFoundImage from '@assets/not-found-image.svg';
 import { twClassNames } from '@utils';
 import { useKeyboardNavigation, useRefWithSetter } from '@hooks';
-import { MoveFocusInside } from 'react-focus-lock';
+
 
 
 
@@ -69,7 +69,7 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
     const isAnyFound = isRolesFound || isMembersFound;
 
     return (
-        <Scrollable 
+        <Scrollable
             className={className}
             small
             focusable
@@ -83,7 +83,7 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                 </Heading>
 
                 <Conditional isRendered={isRolesFound}>
-                    <ul 
+                    <ul
                         className={styles.list}
                         ref={rolesNavigation.setRoot}
                         tabIndex={0}
@@ -99,8 +99,8 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                                 const isRoleChecked = getIsRoleChecked(role.id);
 
                                 return (
-                                    <MoveFocusInside 
-                                        disabled={!rolesNavigation.getIsFocused(role.id)}
+                                    <MoveFocusInside
+                                        enabled={rolesNavigation.getIsFocused(role.id)}
                                         key={role.id}
                                     >
                                         <li>
@@ -141,14 +141,14 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                     <div className={styles.singleNotFound}>
                         <>Роли не найдены</>
                     </div>
-                </Conditional>  
+                </Conditional>
 
                 <Heading className={styles.heading}>
                     <>Участники</>
                 </Heading>
 
                 <Conditional isRendered={isMembersFound}>
-                    <ul 
+                    <ul
                         className={styles.list}
                         ref={membersNavigation.setRoot}
                         tabIndex={0}
@@ -164,8 +164,8 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                                 const isMemberChecked = getIsMemberChecked(member.id);
 
                                 return (
-                                    <MoveFocusInside 
-                                        disabled={!membersNavigation.getIsFocused(member.id)}
+                                    <MoveFocusInside
+                                        enabled={membersNavigation.getIsFocused(member.id)}
                                         key={member.id}
                                     >
                                         <li>
@@ -220,7 +220,7 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                         <>Роли и участники не найдены</>
                     </div>
                 </div>
-            </Conditional> 
+            </Conditional>
         </Scrollable>
     );
 };

@@ -1,6 +1,6 @@
 import { FC, lazy, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, Loader, Masks, DevDebug } from './components';
-import { useOutline, usePreventDefault, useSocketStateHandler, useThemeSwitcher } from './hooks';
+import { usePreventDefault, useSocketStateHandler, useThemeSwitcher } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import './styles/main.scss';
@@ -15,7 +15,6 @@ const RootInner: FC = () => {
     usePreventDefault();
     useThemeSwitcher();
     useSocketStateHandler();
-    useOutline();
 
     return (
         <>

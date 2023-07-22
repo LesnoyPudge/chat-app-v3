@@ -3,7 +3,7 @@ import { Button, Icon, TabList, Tooltip, TabContext, Scrollable, List, Ref } fro
 import { TabTitle } from '../../../../../components';
 import { objectKeysToIdArray, twClassNames } from '@utils';
 import { useKeyboardNavigation } from '@hooks';
-import { MoveFocusInside } from 'react-focus-lock';
+import { MoveFocusInside } from '@components';
 
 
 
@@ -86,7 +86,7 @@ export const RoleNavigation: FC = () => {
                 >
                     <List list={roles}>
                         {({ color, id, name }) => (
-                            <MoveFocusInside disabled={!getIsFocused(id)}>
+                            <MoveFocusInside enabled={getIsFocused(id)}>
                                 <Button
                                     className={twClassNames(
                                         styles.roleItem.base,

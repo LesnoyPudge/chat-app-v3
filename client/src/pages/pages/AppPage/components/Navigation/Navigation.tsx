@@ -4,7 +4,7 @@ import { Heading } from '@libs';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { objectKeys, objectKeysToIdArray, twClassNames } from '@utils';
 import { FC, useContext, useRef } from 'react';
-import { MoveFocusInside } from 'react-focus-lock';
+import { MoveFocusInside } from '@components';
 
 
 
@@ -58,7 +58,7 @@ export const Navigation: FC = () => {
             >
                 <List list={objectKeys(tabs)}>
                     {(tabId) => (
-                        <MoveFocusInside disabled={!getIsFocused(tabId)}>
+                        <MoveFocusInside enabled={getIsFocused(tabId)}>
                             <Button
                                 className={twClassNames(
                                     styles.button.base, 

@@ -1,11 +1,11 @@
-import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, Scrollable, List } from '@components';
+import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, Scrollable, List , MoveFocusInside } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { FC, useContext, useRef } from 'react';
 import { IUserPreview } from '@backendTypes';
 import { ActionButtons } from './components';
 import { getRandomNumber } from '@utils';
 import friendsNotFoundImage from '@assets/friendsNotFound.svg';
-import { MoveFocusInside } from 'react-focus-lock';
+
 import { useKeyboardNavigation } from '@hooks';
 
 
@@ -130,7 +130,7 @@ export const Content: FC<Content> = ({ value }) => {
     } = useKeyboardNavigation(listToShowRef);
 
     return (
-        <TabPanel 
+        <TabPanel
             className={styles.tabPanel}
             {...tabPanelProps[currentTab.identifier]}
         >
@@ -139,10 +139,10 @@ export const Content: FC<Content> = ({ value }) => {
             </div>
 
             <Separator className={styles.separator} spacing={12}/>
-            
+
             <Conditional isRendered={showList}>
                 <Scrollable>
-                    <ul 
+                    <ul
                         className={styles.list}
                         tabIndex={0}
                         aria-label='Список запросов'
@@ -150,7 +150,7 @@ export const Content: FC<Content> = ({ value }) => {
                     >
                         <List list={listToShow}>
                             {(user) => (
-                                <MoveFocusInside disabled={getIsFocused(user.id)}>
+                                <MoveFocusInside enabled={getIsFocused(user.id)}>
                                     <li className={styles.listItem} >
                                         <UserAvatar
                                             className={styles.avatar}
@@ -165,8 +165,8 @@ export const Content: FC<Content> = ({ value }) => {
                                             <Conditional isRendered={isActive.friendRequests}>
                                                 <div className={styles.extraInfo}>
                                                     {
-                                                        getRandomNumber(0, 1) 
-                                                            ? 'Исходящий запрос дружбы' 
+                                                        getRandomNumber(0, 1)
+                                                            ? 'Исходящий запрос дружбы'
                                                             : 'Входящий запрос дружбы'
                                                     }
                                                 </div>
@@ -174,8 +174,8 @@ export const Content: FC<Content> = ({ value }) => {
                                         </div>
 
                                         <div className={styles.buttonsContainer}>
-                                            <ActionButtons 
-                                                userId={user.id} 
+                                            <ActionButtons
+                                                userId={user.id}
                                                 tabIndex={getTabIndex(user.id)}
                                             />
                                         </div>

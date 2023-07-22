@@ -3,7 +3,7 @@ import { Button, DeleteRoomModal, Icon, OverlayContextProvider, Separator, TabCo
 import { RoomSettingsModalTabs } from '../../RoomSettingsModal';
 import { useKeyboardNavigation } from '@hooks';
 import { NavigationHeading, NavigationItem } from '../../../components';
-import { MoveFocusInside } from 'react-focus-lock';
+import { MoveFocusInside } from '@components';
 import { objectKeysToIdArray } from '@utils';
 
 
@@ -33,7 +33,7 @@ export const Navigation: FC = () => {
                 </NavigationHeading>
 
                 <div className={styles.list}>
-                    <MoveFocusInside disabled={!getIsFocused(tabs.overviewTab.identifier)}>
+                    <MoveFocusInside enabled={getIsFocused(tabs.overviewTab.identifier)}>
                         <Button
                             className={styles.button}
                             isActive={isActive.overviewTab}

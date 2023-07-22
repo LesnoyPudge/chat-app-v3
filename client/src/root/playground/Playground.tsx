@@ -1,11 +1,11 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space, Ref } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space, Ref, MoveFocusInside } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -118,7 +118,8 @@ import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
 // import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';
-import ReactFocusLock from 'react-focus-lock';
+import ReactFocusLock, { AutoFocusInside, FreeFocusInside,
+    InFocusGuard } from 'react-focus-lock';
 // import { useUserLoginMutation, useUserRegistrationMutation } from '@redux/features';
 import { io, Socket } from 'socket.io-client';
 import { audioBase } from './audioBase64';
@@ -1259,20 +1260,79 @@ type UseFocusVisibleArgs = {
 //     // return setElement;
 // };
 
+
+
+
+// const list = Array(20).fill(null).map((_, i) => `item ${i}`);
+const list = Array(1).fill(null).map((_, i) => ({ id: `item ${i}` }));
+
 const PlaygroundInner23: FC = () => {
     // useFocusVisible();
 
+    const listRef = useRef(list);
+    // const {
+    //     getIsFocused,
+    //     getTabIndex,
+    //     setRoot,
+    //     setFocusedId,
+    // } = useKeyboardNavigation(listRef, undefined, { loop: true, direction: 'vertical' });
+
     return (
-        <div className='flex flex-col gap-8 p-8 items-start [&>*]:bg-rose-800 [&>*]:text-white'>
-            <button>
-                <>qwe</>
-            </button>
+        <ReactFocusLock autoFocus>
+            <>
+                <>
+                    <div>
+                        <button tabIndex={0}>
+                            <>here?</>
+                        </button>
+                        <div
+                            className='p-8 overflow-auto max-h-[50vh]'
+                            // ref={setRoot}
+                            aria-label='wwo'
+                            tabIndex={0}
+                        >
+                            <div className='flex flex-col gap-8 items-start [&>*]:bg-rose-800 [&>*]:text-white'>
+                                <List list={list}>
+                                    {(item) => {
+                                        return (
+                                            <MoveFocusInside enabled={false}>
+                                                <div>
 
-            <button>
-                <>zxc</>
-            </button>
+                                                </div>
 
-            <input type='text'/>
+                                                <button
+                                                    // tabIndex={getTabIndex(item.id)}
+                                                    tabIndex={-1}
+                                                    // disabled={!getIsFocused(item.id)}
+                                                    // onClick={() => setFocusedId(item.id)}
+                                                >
+                                                    <>qwe {item.id}</>
+                                                </button>
+                                            </MoveFocusInside>
+                                        );
+                                    }}
+                                </List>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            </>
+        </ReactFocusLock>
+    );
+};
+
+const PlaygroundInner24: FC = () => {
+    const { count, increment } = useCounter(0);
+
+    return (
+        <div>
+            <div>
+                {count}
+            </div>
+
+            <button onClick={increment}>
+                <>inc</>
+            </button>
         </div>
     );
 };
@@ -1287,31 +1347,32 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </Conditional>
 
             <Conditional isRendered={enabled}>
-                <ReactFocusLock>
-                    {/* <PlaygroundInner/> */}
-                    {/* <PlaygroundInner2/> */}
-                    {/* <PlaygroundInner3/> */}
-                    {/* <PlaygroundInner4/> */}
-                    {/* <PlaygroundInner5/> */}
-                    {/* <PlaygroundInner6/> */}
-                    {/* <PlaygroundInner7/> */}
-                    {/* <PlaygroundInner8/> */}
-                    {/* <PlaygroundInner9/> */}
-                    {/* <PlaygroundInner10/> */}
-                    {/* <PlaygroundInner11/> */}
-                    {/* <PlaygroundInner12/> */}
-                    {/* <PlaygroundInner13/> */}
-                    {/* <PlaygroundInner14/> */}
-                    {/* <PlaygroundInner15/> */}
-                    {/* <PlaygroundInner16/> */}
-                    {/* <PlaygroundInner17/> */}
-                    {/* <PlaygroundInner18/> */}
-                    {/* <PlaygroundInner19/> */}
-                    {/* <PlaygroundInner20/> */}
-                    {/* <PlaygroundInner21/> */}
-                    {/* <PlaygroundInner22/> */}
-                    <PlaygroundInner23/>
-                </ReactFocusLock>
+                {/* <ReactFocusLock> */}
+                {/* <PlaygroundInner/> */}
+                {/* <PlaygroundInner2/> */}
+                {/* <PlaygroundInner3/> */}
+                {/* <PlaygroundInner4/> */}
+                {/* <PlaygroundInner5/> */}
+                {/* <PlaygroundInner6/> */}
+                {/* <PlaygroundInner7/> */}
+                {/* <PlaygroundInner8/> */}
+                {/* <PlaygroundInner9/> */}
+                {/* <PlaygroundInner10/> */}
+                {/* <PlaygroundInner11/> */}
+                {/* <PlaygroundInner12/> */}
+                {/* <PlaygroundInner13/> */}
+                {/* <PlaygroundInner14/> */}
+                {/* <PlaygroundInner15/> */}
+                {/* <PlaygroundInner16/> */}
+                {/* <PlaygroundInner17/> */}
+                {/* <PlaygroundInner18/> */}
+                {/* <PlaygroundInner19/> */}
+                {/* <PlaygroundInner20/> */}
+                {/* <PlaygroundInner21/> */}
+                {/* <PlaygroundInner22/> */}
+                <PlaygroundInner23/>
+                {/* <PlaygroundInner24/> */}
+                {/* </ReactFocusLock> */}
             </Conditional>
         </>
     );

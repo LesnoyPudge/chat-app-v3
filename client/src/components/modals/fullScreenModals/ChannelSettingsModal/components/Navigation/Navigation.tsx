@@ -3,7 +3,7 @@ import { Button, ChannelSettingsModalTabs, DeleteChannelModal, Icon, OverlayCont
 import { NavigationHeading, NavigationItem } from '../../../components';
 import { objectKeysToIdArray } from '@utils';
 import { useKeyboardNavigation } from '@hooks';
-import { MoveFocusInside } from 'react-focus-lock';
+import { MoveFocusInside } from '@components';
 
 
 
@@ -36,7 +36,7 @@ export const Navigation: FC = () => {
                 </NavigationHeading>
 
                 <div className={styles.list}>
-                    <MoveFocusInside disabled={!getIsFocused(tabs.overviewTab.identifier)}>
+                    <MoveFocusInside enabled={getIsFocused(tabs.overviewTab.identifier)}>
                         <Button
                             className={styles.button}
                             isActive={isActive.overviewTab}
@@ -51,7 +51,7 @@ export const Navigation: FC = () => {
                         </Button>
                     </MoveFocusInside>
 
-                    <MoveFocusInside disabled={!getIsFocused(tabs.rolesTab.identifier)}>
+                    <MoveFocusInside enabled={getIsFocused(tabs.rolesTab.identifier)}>
                         <Button
                             className={styles.button}
                             isActive={isActive.rolesTab}
@@ -74,7 +74,7 @@ export const Navigation: FC = () => {
                 </NavigationHeading>
 
                 <div className={styles.list}>
-                    <MoveFocusInside disabled={!getIsFocused(tabs.membersTab.identifier)}>
+                    <MoveFocusInside enabled={getIsFocused(tabs.membersTab.identifier)}>
                         <Button
                             className={styles.button}
                             isActive={isActive.membersTab}
@@ -89,7 +89,7 @@ export const Navigation: FC = () => {
                         </Button>
                     </MoveFocusInside>
 
-                    <MoveFocusInside disabled={!getIsFocused(tabs.bannedTab.identifier)}>
+                    <MoveFocusInside enabled={getIsFocused(tabs.bannedTab.identifier)}>
                         <Button
                             className={styles.button}
                             isActive={isActive.bannedTab}

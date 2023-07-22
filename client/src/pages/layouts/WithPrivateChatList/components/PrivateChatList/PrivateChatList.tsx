@@ -3,7 +3,7 @@ import { List, Scrollable } from '@components';
 import { useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
 import { FC, useRef } from 'react';
-import { MoveFocusInside } from 'react-focus-lock';
+import { MoveFocusInside } from '@components';
 import { PrivateChatItem } from './components';
 
 
@@ -302,7 +302,7 @@ export const PrivateChatList: FC = () => {
                     <List list={privateChats}>
                         {(privateChat) => (
                             <li key={privateChat.id}>
-                                <MoveFocusInside disabled={!getIsFocused(privateChat.id)}>
+                                <MoveFocusInside enabled={getIsFocused(privateChat.id)}>
                                     <PrivateChatItem 
                                         privateChat={privateChat}
                                         tabIndex={getTabIndex(privateChat.id)}

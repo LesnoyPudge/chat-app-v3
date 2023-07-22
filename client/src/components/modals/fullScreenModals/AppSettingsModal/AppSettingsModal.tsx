@@ -24,7 +24,7 @@ const initialValues = {
 
 export const AppSettingsModal: FC = () => {
     return (
-        <ModalWindow 
+        <ModalWindow
             label='Настройки приложения'
             transitionOptions={transitionOptions}
         >
@@ -40,8 +40,8 @@ export const AppSettingsModal: FC = () => {
                     >
                         {({ dirty }) => {
                             return (
-                                <TabContextProvider 
-                                    tabs={tabs} 
+                                <TabContextProvider
+                                    tabs={tabs}
                                     onTabChange={(prevent) => {
                                         if (!dirty) return;
                                         prevent();
@@ -62,7 +62,6 @@ export const AppSettingsModal: FC = () => {
                                         </Form>
                                     )}
                                 </TabContextProvider>
-                                            
                             );
                         }}
                     </Formik>

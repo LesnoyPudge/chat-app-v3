@@ -1,7 +1,6 @@
 import { FC, useContext } from 'react';
-import { AnimatedTransition, Conditional, TabContext } from '@components';
+import { AnimatedTransition, Conditional, TabContext , MoveFocusInside } from '@components';
 import { animated, SpringValue } from '@react-spring/web';
-import { MoveFocusInside } from 'react-focus-lock';
 import { getTransitionOptions } from '@utils';
 import { AuthPageTabs } from '@pages/AuthPage/AuthPage';
 

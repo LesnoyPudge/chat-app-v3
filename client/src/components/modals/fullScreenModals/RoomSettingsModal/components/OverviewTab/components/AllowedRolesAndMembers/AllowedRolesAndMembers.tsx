@@ -1,9 +1,9 @@
-import { Button, Conditional, Icon, Ref, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar } from '@components';
+import { Button, Conditional, Icon, Ref, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar , MoveFocusInside } from '@components';
 import { useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
 import { useFormikContext } from 'formik';
 import { FC, useRef } from 'react';
-import { MoveFocusInside } from 'react-focus-lock';
+
 import { ViewportList } from 'react-viewport-list';
 
 
@@ -22,7 +22,7 @@ const styles = {
 
 export const AllowedRolesAndMembers: FC = () => {
     const { values, setFieldValue } = useFormikContext<RoomSettingsModalFormValues>();
-    
+
     const roles = Array.from(values.allowedRoles).map((id) => ({
         id,
         name: `role name ${id}`,
@@ -55,7 +55,7 @@ export const AllowedRolesAndMembers: FC = () => {
     const showBoth = showRoles && showMembers;
 
     return (
-        <Scrollable 
+        <Scrollable
             className={styles.scrollbar}
             label='Роли и участники'
             focusable
@@ -68,11 +68,11 @@ export const AllowedRolesAndMembers: FC = () => {
                         <>Роли</>
                     </Heading>
 
-                    <ul 
+                    <ul
                         tabIndex={0}
                         ref={rolesNavigation.setRoot}
                     >
-                        <ViewportList 
+                        <ViewportList
                             items={roles}
                             onViewportIndexesChange={rolesNavigation.setViewportIndexes}
                         >
@@ -80,9 +80,9 @@ export const AllowedRolesAndMembers: FC = () => {
                                 const handleRemove = () => removeItem('allowedRoles', role.id);
 
                                 return (
-                                    <MoveFocusInside 
-                                        disabled={!rolesNavigation.getIsFocused(role.id)}
-                                        key={role.id} 
+                                    <MoveFocusInside
+                                        enabled={rolesNavigation.getIsFocused(role.id)}
+                                        key={role.id}
                                     >
                                         <li className={styles.item}>
                                             <Icon
@@ -94,7 +94,7 @@ export const AllowedRolesAndMembers: FC = () => {
                                             <span className={styles.name}>
                                                 {role.name}
                                             </span>
-                                            
+
                                             <Ref<HTMLButtonElement>>
                                                 {(ref) => (
                                                     <>
@@ -110,8 +110,8 @@ export const AllowedRolesAndMembers: FC = () => {
                                                                 iconId='garbage-can-icon'
                                                             />
                                                         </Button>
-                                    
-                                                        <Tooltip 
+
+                                                        <Tooltip
                                                             preferredAlignment='top'
                                                             leaderElementRef={ref}
                                                         >
@@ -128,9 +128,9 @@ export const AllowedRolesAndMembers: FC = () => {
                     </ul>
                 </div>
             </Conditional>
-                                
+
             <Conditional isRendered={showBoth}>
-                <Separator 
+                <Separator
                     className={styles.separator}
                     spacing={0}
                 />
@@ -142,11 +142,11 @@ export const AllowedRolesAndMembers: FC = () => {
                         <>Участники</>
                     </Heading>
 
-                    <ul 
+                    <ul
                         ref={membersNavigation.setRoot}
                         tabIndex={0}
                     >
-                        <ViewportList 
+                        <ViewportList
                             items={members}
                             onViewportIndexesChange={membersNavigation.setViewportIndexes}
                         >
@@ -154,11 +154,11 @@ export const AllowedRolesAndMembers: FC = () => {
                                 const handleRemove = () => removeItem('allowedMembers', member.id);
 
                                 return (
-                                    <MoveFocusInside 
-                                        disabled={!membersNavigation.getIsFocused(member.id)}
-                                        key={member.id} 
+                                    <MoveFocusInside
+                                        enabled={membersNavigation.getIsFocused(member.id)}
+                                        key={member.id}
                                     >
-                                        <li 
+                                        <li
                                             className={styles.item}
                                             key={member.id}
                                         >
@@ -187,8 +187,8 @@ export const AllowedRolesAndMembers: FC = () => {
                                                                 iconId='garbage-can-icon'
                                                             />
                                                         </Button>
-                                    
-                                                        <Tooltip 
+
+                                                        <Tooltip
                                                             preferredAlignment='top'
                                                             leaderElementRef={ref}
                                                         >

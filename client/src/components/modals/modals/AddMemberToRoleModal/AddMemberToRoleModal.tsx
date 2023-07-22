@@ -4,7 +4,7 @@ import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter, Mod
 import { useKeyboardNavigation, useTextInput, useSet } from '@hooks';
 import notFoundImage from '@assets/not-found-image.svg';
 import { twClassNames } from '@utils';
-import { MoveFocusInside } from 'react-focus-lock';
+import { MoveFocusInside } from '@components';
 
 
 
@@ -122,7 +122,7 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
 
                                                 return (
                                                     <li>
-                                                        <MoveFocusInside disabled={!getIsFocused(id)}>
+                                                        <MoveFocusInside enabled={getIsFocused(id)}>
                                                             <Button
                                                                 className={twClassNames(
                                                                     styles.item.base,

@@ -20,13 +20,13 @@ interface OverlayContextProvider extends PropsWithChildrenAsNodeOrFunction<Overl
 
 export const OverlayContext = createContext<OverlayContext | undefined>(undefined);
 
-export const OverlayContextProvider: FC<OverlayContextProvider> = ({ 
+export const OverlayContextProvider: FC<OverlayContextProvider> = ({
     children,
     isOverlayExistInitial = false,
 }) => {
     const [
         isOverlayExist,
-        isOverlayExistRef, 
+        isOverlayExistRef,
         setIsOverlayExist,
     ] = useStateAndRef(isOverlayExistInitial);
     const { isThrottlingRef, throttle } = useThrottle();
@@ -55,7 +55,7 @@ export const OverlayContextProvider: FC<OverlayContextProvider> = ({
         closeOverlay: handleClose,
         toggleOverlay: handleToggle,
     };
-    
+
     return (
         <OverlayContext.Provider value={contextValues}>
             <ChildrenAsNodeOrFunction args={contextValues}>
