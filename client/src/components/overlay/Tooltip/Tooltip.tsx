@@ -1,5 +1,5 @@
 import { AnimatedTransition, Conditional, OverlayPortal, RelativelyPositioned } from '@components';
-import { RelativePositionOptions, useEventListener, useRefWithSetter, UseRelativePositionArgs, useSharedIntersectionObserver } from '@hooks';
+import { RelativePositionOptions, useEventListener, useRefWithSetter, useSharedIntersectionObserver, useFocusVisibleEvent } from '@hooks';
 import { animated } from '@react-spring/web';
 import { PropsWithChildrenAndClassName, PropsWithLeaderElementRef } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
@@ -29,8 +29,8 @@ const transitionOptions = getTransitionOptions.withOpacity({
 });
 
 const styles = {
-    base: `bg-primary-500 text-color-base font-bold 
-    py-[5px] px-2.5 rounded-md w-max max-w-[300px] shadow-elevation-low`,
+    base: `bg-primary-500 text-color-base font-bold py-[5px] px-2.5 
+    rounded-md w-max max-w-[300px] shadow-elevation-low`,
 };
 
 export const Tooltip: FC<Tooltip> = ({
@@ -81,8 +81,7 @@ export const Tooltip: FC<Tooltip> = ({
         changeState();
     };
 
-    useEventListener('focusin', handleFocusIn, leaderElementRef);
-    useEventListener('focusout', handleFocusOut, leaderElementRef);
+    useFocusVisibleEvent(handleFocusIn, handleFocusOut, leaderElementRef);
     useEventListener('mouseenter', handleMouseEnter, leaderElementRef);
     useEventListener('mouseleave', handleMouseLeave, leaderElementRef);
 

@@ -115,7 +115,7 @@ export const ChannelsNavigation: FC = () => {
                         aria-label='Список каналов'
                         ref={setRoot}
                     >
-                        <List list={channels.slice(0, 6)}>
+                        <List list={channels}>
                             {(channel) => {
                                 const isInChannel = myLocationIs.channel(channel.id);
                                 const handleNavigateToChannel = () => navigateTo.channel(channel.id);

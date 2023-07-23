@@ -1,10 +1,8 @@
 import { PropsWithChildrenAndClassName, Size } from '@types';
 import { twClassNames } from '@utils';
 import { FC, useRef } from 'react';
-import { useSlateStatic } from 'slate-react';
+import { useFocused } from 'slate-react';
 import { Scrollable } from '@components';
-import { useFocus } from '@hooks';
-import { useGetSlateEditorElementRef } from '@libs';
 
 
 
@@ -16,13 +14,11 @@ const styles = {
     scrollable: 'h-full',
 };
 
-export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({ 
+export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {
-    const editor = useSlateStatic();
-    const editorRef = useGetSlateEditorElementRef(editor);
-    const isEditorFocused = useFocus(editorRef);
+    const isEditorFocused = useFocused();
     const wrapperRef = useRef<HTMLDivElement>(null);
     const scrollableContentRef = useRef<HTMLDivElement>(null);
 
@@ -30,9 +26,9 @@ export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
         if (!wrapperRef.current) return;
         wrapperRef.current.style.height = size.height + 'px';
     };
-    
+
     return (
-        <div 
+        <div
             className={twClassNames(
                 styles.wrapper.base,
                 { [styles.wrapper.focused]: isEditorFocused },
@@ -40,8 +36,8 @@ export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
             )}
             ref={wrapperRef}
         >
-            <Scrollable 
-                className={styles.scrollable} 
+            <Scrollable
+                className={styles.scrollable}
                 small
                 setScrollable={scrollableContentRef}
                 withOppositeGutter

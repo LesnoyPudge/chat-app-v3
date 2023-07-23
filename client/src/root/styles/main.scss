@@ -18,7 +18,7 @@
         &:focus:not(:focus-visible) {
             @apply focus-hidden;
         }
-
+        
         &:focus-visible {
             @apply focused;
         }

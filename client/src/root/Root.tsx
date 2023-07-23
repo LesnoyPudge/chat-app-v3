@@ -3,9 +3,9 @@ import { ErrorBoundary, Loader, Masks, DevDebug } from './components';
 import { usePreventDefault, useSocketStateHandler, useThemeSwitcher } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
-import './styles/main.scss';
 import { Provider } from 'react-redux';
 import { store } from '@redux/store';
+import './styles/main.scss';
 
 
 
