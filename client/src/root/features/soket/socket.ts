@@ -59,3 +59,52 @@ socketIO.on(
         store.dispatch(RoomSlice.actions.upsertOne(data));
     },
 );
+
+socketIO.on(
+    toSocketEventName(SUBSCRIBABLE_ENTITIES.USER, SOCKET_SERVER_EVENT_NAMES.DELETE),
+    (id) => {
+        store.dispatch(UserSlice.actions.removeOne(id));
+    },
+);
+
+socketIO.on(
+    toSocketEventName(SUBSCRIBABLE_ENTITIES.CHANNEL, SOCKET_SERVER_EVENT_NAMES.DELETE),
+    (id) => {
+        store.dispatch(ChannelSlice.actions.removeOne(id));
+    },
+);
+
+socketIO.on(
+    toSocketEventName(SUBSCRIBABLE_ENTITIES.CHAT, SOCKET_SERVER_EVENT_NAMES.DELETE),
+    (id) => {
+        store.dispatch(ChatSlice.actions.removeOne(id));
+    },
+);
+
+socketIO.on(
+    toSocketEventName(SUBSCRIBABLE_ENTITIES.MESSAGE, SOCKET_SERVER_EVENT_NAMES.DELETE),
+    (id) => {
+        store.dispatch(MessageSlice.actions.removeOne(id));
+    },
+);
+
+socketIO.on(
+    toSocketEventName(SUBSCRIBABLE_ENTITIES.PRIVATE_CHANNEL, SOCKET_SERVER_EVENT_NAMES.DELETE),
+    (id) => {
+        store.dispatch(PrivateChannelSlice.actions.removeOne(id));
+    },
+);
+
+socketIO.on(
+    toSocketEventName(SUBSCRIBABLE_ENTITIES.ROLE, SOCKET_SERVER_EVENT_NAMES.DELETE),
+    (id) => {
+        store.dispatch(RoleSlice.actions.removeOne(id));
+    },
+);
+
+socketIO.on(
+    toSocketEventName(SUBSCRIBABLE_ENTITIES.ROOM, SOCKET_SERVER_EVENT_NAMES.DELETE),
+    (id) => {
+        store.dispatch(RoomSlice.actions.removeOne(id));
+    },
+);

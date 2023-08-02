@@ -15,6 +15,7 @@ export const MessageSlice = createSlice({
     initialState,
     reducers: {
         upsertOne: adapter.upsertOne,
+        removeOne: adapter.removeOne,
     },
     extraReducers(builder) {
         builder.addCase(globalReset, () => {

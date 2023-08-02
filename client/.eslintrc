@@ -46,6 +46,15 @@
         "react/jsx-curly-newline": [1, {
             "multiline": "consistent",
             "singleline": "consistent"
+        }],
+        "react/jsx-wrap-multilines": ["warn", {
+            "declaration": "parens-new-line",
+            "assignment": "parens-new-line",
+            "return": "parens-new-line",
+            "arrow": "parens-new-line",
+            "condition": "parens-new-line",
+            "logical": "parens-new-line",
+            "prop": "parens-new-line"
         }]
     }
 }

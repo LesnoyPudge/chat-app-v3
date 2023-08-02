@@ -5,18 +5,18 @@ import { objectKeys } from '@utils';
 
 
 
-type TabProps<KEY extends string> = {
+type ProvidedTabs = Record<string, ReactNode>;
+
+type TabProps<KEY extends keyof ProvidedTabs> = {
     role: 'tab';
     controls: `tabPanel-${KEY}`;
     id: `tab-${KEY}`;
 }
 
-type TabPanelProps<KEY extends string> = {
+type TabPanelProps<KEY extends keyof ProvidedTabs> = {
     id: `tabPanel-${KEY}`;
     labelledBy: `tab-${KEY}`;
 }
-
-type ProvidedTabs = Record<string, ReactNode>;
 
 interface Tab<VALUES> {
     identifier: keyof VALUES;
@@ -44,7 +44,7 @@ export const TabContext = createContext<TabContext<never> | undefined>(undefined
 export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProvider<T>) => {
     const { tabs, initialTab, onTabChange, children } = props;
     const tabsArray = objectKeys(tabs);
-    
+
     const getCurrentTab = (identifier: keyof T): Tab<T> => ({
         identifier: identifier.toString(),
         tab: tabs[identifier],
@@ -54,12 +54,11 @@ export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProv
         () => getCurrentTab(initialTab?.toString() || tabsArray[0]),
     );
 
-    const changeTab = tabsArray.reduce((acc, key) => ({ 
-        ...acc, 
-        [key]: () => {
+    const changeTab = tabsArray.reduce((acc, key) => {
+        acc[key] = () => {
             if (key === currentTab.identifier) return;
             if (!onTabChange) return setCurrentTab(getCurrentTab(key));
-            
+
             let isPrevented = false;
 
             const prevent = () => {
@@ -67,41 +66,47 @@ export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProv
             };
 
             onTabChange(prevent);
-            
-            if (!isPrevented) setCurrentTab(getCurrentTab(key));
-        }, 
-    }), {}) as Record<keyof T, () => void>;
 
-    const transformedTabs = tabsArray.reduce((acc, key) => ({ 
-        ...acc, 
-        [key]: {
+            if (!isPrevented) setCurrentTab(getCurrentTab(key));
+        };
+
+        return acc;
+    }, {} as Record<keyof T, () => void>);
+
+    const transformedTabs = tabsArray.reduce((acc, key) => {
+        acc[key] = {
             identifier: key,
             tab: tabs[key],
-        }, 
-    }), {}) as Record<keyof T, Tab<T>>;
+        };
 
-    const isActive = tabsArray.reduce((acc, key) => ({ 
-        ...acc, 
-        [key]: currentTab.identifier === key, 
-    }), {}) as Record<keyof T, boolean>;
+        return acc;
+    }, {} as Record<keyof T, Tab<T>>);
 
-    const tabProps = tabsArray.reduce((acc, key) => ({ 
-        ...acc, 
-        [key]: {
+    const isActive = tabsArray.reduce((acc, key) => {
+        acc[key] = currentTab.identifier === key;
+
+        return acc;
+    }, {} as Record<keyof T, boolean>);
+
+    const tabProps = tabsArray.reduce((acc, key) => {
+        acc[key] = {
             role: 'tab',
             controls: `tabPanel-${key.toString()}`,
             id: `tab-${key.toString()}`,
-        }, 
-    }), {}) as Record<keyof T, TabProps<Extract<keyof T, string>>>;
+        };
 
-    const tabPanelProps = tabsArray.reduce((acc, key) => ({ 
-        ...acc, 
-        [key]: {
+        return acc;
+    }, {} as Record<keyof T, TabProps<string>>) as Record<keyof T, TabProps<Extract<keyof T, string>>>;
+
+    const tabPanelProps = tabsArray.reduce((acc, key) => {
+        acc[key] = {
             id: `tabPanel-${key.toString()}`,
             labelledBy: `tab-${key.toString()}`,
-        }, 
-    }), {}) as Record<keyof T, TabPanelProps<Extract<keyof T, string>>>;
-    
+        };
+
+        return acc;
+    }, {} as Record<keyof T, TabPanelProps<string>>) as Record<keyof T, TabPanelProps<Extract<keyof T, string>>>;
+
     const contextValues: TabContext<T> = {
         tabs: transformedTabs,
         currentTab,

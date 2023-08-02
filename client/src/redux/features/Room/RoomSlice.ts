@@ -15,6 +15,7 @@ export const RoomSlice = createSlice({
     initialState,
     reducers: {
         upsertOne: adapter.upsertOne,
+        removeOne: adapter.removeOne,
     },
     extraReducers(builder) {
         builder.addCase(globalReset, () => {

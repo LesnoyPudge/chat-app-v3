@@ -32,21 +32,11 @@
             "@emails": ["src/emails/index"],
             "@root": ["src/server"],
             "@subscription": ["src/subscription/index"],
-            
-            // "@models": ["src/models/index"],
-            // "@models/schemas": ["src/models/schemas/index"],
-            // "@routes": ["src/routes/index"],
-            // "@socket": ["src/socket/index"],
-            // "@server": ["src/server"],
-            // "@subscription": ["src/subscription/index"],
-            // "@subscription/helpers": ["src/subscription/subscriptionHelpers"],
-            // "@emails": ["src/emails/index"],
-            // "@emails/components": ["src/emails/components/index"],
-            // "@assets": ["src/assets/index"],
         },
     },
     "include": [
         "src",
-        "decloration.d.ts"
+        "decloration.d.ts",
+        "../node_modules/types-string"
     ]
 }

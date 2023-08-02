@@ -49,6 +49,7 @@
     },
     "include": [
         "src", 
-        "decloration.d.ts", "../tmp/FocusHolder",
+        "decloration.d.ts",
+        "../node_modules/types-string"
     ]
 }

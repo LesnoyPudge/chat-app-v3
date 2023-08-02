@@ -1,11 +1,11 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space, Ref, MoveFocusInside } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space, Ref, MoveFocusInside, TabContext, TabContextProvider } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation, useLatest } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -611,7 +611,7 @@ const useConversation = (conversationId: string) => {
 
 import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
-import { AnyArray, AnyFunction, Endpoints, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
+import { AnyArray, AnyFunction, Endpoints, getRandomNumber, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
 import { AppSelectors, AppSlice, ChannelApi, UserApi } from '@redux/features';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
@@ -1320,23 +1320,60 @@ const PlaygroundInner23: FC = () => {
     );
 };
 
-const PlaygroundInner24: FC = () => {
-    const { count, increment } = useCounter(0);
+
+
+
+
+
+
+
+
+const TestTabs = {
+    first: <div>1</div>,
+    second: <div>2</div>,
+};
+
+const TabScroller: FC = () => {
+    const {
+        tabs,
+        currentTab,
+        isActive,
+        changeTab,
+    } = useContext(TabContext) as TabContext<typeof TestTabs>;
+
+    const orederRef = useLatest(Object.keys(tabs).reduce((acc, key, index) => {
+        acc[key] = index;
+
+        return acc;
+    }, {} as Record<keyof typeof tabs, number>));
+
+    useInterval(() => {
+        isActive.first ? changeTab.second() : changeTab.first();
+    }, 2000);
+
 
     return (
-        <div>
-            <div>
-                {count}
-            </div>
-
-            <button onClick={increment}>
-                <>inc</>
-            </button>
-        </div>
+        <>
+            {currentTab.tab}
+        </>
     );
 };
 
-const enabled = !!0;
+
+
+const PlaygroundInner24: FC = () => {
+    return (
+        <TabContextProvider tabs={TestTabs}>
+            <div>
+                <>QWEZXC</>
+            </div>
+
+            <TabScroller/>
+        </TabContextProvider>
+    );
+};
+
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -1346,32 +1383,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </Conditional>
 
             <Conditional isRendered={enabled}>
-                {/* <ReactFocusLock> */}
-                {/* <PlaygroundInner/> */}
-                {/* <PlaygroundInner2/> */}
-                {/* <PlaygroundInner3/> */}
-                {/* <PlaygroundInner4/> */}
-                {/* <PlaygroundInner5/> */}
-                {/* <PlaygroundInner6/> */}
-                {/* <PlaygroundInner7/> */}
-                {/* <PlaygroundInner8/> */}
-                {/* <PlaygroundInner9/> */}
-                {/* <PlaygroundInner10/> */}
-                {/* <PlaygroundInner11/> */}
-                {/* <PlaygroundInner12/> */}
-                {/* <PlaygroundInner13/> */}
-                {/* <PlaygroundInner14/> */}
-                {/* <PlaygroundInner15/> */}
-                {/* <PlaygroundInner16/> */}
-                {/* <PlaygroundInner17/> */}
-                {/* <PlaygroundInner18/> */}
-                {/* <PlaygroundInner19/> */}
-                {/* <PlaygroundInner20/> */}
-                {/* <PlaygroundInner21/> */}
-                {/* <PlaygroundInner22/> */}
-                <PlaygroundInner23/>
-                {/* <PlaygroundInner24/> */}
-                {/* </ReactFocusLock> */}
+                {/* <PlaygroundInner23/> */}
+                <PlaygroundInner24/>
             </Conditional>
         </>
     );
