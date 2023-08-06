@@ -1,16 +1,16 @@
 import { Conditional } from '@components';
 import { useNavigator } from '@hooks';
 import { AppSelectors, UserApi } from '@redux/features';
-import { useAppSelector } from '@redux/hooks';
+import { useMemoSelector } from '@redux/hooks';
 import { FC, PropsWithChildren, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 
 
 export const OnlyUnauthorizedRoute: FC<PropsWithChildren> = () => {
-    const isAuthorized = useAppSelector(AppSelectors.selectIsAuthorized);
-    const isInitialized = useAppSelector(AppSelectors.selectIsInitialized);
-    const isRefreshing = useAppSelector(AppSelectors.selectIsRefreshing);
+    const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized);
+    const isInitialized = useMemoSelector(AppSelectors.selectIsInitialized);
+    const isRefreshing = useMemoSelector(AppSelectors.selectIsRefreshing);
     const { navigate, stateRef } = useNavigator();
     const [refresh] = UserApi.useUserRefreshMutation();
 

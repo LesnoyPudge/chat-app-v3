@@ -17,6 +17,7 @@ export const useTextInput = (initialValue = '') => {
     return {
         value,
         deferredValue,
+        setValue,
         handleChange,
         handleReset,
         handleResetToInitial,

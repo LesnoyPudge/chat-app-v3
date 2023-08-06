@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space, Ref, MoveFocusInside, TabContext, TabContextProvider } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
@@ -614,9 +614,11 @@ import { AnyRecord } from 'ts-essentials/dist/any-record';
 import { AnyArray, AnyFunction, Endpoints, getRandomNumber, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
 import { AppSelectors, AppSlice, ChannelApi, UserApi } from '@redux/features';
-import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import { store } from '@redux/store';
+import { useAppDispatch, useAppSelector, useMemoSelector } from '@redux/hooks';
+import { RootState, store } from '@redux/store';
 import { Key } from 'ts-key-enum';
+import { memoize } from 'proxy-memoize';
+import { createMemoSelector } from '@redux/utils';
 
 
 
@@ -922,7 +924,7 @@ radio 2
 // const useSocket = () => {
 //     const socketRef = useRef(socket);
 
-//     // const isAuthorized = useAppSelector(AppSelectors.selectIsAuthorized);
+//     // const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized);
 //     // const { online } = useNetworkState();
 
 
@@ -1144,7 +1146,7 @@ const PlaygroundInner21: FC = () => {
 
 const PlaygroundInner22: FC = () => {
     const [refresh] = UserApi.useUserRefreshMutation();
-    const qwe = useAppSelector(AppSelectors.selectAppState);
+    const qwe = useMemoSelector(AppSelectors.selectAppState);
 
     useEffect(() => {
         if (qwe.isInitialized) return;
@@ -1326,11 +1328,48 @@ const PlaygroundInner23: FC = () => {
 
 
 
+const slideStyles = {
+    wrapper: 'text-black font-bold px-6',
+    first: {
+        wrapper: 'bg-rose-600',
+    },
+    second: {
+        wrapper: 'bg-green-400 h-[200px]',
+    },
+};
 
+const FirstSlide: FC = () => {
+    const [setEl, size] = useElementSize();
+
+    return (
+        <div className={twClassNames(slideStyles.wrapper, slideStyles.first.wrapper)} ref={setEl}>
+            <>1</>
+
+            <Space/>
+
+            {size.width}
+        </div>
+    );
+};
+
+
+const SecondSlide: FC = () => {
+    const [setEl, size] = useElementSize();
+
+    return (
+        <div className={twClassNames(slideStyles.wrapper, slideStyles.second.wrapper)} ref={setEl}>
+            <>2</>
+
+            <Space/>
+
+            {size.width}
+        </div>
+    );
+};
 
 const TestTabs = {
-    first: <div>1</div>,
-    second: <div>2</div>,
+    first: <FirstSlide/>,
+    second: <SecondSlide/>,
 };
 
 const TabScroller: FC = () => {
@@ -1352,10 +1391,65 @@ const TabScroller: FC = () => {
     }, 2000);
 
 
+
     return (
-        <>
-            {currentTab.tab}
-        </>
+        <div>
+            <div className='p-3 bg-slate-400 flex justify-center'>
+                <div className='overflow-hidden w-[min(440px,100vw)]'>
+                    <div
+                        className='flex items-end'
+                        style={{
+                            // translate: `${(isActive.first ? 0 : -1) * 100}%`,
+                        }}
+                    >
+                        <AnimatedTransition
+                            transitionOptions={{
+                                from: { x: 0 },
+                                enter: { x: 0 },
+                                leave: { x: -100 },
+                            }}
+                            isExist={isActive.first}
+                        >
+                            {({ style, isAnimatedExist }) => (
+                                <animated.div
+                                    style={{
+                                        translate: style.x.to((v) => `${v}%`),
+                                    }}
+                                    className='shrink-0 w-full'
+                                >
+                                    {tabs.first.tab}
+                                </animated.div>
+                            )}
+                        </AnimatedTransition>
+
+                        <AnimatedTransition
+                            transitionOptions={{
+                                from: { x: 100 },
+                                enter: { x: 0 },
+                                leave: { x: 100 },
+                            }}
+                            isExist={isActive.second}
+                        >
+                            {({ style, isAnimatedExist }) => (
+                                <animated.div
+                                    style={{
+                                        translate: style.x.to((v) => `${v}%`),
+                                    }}
+                                    className='shrink-0 w-full'
+                                >
+                                    {tabs.second.tab}
+                                </animated.div>
+                            )}
+                        </AnimatedTransition>
+
+                        {/*
+                        <div className='shrink-0 w-full'>
+                            {tabs.second.tab}
+                        </div> */}
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -1373,6 +1467,140 @@ const PlaygroundInner24: FC = () => {
     );
 };
 
+
+
+const selectCount = createMemoSelector(({ app, amount }: {app: RootState['app'], amount: number}) => {
+    console.log('tmp', amount);
+    return {
+        count: app.first,
+        count2: app.first * amount,
+    };
+});
+
+const First: FC = () => {
+    const { value, handleChange } = useTextInput('0');
+    const counter = useCounter(0);
+
+    const first = useMemoSelector((state) => {
+        return selectCount({
+            app: AppSelectors.selectAppState(state),
+            amount: parseInt(value),
+        });
+    }, [value]);
+
+    const dispatch = useAppDispatch();
+
+
+    return (
+        <>
+            <div>
+                <span>
+                    {counter.count}
+
+                    <button onClick={counter.increment}>
+                        <>inc</>
+                    </button>
+                </span>
+            </div>
+            <div>
+                {Math.random()}
+            </div>
+
+            <input type='text' value={value} onChange={handleChange}/>
+
+            <div>
+                <>first is:</>
+
+                <Space/>
+
+                {first.count}
+
+                <Space/>
+
+                {first.count2}
+            </div>
+
+            <button onClick={() => dispatch(AppSlice.actions.inc())}>
+                <>inc</>
+            </button>
+        </>
+    );
+};
+
+const selectText = (state: RootState) => ({
+    text: state.app.second,
+    uppercase: state.app.second.toUpperCase(),
+});
+
+
+const Second: FC = () => {
+    const second = useMemoSelector(selectText);
+    const { value, handleChange } = useTextInput(second.text);
+    const dispatch = useAppDispatch();
+
+    return (
+        <>
+            <div>
+                {Math.random()}
+            </div>
+
+            <div>
+                <>second is:</>
+
+                <Space/>
+
+                {second.text}
+
+                <Space/>
+
+                {second.uppercase}
+            </div>
+
+            <input className='bg-slate-500' type='text' value={value} onChange={handleChange}/>
+
+            <button onClick={() => dispatch(AppSlice.actions.setText(value))}>
+                <>inc</>
+            </button>
+        </>
+    );
+};
+
+const Third: FC = () => {
+    const myId = useMemoSelector((state) => AppSelectors.selectAppState(state).myId);
+
+    return (
+        <div>
+            <div>
+                <>third</>
+            </div>
+
+            <div>
+                {Math.random()}
+            </div>
+
+            <div>
+                {String(myId)}
+            </div>
+        </div>
+    );
+};
+
+const PlaygroundInner25: FC = () => {
+
+    return (
+        <div className='flex flex-col gap-2 items-start p-6'>
+            <First/>
+
+            <Second/>
+
+            <Third/>
+        </div>
+    );
+};
+
+
+
+
 const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
@@ -1384,7 +1612,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
 
             <Conditional isRendered={enabled}>
                 {/* <PlaygroundInner23/> */}
-                <PlaygroundInner24/>
+                {/* <PlaygroundInner24/> */}
+                <PlaygroundInner25/>
             </Conditional>
         </>
     );

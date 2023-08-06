@@ -1,4 +1,4 @@
-import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Endpoints, Entities, Id, Timestamp } from '@shared';
 import { UserApi, UserSelectors } from '@redux/features';
 import { localStorageApi } from '@utils';
@@ -13,6 +13,8 @@ type AppState = {
     isRefreshing: boolean;
     myId: Id | null;
     lastRefresh: Timestamp | null;
+    first: number;
+    second: string;
 };
 
 const getInitialState = (): AppState => {
@@ -21,6 +23,8 @@ const getInitialState = (): AppState => {
         isRefreshing: false,
         myId: null,
         lastRefresh: localStorageApi.get('lastRefresh'),
+        first: 0,
+        second: 'qwe',
     };
 };
 
@@ -33,6 +37,12 @@ export const AppSlice = createSlice({
             state.myId = payload.id;
             state.lastRefresh = Date.now();
             localStorageApi.set('lastRefresh', state.lastRefresh);
+        },
+        inc: (state) => {
+            state.first += 1;
+        },
+        setText: (state, { payload }: PayloadAction<string>) => {
+            state.second = payload;
         },
     },
     extraReducers(builder) {
@@ -99,31 +109,26 @@ export const AppSlice = createSlice({
 
 const selectAppState = (state: RootState) => state.app;
 
-const selectIsAuthorized = createSelector([selectAppState], (state) => !!state.myId);
+const selectIsAuthorized = (state: RootState) => !!selectAppState(state).myId;
 
-const selectMyId = createSelector([selectAppState], (state) => state.myId);
+const selectIsRefreshing = (state: RootState) => selectAppState(state).isRefreshing;
 
-const selectMe = createSelector(
-    [UserSelectors.selectUserState, selectMyId],
-    (users, id) => {
-        if (!id) return null;
+const selectIsInitialized = (state: RootState) => selectAppState(state).isInitialized;
 
-        const user = users.entities[id];
-        if (!user) return null;
+const selectMe = (state: RootState) => {
+    const id = selectAppState(state).myId;
+    if (!id) return null;
 
-        return user as Entities.User.WithoutCredentials;
-    },
-);
+    const user = UserSelectors.selectUserState(state).entities[id];
+    if (!user) return null;
 
-const selectIsInitialized = createSelector([selectAppState], (state) => state.isInitialized);
-
-const selectIsRefreshing = createSelector([selectAppState], (state) => state.isRefreshing);
+    return user as Entities.User.WithoutCredentials;
+};
 
 export const AppSelectors = {
     selectAppState,
     selectIsAuthorized,
-    selectMyId,
-    selectMe,
-    selectIsInitialized,
     selectIsRefreshing,
+    selectIsInitialized,
+    selectMe,
 };

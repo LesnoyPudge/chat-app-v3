@@ -35,6 +35,7 @@
             "@redux/rootApi": ["src/redux/store/rootApi"],
             "@redux/hooks": ["src/redux/hooks"],
             "@redux/globalReset": ["src/redux/store/globalReset"],
+            "@redux/utils": ["src/redux/utils"],
             "@types": ["src/types"],
             "@utils": ["src/utils"],
             "@pages/*": ["src/pages/pages/*"],

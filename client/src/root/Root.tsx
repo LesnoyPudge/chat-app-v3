@@ -1,6 +1,6 @@
 import { FC, lazy, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, Loader, Masks, DevDebug } from './components';
-import { usePreventDefault, useSocketStateHandler, useThemeSwitcher } from './hooks';
+import { usePreventDefault, useSocketStateHandler } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import { Provider } from 'react-redux';
@@ -13,7 +13,6 @@ const Router = lazy(() => import('./router'));
 
 const RootInner: FC = () => {
     usePreventDefault();
-    useThemeSwitcher();
     useSocketStateHandler();
 
     return (
