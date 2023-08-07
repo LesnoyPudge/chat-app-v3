@@ -1,4 +1,4 @@
-import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal, Icon, List, OverlayContextProvider, Ref, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip , MoveFocusInside } from '@components';
+import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal,SpriteImage, List, OverlayContextProvider, Ref, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip , MoveFocusInside } from '@components';
 import { useKeyboardNavigation, useRefWithSetter, useTextInput } from '@hooks';
 import { HeadingLevel, Heading } from '@libs';
 import { ObjectWithId } from '@types';
@@ -120,9 +120,9 @@ export const RoleContent: FC = () => {
                                                                 innerRef={ref}
                                                                 onLeftClick={openOverlay}
                                                             >
-                                                                <Icon
+                                                                <SpriteImage
                                                                     className={styles.deleteRoleIcon}
-                                                                    iconId='garbage-can-icon'
+                                                                    name='GARBAGE_CAN_ICON'
                                                                 />
                                                             </Button>
 

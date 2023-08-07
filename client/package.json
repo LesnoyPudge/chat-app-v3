@@ -6,9 +6,7 @@
         "this:build": "env-cmd -f ../.env tsc && vite build",
         "this:lint": "eslint .",
         "this:lintFix": "eslint --fix .",
-        "this:generateImageTypes": "tsc scripts/generateImageTypes.ts && node scripts/generateImageTypes.js && rimraf scripts/*.js",
-        "this:optimizeImages": "tsc scripts/optimizeImages.ts && node scripts/optimizeImages.js && rimraf scripts/*.js",
-        "this:generateImageObject": "tsc scripts/generateImageObject.ts && node scripts/generateImageObject.js && rimraf scripts/*.js",
+        "this:generateImageStuff": "tsc scripts/generateImageStuff.ts && node scripts/generateImageStuff.js && rimraf scripts/*.js",
         "//": ""
     },
     "browserslist": {

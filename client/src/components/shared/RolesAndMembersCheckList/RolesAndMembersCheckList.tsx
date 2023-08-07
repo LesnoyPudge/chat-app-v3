@@ -1,4 +1,4 @@
-import { Conditional, Scrollable, Image, Button, CheckBoxIndicatorCheck, Icon, UserAvatar , MoveFocusInside } from '@components';
+import { Conditional, Scrollable, Image, Button, CheckBoxIndicatorCheck,SpriteImage, UserAvatar , MoveFocusInside } from '@components';
 import { Heading } from '@libs';
 import { ObjectWithId, PropsWithClassName } from '@types';
 import { FC, useRef } from 'react';
@@ -119,10 +119,10 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                                                     checked={isRoleChecked}
                                                 />
 
-                                                <Icon
+                                                <SpriteImage
                                                     className={styles.itemImage}
                                                     style={{ fill: role.color }}
-                                                    iconId='role-shield-icon'
+                                                    name='ROLE_SHIELD_ICON'
                                                 />
 
                                                 <div className={styles.itemName}>

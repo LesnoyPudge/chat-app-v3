@@ -1,4 +1,4 @@
-import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext, Icon, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider, ChannelSettingsModal } from '@components';
+import { AnimatedTransition, OverlayItem, RelativelyPositioned, Button, OverlayContext,SpriteImage, LeaveChannelModal, DeleteChannelModal, InviteToChannelModal, OverlayContextProvider, ChannelSettingsModal } from '@components';
 import { animated } from '@react-spring/web';
 import { PropsWithLeaderElementRef } from '@types';
 import { getTransitionOptions } from '@utils';
@@ -32,9 +32,9 @@ const styles = {
 
 export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef }) => {
     const { isOverlayExist } = useContext(OverlayContext) as OverlayContext;
-   
+
     return (
-        <AnimatedTransition 
+        <AnimatedTransition
             isExist={isOverlayExist}
             transitionOptions={transitionOptions}
         >
@@ -54,15 +54,15 @@ export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef })
                         spacing={10}
                     >
                         <animated.div style={style}>
-                            <div 
-                                className={styles.wrapper} 
-                                role='menu' 
+                            <div
+                                className={styles.wrapper}
+                                role='menu'
                                 aria-label='Меню канала'
                             >
                                 <OverlayContextProvider>
                                     {({ openOverlay, isOverlayExist }) => (
                                         <>
-                                            <Button 
+                                            <Button
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
@@ -74,9 +74,9 @@ export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef })
                                                     <>Пригласить друзей</>
                                                 </span>
 
-                                                <Icon
+                                                <SpriteImage
                                                     className={styles.buttonIcon}
-                                                    iconId='friend-icon'
+                                                    name='FRIEND_ICON'
                                                 />
                                             </Button>
 
@@ -88,7 +88,7 @@ export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef })
                                 <OverlayContextProvider>
                                     {({ openOverlay, isOverlayExist }) => (
                                         <>
-                                            <Button 
+                                            <Button
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
@@ -100,9 +100,9 @@ export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef })
                                                     <>Настройки канала</>
                                                 </span>
 
-                                                <Icon
+                                                <SpriteImage
                                                     className={styles.buttonIcon}
-                                                    iconId='settings-gear'
+                                                    name='SETTINGS_GEAR'
                                                 />
                                             </Button>
 
@@ -114,7 +114,7 @@ export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef })
                                 <OverlayContextProvider>
                                     {({ openOverlay, isOverlayExist }) => (
                                         <>
-                                            <Button 
+                                            <Button
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
@@ -126,9 +126,9 @@ export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef })
                                                     <>Покинуть канал</>
                                                 </span>
 
-                                                <Icon
+                                                <SpriteImage
                                                     className={styles.buttonIcon}
-                                                    iconId='doorway-icon'
+                                                    name='DOORWAY_ICON'
                                                 />
                                             </Button>
 
@@ -140,7 +140,7 @@ export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef })
                                 <OverlayContextProvider>
                                     {({ openOverlay, isOverlayExist }) => (
                                         <>
-                                            <Button 
+                                            <Button
                                                 className={styles.button}
                                                 role='menuitem'
                                                 hasPopup='dialog'
@@ -152,9 +152,9 @@ export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef })
                                                     <>Удалить канал</>
                                                 </span>
 
-                                                <Icon
+                                                <SpriteImage
                                                     className={styles.buttonIcon}
-                                                    iconId='garbage-can-icon'
+                                                    name='GARBAGE_CAN_ICON'
                                                 />
                                             </Button>
 

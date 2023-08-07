@@ -1,9 +1,9 @@
 import { FC, useContext, useRef } from 'react';
-import { Button, ChannelSettingsModalTabs, DeleteChannelModal, Icon, OverlayContextProvider, Separator, TabContext, TabList } from '@components';
+import { Button, ChannelSettingsModalTabs, DeleteChannelModal,SpriteImage, OverlayContextProvider, Separator, TabContext, TabList , MoveFocusInside } from '@components';
 import { NavigationHeading, NavigationItem } from '../../../components';
 import { objectKeysToIdArray } from '@utils';
 import { useKeyboardNavigation } from '@hooks';
-import { MoveFocusInside } from '@components';
+
 
 
 
@@ -25,8 +25,8 @@ export const Navigation: FC = () => {
 
     return (
         <div>
-            <TabList 
-                label='Настройки канала' 
+            <TabList
+                label='Настройки канала'
                 orientation='vertical'
                 tabIndex={0}
                 innerRef={setRoot}
@@ -121,9 +121,9 @@ export const Navigation: FC = () => {
                             <NavigationItem>
                                 <>Удалить канал</>
 
-                                <Icon
+                                <SpriteImage
                                     className={styles.deleteChannelIcon}
-                                    iconId='garbage-can-icon'
+                                    name='GARBAGE_CAN_ICON'
                                 />
                             </NavigationItem>
                         </Button>

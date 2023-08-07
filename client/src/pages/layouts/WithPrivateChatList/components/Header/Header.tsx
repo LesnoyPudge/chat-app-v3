@@ -1,4 +1,4 @@
-import { TopBar, Button, Icon } from '@components';
+import { TopBar, Button,SpriteImage } from '@components';
 import { useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
@@ -26,12 +26,12 @@ export const Header: FC = () => {
                 isActive={isActive}
                 onLeftClick={() => navigateTo.app()}
             >
-                <Icon
+                <SpriteImage
                     className={twClassNames(
                         styles.icon,
                         { 'fill-icon-200': isActive },
                     )}
-                    iconId='friend-icon'
+                    name='FRIEND_ICON'
                 />
 
                 <span className='font-medium'>

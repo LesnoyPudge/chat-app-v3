@@ -9,8 +9,8 @@ export interface File {
     data: Buffer;
 }
 
-export interface Folder {
-    name: string;
+export interface Folder<FNAME = string> {
+    name: FNAME;
     files: File[];
     folders: Folder[];
 }
@@ -20,7 +20,7 @@ export const getFolderTree = (
     extensions?: AnyArray,
 ): Folder => {
     const tree: Folder = { files: [], folders: [], name: '' };
-    
+
     const fillFolder = (
         currentPath: string,
         folder: Folder,
@@ -32,16 +32,16 @@ export const getFolderTree = (
             const stat = fs.statSync(filePath);
 
             const validExtension = (
-                extensions 
-                    ? extensions.some((ext) => fileName.endsWith(ext)) 
+                extensions
+                    ? extensions.some((ext) => fileName.endsWith(ext))
                     : true
             );
-    
+
             if (stat.isFile() && validExtension) {
                 const fileData = fs.readFileSync(filePath);
                 folder.files.push({ data: fileData, name: fileName });
             }
-    
+
             if (stat.isDirectory()) {
                 const newFolder: Folder = { name: fileName, files: [], folders: [] };
                 folder.folders.push(newFolder);

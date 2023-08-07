@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Button, Conditional, Icon, Ref, TabContext, Tooltip } from '@components';
+import { Button, Conditional,SpriteImage, Ref, TabContext, Tooltip } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { getRandomNumber, twClassNames } from '@utils';
 import { useNavigator } from '@hooks';
@@ -24,7 +24,7 @@ export const ActionButtons: FC<ActionButtons> = ({
 }) => {
     const { isActive } = useContext(TabContext) as TabContext<AppPageTabs>;
     const { navigateTo } = useNavigator();
-    
+
     const handleNavigateToChat = () => navigateTo.privateChat(userId);
     const handleDeleteFriend = () => console.log('delete friend', userId);
     const handleAcceptFriendRequest = () => console.log('accept', userId);
@@ -39,20 +39,20 @@ export const ActionButtons: FC<ActionButtons> = ({
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
-                            <Button 
+                            <Button
                                 className={styles.button}
                                 label='Перейти к сообщениям'
                                 tabIndex={tabIndex}
                                 innerRef={ref}
                                 onLeftClick={handleNavigateToChat}
                             >
-                                <Icon
+                                <SpriteImage
                                     className={styles.icon}
-                                    iconId='message-bubble-icon'
+                                    name='MESSAGE_BUBBLE_ICON'
                                 />
                             </Button>
 
-                            <Tooltip 
+                            <Tooltip
                                 preferredAlignment='top'
                                 leaderElementRef={ref}
                             >
@@ -64,20 +64,20 @@ export const ActionButtons: FC<ActionButtons> = ({
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
-                            <Button 
+                            <Button
                                 className={twClassNames(styles.button, styles.buttonDanger)}
                                 label='Удалить из друзей'
                                 tabIndex={tabIndex}
                                 innerRef={ref}
                                 onLeftClick={handleDeleteFriend}
                             >
-                                <Icon
+                                <SpriteImage
                                     className={styles.icon}
-                                    iconId='garbage-can-icon'
+                                    name='GARBAGE_CAN_ICON'
                                 />
                             </Button>
 
-                            <Tooltip 
+                            <Tooltip
                                 preferredAlignment='top'
                                 leaderElementRef={ref}
                             >
@@ -92,20 +92,20 @@ export const ActionButtons: FC<ActionButtons> = ({
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
-                            <Button 
+                            <Button
                                 className={styles.button}
                                 label='Принять запрос в друзья'
                                 tabIndex={tabIndex}
                                 innerRef={ref}
                                 onLeftClick={handleAcceptFriendRequest}
                             >
-                                <Icon
+                                <SpriteImage
                                     className={styles.icon}
-                                    iconId='check-icon'
+                                    name='CHECK_ICON'
                                 />
                             </Button>
 
-                            <Tooltip 
+                            <Tooltip
                                 preferredAlignment='top'
                                 leaderElementRef={ref}
                             >
@@ -118,20 +118,20 @@ export const ActionButtons: FC<ActionButtons> = ({
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
-                            <Button 
+                            <Button
                                 className={twClassNames(styles.button, styles.buttonDanger)}
                                 label='Отклонить запрос в друзья'
                                 tabIndex={tabIndex}
                                 innerRef={ref}
                                 onLeftClick={handleRejectFriendRequest}
                             >
-                                <Icon
+                                <SpriteImage
                                     className={styles.icon}
-                                    iconId='cross-icon'
+                                    name='CROSS_ICON'
                                 />
                             </Button>
 
-                            <Tooltip 
+                            <Tooltip
                                 preferredAlignment='top'
                                 leaderElementRef={ref}
                             >
@@ -146,20 +146,20 @@ export const ActionButtons: FC<ActionButtons> = ({
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
-                            <Button 
+                            <Button
                                 className={twClassNames(styles.button, styles.buttonDanger)}
                                 label='Отозвать запрос в друзья'
                                 tabIndex={tabIndex}
                                 innerRef={ref}
                                 onLeftClick={handleRevokeFriendRequest}
                             >
-                                <Icon
+                                <SpriteImage
                                     className={styles.icon}
-                                    iconId='cross-icon'
+                                    name='CROSS_ICON'
                                 />
                             </Button>
 
-                            <Tooltip 
+                            <Tooltip
                                 preferredAlignment='top'
                                 leaderElementRef={ref}
                             >
@@ -174,20 +174,20 @@ export const ActionButtons: FC<ActionButtons> = ({
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
-                            <Button 
+                            <Button
                                 className={twClassNames(styles.button)}
                                 label='Разблокировать пользователя'
                                 tabIndex={tabIndex}
                                 innerRef={ref}
                                 onLeftClick={handleUnblock}
                             >
-                                <Icon
+                                <SpriteImage
                                     className={styles.icon}
-                                    iconId='unblock-icon'
+                                    name='UNBLOCK_ICON'
                                 />
                             </Button>
 
-                            <Tooltip 
+                            <Tooltip
                                 preferredAlignment='top'
                                 leaderElementRef={ref}
                             >

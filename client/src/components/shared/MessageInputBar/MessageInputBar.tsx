@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { SlateEditor, SlateContainer, FormikFileInput, getInitialSlateValue, FormikFileUploadContextProvider, isDescendantEmpty } from '@libs';
-import { Button, Icon, MessageEditorWrapper } from '@components';
+import { Button,SpriteImage, MessageEditorWrapper } from '@components';
 import { OpenEmojiPickerButton, Attachments, AttachmentsModals } from './components';
 import { Form, Formik } from 'formik';
 import { Descendant } from 'slate';
@@ -40,17 +40,17 @@ export const MessageInputBar: FC<MessageInputBar> = ({
         const isEmptyMessage = isDescendantEmpty(formValues.content) && !formValues.attachments.length;
         if (isEmptyMessage) return console.log('empty message');
 
-        console.log('send message', formValues);      
+        console.log('send message', formValues);
     };
 
     return (
-        <Formik 
-            initialValues={initialValues} 
+        <Formik
+            initialValues={initialValues}
             onSubmit={handleSubmit}
         >
             {({ values, submitForm, setFieldValue }) => (
-                <FormikFileUploadContextProvider 
-                    name='attachments' 
+                <FormikFileUploadContextProvider
+                    name='attachments'
                     label='Добавить вложение'
                     options={{
                         accept: '*',
@@ -66,12 +66,12 @@ export const MessageInputBar: FC<MessageInputBar> = ({
                             <MessageEditorWrapper>
                                 <div>
                                     <Attachments/>
-                                
+
                                     <div className='flex'>
                                         <FormikFileInput className={styles.button}>
-                                            <Icon
+                                            <SpriteImage
                                                 className={styles.icon}
-                                                iconId='add-file-icon'
+                                                name='ADD_FILE_ICON'
                                             />
                                         </FormikFileInput>
 
@@ -83,14 +83,14 @@ export const MessageInputBar: FC<MessageInputBar> = ({
 
                                         <OpenEmojiPickerButton className={styles.button}/>
 
-                                        <Button 
+                                        <Button
                                             className={styles.button}
                                             type='submit'
                                             label='Отправить сообщение'
                                         >
-                                            <Icon
+                                            <SpriteImage
                                                 className={styles.icon}
-                                                iconId='send-message-icon'
+                                                name='SEND_MESSAGE_ICON'
                                             />
                                         </Button>
                                     </div>

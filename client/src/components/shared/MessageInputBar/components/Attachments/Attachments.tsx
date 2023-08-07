@@ -2,7 +2,7 @@ import { PropsWithClassName, Size } from '@types';
 import { twClassNames } from '@utils';
 import { useFormikContext } from 'formik';
 import { FC, useContext, useRef } from 'react';
-import { Button, Conditional, Icon, Image, List, Ref, Scrollable, Tooltip } from '@components';
+import { Button, Conditional,SpriteImage, Image, List, Ref, Scrollable, Tooltip } from '@components';
 import { MessageInputBarFormValues } from '../../MessageInputBar';
 import { FormikFileUploadContext } from '@libs';
 import fileTextImage from '@assets/file-text-image.svg';
@@ -36,7 +36,7 @@ export const Attachments: FC<PropsWithClassName> = ({
     return (
         <Conditional isRendered={!!values.attachments.length}>
             <div ref={wrapperRef}>
-                <Scrollable 
+                <Scrollable
                     className='h-full'
                     direction='horizontal'
                     onContentResize={handleContentResize}
@@ -62,13 +62,13 @@ export const Attachments: FC<PropsWithClassName> = ({
                                                             innerRef={ref}
                                                             onLeftClick={() => removeFile(index)}
                                                         >
-                                                            <Icon
+                                                            <SpriteImage
                                                                 className={styles.icon}
-                                                                iconId='garbage-can-icon'
+                                                                name='GARBAGE_CAN_ICON'
                                                             />
                                                         </Button>
 
-                                                        <Tooltip 
+                                                        <Tooltip
                                                             preferredAlignment='top'
                                                             leaderElementRef={ref}
                                                         >

@@ -1,6 +1,6 @@
 import { animated } from '@react-spring/web';
 import { FC, useContext } from 'react';
-import { Tooltip, OverlayItem, AnimatedTransition, Button, EmojiPicker, Icon, OverlayContextProvider, RelativelyPositioned, Ref } from '@components';
+import { Tooltip, OverlayItem, AnimatedTransition, Button, EmojiPicker,SpriteImage, OverlayContextProvider, RelativelyPositioned, Ref } from '@components';
 import { PropsWithClassName } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
 import { MessageContext } from '../../Message';
@@ -48,9 +48,9 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                                         innerRef={ref}
                                         onLeftClick={openOverlay}
                                     >
-                                        <Icon
+                                        <SpriteImage
                                             className={styles.buttonIcon}
-                                            iconId='add-reaction-icon'
+                                            name='ADD_REACTION_ICON'
                                         />
                                     </Button>
 
@@ -108,9 +108,9 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                             innerRef={ref}
                             onLeftClick={handleOpenEditor}
                         >
-                            <Icon
+                            <SpriteImage
                                 className={styles.buttonIcon}
-                                iconId='pen-icon'
+                                name='PEN_ICON'
                             />
                         </Button>
 
@@ -138,9 +138,9 @@ export const MessageControlBar: FC<PropsWithClassName> = ({
                             innerRef={ref}
                             onLeftClick={() => console.log('open right click message menu')}
                         >
-                            <Icon
+                            <SpriteImage
                                 className={styles.buttonIcon}
-                                iconId='more-icon'
+                                name='MORE_ICON'
                             />
                         </Button>
 

@@ -1,4 +1,4 @@
-import { AppSettingsModalTabs, Button, Icon, Link, Separator, TabContext, TabList , MoveFocusInside } from '@components';
+import { AppSettingsModalTabs, Button,SpriteImage, Link, Separator, TabContext, TabList , MoveFocusInside } from '@components';
 import { useKeyboardNavigation } from '@hooks';
 import { objectKeysToIdArray } from '@utils';
 import { FC, useContext, useRef } from 'react';
@@ -85,9 +85,9 @@ export const Navigation: FC = () => {
                 <NavigationItem className={styles.logoutButton}>
                     <span>Выйти</span>
 
-                    <Icon
+                    <SpriteImage
                         className={styles.logoutIcon}
-                        iconId='doorway-icon'
+                        name='DOORWAY_ICON'
                     />
                 </NavigationItem>
             </Button>
@@ -100,9 +100,9 @@ export const Navigation: FC = () => {
                     href='https://twitter.com/discord'
                     label='Мы в twitter'
                 >
-                    <Icon
+                    <SpriteImage
                         className={styles.socialIcon}
-                        iconId='twitter-icon'
+                        name='TWITTER_ICON'
                     />
                 </Link>
 
@@ -111,9 +111,9 @@ export const Navigation: FC = () => {
                     href='https://www.facebook.com/discord'
                     label='Мы в facebook'
                 >
-                    <Icon
+                    <SpriteImage
                         className={styles.socialIcon}
-                        iconId='facebook-icon'
+                        name='FACEBOOK_ICON'
                     />
                 </Link>
 
@@ -122,9 +122,9 @@ export const Navigation: FC = () => {
                     href='https://www.instagram.com/discord/'
                     label='Мы в instagram'
                 >
-                    <Icon
+                    <SpriteImage
                         className={styles.socialIcon}
-                        iconId='instagram-icon'
+                        name='INSTAGRAM_ICON'
                     />
                 </Link>
             </div>

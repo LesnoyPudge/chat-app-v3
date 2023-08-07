@@ -1,8 +1,10 @@
-import { AppSettingsModal, Button, Icon, OverlayContextProvider, Ref, Tooltip } from '@components';
+import { AppSettingsModal, Button,SpriteImage, OverlayContextProvider, Ref, Tooltip } from '@components';
 import { conditional } from '@utils';
 import { FC } from 'react';
-import { useToggle } from 'usehooks-ts';
 import { UserInfo } from './components';
+import { useAppDispatch, useMemoSelector } from '@redux/hooks';
+import { AppSelectors, AppSlice } from '@redux/features';
+import { IMAGES } from '@generated';
 
 
 
@@ -14,14 +16,18 @@ const styles = {
 };
 
 export const UserToolBar: FC = () => {
-    const [isVoiceMuted, toggleVoice] = useToggle(false);
-    const [isSoundMuted, toggleSound] = useToggle(false);
+    const isMuted = useMemoSelector((state) => AppSelectors.selectAppState(state).muted);
+    const isDeaf = useMemoSelector((state) => AppSelectors.selectAppState(state).deaf);
+    const { dispatch } = useAppDispatch();
 
-    const voiceIconId = conditional('microphone-muted', 'microphone', isVoiceMuted);
-    const soundIconId = conditional('headphone-muted', 'headphone', isSoundMuted);
+    const toggleMute = () => dispatch(AppSlice.actions.toggleMute());
+    const toggleDeaf = () => dispatch(AppSlice.actions.toggleDeaf());
 
-    const voiceTooltip = conditional('Вкл. микрофон', 'Откл. микрофон', isVoiceMuted);
-    const soundTooltip = conditional('Вкл. звук', 'Откл. звук', isSoundMuted);
+    const voiceIconId = isMuted ? IMAGES.SPRITE.MICROPHONE_MUTED.NAME : IMAGES.SPRITE.MICROPHONE.NAME;
+    const soundIconId = isDeaf ? IMAGES.SPRITE.HEADPHONE_MUTED.NAME : IMAGES.SPRITE.HEADPHONE.NAME;
+
+    const voiceTooltip = conditional('Вкл. микрофон', 'Откл. микрофон', isMuted);
+    const soundTooltip = conditional('Вкл. звук', 'Откл. звук', isDeaf);
 
     return (
         <div className={styles.wrapper}>
@@ -30,20 +36,20 @@ export const UserToolBar: FC = () => {
             <Ref<HTMLButtonElement>>
                 {(ref) => (
                     <>
-                        <Button 
+                        <Button
                             className={styles.button}
                             label='Переключить состояние микрофона'
-                            isActive={isVoiceMuted}
+                            isActive={isMuted}
                             innerRef={ref}
-                            onLeftClick={toggleVoice}
+                            onLeftClick={toggleMute}
                         >
-                            <Icon
+                            <SpriteImage
                                 className={styles.icon}
-                                iconId={voiceIconId}
+                                name={voiceIconId}
                             />
                         </Button>
 
-                        <Tooltip 
+                        <Tooltip
                             preferredAlignment='top'
                             leaderElementRef={ref}
                         >
@@ -56,20 +62,20 @@ export const UserToolBar: FC = () => {
             <Ref<HTMLButtonElement>>
                 {(ref) => (
                     <>
-                        <Button 
+                        <Button
                             className={styles.button}
                             label='Переключить состояние звука'
-                            isActive={isSoundMuted}
+                            isActive={isDeaf}
                             innerRef={ref}
-                            onLeftClick={toggleSound}
+                            onLeftClick={toggleDeaf}
                         >
-                            <Icon
+                            <SpriteImage
                                 className={styles.icon}
-                                iconId={soundIconId}
+                                name={soundIconId}
                             />
                         </Button>
 
-                        <Tooltip 
+                        <Tooltip
                             preferredAlignment='top'
                             leaderElementRef={ref}
                         >
@@ -84,7 +90,7 @@ export const UserToolBar: FC = () => {
                     <Ref<HTMLButtonElement>>
                         {(ref) => (
                             <>
-                                <Button 
+                                <Button
                                     className={styles.button}
                                     label='Открыть настройки'
                                     hasPopup='dialog'
@@ -92,13 +98,13 @@ export const UserToolBar: FC = () => {
                                     innerRef={ref}
                                     onLeftClick={openOverlay}
                                 >
-                                    <Icon
+                                    <SpriteImage
                                         className={styles.icon}
-                                        iconId='settings-gear'
+                                        name='SETTINGS_GEAR'
                                     />
                                 </Button>
 
-                                <Tooltip 
+                                <Tooltip
                                     preferredAlignment='top'
                                     leaderElementRef={ref}
                                 >

@@ -1,4 +1,4 @@
-import { AnimatedTransition, Button, Conditional, Emoji, EmojiPicker, Icon, List, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, Tooltip } from '@components';
+import { AnimatedTransition, Button, Conditional, Emoji, EmojiPicker,SpriteImage, List, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, Tooltip } from '@components';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { conditional, getTransitionOptions, twClassNames } from '@utils';
@@ -94,9 +94,9 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                                         isActive={isOverlayExist}
                                         onLeftClick={openOverlay}
                                     >
-                                        <Icon
+                                        <SpriteImage
                                             className={styles.addReactionIcon}
-                                            iconId='add-reaction-icon'
+                                            name='ADD_REACTION_ICON'
                                         />
                                     </Button>
 

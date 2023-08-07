@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, Icon, OverlayContextProvider, TabContext, TabPanel, UserAvatar } from '@components';
+import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional,SpriteImage, OverlayContextProvider, TabContext, TabPanel, UserAvatar } from '@components';
 import { RoleContentTabs } from '../..';
 import { useFormikContext } from 'formik';
 
@@ -44,7 +44,7 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
     const removeMember = (memberIdToRemove: string) => console.log('remove role', memberIdToRemove);
 
     return (
-        <TabPanel 
+        <TabPanel
             className={styles.wrapper}
             {...tabPanelProps.members}
         >
@@ -78,7 +78,7 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
                         const handleRemoveMember = () => removeMember(member.id);
 
                         return (
-                            <li 
+                            <li
                                 className={styles.item}
                                 key={member.id}
                             >
@@ -97,9 +97,9 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
                                     label={`Удалить пользователя ${member.name} из списка`}
                                     onLeftClick={handleRemoveMember}
                                 >
-                                    <Icon
+                                    <SpriteImage
                                         className={styles.removeButtonIcon}
-                                        iconId='cross-icon'
+                                        name='CROSS_ICON'
                                     />
                                 </Button>
                             </li>

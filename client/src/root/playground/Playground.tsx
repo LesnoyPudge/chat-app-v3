@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput, Icon, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
@@ -966,7 +966,7 @@ const useEntitySubscribe = (entityId: Id, entityName: ValueOf<typeof SUBSCRIBABL
 
 const PlaygroundInner18: FC = () => {
     // const zxc = useEntitySubscribe('123', 'Channel');
-    const dispatch = useAppDispatch();
+    const { dispatch } = useAppDispatch();
     const { count, increment, decrement } = useCounter(1);
 
     return (
@@ -1008,7 +1008,7 @@ const PlaygroundInner18: FC = () => {
         </div>
     );
 };
-{/* <Icon iconId=''/>; */}
+{/* <SpriteImage name=''/>; */}
 
 const PlaygroundInner19: FC = () => {
     // console.log(IMAGES);
@@ -1019,9 +1019,9 @@ const PlaygroundInner19: FC = () => {
                     {(key) => {
                         return (
                             <div className='[&>*]:w-1/2 h-screen [&>*]:h-auto [&>*]:object-contain flex [&>*]:bg-slate-300 [&>*]:outline [&>*]:outline-red-700 [&>*]:outline-4'>
-                                <img src={IMAGES[key].path.replace('generatedImages', 'rawImages')}/>
+                                {/* <img src={IMAGES[key].path.replace('generatedImages', 'rawImages')}/>
 
-                                <img src={IMAGES[key].path}/>
+                                <img src={IMAGES[key].path}/> */}
                             </div>
                         );
                     }}
@@ -1488,7 +1488,7 @@ const First: FC = () => {
         });
     }, [value]);
 
-    const dispatch = useAppDispatch();
+    const { dispatch } = useAppDispatch();
 
 
     return (
@@ -1536,7 +1536,7 @@ const selectText = (state: RootState) => ({
 const Second: FC = () => {
     const second = useMemoSelector(selectText);
     const { value, handleChange } = useTextInput(second.text);
-    const dispatch = useAppDispatch();
+    const { dispatch } = useAppDispatch();
 
     return (
         <>
@@ -1598,7 +1598,63 @@ const PlaygroundInner25: FC = () => {
     );
 };
 
+import { ReactComponent as SVGImage } from '/src/root/playground/archive-check-svgrepo-com.svg';
 
+
+
+const PlaygroundInner26: FC = () => {
+
+    return (
+        <div className='flex flex-col gap-2 items-start p-6'>
+            <div>
+                <>qwe</>
+            </div>
+            <div className=''>
+                {/* <svg id='my-svg' viewBox='0 0 24 24' className=''>
+                    <circle cx='50' cy='50' r='40' fill='blue' />
+                </svg> */}
+
+                <svg id='my-svg' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+                    <path d='M2 5C2 4.05719 2 3.58579 2.29289 3.29289C2.58579 3 3.05719 3 4 3H20C20.9428 3 21.4142 3 21.7071 3.29289C22 3.58579 22 4.05719 22 5C22 5.94281 22 6.41421 21.7071 6.70711C21.4142 7 20.9428 7 20 7H4C3.05719 7 2.58579 7 2.29289 6.70711C2 6.41421 2 5.94281 2 5Z'/>
+                    <path fillRule='evenodd' clipRule='evenodd' d='M20.0689 8.49993C20.2101 8.49999 20.3551 8.50005 20.5 8.49805V12.9999C20.5 16.7711 20.5 18.6568 19.3284 19.8283C18.1569 20.9999 16.2712 20.9999 12.5 20.9999H11.5C7.72876 20.9999 5.84315 20.9999 4.67157 19.8283C3.5 18.6568 3.5 16.7711 3.5 12.9999V8.49805C3.64488 8.50005 3.78999 8.49999 3.93114 8.49993H20.0689ZM14.9995 12.1906C15.3085 12.4664 15.3353 12.9405 15.0595 13.2495L11.488 17.2495C11.3457 17.4089 11.1422 17.5 10.9286 17.5C10.7149 17.5 10.5114 17.4089 10.3691 17.2495L8.94055 15.6495C8.66468 15.3405 8.69152 14.8664 9.0005 14.5906C9.30947 14.3147 9.78359 14.3415 10.0595 14.6505L10.9286 15.6239L13.9406 12.2505C14.2164 11.9415 14.6905 11.9147 14.9995 12.1906Z'/>
+                </svg>
+            </div>
+            {/* <Image
+                className='w-[300px] h-[300px] fill-slate-300'
+                src={SVGImage}
+            /> */}
+
+            <div className='relative w-[50px] h-[50px] fill-rose-400'>
+                <svg className='w-[50px] h-[50px]'>
+                    <use xlinkHref='#my-svg'/>
+                </svg>
+            </div>
+
+            {/* <SVGImage className='w-[300px] h-[300px] fill-rose-300'/> */}
+
+            <SpriteImage className='w-[50px] h-[50px] fill-rose-400' name='HEADPHONE'/>
+
+            <NewIcon className='w-[50px] h-[50px] fill-rose-400' name={IMAGES.SPRITE.DISCORD_LOGO.NAME}/>
+        </div>
+    );
+};
+
+interface NewIcon extends PropsWithClassName {
+    name: keyof typeof IMAGES.SPRITE;
+}
+
+const NewIcon: FC<NewIcon> = ({
+    className = '',
+    name,
+}) => {
+    const id = `#${name}`;
+
+    return (
+        <svg className={className}>
+            <use xlinkHref={id}/>
+        </svg>
+    );
+};
 
 
 const enabled = !!1;
@@ -1611,9 +1667,7 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </Conditional>
 
             <Conditional isRendered={enabled}>
-                {/* <PlaygroundInner23/> */}
-                {/* <PlaygroundInner24/> */}
-                <PlaygroundInner25/>
+                <PlaygroundInner26/>
             </Conditional>
         </>
     );

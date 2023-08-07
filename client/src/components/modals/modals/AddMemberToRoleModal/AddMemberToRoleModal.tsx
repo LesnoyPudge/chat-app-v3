@@ -1,10 +1,10 @@
-import { Button, CheckBoxIndicatorCheck, Conditional, Icon, Image, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
+import { Button, CheckBoxIndicatorCheck, Conditional,SpriteImage, Image, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar , MoveFocusInside } from '@components';
 import { FC, useContext, useRef } from 'react';
 import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalSubtitle } from '../../components';
 import { useKeyboardNavigation, useTextInput, useSet } from '@hooks';
 import notFoundImage from '@assets/not-found-image.svg';
 import { twClassNames } from '@utils';
-import { MoveFocusInside } from '@components';
+
 
 
 
@@ -82,9 +82,9 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
                     </ModalTitle>
 
                     <ModalSubtitle className={styles.subtitle}>
-                        <Icon
+                        <SpriteImage
                             className={styles.subtitleIcon}
-                            iconId='role-shield-icon'
+                            name='ROLE_SHIELD_ICON'
                             style={{ fill: role.color }}
                         />
 

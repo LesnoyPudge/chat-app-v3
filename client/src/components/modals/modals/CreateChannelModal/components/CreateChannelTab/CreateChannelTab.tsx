@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, Conditional, TabContext, Image, Icon, CreateChannelModalTabs, FieldLabel, TextInput } from '@components';
+import { Button, Conditional, TabContext, Image,SpriteImage, CreateChannelModalTabs, FieldLabel, TextInput } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { EncodedFile } from '@types';
 import { FormikFileInput, FormikFileUploadContextProvider, FormikTextInput } from '@libs';
@@ -30,8 +30,8 @@ export const CreateChannelTab: FC = () => {
             initialValues={initialValues}
             onSubmit={handleSubmit}
         >
-            <FormikFileUploadContextProvider 
-                name='avatar' 
+            <FormikFileUploadContextProvider
+                name='avatar'
                 label='Загрузить значок канала'
                 options={{
                     accept: '.jpg,.jpeg,.png',
@@ -50,7 +50,7 @@ export const CreateChannelTab: FC = () => {
                             <>Их можно будет изменить в любой момент.</>
                         </ModalSubtitle>
                     </ModalHeader>
-        
+
                     <ModalContent>
                         <FormikFileInput className='self-center mb-6'>
                             {({ value }) => {
@@ -71,9 +71,9 @@ export const CreateChannelTab: FC = () => {
                                                 </span>
 
                                                 <div className='absolute top-0 right-0 w-6 h-6 p-1.5 bg-brand rounded-full'>
-                                                    <Icon
+                                                    <SpriteImage
                                                         className='w-full h-full fill-white'
-                                                        iconId='plus-icon'
+                                                        name='PLUS_ICON'
                                                     />
                                                 </div>
                                             </div>
@@ -100,7 +100,7 @@ export const CreateChannelTab: FC = () => {
                             )}
                         </FormikTextInput>
                     </ModalContent>
-        
+
                     <ModalFooter>
                         <Button
                             stylingPreset='lite'

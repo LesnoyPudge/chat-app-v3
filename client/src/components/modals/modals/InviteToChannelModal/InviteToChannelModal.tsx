@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Button, Conditional, FieldLabel, Icon, Id, List, ModalWindow, Scrollable, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
+import { Button, Conditional, FieldLabel,SpriteImage, Id, List, ModalWindow, Scrollable, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
 import { ModalContainer, ModalContent, ModalHeader, ModalTitle } from '../../components';
 import { conditional, copyToClipboard } from '@utils';
 import { useTextInput, useThrottle } from '@hooks';
@@ -60,7 +60,7 @@ export const InviteToChannelModal: FC = () => {
     };
 
     return (
-        <ModalWindow 
+        <ModalWindow
             withBackdrop
             label='Пригласить на канал'
         >
@@ -107,9 +107,9 @@ export const InviteToChannelModal: FC = () => {
                                                         </div>
 
                                                         <Button className={styles.addButton}>
-                                                            <Icon
+                                                            <SpriteImage
                                                                 className={styles.addIcon}
-                                                                iconId='plus-icon'
+                                                                name='PLUS_ICON'
                                                             />
                                                         </Button>
                                                     </li>
@@ -154,7 +154,7 @@ export const InviteToChannelModal: FC = () => {
                                         readOnly
                                     />
 
-                                    <Button 
+                                    <Button
                                         className={styles.copyButton}
                                         stylingPreset='brand'
                                         onLeftClick={handleCopyInvitation}

@@ -15,6 +15,8 @@ type AppState = {
     lastRefresh: Timestamp | null;
     first: number;
     second: string;
+    muted: boolean;
+    deaf: boolean;
 };
 
 const getInitialState = (): AppState => {
@@ -25,6 +27,8 @@ const getInitialState = (): AppState => {
         lastRefresh: localStorageApi.get('lastRefresh'),
         first: 0,
         second: 'qwe',
+        muted: false,
+        deaf: false,
     };
 };
 
@@ -38,11 +42,21 @@ export const AppSlice = createSlice({
             state.lastRefresh = Date.now();
             localStorageApi.set('lastRefresh', state.lastRefresh);
         },
+
         inc: (state) => {
             state.first += 1;
         },
+
         setText: (state, { payload }: PayloadAction<string>) => {
             state.second = payload;
+        },
+
+        toggleMute: (state) => {
+            state.muted = !state.muted;
+        },
+
+        toggleDeaf: (state) => {
+            state.deaf = !state.deaf;
         },
     },
     extraReducers(builder) {

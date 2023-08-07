@@ -1,8 +1,9 @@
-import { Button, Icon, OverlayContextProvider, Ref, TopBar } from '@components';
+import { Button,SpriteImage, OverlayContextProvider, Ref, TopBar } from '@components';
 import { useNavigator } from '@hooks';
 import { conditional, twClassNames } from '@utils';
 import { FC } from 'react';
 import { ChannelMenu } from './components';
+import { IMAGES } from '@generated';
 
 
 
@@ -20,15 +21,15 @@ export const Header: FC = () => {
     const { params } = useNavigator();
 
     const channelLabel = `ch name ${params.channelId}`;
-    
+
     return (
         <OverlayContextProvider>
             {({ openOverlay, isOverlayExist }) => {
-                const iconId = conditional('cross-icon', 'dropdown-arrow-icon', isOverlayExist);
-                
+                const iconId = isOverlayExist ? IMAGES.SPRITE.CROSS_ICON.NAME : IMAGES.SPRITE.DROPDOWN_ARROW_ICON.NAME;
+
                 return (
                     <TopBar className={twClassNames(
-                        styles.topBar.base, 
+                        styles.topBar.base,
                         { [styles.topBar.acvive]: isOverlayExist },
                     )}>
                         <Ref<HTMLButtonElement>>
@@ -45,10 +46,10 @@ export const Header: FC = () => {
                                         <span className={styles.buttonText}>
                                             {channelLabel}
                                         </span>
-            
-                                        <Icon
+
+                                        <SpriteImage
                                             className={styles.buttonIcon}
-                                            iconId={iconId}
+                                            name={iconId}
                                         />
                                     </Button>
 

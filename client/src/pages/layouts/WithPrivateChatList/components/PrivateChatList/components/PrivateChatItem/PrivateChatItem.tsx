@@ -1,5 +1,5 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { UserAvatar, Button, Icon, Tooltip, Ref } from '@components';
+import { UserAvatar, Button,SpriteImage, Tooltip, Ref } from '@components';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
@@ -42,7 +42,7 @@ const styles = {
     hideChatIcon: 'h-5 w-5 m-auto transition-none',
 };
 
-export const PrivateChatItem: FC<PrivateChatItem> = ({ 
+export const PrivateChatItem: FC<PrivateChatItem> = ({
     privateChat,
     tabIndex,
     withFocusSet,
@@ -63,7 +63,7 @@ export const PrivateChatItem: FC<PrivateChatItem> = ({
 
     return (
         <div className={styles.wrapper}>
-            <Button 
+            <Button
                 className={twClassNames(
                     styles.userInfo.base,
                     { [styles.userInfo.active]: isActive },
@@ -80,7 +80,7 @@ export const PrivateChatItem: FC<PrivateChatItem> = ({
                     extraStatus={extraStatus}
                 />
 
-                <span 
+                <span
                     className={twClassNames(
                         styles.username.base,
                         { [styles.username.active]: isActive },
@@ -103,14 +103,14 @@ export const PrivateChatItem: FC<PrivateChatItem> = ({
                             label={`Скрыть личные сообщения с ${username}`}
                             onLeftClick={handleHideChat}
                         >
-                            <Icon
+                            <SpriteImage
                                 className={styles.hideChatIcon}
-                                iconId='cross-icon'
+                                name='CROSS_ICON'
                             />
                         </Button>
 
-                        <Tooltip 
-                            preferredAlignment='right' 
+                        <Tooltip
+                            preferredAlignment='right'
                             spacing={16}
                             leaderElementRef={ref}
                         >

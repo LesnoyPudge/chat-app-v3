@@ -3,4 +3,8 @@ import type { AppDispatch } from '@redux/store';
 
 
 
-export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppDispatch = () => {
+    return {
+        dispatch: useDispatch() as AppDispatch,
+    };
+};

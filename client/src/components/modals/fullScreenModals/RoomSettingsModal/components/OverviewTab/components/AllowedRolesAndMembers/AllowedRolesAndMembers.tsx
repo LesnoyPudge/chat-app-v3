@@ -1,4 +1,4 @@
-import { Button, Conditional, Icon, Ref, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar , MoveFocusInside } from '@components';
+import { Button, Conditional,SpriteImage, Ref, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar , MoveFocusInside } from '@components';
 import { useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
 import { useFormikContext } from 'formik';
@@ -85,10 +85,10 @@ export const AllowedRolesAndMembers: FC = () => {
                                         key={role.id}
                                     >
                                         <li className={styles.item}>
-                                            <Icon
+                                            <SpriteImage
                                                 className={styles.image}
                                                 style={{ fill: role.color }}
-                                                iconId='role-shield-icon'
+                                                name='ROLE_SHIELD_ICON'
                                             />
 
                                             <span className={styles.name}>
@@ -105,9 +105,9 @@ export const AllowedRolesAndMembers: FC = () => {
                                                             innerRef={ref}
                                                             onLeftClick={handleRemove}
                                                         >
-                                                            <Icon
+                                                            <SpriteImage
                                                                 className={styles.icon}
-                                                                iconId='garbage-can-icon'
+                                                                name='GARBAGE_CAN_ICON'
                                                             />
                                                         </Button>
 
@@ -182,9 +182,9 @@ export const AllowedRolesAndMembers: FC = () => {
                                                             innerRef={ref}
                                                             onLeftClick={handleRemove}
                                                         >
-                                                            <Icon
+                                                            <SpriteImage
                                                                 className={styles.icon}
-                                                                iconId='garbage-can-icon'
+                                                                name='GARBAGE_CAN_ICON'
                                                             />
                                                         </Button>
 

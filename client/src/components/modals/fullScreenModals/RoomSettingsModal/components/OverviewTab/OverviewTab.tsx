@@ -1,6 +1,6 @@
 import { FormikCheckBox, FormikTextInput, Heading } from '@libs';
 import { FC } from 'react';
-import { Button, CheckBox, CheckBoxIndicatorSlide, Conditional, FieldLabel, Icon, OverlayContextProvider, RoomSettingsModalFormValues, RoomWhitelistModal, Separator, TextInput } from '@components';
+import { Button, CheckBox, CheckBoxIndicatorSlide, Conditional, FieldLabel,SpriteImage, OverlayContextProvider, RoomSettingsModalFormValues, RoomWhitelistModal, Separator, TextInput } from '@components';
 import { TabTitle } from '../../../components';
 import { twClassNames } from '@utils';
 import { AllowedRolesAndMembers } from './components';
@@ -59,7 +59,7 @@ export const OverviewTab: FC = () => {
             <TabTitle>
                 <>Обзор</>
             </TabTitle>
-            
+
             <FormikTextInput
                 name='roomName'
                 label='Название комнаты'
@@ -72,29 +72,29 @@ export const OverviewTab: FC = () => {
 
                         <TextInput
                             {...props}
-                        /> 
+                        />
                     </>
                 )}
             </FormikTextInput>
 
             <Separator spacing={32}/>
 
-            <FormikCheckBox 
-                name='isPrivate' 
+            <FormikCheckBox
+                name='isPrivate'
                 label='Настройки приватности комнаты'
             >
                 {(props) => (
                     <div className={styles.inner}>
-                        <div 
+                        <div
                             className={twClassNames(
-                                styles.topSide.base, 
+                                styles.topSide.base,
                                 { [styles.topSide.checked]: props.checked },
                             )}
                         >
                             <div className={styles.checkBoxInner}>
-                                <Icon
+                                <SpriteImage
                                     className={styles.checkBoxIcon}
-                                    iconId='lock-icon'
+                                    name='LOCK_ICON'
                                 />
 
                                 <span className={styles.checkBoxText}>
@@ -148,7 +148,7 @@ export const OverviewTab: FC = () => {
                                     </OverlayContextProvider>
                                 </div>
 
-                                <Separator 
+                                <Separator
                                     className={styles.separator}
                                     spacing={0}
                                 />

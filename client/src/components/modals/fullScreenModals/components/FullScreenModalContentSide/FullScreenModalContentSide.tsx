@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren, useContext } from 'react';
-import { Button, Icon, OverlayContext, Scrollable } from '@components';
+import { Button,SpriteImage, OverlayContext, Scrollable } from '@components';
 import { FormConfirmationBar } from '../FormConfirmationBar';
 
 
@@ -38,9 +38,9 @@ export const FullScreenModalContentSide: FC<PropsWithChildren> = ({ children }) 
                             onLeftClick={closeOverlay}
                         >
                             <div className={styles.iconWrapper}>
-                                <Icon
+                                <SpriteImage
                                     className={styles.icon}
-                                    iconId='cross-icon'
+                                    name='CROSS_ICON'
                                 />
                             </div>
 
@@ -51,7 +51,7 @@ export const FullScreenModalContentSide: FC<PropsWithChildren> = ({ children }) 
                     </div>
                 </div>
             </div>
-            
+
             <FormConfirmationBar/>
         </div>
     );

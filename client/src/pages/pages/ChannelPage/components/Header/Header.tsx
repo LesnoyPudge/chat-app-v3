@@ -1,4 +1,4 @@
-import { Icon, TopBar } from '@components';
+import { SpriteImage, TopBar } from '@components';
 import { useNavigator } from '@hooks';
 import { Heading } from '@libs';
 import { FC } from 'react';
@@ -12,9 +12,9 @@ export const Header: FC = () => {
 
     return (
         <TopBar className='px-4'>
-            <Icon
+            <SpriteImage
                 className='h-6 w-6 fill-icon-300'
-                iconId='text-room-icon'
+                name='TEXT_ROOM_ICON'
             />
 
             <Heading className='ml-2 text-color-primary font-bold truncated'>

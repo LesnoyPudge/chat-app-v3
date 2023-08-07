@@ -1,10 +1,10 @@
-import { Button, Icon, Separator, AddFriendModal, TopBar, OverlayContextProvider, TabContext, TabList, List } from '@components';
+import { Button,SpriteImage, Separator, AddFriendModal, TopBar, OverlayContextProvider, TabContext, TabList, List , MoveFocusInside } from '@components';
 import { useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { objectKeys, objectKeysToIdArray, twClassNames } from '@utils';
 import { FC, useContext, useRef } from 'react';
-import { MoveFocusInside } from '@components';
+
 
 
 
@@ -38,11 +38,11 @@ export const Navigation: FC = () => {
 
     return (
         <TopBar className='px-2 items-center'>
-            <Icon
+            <SpriteImage
                 className='h-6 w-6 fill-icon-300 mx-2'
-                iconId='friend-icon'
-            /> 
-    
+                name='FRIEND_ICON'
+            />
+
             <Heading className='text-heading-m text-color-primary font-medium'>
                 <>Друзья</>
             </Heading>
@@ -61,7 +61,7 @@ export const Navigation: FC = () => {
                         <MoveFocusInside enabled={getIsFocused(tabId)}>
                             <Button
                                 className={twClassNames(
-                                    styles.button.base, 
+                                    styles.button.base,
                                     { [styles.button.active]: isActive[tabId] },
                                 )}
                                 size='small'
@@ -71,7 +71,7 @@ export const Navigation: FC = () => {
                                 onLeftClick={changeTab[tabId]}
                             >
                                 {buttonText[tabId]}
-                            </Button>    
+                            </Button>
                         </MoveFocusInside>
                     )}
                 </List>
@@ -82,7 +82,7 @@ export const Navigation: FC = () => {
             <OverlayContextProvider>
                 {({ openOverlay, isOverlayExist }) => (
                     <>
-                        <Button 
+                        <Button
                             stylingPreset='brand'
                             size='small'
                             hasPopup='dialog'

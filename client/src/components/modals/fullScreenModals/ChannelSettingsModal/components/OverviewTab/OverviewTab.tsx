@@ -1,4 +1,4 @@
-import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput, Icon, CheckBox } from '@components';
+import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput,SpriteImage, CheckBox } from '@components';
 import { FormikCheckBox, FormikFileInput, FormikFileUploadContextProvider, FormikTextInput } from '@libs';
 import { MBToBytes } from '@utils';
 import { FC, useContext } from 'react';
@@ -29,9 +29,9 @@ const styles = {
 
 export const OverviewTab: FC = () => {
     const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
-    
+
     return (
-        <TabPanel 
+        <TabPanel
             className={styles.wrapper}
             {...tabPanelProps.overviewTab}
         >
@@ -40,9 +40,9 @@ export const OverviewTab: FC = () => {
             </TabTitle>
 
             <div className={styles.firstSection}>
-                <FormikFileUploadContextProvider 
-                    name='channelImage' 
-                    label='Сменить значок канала' 
+                <FormikFileUploadContextProvider
+                    name='channelImage'
+                    label='Сменить значок канала'
                     options={{
                         accept: 'image/*',
                         amountLimit: 1,
@@ -69,9 +69,9 @@ export const OverviewTab: FC = () => {
                                             </div>
 
                                             <div className={styles.addFileIconWrapper}>
-                                                <Icon
+                                                <SpriteImage
                                                     className={styles.addFileIcon}
-                                                    iconId='add-file-icon'
+                                                    name='ADD_FILE_ICON'
                                                 />
                                             </div>
                                         </>
@@ -114,7 +114,7 @@ export const OverviewTab: FC = () => {
                 <FormikTextInput
                     name='channelName'
                     label='Название сервера'
-                    required 
+                    required
                 >
                     {(props) => (
                         <div>
@@ -131,11 +131,11 @@ export const OverviewTab: FC = () => {
             <Separator spacing={40}/>
 
             <FormikCheckBox
-                label='Приватность канала' 
+                label='Приватность канала'
                 name='channelIsPrivate'
             >
                 {(props) => (
-                    <CheckBox 
+                    <CheckBox
                         className={styles.checkBox}
                         {...props}
                     >

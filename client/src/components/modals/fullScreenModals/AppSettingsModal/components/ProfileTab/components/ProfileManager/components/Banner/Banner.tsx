@@ -1,4 +1,4 @@
-import { Button, Icon, OverlayContextProvider, OverlayItem, RelativelyPositioned, Tooltip, AnimatedTransition, Ref } from '@components';
+import { Button,SpriteImage, OverlayContextProvider, OverlayItem, RelativelyPositioned, Tooltip, AnimatedTransition, Ref } from '@components';
 import { FormikColorPicker } from '@libs';
 import { animated } from '@react-spring/web';
 import { getTransitionOptions, twClassNames } from '@utils';
@@ -47,18 +47,18 @@ export const Banner: FC = () => {
                                     innerRef={ref}
                                     onLeftClick={openOverlay}
                                 >
-                                    <Icon
+                                    <SpriteImage
                                         className={styles.bannerIcon}
-                                        iconId='dropper-icon'
+                                        name='DROPPER_ICON'
                                     />
                                 </Button>
 
-                                <AnimatedTransition 
-                                    isExist={isOverlayExist} 
+                                <AnimatedTransition
+                                    isExist={isOverlayExist}
                                     transitionOptions={colorPickerTransitionOptions}
                                 >
                                     {({ style, isAnimatedExist }) => (
-                                        <OverlayItem 
+                                        <OverlayItem
                                             isRendered={isAnimatedExist}
                                             closeOnClickOutside
                                             closeOnEscape
@@ -66,13 +66,13 @@ export const Banner: FC = () => {
                                             blocking
                                         >
                                             <animated.div style={style}>
-                                                <RelativelyPositioned 
+                                                <RelativelyPositioned
                                                     preferredAlignment='left'
                                                     spacing={10}
                                                     leaderElementOrRectRef={ref}
                                                 >
-                                                    <div 
-                                                        role='dialog' 
+                                                    <div
+                                                        role='dialog'
                                                         aria-label='Выберите цвет баннера'
                                                     >
                                                         <FormikColorPicker
@@ -86,7 +86,7 @@ export const Banner: FC = () => {
                                     )}
                                 </AnimatedTransition>
 
-                                <Tooltip 
+                                <Tooltip
                                     preferredAlignment='top'
                                     leaderElementRef={ref}
                                 >

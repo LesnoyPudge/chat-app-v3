@@ -1,6 +1,6 @@
 import { twClassNames } from '@utils';
 import { FC } from 'react';
-import { Icon } from '@components';
+import { SpriteImage } from '@components';
 import { PropsWithClassName } from '@types';
 
 
@@ -31,12 +31,12 @@ export const CheckBoxIndicatorCheck: FC<CheckBoxIndicatorCheck> = ({
                 { [styles.checkBox.active]: checked },
                 className,
             )}>
-                <Icon
+                <SpriteImage
                     className={twClassNames(
                         styles.checkBoxIcon.base,
                         { [styles.checkBoxIcon.active]: !checked },
                     )}
-                    iconId='check-icon'
+                    name='CHECK_ICON'
                 />
             </div>
         </>

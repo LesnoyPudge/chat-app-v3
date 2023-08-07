@@ -1,4 +1,4 @@
-import { AnimatedTransition, Button, ChannelSettingsModalFormValues, FieldLabel, Icon, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, RequiredWildcard } from '@components';
+import { AnimatedTransition, Button, ChannelSettingsModalFormValues, FieldLabel,SpriteImage, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, RequiredWildcard } from '@components';
 import { FormikColorPicker } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
@@ -79,24 +79,24 @@ export const RoleColor: FC<PropsWithClassName> = ({
             <div className={styles.description}>
                 <>Для участников используется цвет высшей роли, которую они имеют.</>
             </div>
-            
+
             <div className={styles.content}>
-                <Button 
+                <Button
                     className={styles.button}
                     style={{ backgroundColor: defaultColor }}
                     isActive={getIsActive(defaultColor)}
                     label={getLabel(defaultColor)}
                     onLeftClick={() => setColor(defaultColor)}
                 >
-                    <Icon
+                    <SpriteImage
                         className={twClassNames(
                             styles.checkIcon.base,
-                            { 
+                            {
                                 [styles.checkIcon.active]: getIsActive(defaultColor),
                                 [styles.checkIcon.dark]: isHEXLight(defaultColor),
                             },
                         )}
-                        iconId='check-icon'
+                        name='CHECK_ICON'
                     />
                 </Button>
 
@@ -105,7 +105,7 @@ export const RoleColor: FC<PropsWithClassName> = ({
                         <Ref<HTMLButtonElement>>
                             {(ref) => (
                                 <>
-                                    <Button 
+                                    <Button
                                         className={styles.button}
                                         style={{ backgroundColor: values.roleColorHEX }}
                                         hasPopup='dialog'
@@ -114,32 +114,32 @@ export const RoleColor: FC<PropsWithClassName> = ({
                                         isActive={isOverlayExist}
                                         onLeftClick={openOverlay}
                                     >
-                                        <Icon
+                                        <SpriteImage
                                             className={twClassNames(
                                                 styles.colorDropperIcon.base,
                                                 { [styles.colorDropperIcon.dark]: isHEXLight(values.roleColorHEX) },
                                             )}
-                                            iconId='dropper-icon'
+                                            name='DROPPER_ICON'
                                         />
 
-                                        <Icon
+                                        <SpriteImage
                                             className={twClassNames(
                                                 styles.checkIcon.base,
-                                                { 
+                                                {
                                                     [styles.checkIcon.active]: getIsActive(values.roleColorHEX),
-                                                    [styles.checkIcon.dark]: isHEXLight(values.roleColorHEX), 
+                                                    [styles.checkIcon.dark]: isHEXLight(values.roleColorHEX),
                                                 },
                                             )}
-                                            iconId='check-icon'
+                                            name='CHECK_ICON'
                                         />
                                     </Button>
-                            
-                                    <AnimatedTransition 
-                                        isExist={isOverlayExist} 
+
+                                    <AnimatedTransition
+                                        isExist={isOverlayExist}
                                         transitionOptions={colorPickerTransitionOptions}
                                     >
                                         {({ style, isAnimatedExist }) => (
-                                            <OverlayItem 
+                                            <OverlayItem
                                                 isRendered={isAnimatedExist}
                                                 closeOnClickOutside
                                                 closeOnEscape
@@ -147,13 +147,13 @@ export const RoleColor: FC<PropsWithClassName> = ({
                                                 blocking
                                             >
                                                 <animated.div style={style}>
-                                                    <RelativelyPositioned 
+                                                    <RelativelyPositioned
                                                         preferredAlignment='right'
                                                         spacing={10}
                                                         leaderElementOrRectRef={ref}
                                                     >
-                                                        <div 
-                                                            role='dialog' 
+                                                        <div
+                                                            role='dialog'
                                                             aria-label='Выберите пользовательский цвет'
                                                         >
                                                             <FormikColorPicker name='roleColorHEX'/>
@@ -181,15 +181,15 @@ export const RoleColor: FC<PropsWithClassName> = ({
                             onLeftClick={() => setColor(color)}
                             key={color}
                         >
-                            <Icon
+                            <SpriteImage
                                 className={twClassNames(
                                     styles.checkIcon.base,
-                                    { 
+                                    {
                                         [styles.checkIcon.active]: getIsActive(color),
-                                        [styles.checkIcon.dark]: isHEXLight(color), 
+                                        [styles.checkIcon.dark]: isHEXLight(color),
                                     },
                                 )}
-                                iconId='check-icon'
+                                name='CHECK_ICON'
                             />
                         </Button>
                     ))}

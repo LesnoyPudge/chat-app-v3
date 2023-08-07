@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator, Icon, FieldLabel, RequiredWildcard, ErrorInLabel, TextInput, CreateRoomModalTabs, CheckBox } from '@components';
+import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator,SpriteImage, FieldLabel, RequiredWildcard, ErrorInLabel, TextInput, CreateRoomModalTabs, CheckBox } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
@@ -29,7 +29,7 @@ export const CreateRoomTab: FC = () => {
     const handleNextStep = () => {
         validateField('name');
         if (!isValid) return;
-        
+
         changeTab.addWhiteListTab();
     };
 
@@ -55,23 +55,23 @@ export const CreateRoomTab: FC = () => {
                         {({ checked }) => (
                             <>
                                 <div className={styles.radioWrapper}>
-                                    <Icon
+                                    <SpriteImage
                                         className={styles.radioIcon}
-                                        iconId='text-room-icon'
+                                        name='TEXT_ROOM_ICON'
                                     />
-                                    
+
                                     <div>
                                         <div className={styles.radioTitle}>
                                             <>Text</>
                                         </div>
-                                        
+
                                         <div className={styles.radioDescription}>
                                             <>Отправляйте сообщения, изображения, </>
                                             <>GIF, эмодзи, мнения и приколы</>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <RadioInputIndicator checked={checked}/>
                             </>
                         )}
@@ -85,23 +85,23 @@ export const CreateRoomTab: FC = () => {
                         {({ checked }) => (
                             <>
                                 <div className={styles.radioWrapper}>
-                                    <Icon
+                                    <SpriteImage
                                         className={styles.radioIcon}
-                                        iconId='text-room-icon'
+                                        name='TEXT_ROOM_ICON'
                                     />
-                                    
+
                                     <div>
                                         <div className={styles.radioTitle}>
                                             <>Voice</>
                                         </div>
-                                        
+
                                         <div className={styles.radioDescription}>
                                             <>Общайтесь голосом или в видеочате и </>
                                             <>пользуйтесь функцией показа экрана</>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <RadioInputIndicator checked={checked}/>
                             </>
                         )}
@@ -118,29 +118,29 @@ export const CreateRoomTab: FC = () => {
                         <div>
                             <FieldLabel htmlFor={props.id}>
                                 {props.label}
-    
+
                                 <RequiredWildcard/>
 
                                 <ErrorInLabel error={props.error}/>
                             </FieldLabel>
-        
+
                             <TextInput {...props}/>
                         </div>
                     )}
                 </FormikTextInput>
 
                 <div>
-                    <FormikCheckBox 
+                    <FormikCheckBox
                         name='isPrivate'
-                        label='Название канала'                    
+                        label='Название канала'
                     >
                         {(props) => (
                             <CheckBox {...props}>
                                 <div className={styles.checkBoxContent}>
                                     <div className={styles.checkBoxInfo}>
-                                        <Icon
+                                        <SpriteImage
                                             className={styles.checkBoxIcon}
-                                            iconId='lock-icon'
+                                            name='LOCK_ICON'
                                         />
 
                                         <span>Приватная комната</span>

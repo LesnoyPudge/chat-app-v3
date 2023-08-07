@@ -1,2 +1,1 @@
-export * from './types';
-export * from './vars';
+export * from './vars'

@@ -1,9 +1,9 @@
 import { FC, useContext, useRef } from 'react';
-import { Button, Icon, TabList, Tooltip, TabContext, Scrollable, List, Ref } from '@components';
+import { Button,SpriteImage, TabList, Tooltip, TabContext, Scrollable, List, Ref , MoveFocusInside } from '@components';
 import { TabTitle } from '../../../../../components';
 import { objectKeysToIdArray, twClassNames } from '@utils';
 import { useKeyboardNavigation } from '@hooks';
-import { MoveFocusInside } from '@components';
+
 
 
 
@@ -40,7 +40,7 @@ export const RoleNavigation: FC = () => {
     } = useKeyboardNavigation(tabsRef);
 
     const handleCreateRole = () => console.log('create role');
-    
+
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
@@ -57,9 +57,9 @@ export const RoleNavigation: FC = () => {
                                 innerRef={ref}
                                 onLeftClick={handleCreateRole}
                             >
-                                <Icon
+                                <SpriteImage
                                     className={styles.createRoleIcon}
-                                    iconId='plus-icon'
+                                    name='PLUS_ICON'
                                 />
                             </Button>
 
@@ -77,9 +77,9 @@ export const RoleNavigation: FC = () => {
             </div>
 
             <Scrollable>
-                <TabList 
+                <TabList
                     className={styles.list}
-                    label='Список ролей' 
+                    label='Список ролей'
                     orientation='vertical'
                     innerRef={setRoot}
                     tabIndex={0}
@@ -97,13 +97,13 @@ export const RoleNavigation: FC = () => {
                                     {...tabProps[id]}
                                     onLeftClick={withFocusSet(id, changeTab[id])}
                                 >
-                                    <div 
+                                    <div
                                         className={styles.roleIndicator}
                                         style={{
                                             backgroundColor: color,
                                         }}
                                     ></div>
-                                        
+
                                     <div className={styles.roleName}>
                                         {name}
                                     </div>

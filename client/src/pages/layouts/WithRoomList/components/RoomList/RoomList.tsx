@@ -1,6 +1,7 @@
-import { Button, Icon, OverlayContextProvider, Ref, RoomSettingsModal, Scrollable, Tooltip , MoveFocusInside } from '@components';
+import { Button,SpriteImage, OverlayContextProvider, Ref, RoomSettingsModal, Scrollable, Tooltip , MoveFocusInside } from '@components';
+import { IMAGES } from '@generated';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
-import { conditional, twClassNames } from '@utils';
+import { twClassNames } from '@utils';
 import { FC, useRef } from 'react';
 
 import { ViewportList } from 'react-viewport-list';
@@ -44,7 +45,7 @@ export const RoomList: FC = () => {
     const roomListRef = useRef(rooms);
     const {
         setRoot,
-        setFocusedId,
+        withFocusSet,
         getIsFocused,
         getTabIndex,
         setViewportIndexes,
@@ -85,10 +86,10 @@ export const RoomList: FC = () => {
                     overscan={3}
                 >
                     {(room) => {
-                        const roomTypeIconId = conditional(
-                            'voice-room-icon',
-                            'text-room-icon',
-                            room.type === 'voice',
+                        const roomTypeIconId = (
+                            room.type === 'voice'
+                                ? IMAGES.SPRITE.VOICE_ROOM_ICON.NAME
+                                : IMAGES.SPRITE.TEXT_ROOM_ICON.NAME
                         );
                         const isRoomActive = getIsActive(room.id);
                         const navigationLabel = `Перейти к комнате ${room.name}`;
@@ -97,12 +98,6 @@ export const RoomList: FC = () => {
                         const isFocused = getIsFocused(room.id);
 
                         const handleNavigation = () => handleRoomNavigation(room.id);
-                        const setFocusedIdOnClick = (cb: CallableFunction) => {
-                            return () => {
-                                setFocusedId(room.id);
-                                cb();
-                            };
-                        };
 
                         return (
                             <MoveFocusInside
@@ -119,12 +114,12 @@ export const RoomList: FC = () => {
                                         className={styles.navigationButton}
                                         label={navigationLabel}
                                         tabIndex={tabIndex}
-                                        onLeftClick={setFocusedIdOnClick(handleNavigation)}
+                                        onLeftClick={withFocusSet(room.id, handleNavigation)}
                                     ></Button>
 
-                                    <Icon
+                                    <SpriteImage
                                         className={styles.roomTypeIcon}
-                                        iconId={roomTypeIconId}
+                                        name={roomTypeIconId}
                                     />
 
                                     <span className={styles.name}>
@@ -143,11 +138,11 @@ export const RoomList: FC = () => {
                                                             hasPopup='dialog'
                                                             label={settingsLabel}
                                                             innerRef={ref}
-                                                            onLeftClick={setFocusedIdOnClick(openOverlay)}
+                                                            onLeftClick={withFocusSet(room.id, openOverlay)}
                                                         >
-                                                            <Icon
+                                                            <SpriteImage
                                                                 className={styles.actionIcon}
-                                                                iconId='settings-gear'
+                                                                name='SETTINGS_GEAR'
                                                             />
                                                         </Button>
 

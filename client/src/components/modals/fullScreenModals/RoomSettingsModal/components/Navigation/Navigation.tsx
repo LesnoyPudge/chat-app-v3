@@ -1,9 +1,9 @@
 import { FC, useContext, useRef } from 'react';
-import { Button, DeleteRoomModal, Icon, OverlayContextProvider, Separator, TabContext, TabList } from '@components';
+import { Button, DeleteRoomModal,SpriteImage, OverlayContextProvider, Separator, TabContext, TabList , MoveFocusInside } from '@components';
 import { RoomSettingsModalTabs } from '../../RoomSettingsModal';
 import { useKeyboardNavigation } from '@hooks';
 import { NavigationHeading, NavigationItem } from '../../../components';
-import { MoveFocusInside } from '@components';
+
 import { objectKeysToIdArray } from '@utils';
 
 
@@ -23,8 +23,8 @@ export const Navigation: FC = () => {
 
     return (
         <div>
-            <TabList 
-                label='Настройки комнаты' 
+            <TabList
+                label='Настройки комнаты'
                 orientation='vertical'
                 innerRef={setRoot}
             >
@@ -65,9 +65,9 @@ export const Navigation: FC = () => {
                             <NavigationItem>
                                 <>Удалить комнату</>
 
-                                <Icon
+                                <SpriteImage
                                     className={styles.deleteIcon}
-                                    iconId='garbage-can-icon'
+                                    name='GARBAGE_CAN_ICON'
                                 />
                             </NavigationItem>
                         </Button>

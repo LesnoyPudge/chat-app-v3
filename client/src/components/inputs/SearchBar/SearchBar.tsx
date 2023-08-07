@@ -1,4 +1,5 @@
-import { Button, Icon, TextInput, TextInputWrapper } from '@components';
+import { Button,SpriteImage, TextInput, TextInputWrapper } from '@components';
+import { IMAGES } from '@generated';
 import { conditional, twClassNames } from '@utils';
 import { FC, useRef } from 'react';
 
@@ -30,13 +31,13 @@ export const SearchBar: FC<SearchBar> = ({
     onReset,
 }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
-    
+
     const handleClick = () => {
         if (value) return onReset();
         inputRef.current && inputRef.current.focus();
     };
 
-    const iconId = conditional('cross-icon', 'search-icon', !!value);
+    const iconId = value ? IMAGES.SPRITE.CROSS_ICON.NAME : IMAGES.SPRITE.SEARCH_ICON.NAME;
     const buttonLabel = conditional('Очистить поиск', 'Перейти к поиску', !!value);
 
     return (
@@ -56,9 +57,9 @@ export const SearchBar: FC<SearchBar> = ({
                 label={buttonLabel}
                 onLeftClick={handleClick}
             >
-                <Icon
+                <SpriteImage
                     className={styles.icon}
-                    iconId={iconId}
+                    name={iconId}
                 />
             </Button>
         </TextInputWrapper>

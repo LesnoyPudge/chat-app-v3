@@ -1,11 +1,12 @@
 import { getEnv } from '@utils';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 
 
-export const axeReact = () => {
+export const axeReact = async() => {
     if (getEnv().CUSTOM_NODE_ENV === 'production') return;
+
+    const ReactDOM = await import('react-dom');
 
     import('@axe-core/react').then((axe) => {
         axe.default(React, ReactDOM, 1000, {

@@ -1,5 +1,5 @@
 import { FC, useRef } from 'react';
-import { Icon, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List, Ref , MoveFocusInside } from '@components';
+import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List, Ref , MoveFocusInside } from '@components';
 import { WrapperWithBullet } from './components';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -86,9 +86,9 @@ export const ChannelsNavigation: FC = () => {
                                 label='Перейти на главную страницу'
                                 onLeftClick={() => navigateTo.app()}
                             >
-                                <Icon
+                                <SpriteImage
                                     className={styles.icon}
-                                    iconId='discord-logo'
+                                    name='DISCORD_LOGO'
                                 />
                             </Button>
 
@@ -200,9 +200,9 @@ export const ChannelsNavigation: FC = () => {
                                         innerRef={ref}
                                         onLeftClick={openOverlay}
                                     >
-                                        <Icon
+                                        <SpriteImage
                                             className={styles.icon}
-                                            iconId='navigator-icon'
+                                            name='NAVIGATOR_ICON'
                                         />
                                     </Button>
 
@@ -242,9 +242,9 @@ export const ChannelsNavigation: FC = () => {
                                         innerRef={ref}
                                         onLeftClick={openOverlay}
                                     >
-                                        <Icon
+                                        <SpriteImage
                                             className={styles.icon}
-                                            iconId='add-channel-navigation-icon'
+                                            name='ADD_CHANNEL_NAVIGATION_ICON'
                                         />
                                     </Button>
 
@@ -333,9 +333,9 @@ export const ChannelsNavigation: FC = () => {
 //                                             label='Перейти на главную страницу'
 //                                             onLeftClick={() => navigateTo.app()}
 //                                         >
-//                                             <Icon
+//                                             <SpriteImage
 //                                                 className={styles.icon}
-//                                                 iconId='discord-logo'
+//                                                 name='discord-logo'
 //                                             />
 //                                         </Button>
 
@@ -447,9 +447,9 @@ export const ChannelsNavigation: FC = () => {
 //                                                     innerRef={ref}
 //                                                     onLeftClick={openOverlay}
 //                                                 >
-//                                                     <Icon
+//                                                     <SpriteImage
 //                                                         className={styles.icon}
-//                                                         iconId='navigator-icon'
+//                                                         name='navigator-icon'
 //                                                     />
 //                                                 </Button>
 
@@ -489,9 +489,9 @@ export const ChannelsNavigation: FC = () => {
 //                                                     innerRef={ref}
 //                                                     onLeftClick={openOverlay}
 //                                                 >
-//                                                     <Icon
+//                                                     <SpriteImage
 //                                                         className={styles.icon}
-//                                                         iconId='add-channel-navigation-icon'
+//                                                         name='add-channel-navigation-icon'
 //                                                     />
 //                                                 </Button>
 

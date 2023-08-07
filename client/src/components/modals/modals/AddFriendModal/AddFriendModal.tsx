@@ -1,4 +1,4 @@
-import { Button, Conditional, Icon, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
+import { Button, Conditional,SpriteImage, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
 import { useTextInput } from '@hooks';
 import { getRandomNumber } from '@utils';
 import { FC, useContext } from 'react';
@@ -35,7 +35,7 @@ const AddFriendModalInner: FC = () => {
 
     const usersToShow = users.filter((user) => {
         return user.username.includes(value);
-    });    
+    });
 
     const emptySearch = !value;
     const showUserList = !!usersToShow.length && !!value;
@@ -65,8 +65,8 @@ const AddFriendModalInner: FC = () => {
                 <div className={styles.resultWrapper}>
                     <Conditional isRendered={!emptySearch}>
                         <Conditional isRendered={showUserList}>
-                            <Scrollable 
-                                className={styles.scrollable} 
+                            <Scrollable
+                                className={styles.scrollable}
                                 small
                             >
                                 <ul className={styles.list}>
@@ -95,9 +95,9 @@ const AddFriendModalInner: FC = () => {
                                                         label={`Добавить ${username} в друзья`}
                                                         onLeftClick={handleAddFriend}
                                                     >
-                                                        <Icon
+                                                        <SpriteImage
                                                             className={styles.addButtonIcon}
-                                                            iconId='plus-icon'
+                                                            name='PLUS_ICON'
                                                         />
                                                     </Button>
                                                 </li>
@@ -138,7 +138,7 @@ const AddFriendModalInner: FC = () => {
 
 export const AddFriendModal: FC = () => {
     return (
-        <ModalWindow 
+        <ModalWindow
             label='Добавить друзей'
             withBackdrop
         >

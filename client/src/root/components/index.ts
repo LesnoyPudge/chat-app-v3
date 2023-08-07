@@ -4,3 +4,4 @@ export * from './Loader';
 export * from './Loaded';
 export * from './SuspenseWithLoader';
 export * from './DevDebug';
+export * from './Sprite';

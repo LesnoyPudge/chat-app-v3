@@ -1,4 +1,4 @@
-import { Button, Icon, OverlayContext } from '@components';
+import { Button,SpriteImage, OverlayContext } from '@components';
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC, useContext } from 'react';
@@ -27,9 +27,9 @@ export const ModalHeader: FC<PropsWithChildrenAndClassName> = ({
                 onLeftClick={closeOverlay}
                 label='Закрыть диалог'
             >
-                <Icon
+                <SpriteImage
                     className={styles.icon}
-                    iconId='cross-icon'
+                    name='CROSS_ICON'
                 />
             </Button>
         </div>

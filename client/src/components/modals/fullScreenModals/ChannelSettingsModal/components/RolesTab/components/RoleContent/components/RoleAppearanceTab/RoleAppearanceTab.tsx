@@ -1,6 +1,6 @@
 import { FormikFileInput, FormikFileUploadContextProvider, FormikTextInput } from '@libs';
 import { FC, useContext } from 'react';
-import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button, Conditional, Icon, ChannelSettingsModalFormValues, TabContext, TabPanel } from '@components';
+import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button, Conditional,SpriteImage, ChannelSettingsModalFormValues, TabContext, TabPanel } from '@components';
 import { RoleColor } from './components';
 import { useFormikContext } from 'formik';
 import { RoleContentTabs } from '../..';
@@ -23,15 +23,15 @@ const styles = {
 export const RoleAppearanceTab: FC = () => {
     const { values } = useFormikContext<ChannelSettingsModalFormValues>();
     const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
-    
+
     const roleImage = (() => `getRoleImageById, ${values.roleId}`)();
 
     return (
-        <TabPanel 
+        <TabPanel
             className={styles.wrapper}
             {...tabPanelProps.appearance}
         >
-            <FormikTextInput 
+            <FormikTextInput
                 name='roleName'
                 label='Название роли'
                 required
@@ -42,14 +42,14 @@ export const RoleAppearanceTab: FC = () => {
                             {props.label}
 
                             <RequiredWildcard/>
-                        </FieldLabel>    
-                
-                    
+                        </FieldLabel>
+
+
                         <TextInput {...props}/>
                     </>
                 )}
             </FormikTextInput>
-                
+
             <Separator spacing={24}/>
 
             <RoleColor className={styles.roleColor}/>
@@ -64,10 +64,10 @@ export const RoleAppearanceTab: FC = () => {
                 <>64 х 64 пикселя. Если у участников есть несколько </>
                 <>ролей, они будут видеть значок высшей из них.</>
             </div>
-            
-            <FormikFileUploadContextProvider 
-                name='roleImage' 
-                label='Значок роли' 
+
+            <FormikFileUploadContextProvider
+                name='roleImage'
+                label='Значок роли'
                 options={{
                     accept: 'image/*',
                     amountLimit: 1,
@@ -88,9 +88,9 @@ export const RoleAppearanceTab: FC = () => {
                                 </Conditional>
 
                                 <Conditional isRendered={!values.roleImage && !value}>
-                                    <Icon
+                                    <SpriteImage
                                         className={styles.firstFileInputIcon}
-                                        iconId='add-image-icon'
+                                        name='ADD_IMAGE_ICON'
                                     />
                                 </Conditional>
                             </div>
@@ -101,7 +101,7 @@ export const RoleAppearanceTab: FC = () => {
                         className={styles.secondFileInputWrapper}
                         stylingPreset='brandNeutral'
                         size='medium'
-                        hidden   
+                        hidden
                     >
                         <>Выберите изображение</>
 

@@ -1,4 +1,4 @@
-import { BanMemberModal, Button, ChangeChannelOwnerModal, ChannelSettingsModalFormValues, ChannelSettingsModalTabs, Icon, KickMemberModal, OverlayContextProvider, Ref, SearchBar, Separator, TabContext, TabPanel, Tooltip, UserAvatar } from '@components';
+import { BanMemberModal, Button, ChangeChannelOwnerModal, ChannelSettingsModalFormValues, ChannelSettingsModalTabs,SpriteImage, KickMemberModal, OverlayContextProvider, Ref, SearchBar, Separator, TabContext, TabPanel, Tooltip, UserAvatar } from '@components';
 import { useTextInput } from '@hooks';
 import { twClassNames } from '@utils';
 import { useFormikContext } from 'formik';
@@ -39,7 +39,7 @@ export const MembersTab: FC = () => {
     });
 
     return (
-        <TabPanel 
+        <TabPanel
             className={styles.wrapper}
             {...tabPanelProps.membersTab}
         >
@@ -96,21 +96,21 @@ export const MembersTab: FC = () => {
                                                             innerRef={ref}
                                                             onLeftClick={openOverlay}
                                                         >
-                                                            <Icon
+                                                            <SpriteImage
                                                                 className={styles.icon}
-                                                                iconId='doorway-icon'
+                                                                name='DOORWAY_ICON'
                                                             />
                                                         </Button>
 
-                                                        <KickMemberModal 
-                                                            channelId={values.channelId} 
+                                                        <KickMemberModal
+                                                            channelId={values.channelId}
                                                             memberId={member.id}
                                                         />
                                                     </>
                                                 )}
                                             </OverlayContextProvider>
-                                
-                                            <Tooltip 
+
+                                            <Tooltip
                                                 preferredAlignment='top'
                                                 leaderElementRef={ref}
                                             >
@@ -133,9 +133,9 @@ export const MembersTab: FC = () => {
                                                             isActive={isOverlayExist}
                                                             onLeftClick={openOverlay}
                                                         >
-                                                            <Icon
+                                                            <SpriteImage
                                                                 className={styles.icon}
-                                                                iconId='cross-icon'
+                                                                name='CROSS_ICON'
                                                             />
                                                         </Button>
 
@@ -147,7 +147,7 @@ export const MembersTab: FC = () => {
                                                 )}
                                             </OverlayContextProvider>
 
-                                            <Tooltip 
+                                            <Tooltip
                                                 preferredAlignment='top'
                                                 leaderElementRef={ref}
                                             >
@@ -170,9 +170,9 @@ export const MembersTab: FC = () => {
                                                             isActive={isOverlayExist}
                                                             onLeftClick={openOverlay}
                                                         >
-                                                            <Icon
+                                                            <SpriteImage
                                                                 className={styles.icon}
-                                                                iconId='crown-icon'
+                                                                name='CROWN_ICON'
                                                             />
                                                         </Button>
 
@@ -184,7 +184,7 @@ export const MembersTab: FC = () => {
                                                 )}
                                             </OverlayContextProvider>
 
-                                            <Tooltip 
+                                            <Tooltip
                                                 preferredAlignment='top'
                                                 leaderElementRef={ref}
                                             >
