@@ -7,7 +7,7 @@ import { FormikTextInput } from '@libs';
 
 
 export const EnterNewEmailSlide: FC = () => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
 
     return (
         <Form>

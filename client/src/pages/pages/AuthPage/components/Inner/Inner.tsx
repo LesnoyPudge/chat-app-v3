@@ -40,7 +40,7 @@ const getStyle = (style: {value: SpringValue<number>}, show: boolean) => ({
 });
 
 export const Inner: FC = () => {
-    const { isActive, tabs } = useContext(TabContext) as TabContext<AuthPageTabs>;
+    const { isActive, tabs } = useContext<TabContext<AuthPageTabs>>(TabContext);
 
     const showLoginForm = isActive.loginForm;
     const showRegistrationForm = isActive.registrationForm;

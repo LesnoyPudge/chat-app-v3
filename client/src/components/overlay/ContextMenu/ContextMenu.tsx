@@ -8,12 +8,10 @@ import { FC, useContext, useEffect, useRef } from 'react';
 
 
 type ContextMenu = (
-    PropsWithClassName & 
+    PropsWithClassName &
     PropsWithChildrenAsNodeOrFunction<OverlayContext> &
     PropsWithLeaderElementRef &
-    Pick<UseRelativePositionArgs, 'preferredAlignment'> & {
-        withContextMenuHandler?: boolean;
-    }
+    Pick<UseRelativePositionArgs, 'preferredAlignment' | 'centered'>
 )
 
 const transitionOptions = getTransitionOptions.defaultContextMenu();
@@ -26,38 +24,23 @@ export const ContextMenu: FC<ContextMenu> = ({
     className = '',
     preferredAlignment,
     leaderElementRef,
-    withContextMenuHandler = false,
+    centered,
     children,
 }) => {
-    const contextValues = useContext(OverlayContext) as OverlayContext;
+    const contextValues = useContext(OverlayContext);
     const leaderElementOrRectRef = useRef<HTMLElement | OmittedRect | null>(leaderElementRef.current);
-    
-    const withRightClickRef = useRef(false);
-    
-    useEffect(() => {
-        if (withRightClickRef.current) {
-            withRightClickRef.current = false;
-            return;
-        }
-        
-        leaderElementOrRectRef.current = leaderElementRef.current;
-    }, [contextValues.isOverlayExist, leaderElementRef]);
-
 
     const handleContextMenu = (e: MouseEvent) => {
-        if (!withContextMenuHandler) return;
-
         const { closingThrottleRef, openOverlay } = contextValues;
-        
+
         if (closingThrottleRef.current) return;
 
-        withRightClickRef.current = true;
         const withMouse = e.button !== -1;
         const withKeyboard = !withMouse;
-    
+
         if (withMouse) {
             const cursorSize = 1;
-    
+
             leaderElementOrRectRef.current = {
                 top: e.clientY,
                 bottom: e.clientY + cursorSize,
@@ -78,12 +61,12 @@ export const ContextMenu: FC<ContextMenu> = ({
     useEventListener('contextmenu', handleContextMenu, leaderElementRef);
 
     return (
-        <AnimatedTransition 
+        <AnimatedTransition
             isExist={contextValues.isOverlayExist}
             transitionOptions={transitionOptions}
         >
             {({ isAnimatedExist, style }) => (
-                <OverlayItem 
+                <OverlayItem
                     isRendered={isAnimatedExist}
                     blockable
                     blocking
@@ -97,8 +80,9 @@ export const ContextMenu: FC<ContextMenu> = ({
                         spacing={15}
                         boundsSize={20}
                         swappableAlignment
+                        centered={centered}
                     >
-                        <animated.div 
+                        <animated.div
                             className={twClassNames(styles.base, className)}
                             style={style}
                             role='menu'

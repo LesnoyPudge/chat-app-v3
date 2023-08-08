@@ -35,7 +35,7 @@ interface ChatContext {
     setMessageInRedactorMode: (id: string) => void;
 }
 
-export const ChatContext = createContext<ChatContext | undefined>(undefined);
+export const ChatContext = createContext(undefined as unknown as ChatContext);
 
 export const Chat: FC<Chat> = ({
     className = '',
@@ -75,7 +75,7 @@ export const Chat: FC<Chat> = ({
         console.log('save editor', id, value);
         closeEditor();
     }, [closeEditor]);
-    
+
     return (
         <Scrollable
             className={className}
@@ -100,9 +100,9 @@ export const Chat: FC<Chat> = ({
 
                     <DayDivider time={firstMessageCreationTimestamp}/>
                 </Conditional>
-                    
+
                 <Conditional isRendered={showPlaceholder}>
-                    <div 
+                    <div
                         aria-hidden
                         ref={setPlaceholderElement}
                     >
@@ -146,7 +146,7 @@ export const Chat: FC<Chat> = ({
                     </ViewportList>
                 </Conditional>
 
-                <div 
+                <div
                     className='h-px'
                     aria-hidden
                     ref={setAutoScrollTriggerElement}

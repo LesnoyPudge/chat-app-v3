@@ -5,7 +5,6 @@ export * from './UserStatus';
 export * from './TopBar';
 export * from './MessageInputBar';
 export * from './RelativelyPositioned';
-export * from './ModalWindow';
 export * from './TabList';
 export * from './TabPanel';
 export * from './Scrollable';

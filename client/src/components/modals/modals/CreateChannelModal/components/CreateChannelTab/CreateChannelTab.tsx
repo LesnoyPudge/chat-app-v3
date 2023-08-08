@@ -19,7 +19,7 @@ const initialValues: CreateChannelFormValues = {
 };
 
 export const CreateChannelTab: FC = () => {
-    const { changeTab } = useContext(TabContext) as TabContext<CreateChannelModalTabs>;
+    const { changeTab } = useContext<TabContext<CreateChannelModalTabs>>(TabContext);
 
     const handleSubmit = (values: CreateChannelFormValues) => {
         console.log('submit', values);

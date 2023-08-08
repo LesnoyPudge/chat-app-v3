@@ -24,7 +24,7 @@ const styles = {
 };
 
 export const MembersTab: FC = () => {
-    const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabPanelProps } = useContext<TabContext<ChannelSettingsModalTabs>>(TabContext);
     const { value, handleChange, handleReset } = useTextInput();
     const { values } = useFormikContext<ChannelSettingsModalFormValues>();
 

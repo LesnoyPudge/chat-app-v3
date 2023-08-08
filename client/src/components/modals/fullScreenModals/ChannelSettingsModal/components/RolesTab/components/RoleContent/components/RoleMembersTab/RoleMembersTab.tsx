@@ -24,7 +24,7 @@ const styles = {
 export const RoleMembersTab: FC<RoleMembersTab> = ({
     value,
 }) => {
-    const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
+    const { tabPanelProps } = useContext<TabContext<RoleContentTabs>>(TabContext);
     const { values } = useFormikContext<ChannelSettingsModalFormValues>();
 
     const members = Array(29).fill('').map((_, index) => ({

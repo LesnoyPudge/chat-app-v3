@@ -5,8 +5,8 @@ import { ModalHeader, ModalContent, ModalTitle, ModalSubtitle } from '../../../.
 
 
 export const CreateOrFollowInvitationTab: FC = () => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const { changeTab } = useContext(TabContext) as TabContext<CreateChannelModalTabs>;
+    const { closeOverlay } = useContext(OverlayContext);
+    const { changeTab } = useContext<TabContext<CreateChannelModalTabs>>(TabContext);
 
     return (
         <>

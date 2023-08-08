@@ -16,7 +16,7 @@ export const ModalHeader: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
 
     return (
         <div className={twClassNames(styles.wrapper, className)}>

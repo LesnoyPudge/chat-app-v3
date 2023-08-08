@@ -11,7 +11,7 @@ const styles = {
 };
 
 export const MessageCozyTimestamp: FC = () => {
-    const { message, ids } = useContext(MessageContext) as MessageContext;
+    const { message, ids } = useContext(MessageContext);
 
     const yesterdayText = lightFormat(message.createdAt, '\'Вчера в\' H:m');
     const todayText = lightFormat(message.createdAt, '\'Сегодня в\' H:m');

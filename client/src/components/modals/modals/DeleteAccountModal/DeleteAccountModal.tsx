@@ -15,7 +15,7 @@ const initialValues: FormValues = {
 };
 
 const DeleteAccountModalInner: FC = () => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
 
     const handleSubmit = (values: FormValues) => {
         console.log('delete accound', values);

@@ -1,5 +1,6 @@
 import { IMAGES } from '@generated';
 import { PropsWithClassName } from '@types';
+import { twClassNames } from '@utils';
 import { FC } from 'react';
 
 
@@ -9,6 +10,10 @@ interface SpriteImage extends PropsWithClassName {
     style?: React.CSSProperties;
 }
 
+const styles = {
+    base: 'flex shrink-0 transition-all',
+};
+
 export const SpriteImage: FC<SpriteImage> = ({
     className = '',
     name,
@@ -17,7 +22,7 @@ export const SpriteImage: FC<SpriteImage> = ({
     const id = `#${name}`;
 
     return (
-        <svg className={className} style={style}>
+        <svg className={twClassNames(styles.base, className)} style={style}>
             <use xlinkHref={id}/>
         </svg>
     );

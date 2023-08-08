@@ -13,7 +13,7 @@ export const UnbanUserModal: FC<UnbanUserModal> = ({
     channelId,
     userId,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
 
     const handleUnban = () => {
         console.log('unban');

@@ -41,7 +41,7 @@ export interface MessageContext extends Required<SharedProps> {
     handleAddReaction: (code: EmojiCode) => void;
 }
 
-export const MessageContext = createContext<MessageContext | undefined>(undefined);
+export const MessageContext = createContext(undefined as unknown as MessageContext);
 
 const styles = {
     wrapper: `group relative bg-primary-200 
@@ -86,7 +86,7 @@ export const Message: FC<MessageComponent> = ({
 
     return (
         <MessageContext.Provider value={contextValues}>
-            <article 
+            <article
                 className={twClassNames(styles.wrapper, className)}
                 aria-hidden={false}
                 aria-setsize={-1}
@@ -94,11 +94,11 @@ export const Message: FC<MessageComponent> = ({
                 aria-labelledby={`${ids.timestampId} ${ids.usernameId} ${ids.contentId} ${ids.editTimestampId}`}
                 ref={innerRef}
             >
-                <Heading 
-                    className={styles.heading} 
+                <Heading
+                    className={styles.heading}
                     aria-labelledby={`${ids.timestampId} ${ids.usernameId}`}
                 />
-        
+
                 <Conditional isRendered={isCompact}>
                     <CompactMessage/>
                 </Conditional>

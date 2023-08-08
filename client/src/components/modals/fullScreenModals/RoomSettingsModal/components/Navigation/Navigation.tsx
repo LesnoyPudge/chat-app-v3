@@ -15,7 +15,7 @@ const styles = {
 };
 
 export const Navigation: FC = () => {
-    const { tabs, changeTab, isActive, tabProps } = useContext(TabContext) as TabContext<RoomSettingsModalTabs>;
+    const { tabs, changeTab, isActive, tabProps } = useContext<TabContext<RoomSettingsModalTabs>>(TabContext);
     const listOfTabKeysRef = useRef(objectKeysToIdArray(tabs));
     const { setRoot, getTabIndex, getIsFocused } = useKeyboardNavigation(listOfTabKeysRef, null, {
         direction: 'vertical',

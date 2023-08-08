@@ -104,7 +104,7 @@ const styles = {
 };
 
 export const Content: FC<Content> = ({ value }) => {
-    const { currentTab, tabs, tabPanelProps, isActive } = useContext(TabContext) as TabContext<AppPageTabs>;
+    const { currentTab, tabs, tabPanelProps, isActive } = useContext<TabContext<AppPageTabs>>(TabContext);
 
     const filterByName = (users: {username: string}[]): IUserPreview[] => {
         if (!value) return users as IUserPreview[];

@@ -21,7 +21,7 @@ export const ChangeChannelOwnerModal: FC<ChangeChannelOwnerModal> = ({
     memberId,
     channelId,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     const [isAgree, toggleIsAgree] = useToggle(false);
 
     const member = {

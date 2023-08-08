@@ -7,7 +7,7 @@ import { FC, useContext } from 'react';
 export const MessageUsername: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { tabIndex, ids } = useContext(MessageContext) as MessageContext;
+    const { tabIndex, ids } = useContext(MessageContext);
     
     return (
         <Button 

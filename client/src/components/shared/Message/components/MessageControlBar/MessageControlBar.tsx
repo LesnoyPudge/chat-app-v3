@@ -25,7 +25,7 @@ const transitionOptions = getTransitionOptions.withOpacity();
 export const MessageControlBar: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { tabIndex, handleAddReaction, handleOpenEditor } = useContext(MessageContext) as MessageContext;
+    const { tabIndex, handleAddReaction, handleOpenEditor } = useContext(MessageContext);
 
     return (
         <div

@@ -23,7 +23,7 @@ const transitionOptions = getTransitionOptions.inOut();
 
 export const FormConfirmationBar: FC = () => {
     const { dirty } = useFormikContext();
-    const { isThrottling } = useContext(ScreenShakeContext) as ScreenShakeContext;
+    const { isThrottling } = useContext(ScreenShakeContext);
 
     return (
         <AnimatedTransition isExist={dirty} transitionOptions={transitionOptions}>

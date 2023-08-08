@@ -7,7 +7,7 @@ import { Outlet } from 'react-router-dom';
 
 export const Loaded: FC = () => {
     const isFirstRender = useIsFirstRender();
-    const { finishLoading } = useContext(LoadingContext) as LoadingContext;
+    const { finishLoading } = useContext(LoadingContext);
 
     useEffect(() => {
         isFirstRender && finishLoading();

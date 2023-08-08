@@ -22,8 +22,8 @@ const styles = {
 };
 
 export const CreateRoomTab: FC = () => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const { changeTab } = useContext(TabContext) as TabContext<CreateRoomModalTabs>;
+    const { closeOverlay } = useContext(OverlayContext);
+    const { changeTab } = useContext<TabContext<CreateRoomModalTabs>>(TabContext);
     const { values, isValid, validateField } = useFormikContext<CreateRoomFormValues>();
 
     const handleNextStep = () => {

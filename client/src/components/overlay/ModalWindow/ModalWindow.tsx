@@ -30,10 +30,9 @@ export const ModalWindow: FC<ModalWindow> = ({
     noPointerEvents = false,
     children,
 }) => {
-    const overlayValues = useContext(OverlayContext) as OverlayContext;
+    const overlayValues = useContext(OverlayContext);
     const { closeOverlay, isOverlayExist } = overlayValues;
 
-    // const withPointerEvents = isOverlayExist && !noPointerEvents;
     const pointerClass = noPointerEvents ? 'pointer-events-none' : 'pointer-events-auto';
 
     return (

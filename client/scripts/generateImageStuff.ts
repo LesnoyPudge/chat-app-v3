@@ -171,11 +171,11 @@ const scripts = {
         const fillObject = (folder: Folder, pathToFolder: string) => {
             folder.files.forEach((file) => {
                 const { ext, name } = utils.getNameParts(file.name);
-                const splittedPath = path.join(pathToFolder, file.name).split('client\\');
+                const splittedPath = path.join(pathToFolder, file.name).split('client');
 
                 splittedPath.shift();
 
-                const imagePath = splittedPath.join('client\\');
+                const imagePath = splittedPath.join('client');
 
                 const isSprite = folder.name === 'sprite';
                 if (isSprite) {

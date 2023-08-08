@@ -21,7 +21,7 @@ const validationSchema: yup.ObjectSchema<typeof initialValues> = yup.object({
 });
 
 export const LoginForm: FC = () => {
-    const { changeTab } = useContext(TabContext) as TabContext<AuthPageTabs>;
+    const { changeTab } = useContext<TabContext<AuthPageTabs>>(TabContext);
     const [login, helpers] = UserApi.useUserLoginMutation();
 
     return (

@@ -20,7 +20,7 @@ export const FormikFileInput: FC<FormikFileInput> = ({
     hidden = false,
     children,
 }) => {
-    const { fileInputProps, value } = useContext(FormikFileUploadContext) as FormikFileUploadContext;
+    const { fileInputProps, value } = useContext(FormikFileUploadContext);
 
     const childrenArgs: ChildrenArgs = {
         value,

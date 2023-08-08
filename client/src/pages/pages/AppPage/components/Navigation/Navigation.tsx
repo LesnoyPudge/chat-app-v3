@@ -18,7 +18,7 @@ const styles = {
 };
 
 export const Navigation: FC = () => {
-    const { changeTab, isActive, tabs, tabProps } = useContext(TabContext) as TabContext<AppPageTabs>;
+    const { changeTab, isActive, tabs, tabProps } = useContext<TabContext<AppPageTabs>>(TabContext);
     const tabsRef = useRef(objectKeysToIdArray(tabs));
     const {
         getIsFocused,

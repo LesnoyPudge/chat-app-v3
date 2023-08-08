@@ -13,8 +13,8 @@ const styles = {
 };
 
 export const FileDropModal: FC = () => {
-    const { handleFileUpload } = useContext(FormikFileUploadContext) as FormikFileUploadContext;
-    const { openOverlay, closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { handleFileUpload } = useContext(FormikFileUploadContext);
+    const { openOverlay, closeOverlay } = useContext(OverlayContext);
     const appRef = useRef(getHTML().app);
     const isDragOver = useFileDrop(handleFileUpload, appRef);
     

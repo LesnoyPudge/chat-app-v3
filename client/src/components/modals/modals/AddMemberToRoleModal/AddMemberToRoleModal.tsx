@@ -40,7 +40,7 @@ const members = [...Array(60)].map((_, i) => ({
 export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
     roleId,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     const [membersId, membersIdHelpers] = useSet<string>();
     const { value, handleChange, handleReset } = useTextInput();
 

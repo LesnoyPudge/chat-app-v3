@@ -16,7 +16,7 @@ interface Room {
 
 const rooms: Room[] = Array(150).fill(null).map((_, i) => ({
     id: String(i),
-    name: `room ${i}`,
+    name: `room ${i}`.repeat(10),
     type: 'text',
 } satisfies Room));
 
@@ -30,11 +30,17 @@ const styles = {
     },
     navigationButton: 'absolute inset-0',
     roomTypeIcon: 'h-5 w-5 fill-icon-300',
-    name: `font-medium text-color-muted truncate
-    group-focus-within/item:text-color-primary group-hover/item:text-color-primary`,
-    actionButton: `shrink-0 ml-auto h-4 w-0 opacity-0 
-    group-focus-within/item:opacity-100 group-hover/item:opacity-100 group/action
-    group-focus-within/item:w-4 group-hover/item:w-4`,
+    name: {
+        base: `font-medium text-color-muted truncate
+        group-focus-within/item:text-color-primary group-hover/item:text-color-primary`,
+        selected: 'text-color-primary',
+    },
+    actionButton: {
+        base: `shrink-0 ml-auto h-4 w-0 opacity-0 
+        group-focus-within/item:opacity-100 group-hover/item:opacity-100 group/action
+        group-focus-within/item:w-4 group-hover/item:w-4`,
+        selected: 'opacity-100 w-4',
+    },
     actionIcon: `w-full h-full fill-icon-300 group-hover/action:fill-icon-100 
     group-focus-visible/action:fill-icon-100`,
 };
@@ -51,6 +57,7 @@ export const RoomList: FC = () => {
         setViewportIndexes,
     } = useKeyboardNavigation(roomListRef, undefined, {
         virtualized: true,
+        initialFocusableId: params.roomId,
     });
 
     const handleRoomNavigation = (roomId: string) => {
@@ -107,7 +114,7 @@ export const RoomList: FC = () => {
                                 <li
                                     className={twClassNames(
                                         styles.item.base,
-                                        { [styles.item.selected]: isRoomActive },
+                                        { [styles.item.selected]: isRoomActive, [String(isRoomActive)]: isRoomActive },
                                     )}
                                 >
                                     <Button
@@ -115,6 +122,7 @@ export const RoomList: FC = () => {
                                         label={navigationLabel}
                                         tabIndex={tabIndex}
                                         onLeftClick={withFocusSet(room.id, handleNavigation)}
+                                        onAnyClick={withFocusSet(room.id)}
                                     ></Button>
 
                                     <SpriteImage
@@ -122,8 +130,11 @@ export const RoomList: FC = () => {
                                         name={roomTypeIconId}
                                     />
 
-                                    <span className={styles.name}>
-                                        {room.name} {room.name}{room.name}{room.name}{room.name}{room.name}
+                                    <span className={twClassNames(
+                                        styles.name.base,
+                                        { [styles.name.selected]: isRoomActive },
+                                    )}>
+                                        {room.name}
                                     </span>
 
                                     <OverlayContextProvider>
@@ -132,7 +143,10 @@ export const RoomList: FC = () => {
                                                 {(ref) => (
                                                     <>
                                                         <Button
-                                                            className={styles.actionButton}
+                                                            className={twClassNames(
+                                                                styles.actionButton.base,
+                                                                { [styles.actionButton.selected]: isRoomActive },
+                                                            )}
                                                             tabIndex={tabIndex}
                                                             isActive={isOverlayExist}
                                                             hasPopup='dialog'

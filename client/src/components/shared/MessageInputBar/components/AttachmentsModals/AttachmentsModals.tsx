@@ -6,7 +6,7 @@ import { FileDropModal, OverflowModal, SizeModal } from './components';
 
 
 export const AttachmentsModals: FC = () => {
-    const { addErrorListener } = useContext(FormikFileUploadContext) as FormikFileUploadContext;
+    const { addErrorListener } = useContext(FormikFileUploadContext);
 
     return (
         <>

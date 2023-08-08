@@ -22,7 +22,7 @@ export const ActionButtons: FC<ActionButtons> = ({
     userId,
     tabIndex,
 }) => {
-    const { isActive } = useContext(TabContext) as TabContext<AppPageTabs>;
+    const { isActive } = useContext<TabContext<AppPageTabs>>(TabContext);
     const { navigateTo } = useNavigator();
 
     const handleNavigateToChat = () => navigateTo.privateChat(userId);

@@ -9,7 +9,7 @@ const styles = {
 };
 
 export const MessageEditTimestamp: FC = () => {
-    const { ids, message } = useContext(MessageContext) as MessageContext;
+    const { ids, message } = useContext(MessageContext);
 
     return (
         <Conditional isRendered={message.isChanged}>

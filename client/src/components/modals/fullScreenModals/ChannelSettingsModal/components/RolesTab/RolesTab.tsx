@@ -17,10 +17,10 @@ const roles = Array(32).fill('').map((_, index) => ({
 }));
 
 export const RolesTab: FC = () => {
-    const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabPanelProps } = useContext<TabContext<ChannelSettingsModalTabs>>(TabContext);
     const { dirty } = useFormikContext<ChannelSettingsModalFormValues>();
-    const { triggerScreenShake } = useContext(ScreenShakeContext) as ScreenShakeContext;
-    
+    const { triggerScreenShake } = useContext(ScreenShakeContext);
+
     const rolesTabs: Record<string, string> = {};
     roles.forEach((role) => rolesTabs[role.id] = role.name);
 
@@ -34,8 +34,8 @@ export const RolesTab: FC = () => {
             className={styles.wrapper}
             {...tabPanelProps.rolesTab}
         >
-            <TabContextProvider 
-                tabs={rolesTabs} 
+            <TabContextProvider
+                tabs={rolesTabs}
                 onTabChange={navigateToRoleTab}
             >
                 <RoleNavigation/>

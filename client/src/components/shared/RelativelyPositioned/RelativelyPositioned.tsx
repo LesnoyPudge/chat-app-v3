@@ -5,7 +5,7 @@ import { FC, useRef } from 'react';
 
 
 
-type RelativelyPositioned = RelativePositionOptions & Pick<
+export type RelativelyPositioned = RelativePositionOptions & Pick<
     UseRelativePositionArgs,
     'leaderElementOrRectRef'
 > & PropsWithChildrenAsNodeOrFunction<WithAlignment>;

@@ -18,7 +18,7 @@ interface OverlayContextProvider extends PropsWithChildrenAsNodeOrFunction<Overl
     isOverlayExistInitial?: boolean;
 }
 
-export const OverlayContext = createContext<OverlayContext | undefined>(undefined);
+export const OverlayContext = createContext(undefined as unknown as OverlayContext);
 
 export const OverlayContextProvider: FC<OverlayContextProvider> = ({
     children,

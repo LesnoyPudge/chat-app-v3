@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Endpoints, Entities, Id, Timestamp } from '@shared';
+import { Endpoints, Entities, Id, Timestamp, defaultAvatar } from '@shared';
 import { UserApi, UserSelectors } from '@redux/features';
 import { localStorageApi } from '@utils';
 import { RootState } from '@redux/store';
@@ -129,12 +129,43 @@ const selectIsRefreshing = (state: RootState) => selectAppState(state).isRefresh
 
 const selectIsInitialized = (state: RootState) => selectAppState(state).isInitialized;
 
+const userDummy: Entities.User.WithoutCredentials = {
+    id: String(Math.floor(Math.random() * 100_000)),
+    avatar: defaultAvatar.getRandomAvatar().base64,
+    blocked: [],
+    channels: [],
+    createdAt: Date.now(),
+    email: null,
+    extraStatus: 'default',
+    friendRequests: {
+        incoming: [],
+        outgoing: [],
+    },
+    friends: [],
+    isActivated: false,
+    isDeleted: false,
+    login: String(Math.floor(Math.random() * 100_000)),
+    privateChannels: [],
+    settings: {
+        fontSize: 16,
+        messageGroupSpacing: 16,
+        theme: 'auto',
+    },
+    username: 'dummy user',
+};
+
 const selectMe = (state: RootState) => {
     const id = selectAppState(state).myId;
-    if (!id) return null;
+    if (!id) {
+        console.error('Unauthorized user selector');
+        return userDummy;
+    }
 
     const user = UserSelectors.selectUserState(state).entities[id];
-    if (!user) return null;
+    if (!user) {
+        console.error('Unauthorized user selector');
+        return userDummy;
+    }
 
     return user as Entities.User.WithoutCredentials;
 };

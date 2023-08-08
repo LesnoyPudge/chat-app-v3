@@ -16,8 +16,8 @@ const initialValues: FollowInvitationFormValues = {
 };
 
 export const FollowInvitationTab: FC = () => {
-    const { changeTab } = useContext(TabContext) as TabContext<CreateChannelModalTabs>;
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { changeTab } = useContext<TabContext<CreateChannelModalTabs>>(TabContext);
+    const { closeOverlay } = useContext(OverlayContext);
     // const { navigateTo } = useNavigator();
 
     const handleSubmit = (values: FollowInvitationFormValues) => {

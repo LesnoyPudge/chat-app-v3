@@ -25,7 +25,7 @@ const transitionOptions = getTransitionOptions.withOpacity();
 export const MessageReactions: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { message, handleAddReaction } = useContext(MessageContext) as MessageContext;
+    const { message, handleAddReaction } = useContext(MessageContext);
     const showReactions = !!message.reactions.length;
 
     return (

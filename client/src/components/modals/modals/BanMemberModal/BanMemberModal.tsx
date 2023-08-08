@@ -18,7 +18,7 @@ export const BanMemberModal: FC<BanMemberModal> = ({
     memberId,
     channelId,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     const { value, handleChange } = useTextInput();
 
     const member = {

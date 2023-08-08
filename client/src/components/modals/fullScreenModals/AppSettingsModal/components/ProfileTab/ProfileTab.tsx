@@ -8,7 +8,7 @@ import { TabTitle } from '../../../components';
 
 
 export const ProfileTab: FC = () => {
-    const { tabPanelProps } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
+    const { tabPanelProps } = useContext<TabContext<AppSettingsModalTabs>>(TabContext);
 
     return (
         <HeadingLevel>
@@ -33,7 +33,7 @@ export const ProfileTab: FC = () => {
                     <OverlayContextProvider>
                         {({ openOverlay, isOverlayExist }) => (
                             <>
-                                <Button 
+                                <Button
                                     stylingPreset='brandDanger'
                                     hasPopup='dialog'
                                     isActive={isOverlayExist}

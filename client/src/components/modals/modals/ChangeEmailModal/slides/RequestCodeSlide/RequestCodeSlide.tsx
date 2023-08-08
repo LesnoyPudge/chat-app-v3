@@ -16,8 +16,8 @@ const styles = {
 };
 
 export const RequestCodeSlide: FC = () => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
-    const { changeTab } = useContext(TabContext) as TabContext<ChangeEmailModalTabs>;
+    const { closeOverlay } = useContext(OverlayContext);
+    const { changeTab } = useContext<TabContext<ChangeEmailModalTabs>>(TabContext);
 
     const sendConfirmationCode = () => {
         console.log('send conf code');
@@ -35,7 +35,7 @@ export const RequestCodeSlide: FC = () => {
                 />
             </div>
 
-            <ModalContainer>         
+            <ModalContainer>
                 <ModalHeader className={styles.header}>
                     <ModalTitle>
                         <>Подтверждение адреса электронной почты</>

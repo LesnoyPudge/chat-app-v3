@@ -30,7 +30,7 @@ const users = Array(20).fill('').map((_, index) => {
 });
 
 const AddFriendModalInner: FC = () => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     const { value, handleChange, handleReset } = useTextInput();
 
     const usersToShow = users.filter((user) => {

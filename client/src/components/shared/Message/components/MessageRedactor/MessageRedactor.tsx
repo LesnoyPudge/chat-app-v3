@@ -33,7 +33,7 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
         isInRedactorMode,
         handleSaveEditor,
         handleCloseEditor,
-    } = useContext(MessageContext) as MessageContext;
+    } = useContext(MessageContext);
     const [redactorValue, setRedactorValue] = useState<Descendant[]>(() => (parseSlateContent(message.content)));
 
     const handleSave = () => handleSaveEditor(redactorValue);

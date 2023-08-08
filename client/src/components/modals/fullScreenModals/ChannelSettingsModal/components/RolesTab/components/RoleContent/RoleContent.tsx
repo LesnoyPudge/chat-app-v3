@@ -48,7 +48,7 @@ const styles = {
 };
 
 export const RoleContent: FC = () => {
-    const { currentTab, tabPanelProps } = useContext(TabContext) as TabContext<Record<string, string>>;
+    const { currentTab, tabPanelProps } = useContext<TabContext<Record<string, string>>>(TabContext);
     const { values, resetForm } = useFormikContext<ChannelSettingsModalFormValues>();
     const permissionsSearch = useTextInput();
     const membersSearch = useTextInput();

@@ -1,4 +1,4 @@
-import { FC, lazy, StrictMode, Suspense } from 'react';
+import { FC, lazy, StrictMode, Suspense, useEffect } from 'react';
 import { ErrorBoundary, Loader, Masks, DevDebug, Sprite } from './components';
 import { usePreventDefault, useSocketStateHandler } from './hooks';
 import { Playground } from './playground';
@@ -11,12 +11,18 @@ import './styles/main.scss';
 
 const Router = lazy(() => import('./router'));
 
-const RootInner: FC = () => {
+const Hooks: FC = () => {
     usePreventDefault();
     useSocketStateHandler();
 
+    return null;
+};
+
+const RootInner: FC = () => {
     return (
         <>
+            <Hooks/>
+
             <DevDebug/>
 
             <Heading className='sr-only'>

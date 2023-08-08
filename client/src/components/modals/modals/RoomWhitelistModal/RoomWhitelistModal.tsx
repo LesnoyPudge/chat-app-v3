@@ -22,7 +22,7 @@ export const RoomWhitelistModal: FC<RoomWhitelistModal> = ({
     roles,
     onSubmit,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     const { handleChange, handleReset, value } = useTextInput('');
     const [checkedMembersId, membersActions] = useSet<string>();
     const [checkedRolesId, rolesActions] = useSet<string>();

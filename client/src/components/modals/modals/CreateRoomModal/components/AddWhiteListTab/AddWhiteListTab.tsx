@@ -30,7 +30,7 @@ const members = Array(15).fill('').map((_, index) => ({
 } as IUserPreview));
 
 export const AddWhiteListTab: FC = () => {
-    const { changeTab } = useContext(TabContext) as TabContext<CreateRoomModalTabs>;
+    const { changeTab } = useContext<TabContext<CreateRoomModalTabs>>(TabContext);
     const { values, setFieldValue } = useFormikContext<CreateRoomFormValues>();
     const { value, handleChange, handleReset } = useTextInput();
 
@@ -39,7 +39,7 @@ export const AddWhiteListTab: FC = () => {
 
     const handleCheck = (field: 'allowedRoles' | 'allowedMembers', roleOrUserId: string) => {
         const newValue = new Set(values[field]);
-        
+
         if (isChecked(field, roleOrUserId)) {
             newValue.delete(roleOrUserId);
         } else {

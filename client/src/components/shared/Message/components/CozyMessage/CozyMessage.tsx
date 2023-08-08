@@ -18,7 +18,7 @@ const styles = {
 };
 
 export const CozyMessage: FC = () => {
-    const { message, isGroupHead } = useContext(MessageContext) as MessageContext;
+    const { message, isGroupHead } = useContext(MessageContext);
     
     const user = {
         id: message.user,

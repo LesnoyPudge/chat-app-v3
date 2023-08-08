@@ -7,7 +7,7 @@ export interface LoadingContext {
     finishLoading: () => void;
 }
 
-export const LoadingContext = createContext<LoadingContext | undefined>(undefined);
+export const LoadingContext = createContext(undefined as unknown as LoadingContext);
 
 export const Loader: FC<PropsWithChildren> = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);

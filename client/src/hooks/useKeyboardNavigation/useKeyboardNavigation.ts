@@ -21,14 +21,6 @@ interface Options {
     ) => void;
 }
 
-// interface UseKeyboardNavigationReturn {
-//     getIsFocused: (id: string) => boolean;
-//     getTabIndex: (id: string) => number;
-//     setRoot: React.Dispatch<React.SetStateAction<RootElement>>;
-//     setFocusedId: React.Dispatch<React.SetStateAction<string | null>>;
-//     setViewportIndexes: (indexes: [number, number]) => void;
-// }
-
 export const useKeyboardNavigation = (
     providedFocusableListRef: RefObject<ObjectWithId[]>,
     providedRoot: RootElement = null,
@@ -60,8 +52,7 @@ export const useKeyboardNavigation = (
             startIndex,
             endIndex,
         ));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [overscan, providedListRef, setVirtualListRef]);
 
     const [root, setRoot] = useProvidedValue(providedRoot);
     const initialIdRef = useLatest(initialFocusableId || focusableListRef.current.at(0)?.id || null);
@@ -161,19 +152,18 @@ export const useKeyboardNavigation = (
         const isInitial = (id === initialIdRef.current) && !focusedIdRef.current;
         const index = ((id === focusedIdRef.current) || isInitial) ? 0 : -1;
         return index;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    } , []);
+    } , [focusedIdRef, initialIdRef]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const getIsFocused = useCallback((id: string) => id === focusedIdRef.current, []);
+    const getIsFocused = useCallback((id: string) => {
+        return id === focusedIdRef.current;
+    }, [focusedIdRef]);
 
-    const withFocusSet = useCallback((id: string, cb: CallableFunction) => {
+    const withFocusSet = useCallback((id: string, cb: CallableFunction = noop) => {
         return () => {
-            setFocusedId(id);
+            if (id !== focusedIdRef.current) setFocusedId(id);
             cb();
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [focusedIdRef, setFocusedId]);
 
     return {
         getIsFocused,

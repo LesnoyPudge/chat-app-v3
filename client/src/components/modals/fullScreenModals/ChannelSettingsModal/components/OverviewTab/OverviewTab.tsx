@@ -28,7 +28,7 @@ const styles = {
 };
 
 export const OverviewTab: FC = () => {
-    const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabPanelProps } = useContext<TabContext<ChannelSettingsModalTabs>>(TabContext);
 
     return (
         <TabPanel

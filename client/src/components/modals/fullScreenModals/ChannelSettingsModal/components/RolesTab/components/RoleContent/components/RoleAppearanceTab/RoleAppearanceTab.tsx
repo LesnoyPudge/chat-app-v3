@@ -22,7 +22,7 @@ const styles = {
 
 export const RoleAppearanceTab: FC = () => {
     const { values } = useFormikContext<ChannelSettingsModalFormValues>();
-    const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
+    const { tabPanelProps } = useContext<TabContext<RoleContentTabs>>(TabContext);
 
     const roleImage = (() => `getRoleImageById, ${values.roleId}`)();
 

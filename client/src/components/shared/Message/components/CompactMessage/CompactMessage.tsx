@@ -18,7 +18,7 @@ const styles = {
 };
 
 export const CompactMessage: FC = () => {
-    const { isGroupHead } = useContext(MessageContext) as MessageContext;
+    const { isGroupHead } = useContext(MessageContext);
 
     return (
         <div className={styles.wrapper}>

@@ -17,7 +17,7 @@ const styles = {
 export const DeleteRoleModal: FC<DeleteRoleModal> = ({
     roleId,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     
     const handleDelete = () => {
         console.log('handleDelete');

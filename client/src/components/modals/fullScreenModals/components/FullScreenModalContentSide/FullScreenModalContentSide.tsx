@@ -19,7 +19,7 @@ const styles = {
 };
 
 export const FullScreenModalContentSide: FC<PropsWithChildren> = ({ children }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
 
     return (
         <div className={styles.wrapper}>

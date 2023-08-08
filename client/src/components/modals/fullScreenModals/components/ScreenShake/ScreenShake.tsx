@@ -25,7 +25,7 @@ const shakeStack = {
     step: 0.5,
 };
 
-export const ScreenShakeContext = createContext<ScreenShakeContext | undefined>(undefined);
+export const ScreenShakeContext = createContext(undefined as unknown as ScreenShakeContext);
 
 export const ScreenShake: FC<ScreenShake> = ({
     children,
@@ -42,10 +42,10 @@ export const ScreenShake: FC<ScreenShake> = ({
 
         throttle(() => {}, 2000)();
 
-        windowShake.start(1, { 
-            config: { 
-                duration: shakeStackRef.current * 100, 
-            }, 
+        windowShake.start(1, {
+            config: {
+                duration: shakeStackRef.current * 100,
+            },
         }).then(() => windowShake.reset());
 
         shakeStackRef.current = Math.min(shakeStackRef.current + shakeStack.step, shakeStack.max);
@@ -71,7 +71,7 @@ export const ScreenShake: FC<ScreenShake> = ({
         resetShakeStacks,
         triggerScreenShake,
     };
-    
+
     return (
         <ScreenShakeContext.Provider value={contextValues}>
             <animated.div

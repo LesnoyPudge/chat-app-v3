@@ -8,7 +8,7 @@ import { MessageContext } from '../../Message';
 export const MessageTimestamp: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { message, ids } = useContext(MessageContext) as MessageContext;
+    const { message, ids } = useContext(MessageContext);
 
     return (
         <Time

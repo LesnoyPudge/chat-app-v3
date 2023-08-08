@@ -2,6 +2,7 @@ import { PropsWithClassName } from '@types';
 import { FC } from 'react';
 import { Image } from '@components';
 import { twClassNames } from '@utils';
+import { IMAGES } from '@generated';
 
 
 
@@ -9,9 +10,9 @@ import { twClassNames } from '@utils';
 export type EmojiCode = ':poop:' | ':smile:' | ':shit:' | ':thumbsup:' | ':thumbsdown:' | ':ok_hand:' | ':ok:';
 
 interface EmojiItem {
-    code: EmojiCode[]; 
+    code: EmojiCode[];
     label: string;
-    filename: string;
+    path: string;
 }
 
 interface Emoji extends PropsWithClassName {
@@ -19,8 +20,8 @@ interface Emoji extends PropsWithClassName {
 }
 
 export const emojiCodeList: EmojiCode[] = [
-    ':poop:', 
-    ':shit:', 
+    ':poop:',
+    ':shit:',
     ':smile:',
     ':thumbsup:',
     ':thumbsdown:',
@@ -32,27 +33,27 @@ export const emojiList: EmojiItem[] = [
     {
         code: [':smile:'],
         label: '😀',
-        filename: 'smile',
+        path: IMAGES.COMMON.SMILE.PATH,
     },
     {
         code: [':poop:', ':shit:'],
         label: '💩',
-        filename: 'poop',
+        path: IMAGES.COMMON.POOP.PATH,
     },
     {
         code: [':thumbsup:'],
         label: '👍',
-        filename: 'thumbsup',
+        path: IMAGES.COMMON.THUMBSUP.PATH,
     },
     {
         code: [':thumbsdown:'],
         label: '👎',
-        filename: 'thumbsdown',
+        path: IMAGES.COMMON.THUMBSDOWN.PATH,
     },
     {
         code: [':ok_hand:', ':ok:'],
         label: '👌',
-        filename: 'ok_hand',
+        path: IMAGES.COMMON.OK_HAND.PATH,
     },
 ];
 
@@ -66,14 +67,13 @@ export const Emoji: FC<Emoji> = ({
     className = '',
     code,
 }) => {
-    const emoji = emojiList.find(item => item.code.includes(code));
-    const src = `/src/assets/emoji/${emoji?.filename}.svg`;
-    
+    const emoji = emojiList.find(item => item.code.includes(code)) || emojiList[0];
+
     return (
         <Image
             className={twClassNames(styles.base, className)}
-            src={src}
-            alt={emoji?.label}
+            src={emoji.path}
+            alt={emoji.label}
         />
     );
 };

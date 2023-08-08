@@ -25,7 +25,7 @@ export const Attachments: FC<PropsWithClassName> = ({
     className = '',
 }) => {
     const { values } = useFormikContext<MessageInputBarFormValues>();
-    const { removeFile } = useContext(FormikFileUploadContext) as FormikFileUploadContext;
+    const { removeFile } = useContext(FormikFileUploadContext);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const handleContentResize = (size: Size) => {

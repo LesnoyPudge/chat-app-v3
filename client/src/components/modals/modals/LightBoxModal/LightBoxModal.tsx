@@ -9,7 +9,7 @@ interface LightBoxModal {
 }
 
 export const LightBoxModal: FC<LightBoxModal> = ({ src }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
 
     return (
         <ModalWindow

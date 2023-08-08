@@ -15,7 +15,7 @@ const styles = {
 export const MessageContent: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { ids, isInRedactorMode, message } = useContext(MessageContext) as MessageContext;
+    const { ids, isInRedactorMode, message } = useContext(MessageContext);
 
     return (
         <p 

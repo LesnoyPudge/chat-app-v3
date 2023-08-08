@@ -8,8 +8,8 @@ import { ChatExample } from './components';
 
 
 export const AppearanceTab: FC = () => {
-    const { tabPanelProps } = useContext(TabContext) as TabContext<AppSettingsModalTabs>;
-    
+    const { tabPanelProps } = useContext<TabContext<AppSettingsModalTabs>>(TabContext);
+
     return (
         <HeadingLevel>
             <TabPanel className='pt-[60px] pl-10 pb-24' {...tabPanelProps.appearanceTab}>
@@ -24,7 +24,7 @@ export const AppearanceTab: FC = () => {
                         <SettingsGroupTitle>
                             <>Тема</>
                         </SettingsGroupTitle>
-                
+
                         <div className='grid gap-2'>
                             <FormikRadioInput
                                 name='theme'
@@ -34,7 +34,7 @@ export const AppearanceTab: FC = () => {
                                 {({ checked }) => (
                                     <>
                                         <RadioInputIndicator checked={checked}/>
-                                    
+
                                         <strong>Тёмная</strong>
                                     </>
                                 )}
@@ -48,7 +48,7 @@ export const AppearanceTab: FC = () => {
                                 {({ checked }) => (
                                     <>
                                         <RadioInputIndicator checked={checked}/>
-                                    
+
                                         <strong>Светлая</strong>
                                     </>
                                 )}
@@ -62,7 +62,7 @@ export const AppearanceTab: FC = () => {
                                 {({ checked }) => (
                                     <>
                                         <RadioInputIndicator checked={checked}/>
-                                    
+
                                         <strong>Синхронизация с компьютером</strong>
                                     </>
                                 )}
@@ -87,7 +87,7 @@ export const AppearanceTab: FC = () => {
                             {({ checked }) => (
                                 <>
                                     <RadioInputIndicator checked={checked}/>
-                                    
+
                                     <span>
                                         <strong>Уютно</strong>
                                         <> — современно, красиво и приятно для глаз.</>
@@ -95,7 +95,7 @@ export const AppearanceTab: FC = () => {
                                 </>
                             )}
                         </FormikRadioInput>
-                            
+
                         <FormikRadioInput
                             name='messageDisplayType'
                             label='Компактное отображение'
@@ -104,7 +104,7 @@ export const AppearanceTab: FC = () => {
                             {({ checked }) => (
                                 <>
                                     <RadioInputIndicator checked={checked}/>
-                                    
+
                                     <span>
                                         <strong>Компактно</strong>
                                         <> — на экране помещается больше сообщений.</>
@@ -122,7 +122,7 @@ export const AppearanceTab: FC = () => {
                         <>Масштабирование текста в чате</>
                     </SettingsGroupTitle>
 
-                    <SliderInput 
+                    <SliderInput
                         // name='message-font-size'
                         start={14}
                         range={[12, 14, 15, 16, 18, 20]}
@@ -135,7 +135,7 @@ export const AppearanceTab: FC = () => {
                             <>Расстояние между группами сообщений</>
                         </SettingsGroupTitle>
 
-                        <SliderInput 
+                        <SliderInput
                             // name='message-group-gap'
                             start={4}
                             range={[0, 4, 8, 16, 24]}

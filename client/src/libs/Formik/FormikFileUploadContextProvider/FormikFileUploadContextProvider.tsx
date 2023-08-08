@@ -26,14 +26,14 @@ export interface FormikFileUploadContext {
     handleFileUpload: FileUploadHandler;
 }
 
-interface FormikFileUploadContextProvider 
+interface FormikFileUploadContextProvider
 extends PropsWithChildrenAsNodeOrFunction<FormikFileUploadContext> {
     name: string;
     label: string;
     options?: UseFileUploadOptions;
 }
 
-export const FormikFileUploadContext = createContext<FormikFileUploadContext | undefined>(undefined);
+export const FormikFileUploadContext = createContext(undefined as unknown as FormikFileUploadContext);
 
 export const FormikFileUploadContextProvider: FC<FormikFileUploadContextProvider> = ({
     name,
@@ -50,9 +50,9 @@ export const FormikFileUploadContextProvider: FC<FormikFileUploadContextProvider
     });
 
     const handleFileUpload = useFileUpload(
-        value.length, 
-        (filesToAdd) => setValue([...value, ...filesToAdd]), 
-        options, 
+        value.length,
+        (filesToAdd) => setValue([...value, ...filesToAdd]),
+        options,
         errorListenersRef.current,
     );
 

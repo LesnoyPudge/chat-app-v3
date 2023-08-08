@@ -31,7 +31,7 @@ const styles = {
 };
 
 export const ChannelMenu: FC<PropsWithLeaderElementRef> = ({ leaderElementRef }) => {
-    const { isOverlayExist } = useContext(OverlayContext) as OverlayContext;
+    const { isOverlayExist } = useContext(OverlayContext);
 
     return (
         <AnimatedTransition

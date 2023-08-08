@@ -32,7 +32,7 @@ export const Content: FC<Content> = ({
     content,
     header,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
 
     return (
         <Button 

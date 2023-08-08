@@ -139,6 +139,7 @@ export const ChannelsNavigation: FC = () => {
                                                             label={channel.name}
                                                             innerRef={ref}
                                                             onLeftClick={withFocusSet(channel.id, handleNavigateToChannel)}
+                                                            onAnyClick={withFocusSet(channel.id)}
                                                         >
                                                             <ChannelAvatar
                                                                 className={styles.channelAvatar}
@@ -158,9 +159,16 @@ export const ChannelsNavigation: FC = () => {
                                                             <ContextMenu
                                                                 preferredAlignment='right'
                                                                 leaderElementRef={ref}
-                                                                withContextMenuHandler
                                                             >
                                                                 <>menu</>
+
+                                                                <Button>
+                                                                    <>1</>
+                                                                </Button>
+
+                                                                <Button>
+                                                                    <>2</>
+                                                                </Button>
                                                             </ContextMenu>
                                                         </OverlayContextProvider>
                                                     </>

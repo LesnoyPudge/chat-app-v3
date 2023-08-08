@@ -13,7 +13,7 @@ interface ErrorContext {
     onCrush: () => void;
 }
 
-const ErrorContext = createContext<ErrorContext | undefined>(undefined);
+const ErrorContext = createContext(undefined as unknown as ErrorContext);
 
 export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
     const isMounted = useIsMounted();
@@ -50,8 +50,8 @@ export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
 };
 
 const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
-    const { handleReset, onCrush } = useContext(ErrorContext) as ErrorContext;
-    
+    const { handleReset, onCrush } = useContext(ErrorContext);
+
     const handleClick = () => handleReset(resetErrorBoundary);
 
     useEffect(() => {
@@ -67,7 +67,7 @@ const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
 
             <div className='flex flex-col m-auto items-center text-center'>
                 <Image
-                    className='mb-5' 
+                    className='mb-5'
                     src={errorImage}
                 />
 

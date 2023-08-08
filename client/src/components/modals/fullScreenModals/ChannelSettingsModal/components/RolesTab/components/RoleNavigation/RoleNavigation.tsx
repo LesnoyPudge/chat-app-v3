@@ -30,7 +30,7 @@ const roles = Array(32).fill('').map((_, index) => ({
 }));
 
 export const RoleNavigation: FC = () => {
-    const { changeTab, tabs, isActive, tabProps } = useContext(TabContext) as TabContext<Record<string, string>>;
+    const { changeTab, tabs, isActive, tabProps } = useContext<TabContext<Record<string, string>>>(TabContext);
     const tabsRef = useRef(objectKeysToIdArray(tabs));
     const {
         getIsFocused,

@@ -4,6 +4,7 @@
         "this:install": "npm ci",
         "this:start": "env-cmd -f ../.env vite",
         "this:build": "env-cmd -f ../.env tsc && vite build",
+        "this:preview": "env-cmd -f ../.env vite preview",
         "this:lint": "eslint .",
         "this:lintFix": "eslint --fix .",
         "this:generateImageStuff": "tsc scripts/generateImageStuff.ts && node scripts/generateImageStuff.js && rimraf scripts/*.js",

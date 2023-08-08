@@ -12,7 +12,7 @@ interface RefContext {
     targetRef: RefObject<HTMLElement>;
 }
 
-const RefContext = createContext<RefContext | undefined>(undefined);
+const RefContext = createContext(undefined as unknown as RefContext);
 export {};
 const RefContextProvider: FC<RefContextProvider> = ({
     providedRef,
@@ -27,7 +27,7 @@ const RefContextProvider: FC<RefContextProvider> = ({
         const wrapper = wrapperRef.current.nextElementSibling as HTMLElement;
         setTargetRef({ current: wrapper });
     }, []);
-    
+
     const contextValues: RefContext = {
         targetRef: providedRef ? providedRef : targetRef,
     };

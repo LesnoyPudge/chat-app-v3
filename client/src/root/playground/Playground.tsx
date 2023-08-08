@@ -1378,7 +1378,7 @@ const TabScroller: FC = () => {
         currentTab,
         isActive,
         changeTab,
-    } = useContext(TabContext) as TabContext<typeof TestTabs>;
+    } = useContext<TabContext<typeof TestTabs>>(TabContext);
 
     const orederRef = useLatest(Object.keys(tabs).reduce((acc, key, index) => {
         acc[key] = index;
@@ -1633,31 +1633,12 @@ const PlaygroundInner26: FC = () => {
             {/* <SVGImage className='w-[300px] h-[300px] fill-rose-300'/> */}
 
             <SpriteImage className='w-[50px] h-[50px] fill-rose-400' name='HEADPHONE'/>
-
-            <NewIcon className='w-[50px] h-[50px] fill-rose-400' name={IMAGES.SPRITE.DISCORD_LOGO.NAME}/>
         </div>
     );
 };
 
-interface NewIcon extends PropsWithClassName {
-    name: keyof typeof IMAGES.SPRITE;
-}
 
-const NewIcon: FC<NewIcon> = ({
-    className = '',
-    name,
-}) => {
-    const id = `#${name}`;
-
-    return (
-        <svg className={className}>
-            <use xlinkHref={id}/>
-        </svg>
-    );
-};
-
-
-const enabled = !!1;
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

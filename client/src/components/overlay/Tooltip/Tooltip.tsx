@@ -31,6 +31,7 @@ const transitionOptions = getTransitionOptions.withOpacity({
 const styles = {
     base: `bg-primary-500 text-color-base font-bold py-[5px] px-2.5 
     rounded-md w-max max-w-[300px] shadow-elevation-low`,
+    overlayItem: 'overlay-item-wrapper',
 };
 
 export const Tooltip: FC<Tooltip> = ({
@@ -100,7 +101,7 @@ export const Tooltip: FC<Tooltip> = ({
             {({ isAnimatedExist, style }) => (
                 <Conditional isRendered={isAnimatedExist}>
                     <OverlayPortal>
-                        <div className='overlay-item-wrapper'>
+                        <div className={styles.overlayItem}>
                             <RelativelyPositioned
                                 leaderElementOrRectRef={leaderElementRef}
                                 preferredAlignment={preferredAlignment}

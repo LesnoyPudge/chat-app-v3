@@ -23,7 +23,7 @@ const styles = {
 };
 
 export const BannedTab: FC = () => {
-    const { tabPanelProps } = useContext(TabContext) as TabContext<ChannelSettingsModalTabs>;
+    const { tabPanelProps } = useContext<TabContext<ChannelSettingsModalTabs>>(TabContext);
     const { values } = useFormikContext<ChannelSettingsModalFormValues>();
     const { handleChange, handleReset, value } = useTextInput();
 
@@ -38,7 +38,7 @@ export const BannedTab: FC = () => {
     });
 
     return (
-        <TabPanel 
+        <TabPanel
             className={styles.wrapper}
             {...tabPanelProps.bannedTab}
         >
@@ -83,7 +83,7 @@ export const BannedTab: FC = () => {
                     </div>
                 </HeadingLevel>
             </Conditional>
-            
+
             <Conditional isRendered={!!bannedUsers.length}>
                 <ul>
                     {filteredBannedUsers.map((user) => {
@@ -92,7 +92,7 @@ export const BannedTab: FC = () => {
                                 <OverlayContextProvider>
                                     {({ openOverlay, isOverlayExist }) => (
                                         <>
-                                            <Button 
+                                            <Button
                                                 className={styles.button}
                                                 label='Разбанить пользователя'
                                                 hasPopup='dialog'
@@ -104,14 +104,14 @@ export const BannedTab: FC = () => {
                                                     avatar={user.avatar}
                                                     username={user.name}
                                                 />
-                                
+
                                                 <div className={styles.username}>
                                                     {user.name}
                                                 </div>
                                             </Button>
 
-                                            <UnbanUserModal 
-                                                channelId={values.channelId!} 
+                                            <UnbanUserModal
+                                                channelId={values.channelId!}
                                                 userId={user.id}
                                             />
                                         </>

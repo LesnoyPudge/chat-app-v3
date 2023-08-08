@@ -15,7 +15,7 @@ const styles = {
 export const BlockUserModal: FC<BlockUserModal> = ({
     userId,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     
     const user = {
         id: userId,

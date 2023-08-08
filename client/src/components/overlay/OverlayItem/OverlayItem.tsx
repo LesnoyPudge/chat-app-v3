@@ -6,7 +6,7 @@ import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 
 
 
-interface OverlayItem extends PropsWithChildren {
+export interface OverlayItem extends PropsWithChildren {
     blockable?: boolean;
     blocking?: boolean;
     closeOnEscape?: boolean;
@@ -24,7 +24,7 @@ export const OverlayItem: FC<OverlayItem> = ({
     focused = false,
     children,
 }) => {
-    const { closeOverlay, isOverlayExist } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay, isOverlayExist } = useContext(OverlayContext);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const isLockDisabled = !focused || !isRendered;
 

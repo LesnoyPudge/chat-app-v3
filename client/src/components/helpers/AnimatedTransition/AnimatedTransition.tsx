@@ -10,7 +10,7 @@ type ChildrenArgs<T extends UseTransitionProps<boolean>> = {
     isAnimatedExist: boolean;
 };
 
-type AnimatedTransition<T extends UseTransitionProps<boolean> | object> = PropsWithChildrenAsNodeOrFunction<
+export type AnimatedTransition<T extends UseTransitionProps<boolean> | object> = PropsWithChildrenAsNodeOrFunction<
     ChildrenArgs<T>
 > & {
     isExist?: boolean;

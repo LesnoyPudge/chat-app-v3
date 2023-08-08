@@ -81,21 +81,21 @@ const styles = {
 };
 
 export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
-    const { tabPanelProps } = useContext(TabContext) as TabContext<RoleContentTabs>;
-    
+    const { tabPanelProps } = useContext<TabContext<RoleContentTabs>>(TabContext);
+
     const filteredPermissionGroups = useMemo(() => {
         return permissionGroups.filter((group) => {
             console.log(value);
             return !!group.permissions.filter((permission) => {
                 const matchInTitle = permission.title.toLowerCase().includes(value.toLowerCase());
                 const matchInDescription = permission.description.toLowerCase().includes(value.toLowerCase());
-                return matchInTitle || matchInDescription; 
+                return matchInTitle || matchInDescription;
             }).length;
         });
     }, [value]);
 
     const showPermissions = !!filteredPermissionGroups.length;
-    
+
     return (
         <HeadingLevel>
             <TabPanel
@@ -122,7 +122,7 @@ export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
                                 <Heading className={styles.permissionGroupTitle}>
                                     {group.name}
                                 </Heading>
-            
+
                                 {group.permissions.map((permission, permissionIndex) => {
                                     const isLastGroup = groupIndex === permissionGroups.length - 1;
                                     const isLastItem = permissionIndex === group.permissions.length - 1;
@@ -130,28 +130,28 @@ export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
 
                                     return (
                                         <div key={permission.name}>
-                                            <FormikCheckBox 
+                                            <FormikCheckBox
                                                 name={permission.name}
                                                 label={permission.title}
                                             >
                                                 {(props) => (
-                                                    <CheckBox 
+                                                    <CheckBox
                                                         className={styles.permissionCheckBox}
                                                         {...props}
                                                     >
                                                         <div className={styles.permissionTitle}>
                                                             {permission.title}
                                                         </div>
-        
+
                                                         <CheckBoxIndicatorSlide checked={props.checked}/>
                                                     </CheckBox>
                                                 )}
                                             </FormikCheckBox>
-        
+
                                             <div className={styles.permissionDescription}>
                                                 {permission.description}
                                             </div>
-                                        
+
                                             <Conditional isRendered={showSeparator}>
                                                 <Separator spacing={20}/>
                                             </Conditional>

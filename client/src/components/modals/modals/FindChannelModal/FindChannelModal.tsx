@@ -20,7 +20,7 @@ const styles = {
 };
 
 export const FindChannelModal: FC = () => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     const { value, handleChange, handleReset } = useTextInput();
 
     const channels = [...Array(50)].map((_, i) => ({

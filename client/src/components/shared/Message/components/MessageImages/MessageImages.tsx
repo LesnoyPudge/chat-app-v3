@@ -14,7 +14,7 @@ const styles = {
 export const MessageImages: FC<PropsWithClassName> = ({
     className = '',
 }) => {
-    const { message } = useContext(MessageContext) as MessageContext;
+    const { message } = useContext(MessageContext);
 
     const imageCount = message.attachments.length;
     const imageList = message.attachments.map((src, index) => ({

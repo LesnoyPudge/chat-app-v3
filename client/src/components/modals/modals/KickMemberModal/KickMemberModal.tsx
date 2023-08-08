@@ -17,7 +17,7 @@ export const KickMemberModal: FC<KickMemberModal> = ({
     memberId,
     channelId,
 }) => {
-    const { closeOverlay } = useContext(OverlayContext) as OverlayContext;
+    const { closeOverlay } = useContext(OverlayContext);
     
     const member = {
         id: memberId,

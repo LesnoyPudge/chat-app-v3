@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { startTransition, useCallback, useRef } from 'react';
 import { NavigateOptions, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLatest } from '@hooks';
 
@@ -60,7 +60,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            navigate(paths.auth(), options);
+            startTransition(() => navigate(paths.auth(), options));
         },
         app: (options?: CustomNavigateOptions) => {
             if (myLocationIsRef.current.app()) return;
@@ -69,7 +69,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            navigate(paths.app(), options);
+            startTransition(() => navigate(paths.app(), options));
         },
         privateChat: (privateChatId: string, options?: CustomNavigateOptions) => {
             if (myLocationIsRef.current.privateChat(privateChatId)) return;
@@ -78,7 +78,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            navigate(paths.privateChat(privateChatId), options);
+            startTransition(() => navigate(paths.privateChat(privateChatId), options));
         },
         channel: (channelId: string, options?: CustomNavigateOptions) => {
             if (myLocationIsRef.current.channel(channelId)) return;
@@ -87,7 +87,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            navigate(paths.channel(channelId), options);
+            startTransition(() => navigate(paths.channel(channelId), options));
         },
         room: (channelId: string, roomId: string, options?: CustomNavigateOptions) => {
             if (myLocationIsRef.current.room(channelId, roomId)) return;
@@ -96,7 +96,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            navigate(paths.room(channelId, roomId), options);
+            startTransition(() => navigate(paths.room(channelId, roomId), options));
         },
     });
 
