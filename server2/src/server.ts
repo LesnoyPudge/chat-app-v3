@@ -36,9 +36,9 @@ const socketServer = new Server(server, {
 socketServer.use((socket, next) => {
     const auth = socket.handshake.auth as SocketAuth;
     console.log('get socket message', auth);
-    
+
     if (!auth.accessToken) return next(ApiError.unauthorized());
-    
+
     const tokenData = token.validateAccessToken(auth.accessToken);
     if (!tokenData) return next(ApiError.unauthorized());
 
@@ -87,17 +87,17 @@ let connections: object[] = [];
 
         // // @ts-ignore
         // socket.on('VoiceChat_leave', (voiceChatId: string) => {
-            
+
         // });
 
         // // @ts-ignore
         // socket.on('VoiceChat_subscribe', (voiceChatId: string) => {
-            
+
         // });
 
         // // @ts-ignore
         // socket.on('VoiceChat_unsubscribe', (voiceChatId: string) => {
-            
+
         // });
     });
 })();
@@ -111,7 +111,11 @@ app.use(cors({
 
 PeerServer({ port: 9000, path: `${CUSTOM_API_V1_URL}/peer` });
 
-import { ChannelRouter, ChatRouter, FileRouter, MessageRouter, PrivateChannelRouter, RoleRouter, RoomRouter, UserRouter } from '@routers';
+import {
+    ChannelRouter, ChatRouter, FileRouter,
+    MessageRouter, PrivateChannelRouter, RoleRouter,
+    RoomRouter, UserRouter,
+} from '@routers';
 
 
 

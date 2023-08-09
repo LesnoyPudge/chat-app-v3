@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal } from '@components';
+import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
@@ -1637,8 +1637,33 @@ const PlaygroundInner26: FC = () => {
     );
 };
 
+const PlaygroundInner27: FC = () => {
+    return (
+        <div className='flex flex-row max-h-screen'>
+            <div className='w-[80px] [&>*]:h-[80px]'>
+                <UserStatus status='online'/>
 
-const enabled = !!0;
+                <UserStatus status='offline'/>
+
+                <UserStatus status='online' extraStatus='afk'/>
+
+                <UserStatus status='online' extraStatus='dnd'/>
+            </div>
+
+            <div className='w-[80px] [&>*]:w-[80px] [&>*]:h-[80px]'>
+                <SpriteImage name={IMAGES.SPRITE.STATUS_ONLINE.NAME}/>
+
+                <SpriteImage name={IMAGES.SPRITE.STATUS_OFFLINE.NAME}/>
+
+                <SpriteImage name={IMAGES.SPRITE.STATUS_AFK.NAME}/>
+
+                <SpriteImage name={IMAGES.SPRITE.STATUS_DND.NAME}/>
+            </div>
+        </div>
+    );
+};
+
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -1648,7 +1673,7 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </Conditional>
 
             <Conditional isRendered={enabled}>
-                <PlaygroundInner26/>
+                <PlaygroundInner27/>
             </Conditional>
         </>
     );

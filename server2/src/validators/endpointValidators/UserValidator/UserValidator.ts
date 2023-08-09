@@ -1,4 +1,4 @@
-import { Endpoints, Prettify } from '@shared';
+import { Endpoints, Entities, Prettify } from '@shared';
 import { chainPresets } from 'src/validators/chainPresets';
 import { createValidator } from 'src/validators/createValidator';
 import { customChains } from 'src/validators/customChains';
@@ -247,37 +247,65 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
         ),
     }),
 
-    profileUpdate: () => ({
-        avatar: chainPresets.validEncodedImage('avatar'),
-        extraStatus: (
-            body('extraStatus')
-                .optional()
-                .isIn(['default', 'afk', 'dnd', 'invisible'])
-        ),
-        settings: [
-            body('settings.theme')
-                .if(body('settings').exists({ values: 'null' }))
-                .exists()
-                .isIn(['auto', 'dark', 'light']),
+    profileUpdate: () => {
+        const extraStatus = Object.keys({
+            afk: null,
+            default: null,
+            dnd: null,
+            invisible: null,
+        } satisfies Record<Entities.User.ExtraStatus, null>);
 
-            body('settings.fontSize')
-                .if(body('settings').exists({ values: 'null' }))
-                .exists()
-                .isIn([12, 14, 16, 18, 20]),
+        const theme = Object.keys({
+            auto: null,
+            dark: null,
+            light: null,
+        } satisfies Record<Entities.User.Default['settings']['theme'], null>);
 
-            body('settings.messageGroupSpacing')
-                .if(body('settings').exists({ values: 'null' }))
-                .exists()
-                .isIn([16, 20]),
-        ],
-        username: (
-            body('username')
-                .optional()
-                .isString()
-                ._sanitize()
-                .notEmpty()
-        ),
-    }),
+        const fontSize = Object.keys({
+            12: null,
+            14: null,
+            16: null,
+            18: null,
+            20: null,
+        } satisfies Record<Entities.User.Default['settings']['fontSize'], null>);
+
+        const messageGroupSpacing = Object.keys({
+            16: null,
+            20: null,
+        } satisfies Record<Entities.User.Default['settings']['messageGroupSpacing'], null>);
+
+        return {
+            avatar: chainPresets.validEncodedImage('avatar'),
+            extraStatus: (
+                body('extraStatus')
+                    .optional()
+                    .isIn(extraStatus)
+            ),
+            settings: [
+                body('settings.theme')
+                    .if(body('settings').exists({ values: 'null' }))
+                    .exists()
+                    .isIn(theme),
+
+                body('settings.fontSize')
+                    .if(body('settings').exists({ values: 'null' }))
+                    .exists()
+                    .isIn(fontSize),
+
+                body('settings.messageGroupSpacing')
+                    .if(body('settings').exists({ values: 'null' }))
+                    .exists()
+                    .isIn(messageGroupSpacing),
+            ],
+            username: (
+                body('username')
+                    .optional()
+                    .isString()
+                    ._sanitize()
+                    .notEmpty()
+            ),
+        };
+    },
 
     revokeFriendRequest: (req) => ({
         targetId: (

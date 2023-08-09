@@ -1,5 +1,5 @@
-import { FC, lazy, StrictMode, Suspense, useEffect } from 'react';
-import { ErrorBoundary, Loader, Masks, DevDebug, Sprite } from './components';
+import { FC, lazy, StrictMode, Suspense } from 'react';
+import { ErrorBoundary, Loader, DevDebug, Sprite } from './components';
 import { usePreventDefault, useSocketStateHandler } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
@@ -30,8 +30,6 @@ const RootInner: FC = () => {
             </Heading>
 
             <Sprite/>
-
-            <Masks/>
 
             <HeadingLevel>
                 <Playground>

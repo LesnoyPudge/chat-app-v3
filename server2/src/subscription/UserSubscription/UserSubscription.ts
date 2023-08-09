@@ -5,11 +5,21 @@ import { EntitySubscription } from '../EntitySubscription';
 
 
 
-export const UserSubscription = new EntitySubscription<
-    Entities.User.WithoutCredentials | Entities.User.Preview
->(
+type EntityType = (
+    Entities.User.WithoutCredentials |
+    (Entities.User.Preview & Entities.User.WithStatus)
+);
+
+export const UserSubscription = new EntitySubscription<EntityType>(
     'User',
     sockets,
     () => Promise.resolve(true),
-    UserDTO.preview,
+    (v) => {
+        const user = UserDTO.preview(v);
+        const withStatus: Entities.User.WithStatus = {
+            status: sockets.users.has(user.id) ? 'online' : 'offline',
+        };
+
+        return Object.assign(user, withStatus);
+    },
 );

@@ -135,6 +135,7 @@ const scripts = {
                     const optimized = optimize(file.data.toString(), {
                         multipass: true,
                         floatPrecision: 1,
+                        plugins: [{ name: 'cleanupIds', params: { minify: false } }],
                     });
 
                     fs.writeFileSync(path.join(currentPath, `${utils.toUpperSnake(name)}.${ext}`), optimized.data);
@@ -179,11 +180,11 @@ const scripts = {
 
                 const isSprite = folder.name === 'sprite';
                 if (isSprite) {
-                    const data = utils.replaceAll(
-                        file.data.toString(),
-                        'svg',
-                        'symbol',
-                    ).replace('<symbol', `<symbol id="${name}"`);
+                    const data = (
+                        file.data.toString()
+                            .replace('<svg', `<svg id="${name}"`)
+                            // .replace('</svg>', '</symbol>')
+                    );
 
                     spriteArray.push(data);
                 }
@@ -208,16 +209,15 @@ const scripts = {
 
         fillObject(tree, dirs.images.assets);
 
-        const generatedText = (
-            `// GENERATED IN ${__filename}
-
-            export const IMAGES = ${JSON.stringify(imageObject)} as const;
-            
-            export const SPRITE = '${spriteArray.join('')}';`
-        );
+        const generatedText = [
+            `// GENERATED IN ${__filename}`,
+            `export const IMAGES = ${JSON.stringify(imageObject)} as const;`,
+            'export const SPRITE = `' + spriteArray.join(' \n') + '`;',
+        ].join('\n\n');
 
         fs.mkdirSync(dirs.vars, { recursive: true });
         fs.writeFileSync(path.join(dirs.vars, vars.indexFile), generatedText);
+
         utils.generateIndexExports(dirs.generated);
     },
 } satisfies Record<string, () => void>;

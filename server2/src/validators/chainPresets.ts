@@ -27,7 +27,7 @@ export const chainPresets = {
                 .isString()
                 .notEmpty()
                 .isDataURI(),
-                
+
             body(`${field}.name`)
                 .if(body(field).exists(nullable(notNullable)))
                 .exists()
@@ -39,7 +39,7 @@ export const chainPresets = {
                 .if(body(field).exists(nullable(notNullable)))
                 .exists()
                 .isInt({
-                    min: 1, 
+                    min: 1,
                     max: MBToBytes(5),
                 }),
 
@@ -65,9 +65,9 @@ export const chainPresets = {
                     const extensionRegexp = /\.[^.]+$/;
                     const match = file.name.match(extensionRegexp);
                     if (!match) return Promise.reject();
-                    
+
                     if (match[0] !== `.${typeResult.ext}`) return Promise.reject();
-        
+
                     const modifiedName = file.name.replace(extensionRegexp, '').replaceAll(' ', '');
                     if (modifiedName === '') return Promise.reject();
 
@@ -81,6 +81,7 @@ export const chainPresets = {
             ...chainPresets.validEncodedFile(field),
 
             body(`${field}.type`)
+                .if(body(field).exists(nullable(false)))
                 ._imageMime(),
         ];
     },

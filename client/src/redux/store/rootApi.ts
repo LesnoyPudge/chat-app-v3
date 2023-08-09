@@ -34,6 +34,14 @@ const queryWithRetry = retry(async(...args: Parameters<typeof baseQuery>) => {
 const queryWithReAuth = async(...args: Parameters<typeof baseQuery>) => {
     const result = await queryWithRetry(...args);
 
+    if (CUSTOM_NODE_ENV === 'development') {
+        await new Promise<void>((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 1400);
+        });
+    }
+
     if (result.meta?.response?.status !== HTTP_STATUS_CODES.UNAUTHORIZED) {
         return result;
     }
@@ -52,19 +60,7 @@ const queryWithReAuth = async(...args: Parameters<typeof baseQuery>) => {
     return result;
 };
 
-const queryWithDelay = async(...args: Parameters<typeof baseQuery>) => {
-    const result = await queryWithRetry(...args);
-
-    await new Promise<void>((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, 300);
-    });
-
-    return result;
-};
-
 export const rootApi = createApi({
-    baseQuery: getEnv().CUSTOM_NODE_ENV === 'production' ? queryWithReAuth : queryWithDelay,
+    baseQuery: queryWithReAuth,
     endpoints: () => ({}),
 });

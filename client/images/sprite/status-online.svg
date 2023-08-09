@@ -1,0 +1,6 @@
+<svg 
+    fill='var(--status-online)' 
+    viewBox='0 0 24 24'
+>
+    <circle cx='50%' cy='50%' r='50%'/>
+</svg>

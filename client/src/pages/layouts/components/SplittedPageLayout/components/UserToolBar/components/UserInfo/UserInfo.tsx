@@ -47,6 +47,7 @@ export const UserInfo: FC = () => {
                                 label='Меню действий'
                                 role='menu'
                                 centered
+                                spacing={10}
                             >
                                 <Menu/>
                             </Popup>

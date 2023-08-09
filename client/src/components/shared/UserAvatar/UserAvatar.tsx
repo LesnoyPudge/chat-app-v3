@@ -4,6 +4,7 @@ import { Conditional, Tooltip, UserStatus, Image, Ref } from '@components';
 import AutoSizer from '@oyyds/react-auto-sizer';
 import { twClassNames } from '@utils';
 import { PropsWithClassName } from '@types';
+import { STATUS_LABEL } from '@vars';
 
 
 
@@ -14,14 +15,6 @@ interface UserAvatar extends PropsWithClassName {
     status?: StatusType;
     extraStatus?: ExtraStatusType;
 }
-
-const statusTitles = {
-    default: 'В сети',
-    offline: 'Не в сети',
-    invisible: 'Не в сети',
-    afk: 'Неактивен',
-    dnd: 'Не беспокоить',
-};
 
 const styles = {
     wrapper: 'relative flex shrink-0 aspect-square overflow-hidden',
@@ -39,14 +32,16 @@ export const UserAvatar: FC<UserAvatar> = ({
 }) => {
     const showStatus = !!status;
     const isOffline = status === 'offline';
-    const statusTitle = isOffline ? statusTitles[status] : statusTitles[extraStatus];
+    const statusTitle = isOffline ? STATUS_LABEL[status] : STATUS_LABEL[extraStatus];
     const alt = `${username}\`s avatar`;
 
-    const avatarElement = <Image
-        className={styles.avatar}
-        src={avatar}
-        alt={alt}
-    />;
+    const avatarElement = (
+        <Image
+            className={styles.avatar}
+            src={avatar}
+            alt={alt}
+        />
+    );
 
     return (
         <div className={twClassNames(styles.wrapper, className)}>
@@ -65,24 +60,24 @@ export const UserAvatar: FC<UserAvatar> = ({
                                 mask='url(#avatar-with-status-mask)'
                             >
                                 {avatarElement}
-                                
+
                                 <Ref<HTMLDivElement>>
                                     {(ref) => (
                                         <>
                                             <div ref={ref}>
-                                                <UserStatus 
+                                                <UserStatus
                                                     className={twClassNames(styles.status, statusClassName)}
-                                                    status={status!} 
+                                                    status={status!}
                                                     extraStatus={extraStatus}
                                                 />
                                             </div>
-    
-                                            <Tooltip 
+
+                                            <Tooltip
                                                 preferredAlignment='top'
                                                 leaderElementRef={ref}
                                             >
                                                 {statusTitle}
-                                            </Tooltip>  
+                                            </Tooltip>
                                         </>
                                     )}
                                 </Ref>

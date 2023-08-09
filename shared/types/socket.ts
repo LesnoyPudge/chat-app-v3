@@ -19,8 +19,8 @@ export type SocketClientEvents = Record<
 export type SocketServerEvents = Prettify<
     Record<
         ToName<
-            ValueOf<SubscribableEntities>, 
-            typeof SOCKET_SERVER_EVENT_NAMES.DELETE | 
+            ValueOf<SubscribableEntities>,
+            typeof SOCKET_SERVER_EVENT_NAMES.DELETE |
             typeof SOCKET_SERVER_EVENT_NAMES.ERROR
         >,
         (entityId: string) => void
@@ -44,6 +44,12 @@ export type SocketServerEvents = Prettify<
         (entityId: string, data: Entities.Room.Default) => void
     > & Record<
         ToName<SubscribableEntities['USER'], typeof SOCKET_SERVER_EVENT_NAMES.DATA>,
-        (entityId: string, data: Entities.User.WithoutCredentials | Entities.User.Preview) => void
+        (
+            entityId: string,
+            data: (
+                    Entities.User.WithoutCredentials |
+                    (Entities.User.Preview & Entities.User.WithStatus)
+            )
+        ) => void
     >
 >;

@@ -6,7 +6,7 @@ import { UserApi } from '@redux/features';
 
 
 
-type UserState = Entities.User.Preview | Entities.User.WithoutCredentials;
+type UserState = Entities.User.WithoutCredentials | (Entities.User.Preview & Entities.User.WithStatus);
 
 const adapter = createEntityAdapter<UserState>();
 

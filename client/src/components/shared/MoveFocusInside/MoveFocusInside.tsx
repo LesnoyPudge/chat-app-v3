@@ -1,6 +1,6 @@
 import { isHTMLElement } from '@typeGuards';
 import { PropsWithChildrenAndClassName } from '@types';
-import { focusableSelector } from '@vars';
+import { FOCUSABLE_SELECTOR } from '@vars';
 import { FC, useEffect, useRef } from 'react';
 
 
@@ -21,7 +21,7 @@ export const MoveFocusInside: FC<MoveFocusInside> = ({
         if (!ref.current) return;
 
         const wrapper = ref.current;
-        const target = wrapper.querySelector(focusableSelector);
+        const target = wrapper.querySelector(FOCUSABLE_SELECTOR);
 
         if (!isHTMLElement(target)) return;
 

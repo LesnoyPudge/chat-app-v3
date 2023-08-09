@@ -22,13 +22,21 @@ export module Entities {
             };
         }
 
+        export type Status = 'online' | 'offline';
+
+        export interface WithStatus {
+            status: Status;
+        }
+
+        export type ExtraStatus = 'default' | 'afk' | 'dnd' | 'invisible'
+
         export interface Default extends Credentials, Settings {
             id: Id;
             login: string;
             username: string;
             avatar: Id;
             email: string | null;
-            extraStatus: 'default' | 'afk' | 'dnd' | 'invisible';
+            extraStatus: ExtraStatus;
             isActivated: boolean;
             friends: Id[];
             blocked: Id[];
@@ -154,7 +162,7 @@ export module Entities {
         }
 
         export type Encoded = Pick<
-            File.Default, 
+            File.Default,
             'name' | 'size' | 'type' | 'base64'
         >;
 
@@ -182,7 +190,7 @@ export module Entities {
             messages: Id[];
         }
     }
-    
+
     export module Conversation {
         export type Default = {
             id: Id;
