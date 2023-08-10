@@ -1,7 +1,7 @@
 import { globalReset } from '@redux/globalReset';
-import { RootState } from '@redux/store';
+import { RootState, WithRootState } from '@redux/store';
 import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
+import { Endpoints, Entities, ENTITY_NAMES, WithId } from '@shared';
 import { UserApi } from '@redux/features';
 
 
@@ -126,7 +126,20 @@ export const UserSlice = createSlice({
 
 const selectUserState = (state: RootState) => state.user;
 
+const adapterSelectors = adapter.getSelectors(selectUserState);
+
+const getStatusById = ({
+    state,
+    id,
+}: WithRootState & WithId): Entities.User.Status => {
+    const user = adapterSelectors.selectById(state, id);
+    if (!user) return 'offline';
+
+    return 'status' in user ? user.status : 'offline';
+};
+
 export const UserSelectors = {
-    ...adapter.getSelectors(selectUserState),
+    ...adapterSelectors,
     selectUserState,
+    getStatusById,
 };

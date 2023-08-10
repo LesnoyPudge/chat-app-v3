@@ -12,7 +12,13 @@ export const store = configureStore<RootState>({
 });
 
 export type AppDispatch = typeof store.dispatch;
+
 export type RootState = ReturnType<typeof combinedReducer>;
+
+export type WithRootState = {
+    state: RootState;
+}
+
 export type AppThunk<ReturnType = void> = ThunkAction<
     ReturnType,
     RootState,

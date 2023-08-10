@@ -63,7 +63,8 @@ export module Entities {
 
         export type Preview = Pick<
             User.WithoutCredentials,
-            'id' | 'avatar' | 'login' | 'username' | 'isDeleted' | 'blocked'
+            'id' | 'avatar' | 'login' | 'extraStatus' |
+            'username' | 'isDeleted' | 'blocked'
         >;
 
         export type Token = Pick<

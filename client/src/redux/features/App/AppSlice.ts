@@ -13,8 +13,6 @@ type AppState = {
     isRefreshing: boolean;
     myId: Id | null;
     lastRefresh: Timestamp | null;
-    first: number;
-    second: string;
     muted: boolean;
     deaf: boolean;
 };
@@ -25,8 +23,6 @@ const getInitialState = (): AppState => {
         isRefreshing: false,
         myId: null,
         lastRefresh: localStorageApi.get('lastRefresh'),
-        first: 0,
-        second: 'qwe',
         muted: false,
         deaf: false,
     };
@@ -41,14 +37,6 @@ export const AppSlice = createSlice({
             state.myId = payload.id;
             state.lastRefresh = Date.now();
             localStorageApi.set('lastRefresh', state.lastRefresh);
-        },
-
-        inc: (state) => {
-            state.first += 1;
-        },
-
-        setText: (state, { payload }: PayloadAction<string>) => {
-            state.second = payload;
         },
 
         toggleMute: (state) => {

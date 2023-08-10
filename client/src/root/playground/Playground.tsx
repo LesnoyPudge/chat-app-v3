@@ -611,9 +611,9 @@ const useConversation = (conversationId: string) => {
 
 import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
-import { AnyArray, AnyFunction, Endpoints, getRandomNumber, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
+import { AnyArray, AnyFunction, Endpoints, Entities, getRandomNumber, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
-import { AppSelectors, AppSlice, ChannelApi, UserApi } from '@redux/features';
+import { AppSelectors, AppSlice, ChannelApi, UserApi, UserSelectors } from '@redux/features';
 import { useAppDispatch, useAppSelector, useMemoSelector } from '@redux/hooks';
 import { RootState, store } from '@redux/store';
 import { Key } from 'ts-key-enum';
@@ -1469,134 +1469,134 @@ const PlaygroundInner24: FC = () => {
 
 
 
-const selectCount = createMemoSelector(({ app, amount }: {app: RootState['app'], amount: number}) => {
-    console.log('tmp', amount);
-    return {
-        count: app.first,
-        count2: app.first * amount,
-    };
-});
+// const selectCount = createMemoSelector(({ app, amount }: {app: RootState['app'], amount: number}) => {
+//     console.log('tmp', amount);
+//     return {
+//         count: app.first,
+//         count2: app.first * amount,
+//     };
+// });
 
-const First: FC = () => {
-    const { value, handleChange } = useTextInput('0');
-    const counter = useCounter(0);
+// const First: FC = () => {
+//     const { value, handleChange } = useTextInput('0');
+//     const counter = useCounter(0);
 
-    const first = useMemoSelector((state) => {
-        return selectCount({
-            app: AppSelectors.selectAppState(state),
-            amount: parseInt(value),
-        });
-    }, [value]);
+//     const first = useMemoSelector((state) => {
+//         return selectCount({
+//             app: AppSelectors.selectAppState(state),
+//             amount: parseInt(value),
+//         });
+//     }, [value]);
 
-    const { dispatch } = useAppDispatch();
-
-
-    return (
-        <>
-            <div>
-                <span>
-                    {counter.count}
-
-                    <button onClick={counter.increment}>
-                        <>inc</>
-                    </button>
-                </span>
-            </div>
-            <div>
-                {Math.random()}
-            </div>
-
-            <input type='text' value={value} onChange={handleChange}/>
-
-            <div>
-                <>first is:</>
-
-                <Space/>
-
-                {first.count}
-
-                <Space/>
-
-                {first.count2}
-            </div>
-
-            <button onClick={() => dispatch(AppSlice.actions.inc())}>
-                <>inc</>
-            </button>
-        </>
-    );
-};
-
-const selectText = (state: RootState) => ({
-    text: state.app.second,
-    uppercase: state.app.second.toUpperCase(),
-});
+//     const { dispatch } = useAppDispatch();
 
 
-const Second: FC = () => {
-    const second = useMemoSelector(selectText);
-    const { value, handleChange } = useTextInput(second.text);
-    const { dispatch } = useAppDispatch();
+//     return (
+//         <>
+//             <div>
+//                 <span>
+//                     {counter.count}
 
-    return (
-        <>
-            <div>
-                {Math.random()}
-            </div>
+//                     <button onClick={counter.increment}>
+//                         <>inc</>
+//                     </button>
+//                 </span>
+//             </div>
+//             <div>
+//                 {Math.random()}
+//             </div>
 
-            <div>
-                <>second is:</>
+//             <input type='text' value={value} onChange={handleChange}/>
 
-                <Space/>
+//             <div>
+//                 <>first is:</>
 
-                {second.text}
+//                 <Space/>
 
-                <Space/>
+//                 {first.count}
 
-                {second.uppercase}
-            </div>
+//                 <Space/>
 
-            <input className='bg-slate-500' type='text' value={value} onChange={handleChange}/>
+//                 {first.count2}
+//             </div>
 
-            <button onClick={() => dispatch(AppSlice.actions.setText(value))}>
-                <>inc</>
-            </button>
-        </>
-    );
-};
+//             <button onClick={() => dispatch(AppSlice.actions.inc())}>
+//                 <>inc</>
+//             </button>
+//         </>
+//     );
+// };
 
-const Third: FC = () => {
-    const myId = useMemoSelector((state) => AppSelectors.selectAppState(state).myId);
+// const selectText = (state: RootState) => ({
+//     text: state.app.second,
+//     uppercase: state.app.second.toUpperCase(),
+// });
 
-    return (
-        <div>
-            <div>
-                <>third</>
-            </div>
 
-            <div>
-                {Math.random()}
-            </div>
+// const Second: FC = () => {
+//     const second = useMemoSelector(selectText);
+//     const { value, handleChange } = useTextInput(second.text);
+//     const { dispatch } = useAppDispatch();
 
-            <div>
-                {String(myId)}
-            </div>
-        </div>
-    );
-};
+//     return (
+//         <>
+//             <div>
+//                 {Math.random()}
+//             </div>
 
-const PlaygroundInner25: FC = () => {
+//             <div>
+//                 <>second is:</>
 
-    return (
-        <div className='flex flex-col gap-2 items-start p-6'>
-            <First/>
+//                 <Space/>
 
-            <Second/>
+//                 {second.text}
 
-            <Third/>
-        </div>
-    );
-};
+//                 <Space/>
+
+//                 {second.uppercase}
+//             </div>
+
+//             <input className='bg-slate-500' type='text' value={value} onChange={handleChange}/>
+
+//             <button onClick={() => dispatch(AppSlice.actions.setText(value))}>
+//                 <>inc</>
+//             </button>
+//         </>
+//     );
+// };
+
+// const Third: FC = () => {
+//     const myId = useMemoSelector((state) => AppSelectors.selectAppState(state).myId);
+
+//     return (
+//         <div>
+//             <div>
+//                 <>third</>
+//             </div>
+
+//             <div>
+//                 {Math.random()}
+//             </div>
+
+//             <div>
+//                 {String(myId)}
+//             </div>
+//         </div>
+//     );
+// };
+
+// const PlaygroundInner25: FC = () => {
+
+//     return (
+//         <div className='flex flex-col gap-2 items-start p-6'>
+//             <First/>
+
+//             <Second/>
+
+//             <Third/>
+//         </div>
+//     );
+// };
 
 import { ReactComponent as SVGImage } from '/src/root/playground/archive-check-svgrepo-com.svg';
 
@@ -1637,6 +1637,52 @@ const PlaygroundInner26: FC = () => {
     );
 };
 
+
+type Statuses = Entities.User.Status | StrictExclude<Entities.User.ExtraStatus, 'default'>;
+
+type FakeUserStatus = PropsWithClassName & {
+    status: Statuses;
+}
+
+const statusNames = {
+    afk: IMAGES.SPRITE.STATUS_AFK.NAME,
+    dnd: IMAGES.SPRITE.STATUS_DND.NAME,
+    invisible: IMAGES.SPRITE.STATUS_OFFLINE.NAME,
+    offline: IMAGES.SPRITE.STATUS_OFFLINE.NAME,
+    online: IMAGES.SPRITE.STATUS_ONLINE.NAME,
+} satisfies Record<Statuses, string>;
+
+const FakeUserStatus: FC<FakeUserStatus> = ({
+    className = '',
+    status,
+}) => {
+    return (
+        <SpriteImage
+            className={className}
+            name={statusNames[status]}
+        />
+    );
+};
+
+type UserStatus2 = PropsWithClassName & {
+    userId: string;
+}
+const UserStatus2: FC<UserStatus2> = ({
+    className = '',
+    userId,
+}) => {
+    const status = useMemoSelector((state) => {
+        return UserSelectors.getStatusById({ state, id: userId });
+    }, [userId]);
+
+    return (
+        <FakeUserStatus
+            className={className}
+            status='afk'
+        />
+    );
+};
+
 const PlaygroundInner27: FC = () => {
     return (
         <div className='flex flex-row max-h-screen'>
@@ -1662,6 +1708,8 @@ const PlaygroundInner27: FC = () => {
         </div>
     );
 };
+
+
 
 const enabled = !!1;
 
