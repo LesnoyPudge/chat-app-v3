@@ -1,12 +1,13 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
 import { ChatApi } from '@redux/features';
+import { createCustomizedEntityAdapter } from '@redux/utils';
 
 
 
-const adapter = createEntityAdapter<Entities.Chat.Default>();
+const adapter = createCustomizedEntityAdapter<Entities.Chat.Default>();
 
 const initialState = adapter.getInitialState();
 
@@ -31,4 +32,11 @@ export const ChatSlice = createSlice({
     },
 });
 
-export const ChatSelectors = adapter.getSelectors((state: RootState) => state.chat);
+const selectChatState = (state: RootState) => state.chat;
+
+const adapterSelectors = adapter.customGetSelectors(selectChatState);
+
+export const ChatSelectors = {
+    ...adapterSelectors,
+    selectChatState,
+};

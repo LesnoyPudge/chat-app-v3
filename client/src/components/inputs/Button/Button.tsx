@@ -4,10 +4,20 @@ import React, { FC } from 'react';
 
 
 
+type StylingPresets = (
+    'brand' |
+    'link' |
+    'lite' |
+    'brandNeutral' |
+    'brandDanger' |
+    'brandPositive' |
+    'invisibleBrand'
+);
+
 interface Button extends PropsWithChildrenAndClassName, PropsWithInnerRef<HTMLButtonElement> {
     id?: string;
     style?: React.CSSProperties;
-    stylingPreset?: 'brand' | 'link' | 'lite' | 'brandNeutral' | 'brandDanger' | 'brandPositive',
+    stylingPreset?: StylingPresets,
     size?: 'small' | 'medium' | 'big';
     type?: 'button' | 'submit' | 'reset';
     isActive?: boolean;
@@ -30,7 +40,14 @@ interface Button extends PropsWithChildrenAndClassName, PropsWithInnerRef<HTMLBu
 const styles = {
     base: `flex shrink-0 items-center justify-center w-fit h-fit
     text-sm text-center rounded-[3px] underline-offset-4 decoration-2 
-    decoration-current py-1 px-3 transition-all duration-100`,
+    decoration-current py-1 px-3 transition-all duration-100 
+    data-[loading=true]:animate-pulse`,
+
+    sizes: {
+        small: 'min-w-[60px] min-h-[32px]',
+        medium: 'min-w-[96px] min-h-[38px]',
+        big: 'min-w-[130px] min-h-[44px]',
+    },
 
     brand: {
         base: `text-white font-medium bg-brand 
@@ -69,13 +86,14 @@ const styles = {
         base: 'text-color-primary hover:underline focus-visible:underline',
         active: 'underline',
     },
-};
 
-const sizes = {
-    small: 'min-w-[60px] min-h-[32px]',
-    medium: 'min-w-[96px] min-h-[38px]',
-    big: 'min-w-[130px] min-h-[44px]',
-};
+    invisibleBrand: {
+        base: `text-color-secondary font-medium hover:text-white focus-visible:text-white 
+        active:text-white data-[loading=true]:text-white hover:bg-brand 
+        focus-visible:bg-brand active:bg-brand-active data-[loading=true]:bg-brand-active`,
+        active: 'bg-brand-active text-white',
+    },
+} satisfies Record<StylingPresets | 'base' | 'sizes', string | object>;
 
 export const Button: FC<Button> = ({
     className = '',
@@ -161,7 +179,7 @@ export const Button: FC<Button> = ({
                 [styles.base]: !!stylingPreset,
                 [stylingPreset ? styles[stylingPreset].base : '']: !!stylingPreset,
                 [stylingPreset ? styles[stylingPreset].active : '']: !!stylingPreset && isActive,
-                [size ? sizes[size] : '']: !!size,
+                [size ? styles.sizes[size] : '']: !!size,
                 [className]: !!className,
             })}
             id={id}

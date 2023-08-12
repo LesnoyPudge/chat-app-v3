@@ -63,7 +63,7 @@ export const Header: FC = () => {
                 >
                     <UserAvatar
                         className='h-20 w-20'
-                        avatar='https://i.pravatar.cc/200'
+                        avatarId='https://i.pravatar.cc/200'
                         username='me'
                     />
 

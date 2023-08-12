@@ -34,7 +34,7 @@ export module Entities {
             id: Id;
             login: string;
             username: string;
-            avatar: Id;
+            avatarId: Id;
             email: string | null;
             extraStatus: ExtraStatus;
             isActivated: boolean;
@@ -59,12 +59,15 @@ export module Entities {
             createdAt: Timestamp;
         }
 
-        export type WithoutCredentials = StrictOmit<User.Default, keyof Credentials>;
+        export type WithoutCredentials = (
+            StrictOmit<User.Default, keyof Credentials> &
+            WithStatus
+        );
 
         export type Preview = Pick<
             User.WithoutCredentials,
-            'id' | 'avatar' | 'login' | 'extraStatus' |
-            'username' | 'isDeleted' | 'blocked'
+            'id' | 'avatarId' | 'login' | 'extraStatus' |
+            'username' | 'isDeleted' | 'blocked' | 'status'
         >;
 
         export type Token = Pick<

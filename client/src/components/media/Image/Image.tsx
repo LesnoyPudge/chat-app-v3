@@ -21,6 +21,7 @@ type Image = PropsWithClassName & OptionalValues & {
     alt?: string;
     placeholder?: ReactNode;
     fallback?: ReactNode;
+    style?: React.CSSProperties;
 }
 
 const states = {
@@ -51,6 +52,7 @@ export const Image: FC<Image> = ({
     src,
     file,
     alt = '',
+    style,
     placeholder,
     fallback,
 }) => {
@@ -97,6 +99,7 @@ export const Image: FC<Image> = ({
                     },
                     className,
                 )}
+                style={style}
                 alt={alt}
                 draggable={false}
                 contentEditable={false}

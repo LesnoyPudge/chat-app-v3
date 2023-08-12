@@ -1,4 +1,4 @@
-import { Button, MessageContext, UserName } from '@components';
+import { Button, MessageContext } from '@components';
 import { PropsWithClassName } from '@types';
 import { FC, useContext } from 'react';
 
@@ -8,9 +8,9 @@ export const MessageUsername: FC<PropsWithClassName> = ({
     className = '',
 }) => {
     const { tabIndex, ids } = useContext(MessageContext);
-    
+
     return (
-        <Button 
+        <Button
             className={className}
             id={ids.usernameId}
             hasPopup='menu'
@@ -20,10 +20,7 @@ export const MessageUsername: FC<PropsWithClassName> = ({
             onLeftClick={() => console.log('open user related menu')}
             onRightClick={() => console.log('open user related menu')}
         >
-            <UserName
-                // userId={}
-                // channelId={}
-            />
+            <>tmp name</>
         </Button>
     );
 };

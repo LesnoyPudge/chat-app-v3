@@ -68,7 +68,7 @@ export const FindChannelModal: FC = () => {
                                                             avatar={channel.avatar}
                                                             name={channel.name}
                                                         />
-                                            
+
                                                         <div className={styles.name}>
                                                             {channel.name}
                                                         </div>
@@ -81,7 +81,7 @@ export const FindChannelModal: FC = () => {
 
                                                                 <strong>{channel.members}</strong>
                                                             </div>
-                                            
+
                                                             <div>
                                                                 <>В сети: </>
 

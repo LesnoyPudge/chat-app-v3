@@ -73,7 +73,7 @@ export const MembersTab: FC = () => {
                         <div className={styles.item}>
                             <UserAvatar
                                 className={styles.avatar}
-                                avatar={member.avatar}
+                                avatarId={member.avatar}
                                 username={member.name}
                             />
 

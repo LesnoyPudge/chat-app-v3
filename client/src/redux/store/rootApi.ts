@@ -18,6 +18,14 @@ const baseQuery = fetchBaseQuery({
 const queryWithRetry = retry(async(...args: Parameters<typeof baseQuery>) => {
     const result = await baseQuery(...args);
 
+    if (CUSTOM_NODE_ENV === 'development') {
+        await new Promise<void>((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 1400);
+        });
+    }
+
     const shouldBail = (
         !!result.error &&
         (
@@ -34,27 +42,21 @@ const queryWithRetry = retry(async(...args: Parameters<typeof baseQuery>) => {
 const queryWithReAuth = async(...args: Parameters<typeof baseQuery>) => {
     const result = await queryWithRetry(...args);
 
-    if (CUSTOM_NODE_ENV === 'development') {
-        await new Promise<void>((resolve) => {
-            setTimeout(() => {
-                resolve();
-            }, 1400);
-        });
-    }
-
     if (result.meta?.response?.status !== HTTP_STATUS_CODES.UNAUTHORIZED) {
+        console.log('vse ok', result.meta?.response?.status, result);
         return result;
     }
 
+    const api = args[1];
+
     const refreshResponse = await queryWithRetry(
         Endpoints.V1.User.Refresh.Path,
-        args[1],
+        api,
         args[2],
     );
-
+    console.log('after refresh', refreshResponse);
     if (!refreshResponse.error) return queryWithRetry(...args);
-
-    const api = args[1];
+    console.log('reset');
     api.dispatch(globalReset);
 
     return result;

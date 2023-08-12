@@ -101,7 +101,7 @@ export const BannedTab: FC = () => {
                                             >
                                                 <UserAvatar
                                                     className={styles.avatar}
-                                                    avatar={user.avatar}
+                                                    avatarId={user.avatar}
                                                     username={user.name}
                                                 />
 

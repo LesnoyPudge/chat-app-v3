@@ -11,7 +11,6 @@ export * from './Scrollable';
 export * from './ChannelAvatar';
 export * from './EmojiPicker';
 export * from './EmojiSwitcher';
-export * from './UserName';
 export * from './Message';
 export * from './MessageEditorWrapper';
 export * from './Chat';

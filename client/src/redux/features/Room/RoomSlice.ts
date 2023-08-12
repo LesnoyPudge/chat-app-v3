@@ -1,12 +1,13 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
 import { RoomApi } from '@redux/features';
+import { createCustomizedEntityAdapter } from '@redux/utils';
 
 
 
-const adapter = createEntityAdapter<Entities.Room.Default>();
+const adapter = createCustomizedEntityAdapter<Entities.Room.Default>();
 
 const initialState = adapter.getInitialState();
 
@@ -52,4 +53,11 @@ export const RoomSlice = createSlice({
     },
 });
 
-export const RoomSelectors = adapter.getSelectors((state: RootState) => state.room);
+const selectRoomState = (state: RootState) => state.room;
+
+const adapterSelectors = adapter.customGetSelectors(selectRoomState);
+
+export const RoomSelectors = {
+    ...adapterSelectors,
+    selectRoomState,
+};

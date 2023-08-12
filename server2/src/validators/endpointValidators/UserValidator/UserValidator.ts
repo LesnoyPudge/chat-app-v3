@@ -275,7 +275,7 @@ export const UserValidator = createValidator<UserEndpointsSchema>({
         } satisfies Record<Entities.User.Default['settings']['messageGroupSpacing'], null>);
 
         return {
-            avatar: chainPresets.validEncodedImage('avatar'),
+            avatarId: chainPresets.validEncodedImage('avatarId'),
             extraStatus: (
                 body('extraStatus')
                     .optional()

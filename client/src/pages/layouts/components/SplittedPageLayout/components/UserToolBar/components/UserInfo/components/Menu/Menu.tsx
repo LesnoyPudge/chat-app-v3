@@ -1,4 +1,4 @@
-import { Button, List, OverlayContext } from '@components';
+import { Button, List, OverlayContext, UserStatus } from '@components';
 import { useThrottle } from '@hooks';
 import { AppSelectors, UserApi } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
@@ -18,11 +18,11 @@ const extraStatuses = Object.keys({
 } satisfies Record<Entities.User.ExtraStatus, null>);
 
 const styles = {
-    wrapper: `flex flex-col bg-primary-600 p-2.5 shadow-elevation-high 
+    wrapper: `flex flex-col bg-primary-600 p-2.5 gap-1 shadow-elevation-high 
     pointer-events-auto rounded-sm min-w-[200px]`,
-    button: `flex justify-between gap-1 py-1.5 px-2 h-8 text-color-secondary rounded-sm
-    hover:text-white focus-visible:text-white hover:bg-brand focus-visible:bg-brand 
-    transition-all data-[loading=true]:animate-pulse`,
+    button: 'flex gap-3 items-center w-full justify-start group/button',
+    status: `w-3.5 h-3.5 group-hover/button:fill-white 
+    group-focus-visible/button:fill-white group-data-[loading=true]/button:fill-white`,
     copyButton: 'data-[active=true]:text-white data-[active=true]:bg-positive',
 };
 
@@ -67,11 +67,19 @@ export const Menu: FC = () => {
                 {(item) => (
                     <Button
                         className={styles.button}
+                        stylingPreset='invisibleBrand'
+                        size='small'
                         label={getSetStatusButtonLabel(item)}
                         isLoading={isLoading}
                         onLeftClick={setStatus(item)}
                         role='menuitem'
                     >
+                        <UserStatus
+                            className={styles.status}
+                            status='online'
+                            extraStatus={item}
+                        />
+
                         {STATUS_LABEL[item]}
                     </Button>
                 )}
@@ -79,6 +87,8 @@ export const Menu: FC = () => {
 
             <Button
                 className={twClassNames(styles.button, styles.copyButton)}
+                stylingPreset='invisibleBrand'
+                size='small'
                 onLeftClick={handleCopy}
                 role='menuitem'
                 isActive={isThrottling}

@@ -89,10 +89,10 @@ export const UserService: UserService = {
                 const hashedPassword = await hashPassword(password);
                 const activationCode = randomUUID();
                 const { code, expiresAt } = createAccessCode();
-                const avatar = defaultAvatar.getRandomAvatar();
+                const avatarId = defaultAvatar.getRandomAvatar();
 
                 const createdUser = modelWithId(new UserModel({
-                    avatar: avatar.name,
+                    avatarId,
                     email,
                     login,
                     password: hashedPassword,
@@ -164,7 +164,7 @@ export const UserService: UserService = {
         return UserDTO.withoutCredentials(user);
     },
 
-    async profileUpdate({ id }, { avatar, ...newValues }) {
+    async profileUpdate({ id }, { avatarId, ...newValues }) {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const partiallyUpdatedUser = await UserModel.findOneAndUpdate(
@@ -173,20 +173,20 @@ export const UserService: UserService = {
 
                 if (!partiallyUpdatedUser) throw ApiError.internal();
 
-                const isNewAvatarProvided = avatar !== undefined;
+                const isNewAvatarProvided = avatarId !== undefined;
 
                 if (isNewAvatarProvided) {
-                    await FileServiceHelpers.delete(partiallyUpdatedUser.avatar);
+                    await FileServiceHelpers.delete(partiallyUpdatedUser.avatarId);
                 }
 
-                if (isNewAvatarProvided && avatar === null) {
+                if (isNewAvatarProvided && avatarId === null) {
                     const newAvatar = defaultAvatar.getRandomAvatar();
-                    partiallyUpdatedUser.avatar = newAvatar.name;
+                    partiallyUpdatedUser.avatarId = newAvatar;
                 }
 
-                if (isNewAvatarProvided && avatar !== null) {
-                    const newAvatar = await FileServiceHelpers.create(avatar);
-                    partiallyUpdatedUser.avatar = newAvatar.id;
+                if (isNewAvatarProvided && avatarId !== null) {
+                    const newAvatar = await FileServiceHelpers.create(avatarId);
+                    partiallyUpdatedUser.avatarId = newAvatar.id;
                 }
 
                 const updatedUser = await partiallyUpdatedUser.save({ session });

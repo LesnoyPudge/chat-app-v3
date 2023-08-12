@@ -11,7 +11,7 @@ interface SpriteImage extends PropsWithClassName {
 }
 
 const styles = {
-    base: 'flex shrink-0 transition-all',
+    base: 'flex shrink-0 transition-all w-full h-full',
 };
 
 export const SpriteImage: FC<SpriteImage> = ({

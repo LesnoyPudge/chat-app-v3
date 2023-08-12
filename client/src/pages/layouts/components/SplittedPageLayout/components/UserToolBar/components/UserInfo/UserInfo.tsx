@@ -15,6 +15,8 @@ const styles = {
 
 export const UserInfo: FC = () => {
     const username = useMemoSelector((s) => AppSelectors.selectMe(s).username);
+    const avatarId = useMemoSelector((s) => AppSelectors.selectMe(s).avatarId);
+    const extraStatus = useMemoSelector((s) => AppSelectors.selectMe(s).extraStatus);
 
     return (
         <Ref<HTMLButtonElement>>
@@ -32,8 +34,10 @@ export const UserInfo: FC = () => {
                             >
                                 <UserAvatar
                                     className={styles.avatar}
-                                    avatar='https://i.pravatar.cc/52'
+                                    avatarId={avatarId}
                                     status='online'
+                                    extraStatus={extraStatus}
+                                    username=''
                                 />
 
                                 <div className={styles.username}>

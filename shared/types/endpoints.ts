@@ -109,7 +109,7 @@ export module Endpoints {
                     'username' | 'settings' | 'extraStatus'
                 > & Override<
                     Entities.User.Default,
-                    'avatar',
+                    'avatarId',
                     Entities.File.Encoded | null
                 >>>;
 

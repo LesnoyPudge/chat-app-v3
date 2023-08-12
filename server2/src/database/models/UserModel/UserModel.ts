@@ -10,9 +10,9 @@ const UserSchema = new Schema<Entities.User.Default>({
     login: { type: SchemaTypes.String, required: true, unique: true, lowercase: true },
     password: { type: SchemaTypes.String, required: true },
     username: { type: SchemaTypes.String, required: true },
-    avatar: { type: SchemaTypes.String, required: true },
+    avatarId: { type: SchemaTypes.String, required: true },
     email: { type: SchemaTypes.String, default: null },
-    accessCode: { 
+    accessCode: {
         code: { type: SchemaTypes.String, required: true },
         expiresAt: { type: SchemaTypes.Number, required: true },
     },
@@ -26,7 +26,7 @@ const UserSchema = new Schema<Entities.User.Default>({
     isDeleted: { type: SchemaTypes.Boolean, default: false },
     extraStatus: { type: SchemaTypes.String, default: 'default' },
     channels: [{ type: SchemaTypes.String, ref: MODEL_NAMES.CHANNEL }],
-    privateChannels: [{ 
+    privateChannels: [{
         id: { type: SchemaTypes.String, ref: MODEL_NAMES.PRIVATE_CHANNEL },
         hidden: { type: SchemaTypes.Boolean, default: false },
     }],

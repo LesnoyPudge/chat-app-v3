@@ -164,7 +164,7 @@ export const AllowedRolesAndMembers: FC = () => {
                                         >
                                             <UserAvatar
                                                 className={styles.image}
-                                                avatar={member.avatar}
+                                                avatarId={member.avatar}
                                                 username={member.username}
                                             />
 

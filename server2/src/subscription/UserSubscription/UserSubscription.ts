@@ -1,25 +1,18 @@
 import { sockets } from '@root';
 import { UserDTO } from '@dto';
-import { Entities } from '@shared';
+import { Entities, StrictOmit } from '@shared';
 import { EntitySubscription } from '../EntitySubscription';
 
 
 
 type EntityType = (
-    Entities.User.WithoutCredentials |
-    (Entities.User.Preview & Entities.User.WithStatus)
+    StrictOmit<Entities.User.WithoutCredentials, 'status'> |
+    StrictOmit<Entities.User.Preview, 'status'>
 );
 
 export const UserSubscription = new EntitySubscription<EntityType>(
     'User',
     sockets,
     () => Promise.resolve(true),
-    (v) => {
-        const user = UserDTO.preview(v);
-        const withStatus: Entities.User.WithStatus = {
-            status: sockets.users.has(user.id) ? 'online' : 'offline',
-        };
-
-        return Object.assign(user, withStatus);
-    },
+    UserDTO.preview,
 );

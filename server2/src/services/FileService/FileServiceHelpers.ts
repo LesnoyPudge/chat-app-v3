@@ -14,7 +14,7 @@ export const FileServiceHelpers = {
             },
         );
     },
-    
+
     async getOne(filter: FilterQuery<Entities.File.Default>) {
         const file = await FileModel.findOne(filter).lean();
         return file;

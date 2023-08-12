@@ -81,7 +81,7 @@ const AddFriendModalInner: FC = () => {
                                                     <div className={styles.userInfo}>
                                                         <UserAvatar
                                                             className={styles.avatar}
-                                                            avatar={avatar}
+                                                            avatarId={avatar}
                                                             username={username}
                                                         />
 

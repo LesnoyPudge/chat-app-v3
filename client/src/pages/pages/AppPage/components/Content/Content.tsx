@@ -1,12 +1,12 @@
 import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, Scrollable, List , MoveFocusInside } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { FC, useContext, useRef } from 'react';
-import { IUserPreview } from '@backendTypes';
 import { ActionButtons } from './components';
 import { getRandomNumber } from '@utils';
 import friendsNotFoundImage from '@assets/friendsNotFound.svg';
 
 import { useKeyboardNavigation } from '@hooks';
+import { Entities } from '@shared';
 
 
 
@@ -14,64 +14,7 @@ interface Content {
     value: string;
 }
 
-const allFriends: IUserPreview[] = [
-    {
-        id: 'weifoerjf',
-        username: 'friend 1',
-        avatar: 'https://i.pravatar.cc/51',
-        status: 'online',
-        extraStatus: 'default',
-        isDeleted: false,
-    },
-    {
-        id: 'gewfwfewfes',
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'afk',
-        isDeleted: false,
-    },
-    {
-        id: 'sgfbfgb',
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-        isDeleted: false,
-    },
-    {
-        id: 'gjk,j,',
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
-        isDeleted: false,
-    },
-    {
-        id: 'qqwcw',
-        username: 'friend 5',
-        avatar: 'https://i.pravatar.cc/55',
-        status: 'online',
-        extraStatus: 'invisible',
-        isDeleted: false,
-    },
-    {
-        id: 'dwqdqqdqqdq',
-        username: 'русский ник',
-        avatar: 'https://i.pravatar.cc/56',
-        status: 'online',
-        extraStatus: 'default',
-        isDeleted: false,
-    },
-    {
-        id: 'nyntbtbtb',
-        username: 'qwdqiheifvieiuehvhevfhuei hvheuivheufvhpe;uhvuefhrpvo;jgirbu ijhd;foibuopi;dfjbopifdo;bipdhjfibgoadf9uvhds[hvsdiobj0[d gfhjfhb[ubughboSDVGCusDGOyvcsIVUHigzfvhiuph',
-        avatar: 'https://i.pravatar.cc/57',
-        status: 'online',
-        extraStatus: 'default',
-        isDeleted: false,
-    },
-];
+const allFriends: (Entities.User.Preview & Entities.User.WithStatus)[] = [];
 
 const onlineFriends = [...allFriends].filter((friend) => {
     return friend.status === 'online' && friend.extraStatus !== 'invisible';
@@ -106,10 +49,10 @@ const styles = {
 export const Content: FC<Content> = ({ value }) => {
     const { currentTab, tabs, tabPanelProps, isActive } = useContext<TabContext<AppPageTabs>>(TabContext);
 
-    const filterByName = (users: {username: string}[]): IUserPreview[] => {
-        if (!value) return users as IUserPreview[];
+    const filterByName = (users: Entities.User.Preview[]) => {
+        if (!value) return users;
 
-        return users.filter((user) => user.username.includes(value)) as IUserPreview[];
+        return users.filter((user) => user.username.includes(value));
     };
 
     const filters: Record<keyof typeof tabs, () => ReturnType<typeof filterByName>> = {

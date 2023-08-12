@@ -1,19 +1,20 @@
+import { sockets } from '@root';
 import { Entities, Prettify, StrictOmit } from '@shared';
 
 
 
 interface UserDTO {
     withoutCredentials: (
-        user: Prettify<Entities.User.WithoutCredentials & Partial<StrictOmit<
-            Entities.User.Default, 
-            keyof Entities.User.WithoutCredentials
+        user: Prettify<StrictOmit<Entities.User.WithoutCredentials, 'status'> & Partial<StrictOmit<
+            Entities.User.Default,
+            keyof StrictOmit<Entities.User.WithoutCredentials, 'status'>
         >>>
     ) => Entities.User.WithoutCredentials;
-    
+
     preview: (
-        user: Prettify<Entities.User.Preview & Partial<StrictOmit<
+        user: Prettify<StrictOmit<Entities.User.Preview, 'status'> & Partial<StrictOmit<
             Entities.User.Default,
-            keyof Entities.User.Preview
+            keyof StrictOmit<Entities.User.Preview, 'status'>
         >>>
     ) => Entities.User.Preview;
 
@@ -25,10 +26,14 @@ interface UserDTO {
     ) => Entities.User.Token;
 }
 
+const getStatus = (id: string): Entities.User.Status => {
+    return sockets.users.has(id) ? 'online' : 'offline';
+};
+
 export const UserDTO: UserDTO = {
     withoutCredentials: (user) => ({
         id: user.id,
-        avatar: user.avatar,
+        avatarId: user.avatarId,
         blocked: user.blocked,
         channels: user.channels,
         createdAt: user.createdAt,
@@ -42,15 +47,18 @@ export const UserDTO: UserDTO = {
         privateChannels: user.privateChannels,
         settings: user.settings,
         username: user.username,
+        status: getStatus(user.id),
     }),
 
     preview: (user) => ({
         id: user.id,
-        avatar: user.avatar,
+        avatarId: user.avatarId,
         isDeleted: user.isDeleted,
         login: user.login,
         username: user.username,
         blocked: user.blocked,
+        extraStatus: user.extraStatus,
+        status: getStatus(user.id),
     }),
 
     token: (user) => ({

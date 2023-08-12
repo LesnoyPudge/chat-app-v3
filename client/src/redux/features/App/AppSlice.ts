@@ -119,7 +119,7 @@ const selectIsInitialized = (state: RootState) => selectAppState(state).isInitia
 
 const userDummy: Entities.User.WithoutCredentials = {
     id: String(Math.floor(Math.random() * 100_000)),
-    avatar: defaultAvatar.getRandomAvatar().base64,
+    avatarId: defaultAvatar.getRandomAvatar(),
     blocked: [],
     channels: [],
     createdAt: Date.now(),
@@ -140,9 +140,10 @@ const userDummy: Entities.User.WithoutCredentials = {
         theme: 'auto',
     },
     username: 'dummy user',
+    status: 'offline',
 };
 
-const selectMe = (state: RootState) => {
+const selectMe = (state: RootState): Entities.User.WithoutCredentials => {
     const id = selectAppState(state).myId;
     if (!id) {
         console.error('Unauthorized user selector');

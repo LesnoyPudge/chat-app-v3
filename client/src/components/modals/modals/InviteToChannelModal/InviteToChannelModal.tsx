@@ -97,7 +97,7 @@ export const InviteToChannelModal: FC = () => {
                                                         <div className={styles.userInfo}>
                                                             <UserAvatar
                                                                 className={styles.userAvatar}
-                                                                avatar={user.avatar}
+                                                                avatarId={user.avatar}
                                                                 username={user.username}
                                                             />
 

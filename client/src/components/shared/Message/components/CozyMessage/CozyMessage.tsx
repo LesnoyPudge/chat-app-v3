@@ -19,7 +19,7 @@ const styles = {
 
 export const CozyMessage: FC = () => {
     const { message, isGroupHead } = useContext(MessageContext);
-    
+
     const user = {
         id: message.user,
         name: 'loshok111',
@@ -32,7 +32,7 @@ export const CozyMessage: FC = () => {
                 <Conditional isRendered={isGroupHead}>
                     <UserAvatar
                         className={styles.avatar}
-                        avatar={user.avatar}
+                        avatarId={user.avatar}
                         username={user.name}
                     />
                 </Conditional>
@@ -50,9 +50,9 @@ export const CozyMessage: FC = () => {
                         <MessageUsername className={styles.username}/>
 
                         <MessageCozyTimestamp/>
-                    </div> 
+                    </div>
                 </Conditional>
-                
+
                 <MessageContent/>
 
                 <MessageAdditions/>

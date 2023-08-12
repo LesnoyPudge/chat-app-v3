@@ -140,7 +140,7 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
 
                                                                 <UserAvatar
                                                                     className={styles.avatar}
-                                                                    avatar={avatar}
+                                                                    avatarId={avatar}
                                                                     username={name}
                                                                 />
 

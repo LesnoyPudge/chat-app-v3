@@ -28,3 +28,5 @@ export * from './observers';
 export * from './chatMock';
 export * from './objectKeysToIdArray';
 export * from './cookies';
+export * from './getAvatarPath';
+export * from './getDiff';

@@ -1,12 +1,13 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
 import { ChannelApi } from '@redux/features';
+import { createCustomizedEntityAdapter } from '@redux/utils';
 
 
 
-const adapter = createEntityAdapter<Entities.Channel.Default>();
+const adapter = createCustomizedEntityAdapter<Entities.Channel.Default>();
 
 const initialState = adapter.getInitialState();
 
@@ -93,5 +94,11 @@ export const ChannelSlice = createSlice({
         );
     },
 });
+const selectChannelState = (state: RootState) => state.channel;
 
-export const ChannelSelectors = adapter.getSelectors((state: RootState) => state.channel);
+const adapterSelectors = adapter.customGetSelectors(selectChannelState);
+
+export const ChannelSelectors = {
+    ...adapterSelectors,
+    selectChannelState,
+};

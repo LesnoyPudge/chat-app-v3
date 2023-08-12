@@ -74,7 +74,7 @@ export const PrivateChatItem: FC<PrivateChatItem> = ({
             >
                 <UserAvatar
                     className={styles.avatar}
-                    avatar={avatar}
+                    avatarId={avatar}
                     username={username}
                     status={status}
                     extraStatus={extraStatus}

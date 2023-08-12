@@ -1,14 +1,15 @@
 import { globalReset } from '@redux/globalReset';
-import { RootState, WithRootState } from '@redux/store';
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import { Endpoints, Entities, ENTITY_NAMES, WithId } from '@shared';
+import { RootState } from '@redux/store';
+import { createSlice } from '@reduxjs/toolkit';
+import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
 import { UserApi } from '@redux/features';
+import { createCustomizedEntityAdapter } from '@redux/utils';
 
 
 
-type UserState = Entities.User.WithoutCredentials | (Entities.User.Preview & Entities.User.WithStatus);
+type UserState = Entities.User.WithoutCredentials | Entities.User.Preview;
 
-const adapter = createEntityAdapter<UserState>();
+const adapter = createCustomizedEntityAdapter<UserState>();
 
 const initialState = adapter.getInitialState();
 
@@ -126,20 +127,9 @@ export const UserSlice = createSlice({
 
 const selectUserState = (state: RootState) => state.user;
 
-const adapterSelectors = adapter.getSelectors(selectUserState);
-
-const getStatusById = ({
-    state,
-    id,
-}: WithRootState & WithId): Entities.User.Status => {
-    const user = adapterSelectors.selectById(state, id);
-    if (!user) return 'offline';
-
-    return 'status' in user ? user.status : 'offline';
-};
+const adapterSelectors = adapter.customGetSelectors(selectUserState);
 
 export const UserSelectors = {
     ...adapterSelectors,
     selectUserState,
-    getStatusById,
 };

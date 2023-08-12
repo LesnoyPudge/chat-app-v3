@@ -1,7 +1,7 @@
 import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions } from '@utils';
+import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff } from '@utils';
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
@@ -1598,8 +1598,6 @@ const PlaygroundInner24: FC = () => {
 //     );
 // };
 
-import { ReactComponent as SVGImage } from '/src/root/playground/archive-check-svgrepo-com.svg';
-
 
 
 const PlaygroundInner26: FC = () => {
@@ -1637,81 +1635,22 @@ const PlaygroundInner26: FC = () => {
     );
 };
 
-
-type Statuses = Entities.User.Status | StrictExclude<Entities.User.ExtraStatus, 'default'>;
-
-type FakeUserStatus = PropsWithClassName & {
-    status: Statuses;
-}
-
-const statusNames = {
-    afk: IMAGES.SPRITE.STATUS_AFK.NAME,
-    dnd: IMAGES.SPRITE.STATUS_DND.NAME,
-    invisible: IMAGES.SPRITE.STATUS_OFFLINE.NAME,
-    offline: IMAGES.SPRITE.STATUS_OFFLINE.NAME,
-    online: IMAGES.SPRITE.STATUS_ONLINE.NAME,
-} satisfies Record<Statuses, string>;
-
-const FakeUserStatus: FC<FakeUserStatus> = ({
-    className = '',
-    status,
-}) => {
-    return (
-        <SpriteImage
-            className={className}
-            name={statusNames[status]}
-        />
-    );
-};
-
-type UserStatus2 = PropsWithClassName & {
-    userId: string;
-}
-const UserStatus2: FC<UserStatus2> = ({
-    className = '',
-    userId,
-}) => {
-    const status = useMemoSelector((state) => {
-        return UserSelectors.getStatusById({ state, id: userId });
-    }, [userId]);
-
-    return (
-        <FakeUserStatus
-            className={className}
-            status='afk'
-        />
-    );
-};
-
 const PlaygroundInner27: FC = () => {
+    console.log(getDiff(
+        { some: 'data', counter: 4, users: [], items: [{ id: '2' }] },
+        { some: 'data', counter: 3, users: [], items: [], extraData: 'someExtra' },
+    ));
+
     return (
-        <div className='flex flex-row max-h-screen'>
-            <div className='w-[80px] [&>*]:h-[80px]'>
-                <UserStatus status='online'/>
+        <div className='flex'>
 
-                <UserStatus status='offline'/>
-
-                <UserStatus status='online' extraStatus='afk'/>
-
-                <UserStatus status='online' extraStatus='dnd'/>
-            </div>
-
-            <div className='w-[80px] [&>*]:w-[80px] [&>*]:h-[80px]'>
-                <SpriteImage name={IMAGES.SPRITE.STATUS_ONLINE.NAME}/>
-
-                <SpriteImage name={IMAGES.SPRITE.STATUS_OFFLINE.NAME}/>
-
-                <SpriteImage name={IMAGES.SPRITE.STATUS_AFK.NAME}/>
-
-                <SpriteImage name={IMAGES.SPRITE.STATUS_DND.NAME}/>
-            </div>
         </div>
     );
 };
 
 
 
-const enabled = !!1;
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

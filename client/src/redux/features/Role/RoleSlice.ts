@@ -1,12 +1,13 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
 import { RoleApi } from '@redux/features';
+import { createCustomizedEntityAdapter } from '@redux/utils';
 
 
 
-const adapter = createEntityAdapter<Entities.Role.Default>();
+const adapter = createCustomizedEntityAdapter<Entities.Role.Default>();
 
 const initialState = adapter.getInitialState();
 
@@ -66,4 +67,11 @@ export const RoleSlice = createSlice({
     },
 });
 
-export const RoleSelectors = adapter.getSelectors((state: RootState) => state.role);
+const selectRoleState = (state: RootState) => state.role;
+
+const adapterSelectors = adapter.customGetSelectors(selectRoleState);
+
+export const RoleSelectors = {
+    ...adapterSelectors,
+    selectRoleState,
+};

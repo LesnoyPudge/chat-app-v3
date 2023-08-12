@@ -1,75 +1,40 @@
-import { Entities, getRandomNumber, Override, Prettify } from "../../index";
-import { urls } from "./urls";
+import { getRandomNumber } from '../../index';
 
 
 
-type AvatarVariationNumber = 1 | 2 | 3 | 4;
+type AvatarIds = (
+    'DEFAULT_AVATAR_1' |
+    'DEFAULT_AVATAR_2' |
+    'DEFAULT_AVATAR_3' |
+    'DEFAULT_AVATAR_4'
+);
 
-const avatarNameStart = 'default-';
+const avatarArray = [
+    'DEFAULT_AVATAR_1',
+    'DEFAULT_AVATAR_2',
+    'DEFAULT_AVATAR_3',
+    'DEFAULT_AVATAR_4',
+] satisfies AvatarIds[];
 
-const avatarNames = Array(4).fill('').map((_, i) => `${avatarNameStart}${i + 1}`)
-
-type Avatars = {
-    [K in AvatarVariationNumber]: Prettify<Entities.File.Encoded & Override<
-        Entities.File.Encoded,
-        'type',
-        'image/png'
-    > & Override<
-        Entities.File.Encoded,
-        'name',
-        `${typeof avatarNameStart}${K}`
-    >>
+const avatarObject = {
+    DEFAULT_AVATAR_1: 'DEFAULT_AVATAR_1',
+    DEFAULT_AVATAR_2: 'DEFAULT_AVATAR_2',
+    DEFAULT_AVATAR_3: 'DEFAULT_AVATAR_3',
+    DEFAULT_AVATAR_4: 'DEFAULT_AVATAR_4',
+} satisfies {
+    [AvatarId in AvatarIds]: AvatarId;
 };
 
-// const avatars = Object.fromEntries(objectKeys(urls).map((key) => {
-//     return [key, {
-//         avatarName: `${avatarNameStart}${key}`,
-//         info: {
-//             name: `${avatarNameStart}${key}`,
-//             type: 'image/png',
-//             size: 1,
-//             base64: urls[key],
-//         },
-//     }]
-// })) as Avatars;
-
-const avatars: Avatars = {
-    "1": {
-        name: `${avatarNameStart}1`,
-        type: 'image/png',
-        size: 1,
-        base64: urls[1]
-    },
-    "2": {
-        name: `${avatarNameStart}2`,
-        type: 'image/png',
-        size: 1,
-        base64: urls[2]
-    },
-    "3": {
-        name: `${avatarNameStart}3`,
-        type: 'image/png',
-        size: 1,
-        base64: urls[3]
-    },
-    "4": {
-        name: `${avatarNameStart}4`,
-        type: 'image/png',
-        size: 1,
-        base64: urls[4]
-    },
-}
-
 export const defaultAvatar = {
-    isAvatar: (id: string): id is `${typeof avatarNameStart}${AvatarVariationNumber}` => {
-        return avatarNames.includes(id);
-    },
-    
-    getAvatar: (variation: AvatarVariationNumber) => {
-        return avatars[variation]
-    },
-    
     getRandomAvatar: () => {
-        return defaultAvatar.getAvatar(getRandomNumber(1, 4) as AvatarVariationNumber);
-    }
-}
+        return avatarArray[getRandomNumber(1, 4)];
+    },
+
+    getAvatar: (id: AvatarIds) => {
+        return avatarObject[id];
+    },
+
+    isAvatar: (id: string): id is AvatarIds => {
+        return avatarArray.includes(id);
+    },
+};

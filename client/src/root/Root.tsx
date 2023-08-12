@@ -1,5 +1,5 @@
 import { FC, lazy, StrictMode, Suspense } from 'react';
-import { ErrorBoundary, Loader, DevDebug, Sprite } from './components';
+import { ErrorBoundary, Loader, DevDebug, Sprite, Masks } from './components';
 import { usePreventDefault, useSocketStateHandler } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
@@ -28,6 +28,8 @@ const RootInner: FC = () => {
             <Heading className='sr-only'>
                 <>ChatApp</>
             </Heading>
+
+            <Masks/>
 
             <Sprite/>
 

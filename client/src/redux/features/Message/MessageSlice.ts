@@ -1,12 +1,13 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
-import { createEntityAdapter, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
 import { MessageApi } from '@redux/features';
+import { createCustomizedEntityAdapter } from '@redux/utils';
 
 
 
-const adapter = createEntityAdapter<Entities.Message.Default>();
+const adapter = createCustomizedEntityAdapter<Entities.Message.Default>();
 
 const initialState = adapter.getInitialState();
 
@@ -66,4 +67,11 @@ export const MessageSlice = createSlice({
     },
 });
 
-export const MessageSelectors = adapter.getSelectors((state: RootState) => state.message);
+const selectMessageState = (state: RootState) => state.message;
+
+const adapterSelectors = adapter.customGetSelectors(selectMessageState);
+
+export const MessageSelectors = {
+    ...adapterSelectors,
+    selectMessageState,
+};

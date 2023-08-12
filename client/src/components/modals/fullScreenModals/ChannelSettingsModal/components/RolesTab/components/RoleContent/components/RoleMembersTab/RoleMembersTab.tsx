@@ -84,7 +84,7 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
                             >
                                 <UserAvatar
                                     className={styles.avatar}
-                                    avatar={member.avatar}
+                                    avatarId={member.avatar}
                                     username={member.name}
                                 />
 

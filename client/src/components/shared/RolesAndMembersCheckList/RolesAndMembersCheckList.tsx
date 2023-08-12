@@ -186,7 +186,7 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
 
                                                 <UserAvatar
                                                     className={styles.itemImage}
-                                                    avatar={member.avatar}
+                                                    avatarId={member.avatar}
                                                     username={member.username}
                                                 />
 
