@@ -42,8 +42,8 @@ const queryWithRetry = retry(async(...args: Parameters<typeof baseQuery>) => {
 const queryWithReAuth = async(...args: Parameters<typeof baseQuery>) => {
     const result = await queryWithRetry(...args);
 
-    if (result.meta?.response?.status !== HTTP_STATUS_CODES.UNAUTHORIZED) {
-        console.log('vse ok', result.meta?.response?.status, result);
+    if (result.error?.status !== HTTP_STATUS_CODES.UNAUTHORIZED) {
+        console.log('vse ok', result);
         return result;
     }
 

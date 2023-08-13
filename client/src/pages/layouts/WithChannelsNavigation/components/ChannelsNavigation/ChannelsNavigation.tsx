@@ -1,5 +1,5 @@
 import { FC, useRef } from 'react';
-import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List, Ref , MoveFocusInside } from '@components';
+import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List, Ref , MoveFocusInside, ToDo } from '@components';
 import { WrapperWithBullet } from './components';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -141,20 +141,23 @@ export const ChannelsNavigation: FC = () => {
                                                             </Tooltip>
 
                                                             <OverlayContextProvider>
-                                                                <ContextMenu
-                                                                    preferredAlignment='right'
-                                                                    leaderElementRef={ref}
-                                                                >
-                                                                    <>menu</>
+                                                                <ToDo>
+                                                                    <ContextMenu
+                                                                        preferredAlignment='right'
+                                                                        leaderElementRef={ref}
+                                                                    >
 
-                                                                    <Button>
-                                                                        <>1</>
-                                                                    </Button>
+                                                                        <>menu</>
 
-                                                                    <Button>
-                                                                        <>2</>
-                                                                    </Button>
-                                                                </ContextMenu>
+                                                                        <Button>
+                                                                            <>1</>
+                                                                        </Button>
+
+                                                                        <Button>
+                                                                            <>2</>
+                                                                        </Button>
+                                                                    </ContextMenu>
+                                                                </ToDo>
                                                             </OverlayContextProvider>
                                                         </>
                                                     )}

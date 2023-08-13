@@ -1,12 +1,11 @@
 import { Button, List, OverlayContext, UserStatus } from '@components';
-import { useThrottle } from '@hooks';
+import { useMountedApiWrapper, useThrottle } from '@hooks';
 import { AppSelectors, UserApi } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
 import { copyToClipboard, noop, twClassNames } from '@utils';
 import { FC, useContext } from 'react';
 import { Entities } from '@shared';
 import { STATUS_LABEL } from '@vars';
-import { useIsMounted } from 'usehooks-ts';
 
 
 
@@ -30,9 +29,9 @@ export const Menu: FC = () => {
     const username = useMemoSelector((s) => AppSelectors.selectMe(s).username);
     const extraStatus = useMemoSelector((s) => AppSelectors.selectMe(s).extraStatus);
     const { throttle, isThrottling } = useThrottle();
-    const isMounted = useIsMounted();
     const { closeOverlay } = useContext(OverlayContext);
     const [updateProfile, { isLoading }] = UserApi.useUserProfileUpdateMutation();
+    const { apiWrapper } = useMountedApiWrapper();
 
     const handleCopy = () => {
         copyToClipboard(username);
@@ -43,12 +42,10 @@ export const Menu: FC = () => {
         return () => {
             if (isLoading) return;
 
-            updateProfile({
-                extraStatus: newStatus,
-            }).then((v) => {
-                if (!('data' in v)) return;
-                if (isMounted()) closeOverlay();
-            });
+            apiWrapper(
+                updateProfile({ extraStatus: newStatus }),
+                closeOverlay,
+            );
         };
     };
 

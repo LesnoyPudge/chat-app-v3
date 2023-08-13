@@ -46,23 +46,6 @@ const { body } = extendedValidator;
 
 export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
     acceptInvitation: (req) => ({
-        channelId: (
-            body('channelId')
-                .exists()
-                .isString()
-                ._sanitize()
-                .notEmpty()
-                .not()
-                .custom(customChains.channelMember(
-                    req.auth.id,
-                    req.body.channelId,
-                ))
-                .not()
-                .custom(customChains.inBanList(
-                    req.auth.id,
-                    req.body.channelId,
-                ))
-        ),
         code: (
             body('code')
                 .exists()
@@ -70,8 +53,8 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 ._sanitize()
                 .notEmpty()
                 .custom(customChains.validInvitationCode(
-                    req.body.channelId,
-                    req.body.channelId,
+                    req.auth.id,
+                    req.body.code,
                 ))
         ),
     }),

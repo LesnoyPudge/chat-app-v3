@@ -263,11 +263,11 @@ export const ChannelService: ChannelService = {
         );
     },
 
-    async acceptInvitation({ id }, { channelId }) {
+    async acceptInvitation({ id }, { code }) {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedChannel = await ChannelModel.findOneAndUpdate(
-                    { id: channelId },
+                    { 'invitations.code': code },
                     { $push: { members: id } },
                     { new: true },
                 ).session(session).lean();

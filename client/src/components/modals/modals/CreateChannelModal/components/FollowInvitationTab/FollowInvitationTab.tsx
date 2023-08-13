@@ -1,29 +1,35 @@
-import { useNavigator } from '@hooks';
+import { useMountedApiWrapper, useNavigator } from '@hooks';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
 import { Button, CreateChannelModalTabs, FieldLabel, OverlayContext, TabContext, TextInput } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { FormikTextInput } from '@libs';
+import { Endpoints } from '@shared';
+import { ChannelApi } from '@redux/features';
 
 
 
-interface FollowInvitationFormValues {
-    invitation: string;
-}
+type FollowInvitationFormValues = Endpoints.V1.Channel.AcceptInvitation.RequestBody;
 
 const initialValues: FollowInvitationFormValues = {
-    invitation: '',
+    code: '',
 };
 
 export const FollowInvitationTab: FC = () => {
     const { changeTab } = useContext<TabContext<CreateChannelModalTabs>>(TabContext);
     const { closeOverlay } = useContext(OverlayContext);
-    // const { navigateTo } = useNavigator();
+    const [accept] = ChannelApi.useChannelAcceptInvitationMutation();
+    const { apiWrapper } = useMountedApiWrapper();
+    const { navigateTo } = useNavigator();
 
-    const handleSubmit = (values: FollowInvitationFormValues) => {
-        console.log('submit', values);
-        closeOverlay();
-        // navigateTo.channel('followed-channel');
+    const handleSubmit = async(values: FollowInvitationFormValues) => {
+        apiWrapper(
+            accept({ code: values.code }),
+            (channel) => {
+                closeOverlay();
+                navigateTo.channel(channel.id);
+            },
+        );
     };
 
     return (

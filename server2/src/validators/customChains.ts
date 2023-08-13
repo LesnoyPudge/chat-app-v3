@@ -123,20 +123,26 @@ export const customChains = {
         };
     },
 
-    validInvitationCode(code: string, channelId: string) {
+    validInvitationCode(userId: string, code: string) {
         return async() => {
-            const channel = await ChannelServiceHelpers.getOne({ id: channelId });
-
+            const channel = await ChannelServiceHelpers.getOne({
+                'invitations.code': code,
+            });
             if (!channel) return Promise.reject();
+
+            const isMember = channel.members.some((id) => id === userId);
+            if (isMember) return Promise.reject();
+
+            const isBanned = channel.banned.some((item) => item.user === userId);
+            if (isBanned) return Promise.reject();
 
             const invitation = channel.invitations.find((item) => {
                 return item.code === code;
             });
-
             if (!invitation) return Promise.reject();
 
             if (
-                invitation.expiresAt && 
+                invitation.expiresAt &&
                 invitation.expiresAt < Date.now()
             ) return Promise.reject();
 
@@ -192,7 +198,7 @@ export const customChains = {
 
             const found = roles.some((role) => {
                 return (
-                    role.permissions.isAdministrator === true && 
+                    role.permissions.isAdministrator === true &&
                     role.users.some((id) => id === userId)
                 );
             });
@@ -209,7 +215,7 @@ export const customChains = {
 
             const found = roles.some((role) => {
                 return (
-                    role.permissions.banMember === true && 
+                    role.permissions.banMember === true &&
                     role.users.some((id) => id === userId)
                 );
             });
@@ -240,7 +246,7 @@ export const customChains = {
 
             const found = roles.some((role) => {
                 return (
-                    role.permissions.createInvitation === true && 
+                    role.permissions.createInvitation === true &&
                     role.users.some((id) => id === userId)
                 );
             });
@@ -257,7 +263,7 @@ export const customChains = {
 
             const found = roles.some((role) => {
                 return (
-                    role.permissions.kickMember === true && 
+                    role.permissions.kickMember === true &&
                     role.users.some((id) => id === userId)
                 );
             });
@@ -298,7 +304,7 @@ export const customChains = {
 
             const found = roles.some((role) => {
                 return (
-                    role.permissions.channelControl === true && 
+                    role.permissions.channelControl === true &&
                     role.users.some((id) => id === userId)
                 );
             });
@@ -312,7 +318,7 @@ export const customChains = {
     privateRoom(roomId: string) {
         return async() => {
             const exists = await RoomServiceHelpers.isExist({ id: roomId, isPrivate: true });
-            
+
             if (!exists) return Promise.reject();
 
             return Promise.resolve();
@@ -350,7 +356,7 @@ export const customChains = {
 
             const found = roles.some((role) => {
                 return (
-                    role.permissions.roomControl === true && 
+                    role.permissions.roomControl === true &&
                     role.users.some((id) => id === userId)
                 );
             });
@@ -366,7 +372,7 @@ export const customChains = {
             const exists = await PrivateChannelServiceHelpers.isExist({
                 members: { $all: [userId, targetId] },
             });
-        
+
             if (!exists) return Promise.reject();
 
             return Promise.resolve();
@@ -396,7 +402,7 @@ export const customChains = {
             const found = channel.roles.includes(roleId);
 
             if (!found) return Promise.reject();
-            
+
             return Promise.resolve();
         };
     },
@@ -405,16 +411,16 @@ export const customChains = {
         return async() => {
             const message = await MessageServiceHelpers.getOne({ id: messageId });
             if (!message) return Promise.reject();
-            
-            const privateChannel = await PrivateChannelServiceHelpers.getOne({ 
+
+            const privateChannel = await PrivateChannelServiceHelpers.getOne({
                 chat: message.chat,
-                members: { $in: [userId] }, 
+                members: { $in: [userId] },
             });
             if (privateChannel) return Promise.resolve();
 
             const room = await RoomServiceHelpers.getOne({ chat: message.chat });
             if (!room) return Promise.reject();
-            
+
             return this.ableToFullyAccessRoom(userId, room.id)();
         };
     },
@@ -427,8 +433,8 @@ export const customChains = {
             )());
             if (!haveAccess) return Promise.reject();
 
-            const message = await MessageServiceHelpers.getOne({ 
-                id: messageId, 
+            const message = await MessageServiceHelpers.getOne({
+                id: messageId,
             });
             if (!message) return Promise.reject();
 
@@ -446,15 +452,15 @@ export const customChains = {
             )());
             if (!haveAccess) return Promise.reject();
 
-            const message = await MessageServiceHelpers.getOne({ 
-                id: messageId, 
+            const message = await MessageServiceHelpers.getOne({
+                id: messageId,
             });
             if (!message) return Promise.reject();
 
             if (message.user === userId) return Promise.resolve();
 
-            const room = await RoomServiceHelpers.getOne({ 
-                chat: message.chat, 
+            const room = await RoomServiceHelpers.getOne({
+                chat: message.chat,
             });
             if (!room) return Promise.reject();
 
@@ -490,7 +496,7 @@ export const customChains = {
             const room = await RoomServiceHelpers.getOne({
                 chat: chatId,
             });
-            
+
             if (room) return this.ableToFullyAccessRoom(userId, room.id)();
 
             const privateChannel = await PrivateChannelServiceHelpers.getOne({
@@ -514,11 +520,11 @@ export const customChains = {
                 case 'PrivateChannel': {
                     return this.privateChannelMember(userId, chat.ownerId)();
                 }
-                
+
                 case 'Room': {
                     const room = await RoomServiceHelpers.getOne({ id: chat.ownerId });
                     if (!room) return Promise.reject();
-            
+
                     return this.channelMember(userId, room.channel)();
                 }
 
@@ -534,7 +540,7 @@ export const customChains = {
             const room = await RoomServiceHelpers.getOne({
                 conversation: conversationId,
             });
-            
+
             if (room) {
                 if (room.type !== 'voice') return Promise.reject();
 
@@ -558,7 +564,7 @@ export const customChains = {
             const room = await RoomServiceHelpers.getOne({
                 conversation: conversationId,
             });
-            
+
             if (room) return this.ableToFullyAccessRoom(userId, room.id)();
 
             const privateChannel = await PrivateChannelServiceHelpers.getOne({

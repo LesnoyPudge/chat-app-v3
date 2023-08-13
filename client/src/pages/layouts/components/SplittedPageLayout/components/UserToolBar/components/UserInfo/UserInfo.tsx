@@ -8,7 +8,7 @@ import { Menu } from './components';
 
 const styles = {
     userInfo: `w-full min-w-0 mr-1 px-1 py-0.5 rounded-md flex items-center 
-    hover:bg-primary-hover focus-visible:bg-primary-hover focus-within:bg-primary-hover`,
+    hover:bg-primary-hover focus-visible:bg-primary-hover`,
     avatar: 'h-8 w-8',
     username: 'ml-2 text-color-primary font-semibold text-sm truncated',
 };

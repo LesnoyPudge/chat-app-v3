@@ -619,6 +619,7 @@ import { RootState, store } from '@redux/store';
 import { Key } from 'ts-key-enum';
 import { memoize } from 'proxy-memoize';
 import { createMemoSelector } from '@redux/utils';
+import isObject from 'is-object';
 
 
 
@@ -1636,15 +1637,53 @@ const PlaygroundInner26: FC = () => {
 };
 
 const PlaygroundInner27: FC = () => {
-    console.log(getDiff(
-        { some: 'data', counter: 4, users: [], items: [{ id: '2' }] },
-        { some: 'data', counter: 3, users: [], items: [], extraData: 'someExtra' },
-    ));
+    const user = useMemoSelector(AppSelectors.selectMe);
+    const [login] = UserApi.useUserLoginMutation();
+
+    useEffectOnce(() => {
+        const users = {
+            1: {
+                login: 'qwe1',
+                password: 'zxc',
+            },
+            2: {
+                login: 'qwe2',
+                password: 'zxc',
+            },
+            3: {
+                login: 'qwe3',
+                password: 'zxc',
+            },
+            4: {
+                login: 'qwe4',
+                password: 'zxc',
+            },
+            5: {
+                login: 'qwe5',
+                password: 'zxc',
+            },
+        };
+
+        login(users[1]);
+    });
 
     return (
-        <div className='flex'>
+        <code className=''>
+            {Object.keys(user).map((key, i) => {
 
-        </div>
+                return (
+                    <div key={i}>
+                        {key}
+
+                        <>:</>
+
+                        <Space/>
+
+                        {JSON.stringify(user[key])}
+                    </div>
+                );
+            })}
+        </code>
     );
 };
 

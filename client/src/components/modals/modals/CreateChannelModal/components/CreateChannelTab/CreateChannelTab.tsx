@@ -2,27 +2,35 @@ import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
 import { Button, Conditional, TabContext, Image,SpriteImage, CreateChannelModalTabs, FieldLabel, TextInput } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
-import { EncodedFile } from '@types';
 import { FormikFileInput, FormikFileUploadContextProvider, FormikTextInput } from '@libs';
 import { MBToBytes } from '@utils';
+import { ChannelApi } from '@redux/features';
+import { Endpoints, Prettify, StrictOmit } from '@shared';
 
 
 
-interface CreateChannelFormValues {
-    avatar: EncodedFile[];
-    name: string;
-}
+type CreateChannelFormValues = Prettify<StrictOmit<
+    Endpoints.V1.Channel.Create.RequestBody,
+    'avatar'
+> & {
+    avatar: Endpoints.V1.Channel.Create.RequestBody['avatar'][];
+}>;
 
 const initialValues: CreateChannelFormValues = {
-    avatar: [],
+    identifier: '',
     name: '',
+    avatar: [],
 };
 
 export const CreateChannelTab: FC = () => {
     const { changeTab } = useContext<TabContext<CreateChannelModalTabs>>(TabContext);
+    const [create] = ChannelApi.useChannelCreateMutation();
 
     const handleSubmit = (values: CreateChannelFormValues) => {
-        console.log('submit', values);
+        create({
+            ...values,
+            avatar: values.avatar[0],
+        });
     };
 
     return (

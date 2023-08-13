@@ -448,7 +448,7 @@ export module Endpoints {
 
                 export const Method = METHOD.POST;
 
-                export type RequestBody = Prettify<WithChannelId & Pick<
+                export type RequestBody = Prettify<Pick<
                     Entities.Channel.Default['invitations'][number],
                     'code'
                 >>;

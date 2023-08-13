@@ -18,3 +18,4 @@ export * from './useKeyboardNavigation';
 export * from './useSet';
 export * from './useLatest';
 export * from './useFocusVisibleEvent';
+export * from './useMountedApiWrapper';

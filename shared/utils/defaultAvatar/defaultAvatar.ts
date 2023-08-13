@@ -27,7 +27,7 @@ const avatarObject = {
 
 export const defaultAvatar = {
     getRandomAvatar: () => {
-        return avatarArray[getRandomNumber(1, 4)];
+        return avatarArray[getRandomNumber(0, 3)];
     },
 
     getAvatar: (id: AvatarIds) => {
