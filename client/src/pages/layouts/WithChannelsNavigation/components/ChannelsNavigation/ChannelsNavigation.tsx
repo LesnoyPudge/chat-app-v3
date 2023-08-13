@@ -146,7 +146,6 @@ export const ChannelsNavigation: FC = () => {
                                                                         preferredAlignment='right'
                                                                         leaderElementRef={ref}
                                                                     >
-
                                                                         <>menu</>
 
                                                                         <Button>

@@ -67,7 +67,9 @@ export const createValidator = <InitialSchema extends NestedObject>(
 
     objectKeys(rawValidator).forEach((key) => {
         result[key] = async(req, _, next) => {
-            const values = Object.values(rawValidator[key](req as AuthorizedRequest<InitialSchema[keyof InitialSchema]>)).flat();
+            const values = Object.values(
+                rawValidator[key](req as AuthorizedRequest<InitialSchema[keyof InitialSchema]>),
+            ).flat();
 
             for (const chain of values) {
                 addBailToStack(chain.builder);

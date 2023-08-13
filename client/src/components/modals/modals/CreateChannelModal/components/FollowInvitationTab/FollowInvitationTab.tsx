@@ -1,11 +1,12 @@
 import { useMountedApiWrapper, useNavigator } from '@hooks';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, CreateChannelModalTabs, FieldLabel, OverlayContext, TabContext, TextInput } from '@components';
+import { Button, CreateChannelModalTabs, ErrorInLabel, FieldLabel, FormError, OverlayContext, RequiredWildcard, TabContext, TextInput } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { FormikTextInput } from '@libs';
 import { Endpoints } from '@shared';
 import { ChannelApi } from '@redux/features';
+import { createValidationSchema } from '@utils';
 
 
 
@@ -15,14 +16,23 @@ const initialValues: FollowInvitationFormValues = {
     code: '',
 };
 
+const validationSchema = createValidationSchema<FollowInvitationFormValues>(({
+    yup,
+    VALIDATION_MESSAGES,
+}) => ({
+    code: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+}));
+
 export const FollowInvitationTab: FC = () => {
     const { changeTab } = useContext<TabContext<CreateChannelModalTabs>>(TabContext);
     const { closeOverlay } = useContext(OverlayContext);
-    const [accept] = ChannelApi.useChannelAcceptInvitationMutation();
+    const [accept, helpers] = ChannelApi.useChannelAcceptInvitationMutation();
     const { apiWrapper } = useMountedApiWrapper();
     const { navigateTo } = useNavigator();
 
     const handleSubmit = async(values: FollowInvitationFormValues) => {
+        if (helpers.isLoading) return;
+
         apiWrapper(
             accept({ code: values.code }),
             (channel) => {
@@ -35,6 +45,7 @@ export const FollowInvitationTab: FC = () => {
     return (
         <Formik
             initialValues={initialValues}
+            validationSchema={validationSchema}
             onSubmit={handleSubmit}
         >
             <Form className='flex flex-col'>
@@ -50,7 +61,7 @@ export const FollowInvitationTab: FC = () => {
 
                 <ModalContent className='gap-2.5'>
                     <FormikTextInput
-                        name='invitation'
+                        name='code'
                         label='Ссылка-приглашение'
                         placeholder='https://discord.gg/hTkzmak, hTkzmak'
                         required
@@ -59,12 +70,18 @@ export const FollowInvitationTab: FC = () => {
                             <div>
                                 <FieldLabel htmlFor={props.id}>
                                     {props.label}
+
+                                    <RequiredWildcard/>
+
+                                    <ErrorInLabel error={props.error}/>
                                 </FieldLabel>
 
                                 <TextInput {...props}/>
                             </div>
                         )}
                     </FormikTextInput>
+
+                    <FormError error={helpers.error}/>
                 </ModalContent>
 
                 <ModalFooter>
@@ -80,6 +97,7 @@ export const FollowInvitationTab: FC = () => {
                         stylingPreset='brand'
                         size='medium'
                         type='submit'
+                        isLoading={helpers.isLoading}
                     >
                         <>Присоединиться к серверу</>
                     </Button>

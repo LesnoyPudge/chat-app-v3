@@ -5,8 +5,7 @@ import { UserApi } from '@redux/features';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
 import { Endpoints } from '@shared';
-import { yup } from '@reExport';
-import { VALIDATION_MESSAGES } from '@vars';
+import { createValidationSchema } from '@utils';
 
 
 
@@ -15,10 +14,13 @@ const initialValues: Endpoints.V1.User.Login.RequestBody = {
     password: '',
 };
 
-const validationSchema: yup.ObjectSchema<typeof initialValues> = yup.object({
+const validationSchema = createValidationSchema<typeof initialValues>(({
+    yup,
+    VALIDATION_MESSAGES,
+}) => ({
     login: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
     password: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
-});
+}));
 
 export const LoginForm: FC = () => {
     const { changeTab } = useContext<TabContext<AuthPageTabs>>(TabContext);

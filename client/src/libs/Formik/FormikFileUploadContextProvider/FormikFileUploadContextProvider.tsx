@@ -17,7 +17,7 @@ interface FileInputProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export interface FormikFileUploadContext {
+export type FormikFileUploadContext = {
     value: EncodedFile[];
     fileInputProps: FileInputProps;
     addErrorListener: AddErrorListener;
@@ -51,7 +51,10 @@ export const FormikFileUploadContextProvider: FC<FormikFileUploadContextProvider
 
     const handleFileUpload = useFileUpload(
         value.length,
-        (filesToAdd) => setValue([...value, ...filesToAdd]),
+        (filesToAdd) => {
+            console.log('set', value, filesToAdd);
+            setValue([...value, ...filesToAdd]);
+        },
         options,
         errorListenersRef.current,
     );

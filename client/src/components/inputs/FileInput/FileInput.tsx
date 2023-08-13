@@ -15,7 +15,7 @@ interface FileInput extends PropsWithChildrenAndClassName {
 
 const styles = {
     wrapper: 'block relative focus-within:focused',
-    input: 'sr-input',
+    input: 'sr-input focus-hidden',
 };
 
 export const FileInput: FC<FileInput> = ({
@@ -30,7 +30,7 @@ export const FileInput: FC<FileInput> = ({
 }) => {
     return (
         <div className={twClassNames(styles.wrapper, className)}>
-            <input 
+            <input
                 className={styles.input}
                 accept={accept}
                 multiple={multiple}

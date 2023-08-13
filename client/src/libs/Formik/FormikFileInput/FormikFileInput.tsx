@@ -9,7 +9,7 @@ interface ChildrenArgs {
     value: EncodedFile[];
 }
 
-interface FormikFileInput extends 
+interface FormikFileInput extends
 PropsWithClassName,
 PropsWithChildrenAsNodeOrFunction<ChildrenArgs> {
     hidden?: boolean;

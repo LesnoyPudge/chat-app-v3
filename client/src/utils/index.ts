@@ -30,3 +30,4 @@ export * from './objectKeysToIdArray';
 export * from './cookies';
 export * from './getAvatarPath';
 export * from './getDiff';
+export * from './createValidationSchema';

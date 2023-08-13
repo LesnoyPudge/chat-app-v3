@@ -1,10 +1,9 @@
 import { Button, PasswordTypeToggle, TabContext, TextInput, TextInputWrapper, PasswordTypeToggleButton, FieldLabel, RequiredWildcard, ContentWithLoading, FormError, ErrorInLabel } from '@components';
 import { FormikTextInput, Heading } from '@libs';
 import { AuthPageTabs } from '@pages/AuthPage/AuthPage';
-import { yup } from '@reExport';
 import { UserApi } from '@redux/features';
 import { Endpoints } from '@shared';
-import { VALIDATION_MESSAGES } from '@vars';
+import { createValidationSchema } from '@utils';
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
 
@@ -17,12 +16,15 @@ const initialValues: Endpoints.V1.User.Registration.RequestBody = {
     email: '',
 };
 
-const validationSchema: yup.ObjectSchema<typeof initialValues> = yup.object({
+const validationSchema = createValidationSchema<typeof initialValues>(({
+    yup,
+    VALIDATION_MESSAGES,
+}) => ({
     login: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
     password: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
     username: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
     email: yup.string().trim().optional().email(VALIDATION_MESSAGES.INVALID_EMAIL),
-});
+}));
 
 export const RegistrationForm: FC = () => {
     const { changeTab } = useContext<TabContext<AuthPageTabs>>(TabContext);

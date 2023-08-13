@@ -2,14 +2,14 @@ import { EncodedFile, InvalidEncodedFile } from '@types';
 import { MBToBytes } from '@utils';
 
 
- 
+
 export interface EncodeFilesResult {
     ok: EncodedFile[];
     bad: InvalidEncodedFile[];
 }
 
 export interface EncodeFilesOptions {
-    multiple?: boolean;
+    amountLimit?: number;
     accept?: string;
     sizeLimit?: number;
 }
@@ -45,7 +45,7 @@ export const encodeFiles = async(files: File[], options: EncodeFilesOptions = {}
                 size: file.size,
                 type: file.type,
             });
-            
+
             return;
         }
 

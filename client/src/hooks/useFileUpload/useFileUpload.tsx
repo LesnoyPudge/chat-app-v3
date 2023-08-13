@@ -48,7 +48,7 @@ export const useFileUpload = (
             sizeLimit,
         }).then((encodedFiles) => {
             if (!isMounted()) return;
-            
+            console.log('here');
             const noSpace = currentFilesAmount === amountLimit;
             const notEnoughSpace = currentFilesAmount + encodedFiles.ok.length > amountLimit;
             const overSizeLimit = encodedFiles.bad.some((file) => file.reason === 'size');

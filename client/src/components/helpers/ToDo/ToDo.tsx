@@ -15,9 +15,8 @@ export const ToDo: FC<ToDo> = ({
     children,
 }) => {
     useEffectOnce(() => {
-        console.log(CUSTOM_NODE_ENV);
         if (CUSTOM_NODE_ENV !== 'development') return;
-        console.error(`ToDo: ${text}`);
+        console.warn(`ToDo: ${text}`);
     });
 
     return (
