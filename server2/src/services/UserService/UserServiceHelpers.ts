@@ -11,18 +11,18 @@ export const UserServiceHelpers = {
     async addChannel({ userId, channelId }: WithUserId & WithChannelId) {
         return transactionContainer(
             async({ session, onCommit }) => {
-                const updatedUser = await UserModel.findOne(
-                    { id: userId }, 
+                const updatedUser = await UserModel.findOneAndUpdate(
+                    { id: userId },
                     { $push: { channels: channelId } },
                     { new: true },
                 ).session(session).lean();
-                
+
                 if (!updatedUser) throw ApiError.internal();
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -36,8 +36,8 @@ export const UserServiceHelpers = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedUser = await UserModel.findOneAndUpdate(
-                    { id: userId }, 
-                    { $pull: { channels: channelId } }, 
+                    { id: userId },
+                    { $pull: { channels: channelId } },
                     { new: true },
                 ).session(session).lean();
 
@@ -45,8 +45,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -60,16 +60,16 @@ export const UserServiceHelpers = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const usersToUpdate = await UserModel.find({ channels: channelId });
-                
+
                 const updatedUsers = await Promise.all(usersToUpdate.map(async(user) => {
                     user.channels = user.channels.filter((itemId) => itemId !== channelId);
-                    
+
                     const updatedUser = await user.save({ session });
 
                     onCommit(() => {
                         UserSubscription.update(
-                            updatedUser, 
-                            [updatedUser.id], 
+                            updatedUser,
+                            [updatedUser.id],
                             UserDTO.withoutCredentials,
                         );
                     });
@@ -86,7 +86,7 @@ export const UserServiceHelpers = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedUser = await UserModel.findOneAndUpdate(
-                    { id: userId }, 
+                    { id: userId },
                     { $push: { privateChannels: {
                         id: privateChannelId,
                         hidden: false,
@@ -98,8 +98,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -126,8 +126,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -150,8 +150,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -174,8 +174,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -189,7 +189,7 @@ export const UserServiceHelpers = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const userToUpdate = await UserModel.findOneAndUpdate({ id: userId });
-                
+
                 if (!userToUpdate) throw ApiError.internal();
 
                 userToUpdate.friendRequests.incoming.push({
@@ -201,8 +201,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -227,8 +227,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -242,7 +242,7 @@ export const UserServiceHelpers = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const userToUpdate = await UserModel.findOne({ id: userId });
-                
+
                 if (!userToUpdate) throw ApiError.internal();
 
                 userToUpdate.friendRequests.outgoing.push({
@@ -254,8 +254,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -269,9 +269,9 @@ export const UserServiceHelpers = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const userToUpdate = await UserModel.findOne({ id: userId });
-                
+
                 if (!userToUpdate) throw ApiError.internal();
-                
+
                 userToUpdate.friendRequests.outgoing = userToUpdate.friendRequests.outgoing.filter((outgoingRequest) => {
                     return outgoingRequest.to !== targetId;
                 });
@@ -280,8 +280,8 @@ export const UserServiceHelpers = {
 
                 onCommit(() => {
                     UserSubscription.update(
-                        updatedUser, 
-                        [updatedUser.id], 
+                        updatedUser,
+                        [updatedUser.id],
                         UserDTO.withoutCredentials,
                     );
                 });
@@ -304,7 +304,7 @@ export const UserServiceHelpers = {
     },
 
     async changePrivateChannelHiddenState(
-        { hidden, privateChannelId, userId }: WithUserId & WithPrivateChannelId & {hidden: boolean}, 
+        { hidden, privateChannelId, userId }: WithUserId & WithPrivateChannelId & {hidden: boolean},
     ) {
         return transactionContainer(
             async({ session }) => {

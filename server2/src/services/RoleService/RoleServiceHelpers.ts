@@ -13,8 +13,10 @@ export const RoleServiceHelpers = {
                     channel: channelId,
                     users: [userId],
                     isDefault: true,
+                    name: 'default',
+                    order: 1,
                 }], { session }).then((v) => v[0]);
-                
+
                 return defaultRole;
             },
         );
@@ -27,6 +29,8 @@ export const RoleServiceHelpers = {
                     channel: channelId,
                     users: [userId],
                     isDefault: true,
+                    name: 'admin',
+                    order: 0,
                     permissions: {
                         channelControl: true,
                         roomControl: true,
@@ -36,7 +40,7 @@ export const RoleServiceHelpers = {
                         isAdministrator: true,
                     },
                 }], { session }).then((v) => v[0]);
-                
+
                 return adminRole;
             },
         );

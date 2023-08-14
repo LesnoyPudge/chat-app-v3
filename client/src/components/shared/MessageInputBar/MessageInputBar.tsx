@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { SlateEditor, SlateContainer, FormikFileInput, getInitialSlateValue, FormikFileUploadContextProvider, isDescendantEmpty } from '@libs';
-import { Button,SpriteImage, MessageEditorWrapper } from '@components';
-import { OpenEmojiPickerButton, Attachments, AttachmentsModals } from './components';
+import { SlateEditor, SlateContainer, FormikFileInput, getInitialSlateValue, isDescendantEmpty } from '@libs';
+import { Button,SpriteImage, MessageEditorWrapper, FileInput, OverlayContextProvider } from '@components';
+import { OpenEmojiPickerButton, Attachments, SizeModal, FileDropModal, OverflowModal } from './components';
 import { Form, Formik } from 'formik';
 import { Descendant } from 'slate';
 import { EncodedFile } from '@types';
@@ -49,58 +49,86 @@ export const MessageInputBar: FC<MessageInputBar> = ({
             onSubmit={handleSubmit}
         >
             {({ values, submitForm, setFieldValue }) => (
-                <FormikFileUploadContextProvider
-                    name='attachments'
-                    label='Добавить вложение'
-                    options={{
-                        accept: '*',
-                        amountLimit: 9,
-                        sizeLimit: MBToBytes(8),
-                    }}
-                >
-                    <Form className={twClassNames(styles.wrapper, className)}>
-                        <SlateContainer
-                            value={values.content}
-                            onChange={(value) => setFieldValue('content', value)}
-                        >
-                            <MessageEditorWrapper>
-                                <div>
-                                    <Attachments/>
+                <OverlayContextProvider>
+                    {(sizeModalHelpers) => (
+                        <>
+                            <OverlayContextProvider>
+                                {(overflowModalHelpers) => (
+                                    <>
+                                        <FormikFileInput
+                                            name='attachments'
+                                            label='Добавить вложение'
+                                            options={{
+                                                accept: '*',
+                                                amountLimit: 9,
+                                                sizeLimit: MBToBytes(8),
+                                            }}
+                                            multiple
+                                            onAmountLimit={overflowModalHelpers.openOverlay}
+                                            onSizeLimit={sizeModalHelpers.openOverlay}
+                                        >
+                                            {({ fileInputProps, handleFileUpload, removeFile }) => (
+                                                <>
+                                                    <Form className={twClassNames(styles.wrapper, className)}>
+                                                        <SlateContainer
+                                                            value={values.content}
+                                                            onChange={(value) => setFieldValue('content', value)}
+                                                        >
+                                                            <MessageEditorWrapper>
+                                                                <div>
+                                                                    <Attachments removeFile={removeFile}/>
 
-                                    <div className='flex'>
-                                        <FormikFileInput className={styles.button}>
-                                            <SpriteImage
-                                                className={styles.icon}
-                                                name='ADD_FILE_ICON'
-                                            />
+                                                                    <div className='flex'>
+                                                                        <FileInput
+                                                                            className={styles.button}
+                                                                            {...fileInputProps}
+                                                                        >
+                                                                            <SpriteImage
+                                                                                className={styles.icon}
+                                                                                name='ADD_FILE_ICON'
+                                                                            />
+                                                                        </FileInput>
+
+                                                                        <SlateEditor
+                                                                            placeholder={placeholder}
+                                                                            label='Введите сообщение'
+                                                                            onSubmit={submitForm}
+                                                                        />
+
+                                                                        <OpenEmojiPickerButton className={styles.button}/>
+
+                                                                        <Button
+                                                                            className={styles.button}
+                                                                            type='submit'
+                                                                            label='Отправить сообщение'
+                                                                        >
+                                                                            <SpriteImage
+                                                                                className={styles.icon}
+                                                                                name='SEND_MESSAGE_ICON'
+                                                                            />
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
+                                                            </MessageEditorWrapper>
+                                                        </SlateContainer>
+                                                    </Form>
+
+                                                    <OverlayContextProvider>
+                                                        <FileDropModal handleFileUpload={handleFileUpload}/>
+                                                    </OverlayContextProvider>
+                                                </>
+                                            )}
                                         </FormikFileInput>
 
-                                        <SlateEditor
-                                            placeholder={placeholder}
-                                            label='Введите сообщение'
-                                            onSubmit={submitForm}
-                                        />
+                                        <OverflowModal/>
+                                    </>
+                                )}
+                            </OverlayContextProvider>
 
-                                        <OpenEmojiPickerButton className={styles.button}/>
-
-                                        <Button
-                                            className={styles.button}
-                                            type='submit'
-                                            label='Отправить сообщение'
-                                        >
-                                            <SpriteImage
-                                                className={styles.icon}
-                                                name='SEND_MESSAGE_ICON'
-                                            />
-                                        </Button>
-                                    </div>
-                                </div>
-                            </MessageEditorWrapper>
-                        </SlateContainer>
-                    </Form>
-
-                    <AttachmentsModals/>
-                </FormikFileUploadContextProvider>
+                            <SizeModal/>
+                        </>
+                    )}
+                </OverlayContextProvider>
             )}
         </Formik>
     );

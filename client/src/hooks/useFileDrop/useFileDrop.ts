@@ -5,7 +5,7 @@ import { useRef, RefObject } from 'react';
 
 type UseFileDrop = (
     onFileDrop: (files: FileList | null) => void,
-    element?: RefObject<HTMLElement>,
+    element: RefObject<HTMLElement>,
 ) => boolean;
 
 export const useFileDrop: UseFileDrop = (
@@ -30,10 +30,8 @@ export const useFileDrop: UseFileDrop = (
     });
 
     const listenersRef = useRef({
-        handleDragEnter: (e: Event) => {
-            const event = e as DragEvent;
-
-            if (!event.dataTransfer || event.dataTransfer.types.indexOf('Files') === -1) return;
+        handleDragEnter: (e: DragEvent) => {
+            if (!e.dataTransfer || e.dataTransfer.types.indexOf('Files') === -1) return;
 
             counterHelpersRef.current.increase();
             changeDragOverStateRef.current();
@@ -54,9 +52,9 @@ export const useFileDrop: UseFileDrop = (
         },
     });
 
-    useEventListener('dragenter', listenersRef.current.handleDragEnter, element || document);
-    useEventListener('dragleave', listenersRef.current.handleDragEnter, element || document);
-    useEventListener('drop', listenersRef.current.handleDragEnter, element || document);
+    useEventListener('dragenter', listenersRef.current.handleDragEnter, element);
+    useEventListener('dragleave', listenersRef.current.handleDragLeave, element);
+    useEventListener('drop', listenersRef.current.handleDrop, element);
 
     return isDragOver;
 };

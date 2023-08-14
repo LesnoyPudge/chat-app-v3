@@ -60,7 +60,6 @@ export const ChannelService: ChannelService = {
         return transactionContainer(
             async({ session }) => {
                 const channelAvatar = !avatar ? null : (await FileServiceHelpers.create(avatar)).id;
-
                 const newChannel = modelWithId(new ChannelModel({
                     identifier,
                     name,

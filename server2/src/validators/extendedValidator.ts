@@ -62,9 +62,8 @@ const validators = {
         return Promise.reject('Файл не найден');
     },
 
-    async _validIdentifier(value: string) {
-        const exists = await ChannelServiceHelpers.isExist({ invitations: value });
-
+    async _unoccupiedIdentifier(value: string) {
+        const exists = await ChannelServiceHelpers.isExist({ identifier: value });
         if (!exists) return Promise.resolve();
 
         return Promise.reject('Идентификатор уже используется');

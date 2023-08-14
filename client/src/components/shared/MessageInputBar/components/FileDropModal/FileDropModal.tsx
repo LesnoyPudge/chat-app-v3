@@ -1,23 +1,27 @@
-import { useFileDrop } from '@hooks';
+import { FileUploadHandler, useFileDrop } from '@hooks';
 import { getHTML } from '@utils';
 import { FC, useContext, useRef } from 'react';
 import { ModalWindow, OverlayContext } from '@components';
-import { FormikFileUploadContext } from '@libs';
 import { useUpdateEffect } from 'usehooks-ts';
 import { Content } from '../Content';
 
 
 
+interface FileDropModal {
+    handleFileUpload: FileUploadHandler;
+}
+
 const styles = {
     content: 'bg-brand',
 };
 
-export const FileDropModal: FC = () => {
-    const { handleFileUpload } = useContext(FormikFileUploadContext);
+export const FileDropModal: FC<FileDropModal> = ({
+    handleFileUpload,
+}) => {
     const { openOverlay, closeOverlay } = useContext(OverlayContext);
     const appRef = useRef(getHTML().app);
     const isDragOver = useFileDrop(handleFileUpload, appRef);
-    
+
     const heading = 'Загрузить на #general';
 
     useUpdateEffect(() => {

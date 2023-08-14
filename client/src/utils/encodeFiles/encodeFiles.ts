@@ -1,5 +1,6 @@
 import { EncodedFile, InvalidEncodedFile } from '@types';
-import { MBToBytes } from '@utils';
+import { MIME } from '@vars';
+import { ValueOf } from 'ts-essentials';
 
 
 
@@ -9,13 +10,13 @@ export interface EncodeFilesResult {
 }
 
 export interface EncodeFilesOptions {
-    amountLimit?: number;
-    accept?: string;
-    sizeLimit?: number;
+    amountLimit: number;
+    accept: ValueOf<typeof MIME>;
+    sizeLimit: number;
 }
 
 const toBase64 = async(file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result?.toString() || '');
@@ -23,31 +24,38 @@ const toBase64 = async(file: File): Promise<string> => {
     });
 };
 
-export const encodeFiles = async(files: File[], options: EncodeFilesOptions = {}): Promise<EncodeFilesResult> => {
-    const {
-        accept = '*',
-        sizeLimit = MBToBytes(1),
-    } = options;
-
+export const encodeFiles = async(
+    files: File[],
+    options: EncodeFilesOptions,
+): Promise<EncodeFilesResult> => {
     const result: EncodeFilesResult = {
         ok: [],
         bad: [],
     };
 
     await Promise.all(files.map(async(file) => {
-        const isAcceptable = new RegExp(accept.replace('*', '.*')).test(file.type);
-        const isInLimit = file.size <= sizeLimit;
+        const isInLimit = file.size <= options.sizeLimit;
+        const isTypeAcceptable = (
+            options.accept === MIME.ALL
+                ? true
+                : file.type.includes(options.accept)
+        );
+        const isBad = !isTypeAcceptable || !isInLimit;
 
-        if (!isAcceptable || !isInLimit) {
-            result.bad.push({
-                reason: !isAcceptable ? 'type' : 'size',
+        const okLimitReached = result.ok.length >= options.amountLimit;
+        const badLimitReached = result.bad.length >= options.amountLimit;
+
+
+        if (isBad && !badLimitReached) {
+            return result.bad.push({
+                reason: !isTypeAcceptable ? 'type' : 'size',
                 name: file.name,
                 size: file.size,
                 type: file.type,
             });
-
-            return;
         }
+
+        if (okLimitReached) return;
 
         const base64 = await toBase64(file);
 

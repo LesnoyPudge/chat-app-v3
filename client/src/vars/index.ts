@@ -14,11 +14,16 @@ export const FOCUSABLE_SELECTOR = [
     '[tabindex]:not([tabindex="-1"])',
 ].join(', ');
 
-export const STATUS_LABEL: Record<Entities.User.Default['extraStatus'] | Status, string> = {
+export const STATUS_LABEL = {
     online: 'В сети',
     offline: 'Не в сети',
     default: 'В сети',
     invisible: 'Не в сети',
     afk: 'Неактивен',
     dnd: 'Не беспокоить',
-};
+} satisfies Record<Entities.User.Default['extraStatus'] | Status, string>;
+
+export const MIME = {
+    ALL: '*',
+    IMAGES: 'image',
+} as const;

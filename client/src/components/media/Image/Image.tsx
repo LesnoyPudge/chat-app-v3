@@ -6,18 +6,20 @@ import { FC, ReactNode, useEffect, useRef, useState } from 'react';
 
 
 
-type OptionalValues = {
-    src: string | null;
-    file?: never;
-} | {
-    src?: never;
-    file: EncodedFile | null;
-} | {
-    src: string | null;
-    file: EncodedFile | null;
-}
+// type OptionalValues = {
+//     src: string | null;
+//     file?: never;
+// } | {
+//     src?: never;
+//     file: EncodedFile | null;
+// } | {
+//     src: string | null;
+//     file: EncodedFile | null;
+// }
 
-type Image = PropsWithClassName & OptionalValues & {
+type Image = PropsWithClassName & {
+    src?: string | null;
+    file?: EncodedFile | null;
     alt?: string;
     placeholder?: ReactNode;
     fallback?: ReactNode;

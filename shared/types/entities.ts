@@ -1,5 +1,5 @@
 import { MODEL_NAMES } from '../vars';
-import { Id, PeerId, StrictOmit, Timestamp, UserId } from './index';
+import { Id, PeerId, Prettify, StrictOmit, Timestamp, UserId } from './index';
 
 
 
@@ -59,10 +59,10 @@ export module Entities {
             createdAt: Timestamp;
         }
 
-        export type WithoutCredentials = (
+        export type WithoutCredentials = Prettify<
             StrictOmit<User.Default, keyof Credentials> &
             WithStatus
-        );
+        >;
 
         export type Preview = Pick<
             User.WithoutCredentials,

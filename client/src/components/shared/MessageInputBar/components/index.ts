@@ -1,3 +1,6 @@
 export * from './OpenEmojiPickerButton';
 export * from './Attachments';
-export * from './AttachmentsModals';
+export * from './Content';
+export * from './FileDropModal';
+export * from './OverflowModal';
+export * from './SizeModal';

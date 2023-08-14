@@ -1,7 +1,6 @@
-import { RoomModel, transactionContainer } from '@database';
-import { ApiError } from '@errors';
-import { MessageServiceHelpers } from '@services';
-import { Entities, WithChannelId, WithChatId, WithMessageId } from '@shared';
+import { RoomModel, modelWithId, transactionContainer } from '@database';
+import { ChatServiceHelpers, MessageServiceHelpers } from '@services';
+import { Entities, WithChannelId } from '@shared';
 import { RoomSubscription } from '@subscription';
 import { FilterQuery } from 'mongoose';
 
@@ -11,12 +10,18 @@ export const RoomServiceHelpers = {
     async createDefaultRoom({ channelId }: WithChannelId) {
         return transactionContainer(
             async({ session }) => {
-                const room = await RoomModel.create([{
+                const room = modelWithId(new RoomModel({
                     channel: channelId,
                     name: 'Text room',
-                }], { session }).then((v) => v[0]);
+                }));
 
-                return room;
+                const chat = await ChatServiceHelpers.create({ owner: 'Room', ownerId: room.id });
+
+                room.chat = chat.id;
+
+                const savedRoom = await room.save({ session });
+
+                return savedRoom;
             },
         );
     },

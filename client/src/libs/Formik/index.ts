@@ -3,4 +3,3 @@ export * from './FormikFileInput';
 export * from './FormikRadioInput';
 export * from './FormikCheckBox';
 export * from './FormikColorPicker';
-export * from './FormikFileUploadContextProvider';

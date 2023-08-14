@@ -113,7 +113,6 @@ error:
 import getScrollableParent from 'scrollparent';
 import { useIntersectionObserver } from 'react-intersection-observer-hook';
 import { Field, Form, Formik, useField, useFormikContext } from 'formik';
-import { FormikFileUploadContextProvider } from '@libs';
 import SimpleBar from 'simplebar-react';
 // import { Chat } from 'src/components/other/Chat/Chat';
 import { SingleEntryObserverCallback } from 'src/utils/observers/types';

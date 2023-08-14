@@ -129,7 +129,7 @@ export const ChannelValidator = createValidator<ChannelEndpointsSchema>({
                 .isString()
                 ._sanitize()
                 .notEmpty()
-                ._validIdentifier()
+                ._unoccupiedIdentifier()
         ),
         name: (
             body('name')

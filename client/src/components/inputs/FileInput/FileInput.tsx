@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 
 
 
-interface FileInput extends PropsWithChildrenAndClassName {
+export interface FileInput extends PropsWithChildrenAndClassName {
     name: string;
     accept?: string;
     multiple?: boolean;

@@ -1,27 +1,22 @@
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, Conditional, TabContext, Image,SpriteImage, CreateChannelModalTabs, FieldLabel, TextInput, RequiredWildcard, ErrorInLabel } from '@components';
+import { Button, Conditional, TabContext, Image,SpriteImage, CreateChannelModalTabs, FieldLabel, TextInput, RequiredWildcard, ErrorInLabel, FileInput, FormError } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
-import { FormikFileInput, FormikFileUploadContextProvider, FormikTextInput } from '@libs';
+import { FormikFileInput, FormikTextInput } from '@libs';
 import { MBToBytes, createValidationSchema } from '@utils';
 import { ChannelApi } from '@redux/features';
-import { Endpoints, Override, Prettify, StrictOmit, ValueOf } from '@shared';
+import { Endpoints } from '@shared';
+import { MIME } from '@vars';
+import { useMountedApiWrapper, useNavigator } from '@hooks';
 
 
 
-type CreateChannelFormValues = Prettify<StrictOmit<
-    Endpoints.V1.Channel.Create.RequestBody,
-    'avatar'
-> & Override<
-    Endpoints.V1.Channel.Create.RequestBody,
-    'avatar',
-    Pick<Endpoints.V1.Channel.Create.RequestBody, 'avatar'>['avatar'][]
->>
+type CreateChannelFormValues = Endpoints.V1.Channel.Create.RequestBody;
 
 const initialValues: CreateChannelFormValues = {
-    identifier: '',
+    identifier: String(Math.floor(Math.random() * 100000)),
     name: '',
-    avatar: [],
+    avatar: undefined,
 };
 
 const validationSchema = createValidationSchema<CreateChannelFormValues>(({
@@ -29,28 +24,24 @@ const validationSchema = createValidationSchema<CreateChannelFormValues>(({
     VALIDATION_MESSAGES,
 }) => ({
     name: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
-    avatar: yup.array().optional().of(
-        createValidationSchema<ValueOf<CreateChannelFormValues['avatar']>>(({ yup }) => ({
-            base64: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
-            name: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
-            type: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
-            size: yup.number().required(VALIDATION_MESSAGES.REQUIRED),
-        })),
-    ),
+    avatar: createValidationSchema<CreateChannelFormValues['avatar']>(() => ({
+        base64: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+        name: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+        type: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+        size: yup.number().required(VALIDATION_MESSAGES.REQUIRED),
+    })).optional().default(undefined),
     identifier: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
 }));
 
 export const CreateChannelTab: FC = () => {
     const { changeTab } = useContext<TabContext<CreateChannelModalTabs>>(TabContext);
     const [create, helpers] = ChannelApi.useChannelCreateMutation();
+    const { apiWrapper } = useMountedApiWrapper();
+    const { navigateTo } = useNavigator();
 
-    const handleSubmit = (values: CreateChannelFormValues) => {
-        if (helpers.isLoading) return;
-
-        create({
-            ...values,
-            identifier: String(Math.floor(Math.random() * 100000)),
-            avatar: values.avatar[0],
+    const handleSubmit = (value: CreateChannelFormValues) => {
+        apiWrapper(create(value), (channel) => {
+            navigateTo.channel(channel.id);
         });
     };
 
@@ -60,40 +51,43 @@ export const CreateChannelTab: FC = () => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
         >
-            <FormikFileUploadContextProvider
-                name='avatar'
-                label='Загрузить значок канала'
-                options={{
-                    accept: '.jpg,.jpeg,.png',
-                    amountLimit: 1,
-                    sizeLimit: MBToBytes(1),
-                }}
-            >
-                <Form>
-                    <ModalHeader>
-                        <ModalTitle>
-                            <>Персонализируйте свой канал</>
-                        </ModalTitle>
+            <Form>
+                <ModalHeader>
+                    <ModalTitle>
+                        <>Персонализируйте свой канал</>
+                    </ModalTitle>
 
-                        <ModalSubtitle>
-                            <>Персонализируйте свой новый канал, выбрав ему название и значок. </>
-                            <>Их можно будет изменить в любой момент.</>
-                        </ModalSubtitle>
-                    </ModalHeader>
+                    <ModalSubtitle>
+                        <>Персонализируйте свой новый канал, выбрав ему название и значок. </>
+                        <>Их можно будет изменить в любой момент.</>
+                    </ModalSubtitle>
+                </ModalHeader>
 
-                    <ModalContent>
-                        <FormikFileInput className='self-center mb-6 rounded-full'>
-                            {({ value }) => (
+                <ModalContent>
+                    <FormikFileInput
+                        name='avatar'
+                        label='Загрузить значок канала'
+                        options={{
+                            accept: MIME.IMAGES,
+                            amountLimit: 1,
+                            sizeLimit: MBToBytes(1),
+                        }}
+                    >
+                        {({ value, fileInputProps }) => (
+                            <FileInput
+                                className='self-center mb-6 rounded-full overflow-hidden'
+                                {...fileInputProps}
+                            >
                                 <div className='flex w-20 h-20 bg-primary-300 pointer-events-none'>
-                                    <Conditional isRendered={!!value.length}>
+                                    <Conditional isRendered={!!value}>
                                         <Image
                                             className='rounded-full'
-                                            file={value[0]}
+                                            file={value}
                                             alt='Значок канала'
                                         />
                                     </Conditional>
 
-                                    <Conditional isRendered={!value.length}>
+                                    <Conditional isRendered={!value}>
                                         <div className='flex relative w-full h-full rounded-full border-2 border-icon-100 border-dashed'>
                                             <span className='m-auto text-2xs uppercase font-semibold'>
                                                 <>Загрузить</>
@@ -108,51 +102,56 @@ export const CreateChannelTab: FC = () => {
                                         </div>
                                     </Conditional>
                                 </div>
-                            )}
-                        </FormikFileInput>
+                            </FileInput>
+                        )}
+                    </FormikFileInput>
 
-                        <FormikTextInput
-                            name='name'
-                            label='Название канала'
-                            maxLength={32}
-                            required
-                        >
-                            {(props) => (
-                                <div>
-                                    <FieldLabel htmlFor={props.id}>
-                                        {props.label}
+                    <FormikTextInput
+                        name='name'
+                        label='Название канала'
+                        maxLength={32}
+                        required
+                    >
+                        {(props) => (
+                            <div>
+                                <FieldLabel htmlFor={props.id}>
+                                    {props.label}
 
-                                        <RequiredWildcard/>
+                                    <RequiredWildcard/>
 
-                                        <ErrorInLabel error={props.error}/>
-                                    </FieldLabel>
+                                    <ErrorInLabel error={props.error}/>
+                                </FieldLabel>
 
-                                    <TextInput {...props}/>
-                                </div>
-                            )}
-                        </FormikTextInput>
-                    </ModalContent>
+                                <TextInput {...props}/>
+                            </div>
+                        )}
+                    </FormikTextInput>
 
-                    <ModalFooter>
-                        <Button
-                            stylingPreset='lite'
-                            size='medium'
-                            onLeftClick={changeTab.createOrFollowInvitation}
-                        >
-                            <>Назад</>
-                        </Button>
+                    <FormError
+                        className='mt-4'
+                        error={helpers.error}
+                    />
+                </ModalContent>
 
-                        <Button
-                            stylingPreset='brand'
-                            size='medium'
-                            type='submit'
-                            isLoading={helpers.isLoading}
-                        >
-                            <>Создать</>
-                        </Button>
-                    </ModalFooter>
-                </Form>
-            </FormikFileUploadContextProvider>
+                <ModalFooter>
+                    <Button
+                        stylingPreset='lite'
+                        size='medium'
+                        onLeftClick={changeTab.createOrFollowInvitation}
+                    >
+                        <>Назад</>
+                    </Button>
+
+                    <Button
+                        stylingPreset='brand'
+                        size='medium'
+                        type='submit'
+                        isLoading={helpers.isLoading}
+                    >
+                        <>Создать</>
+                    </Button>
+                </ModalFooter>
+            </Form>
         </Formik>
     );
 };

@@ -1,13 +1,15 @@
 import { PropsWithClassName, Size } from '@types';
 import { twClassNames } from '@utils';
 import { useFormikContext } from 'formik';
-import { FC, useContext, useRef } from 'react';
+import { FC, useRef } from 'react';
 import { Button, Conditional,SpriteImage, Image, List, Ref, Scrollable, Tooltip } from '@components';
 import { MessageInputBarFormValues } from '../../MessageInputBar';
-import { FormikFileUploadContext } from '@libs';
+import { FormikFileInputChildrenArgs } from '@libs';
 import fileTextImage from '@assets/file-text-image.svg';
 
 
+
+type Attachments = PropsWithClassName & Pick<FormikFileInputChildrenArgs<true>, 'removeFile'>;
 
 const styles = {
     list: 'flex flex-1 gap-6 py-5',
@@ -21,11 +23,11 @@ const styles = {
     fileName: 'text-sm truncate',
 };
 
-export const Attachments: FC<PropsWithClassName> = ({
+export const Attachments: FC<Attachments> = ({
+    removeFile,
     className = '',
 }) => {
     const { values } = useFormikContext<MessageInputBarFormValues>();
-    const { removeFile } = useContext(FormikFileUploadContext);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const handleContentResize = (size: Size) => {

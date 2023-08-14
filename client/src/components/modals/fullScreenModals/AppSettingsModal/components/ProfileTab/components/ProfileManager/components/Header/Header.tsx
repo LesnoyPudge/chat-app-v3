@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import { UserStatus, Image } from '@components';
-import { FormikFileInput, FormikFileUploadContextProvider } from '@libs';
+import { UserStatus, Image, FileInput } from '@components';
+import { FormikFileInput } from '@libs';
 import { MBToBytes } from '@utils';
+import { MIME } from '@vars';
 
 
 
@@ -29,42 +30,45 @@ export const Header: FC = () => {
         <div className={styles.header}>
             <div className={styles.avatarWrapper}>
                 <div className={styles.avatarInner}>
-                    <FormikFileUploadContextProvider 
-                        label='Изображение вашего профиля' 
-                        name='avatar' 
+                    <FormikFileInput
+                        label='Изображение вашего профиля'
+                        name='avatar'
                         options={{
-                            accept: 'image/*',
+                            accept: MIME.IMAGES,
                             amountLimit: 1,
-                            sizeLimit: MBToBytes(1),  
+                            sizeLimit: MBToBytes(1),
                         }}
                     >
-                        <FormikFileInput className={styles.avatarButton}>
-                            {({ value }) => (
-                                <>
+                        {({ value, fileInputProps }) => (
+                            <>
+                                <FileInput
+                                    className={styles.avatarButton}
+                                    {...fileInputProps}
+                                >
                                     <Image
                                         className={styles.avatar}
                                         src='https://i.pravatar.cc/52'
-                                        file={value[0]}
+                                        file={value}
                                         alt='Изображение профиля'
                                     />
+                                </FileInput>
+                            </>
+                        )}
+                    </FormikFileInput>
 
-                                    <div className={styles.avatarOverlay}>
-                                        <div className={styles.avatarOverlayText}>
-                                            <>Изменить <br/> аватар</>
-                                        </div>
-                                    </div>
+                    <div className={styles.avatarOverlay}>
+                        <div className={styles.avatarOverlayText}>
+                            <>Изменить <br/> аватар</>
+                        </div>
+                    </div>
 
-                                    <div className={styles.userStatusWrapper}>
-                                        <UserStatus
-                                            className={styles.userStatus}
-                                            status={status}
-                                            extraStatus={extraStatus}
-                                        />
-                                    </div>
-                                </>
-                            )}
-                        </FormikFileInput>
-                    </FormikFileUploadContextProvider>
+                    <div className={styles.userStatusWrapper}>
+                        <UserStatus
+                            className={styles.userStatus}
+                            status={status}
+                            extraStatus={extraStatus}
+                        />
+                    </div>
                 </div>
             </div>
 

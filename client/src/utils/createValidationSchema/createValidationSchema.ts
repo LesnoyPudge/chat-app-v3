@@ -12,7 +12,7 @@ type ConditionalSchema<T> = (
             : T extends boolean
                 ? yup.BooleanSchema
                 : ToType<T> extends Record<string | number, unknown>
-                    ? yup.AnyObjectSchema
+                    ? any
                     : T extends AnyArray
                         ? yup.ArraySchema<any, any, any, any>
                         : yup.AnySchema
