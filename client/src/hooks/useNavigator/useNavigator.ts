@@ -25,7 +25,7 @@ const paths = {
 
 export const useNavigator = () => {
     const navigateInner = useNavigate();
-    const params = useParams() as Params;
+    const params = useParams<Readonly<Params>>();
     const { pathname } = useLocation();
     const latestPathRef = useLatest(pathname);
     const stateRef = useRef({ from: '/app' });

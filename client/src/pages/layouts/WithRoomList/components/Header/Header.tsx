@@ -1,6 +1,6 @@
 import { Button,SpriteImage, OverlayContextProvider, Ref, TopBar } from '@components';
 import { useNavigator } from '@hooks';
-import { conditional, twClassNames } from '@utils';
+import { twClassNames } from '@utils';
 import { FC } from 'react';
 import { ChannelMenu } from './components';
 import { IMAGES } from '@generated';
@@ -13,13 +13,12 @@ const styles = {
         acvive: 'bg-primary-hover',
     },
     button: 'flex justify-between items-center w-full h-full px-4',
-    buttonText: 'font-semibold text-color-primary',
+    buttonText: 'font-semibold text-color-primary truncate',
     buttonIcon: 'w-4 h-4 fill-icon-100',
 };
 
 export const Header: FC = () => {
     const { params } = useNavigator();
-
     const channelLabel = `ch name ${params.channelId}`;
 
     return (
