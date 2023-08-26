@@ -1,6 +1,6 @@
 import { FC, lazy, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, Loader, DevDebug, Sprite, Masks } from './components';
-import { usePreventDefault, useSocketStateHandler } from './hooks';
+import { usePreventDefault, useSocketListeners, useSocketStateHandler } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import { Provider } from 'react-redux';
@@ -11,18 +11,13 @@ import './styles/main.scss';
 
 const Router = lazy(() => import('./router'));
 
-const Hooks: FC = () => {
+const RootInner: FC = () => {
     usePreventDefault();
     useSocketStateHandler();
+    useSocketListeners();
 
-    return null;
-};
-
-const RootInner: FC = () => {
     return (
         <>
-            <Hooks/>
-
             <DevDebug/>
 
             <Heading className='sr-only'>

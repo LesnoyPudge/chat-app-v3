@@ -11,7 +11,7 @@ export const localStorageApi = {
     get: <T extends keyof Values>(key: T): Values[T] => {
         const value = localStorage.getItem(key);
         if (typeof value !== 'string') return value;
-        
+
         try {
             const parsed = JSON.parse(value) as Values[T];
             return parsed;
@@ -27,7 +27,7 @@ export const localStorageApi = {
     remove: (key: keyof Values) => {
         localStorage.removeItem(key);
     },
-    
+
     clear: () => {
         localStorage.clear();
     },

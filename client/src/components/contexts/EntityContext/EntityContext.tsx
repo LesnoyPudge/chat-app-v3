@@ -11,8 +11,6 @@ const UserContext = createContext(undefined as unknown as Entities.User.Preview)
 
 const ChannelContext = createContext(undefined as unknown as Entities.Channel.Default);
 
-
-
 const UserContextProvider: FC<WithId & PropsWithChildrenAsNodeOrFunction<Entities.User.Preview>> = ({
     id,
     children,
@@ -38,6 +36,18 @@ export const EntityContextProvider = {
     User: UserContextProvider,
     Channel: ChannelContext,
 };
+
+
+// const PromiseSuspense: FC<{
+//     promise: Promise<any>
+// }> = () => {
+//     const qwe = Promise.resolve('qwe').then((v) => v.trim());
+//     return (
+//         <>
+//             {qwe}
+//         </>
+//     );
+// };
 
 // const Test: FC = () => {
 //     return (

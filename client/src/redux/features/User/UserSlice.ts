@@ -1,10 +1,13 @@
 import { globalReset } from '@redux/globalReset';
-import { RootState } from '@redux/store';
-import { createSlice, EntityState, nanoid, PayloadAction } from '@reduxjs/toolkit';
-import { Endpoints, Entities, ENTITY_NAMES, EntityId, SOCKET_CLIENT_EVENT_NAMES, SUBSCRIBABLE_ENTITIES, toSocketEventName, ValueOf } from '@shared';
+import { RootState, store } from '@redux/store';
+import { createAction, createAsyncThunk, createListenerMiddleware, createSlice, EntityState, nanoid, PayloadAction } from '@reduxjs/toolkit';
+import { Endpoints, Entities, ENTITY_NAMES, EntityId, SOCKET_CLIENT_EVENT_NAMES, SOCKET_SERVER_EVENT_NAMES, SUBSCRIBABLE_ENTITIES, toSocketEventName, ValueOf } from '@shared';
 import { UserApi } from '@redux/features';
 import { createCustomizedEntityAdapter } from '@redux/utils';
 import { socketIO } from '@root/features';
+import { useAppDispatch, useMemoSelector } from '@redux/hooks';
+import { useEffect, useRef } from 'react';
+import { noop } from '@utils';
 
 
 
@@ -16,21 +19,32 @@ const initialState = adapter.getInitialState();
 
 const updateMe = <T>(fn: (me: Entities.User.WithoutCredentials, value: T) => void) => {
     return (state: EntityState<UserState>, { payload }: PayloadAction<T>) => {
-        import('@redux/store').then(({ store }) => {
-            const id = store.getState().app.myId;
-            if (!id) return;
+        // import('@redux/store').then(({ store }) => {
+        //     // const id = store.getState().app.myId;
+        //     const id = undefined;
+        //     if (!id) return;
 
-            const me = state.entities[id];
-            if (!me) return;
-            if (!('email' in me)) return;
+        //     const me = state.entities[id];
+        //     if (!me) return;
+        //     if (!('email' in me)) return;
 
-            fn(me, payload);
-        });
+        //     fn(me, payload);
+        // });
     };
 };
 
+const thunkTest = createAsyncThunk(ENTITY_NAMES.USER + '/thunktest', async(_, thunkApi) => {
+    console.log('thunk test');
+
+});
+
+// const a1 = createAction<number>('qwe')
+// a1(1)
+
+type SE = typeof SUBSCRIBABLE_ENTITIES;
+
 type EntitySubscriptionStore = Record<
-    ValueOf<typeof SUBSCRIBABLE_ENTITIES>,
+    ValueOf<SE>,
     Map<EntityId, Set<string>>
 >;
 
@@ -39,7 +53,62 @@ const entitySubscriptionStore = Object.keys(SUBSCRIBABLE_ENTITIES).reduce((acc, 
     return acc;
 }, {} as EntitySubscriptionStore);
 
-const createEntitySubscribtionFunctions = (entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>) => {
+const selectors = {
+
+};
+const event = toSocketEventName('User', SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE);
+socketIO.on('User_error', (id) => {
+    console.log('error with', id);
+});
+socketIO.emit(event, '123');
+const useEntitySubscription = (entityName: ValueOf<SE>, entityId: string) => {
+    const hookIdRef = useRef(nanoid());
+    // const entity = useMemoSelector()
+
+    useEffect(() => {
+        const entities = entitySubscriptionStore[entityName];
+        if (!entities.has(entityId)) entities.set(entityId, new Set());
+
+        const entity = entities.get(entityId);
+        if (!entity) return;
+
+        if (entity.has(hookIdRef.current)) return;
+
+        entity.add(hookIdRef.current);
+
+        const event = toSocketEventName(entityName, SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE);
+        socketIO.emit(event, entityId);
+    }, []);
+
+    // const { dispatch } = useAppDispatch();
+
+    // const controlledPromiseRef = useRef((() => {
+    //     const controls = {
+    //         resolve: noop,
+    //         reject: noop,
+    //     };
+    //     const promise = new Promise((resolve, reject) => {
+    //         controls.resolve = resolve;
+    //         controls.reject = reject;
+    //     });
+    //     return {
+    //         promise,
+    //         controls,
+    //     };
+    // })());
+
+    // const selectors = {
+    //     User: UserSelectors,
+    // };
+
+    // const entity = useMemoSelector(selectors[qwe].selectById(id));
+    // if (!entity) {
+
+    // }
+
+};
+
+const createEntitySubscriptionFunctions = (entityName: ValueOf<SE>) => {
     const id = nanoid();
 
     return {
@@ -50,7 +119,12 @@ const createEntitySubscribtionFunctions = (entityName: ValueOf<typeof SUBSCRIBAB
             const entity = entities.get(entityId);
             if (!entity) return;
 
+            if (entity.has(id)) return;
+
             entity.add(id);
+
+            const event = toSocketEventName(entityName, SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE);
+            socketIO.emit(event, id);
         },
 
         unsubscribe: (entityId: string) => {
@@ -60,17 +134,29 @@ const createEntitySubscribtionFunctions = (entityName: ValueOf<typeof SUBSCRIBAB
             const entity = entities.get(entityId);
             if (!entity) return;
 
+            if (!entity.has(id)) return;
+
             entity.delete(id);
+
+            const event = toSocketEventName(entityName, SOCKET_CLIENT_EVENT_NAMES.UNSUBSCRIBE);
+            socketIO.emit(event, id);
         },
     };
 };
 
-const {
-    subscribe,
-    unsubscribe,
-} = createEntitySubscribtionFunctions(SUBSCRIBABLE_ENTITIES.USER);
 
-subscribe('qwe');
+
+
+// const listenerMiddleware = createListenerMiddleware();
+
+
+
+// const {
+//     subscribe,
+//     unsubscribe,
+// } = createEntitySubscriptionFunctions(SUBSCRIBABLE_ENTITIES.USER);
+
+// subscribe('qwe');
 
 export const UserSlice = createSlice({
     name: ENTITY_NAMES.USER,
@@ -78,6 +164,10 @@ export const UserSlice = createSlice({
     reducers: {
         upsertOne: adapter.upsertOne,
         removeOne: adapter.removeOne,
+
+        anyAction: (state, { payload }: PayloadAction<string>) => {
+            console.log('any action dispatched', payload);
+        },
 
         // subscribe: (state, { payload }: PayloadAction<string>) => {
         //     socketIO.emit(toSocketEventName(SUBSCRIBABLE_ENTITIES.USER, SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE), payload);

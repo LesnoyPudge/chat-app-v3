@@ -8,23 +8,21 @@ import { localStorageApi } from '@utils';
 
 
 export const useSocketStateHandler = () => {
-    const socketRef = useRef(socketIO);
     const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized);
 
     useEffect(() => {
-        const socket = socketRef.current;
         const accessToken = localStorageApi.get('accessToken');
 
         if (accessToken && isAuthorized) {
-            socket.auth = {
+            socketIO.auth = {
                 accessToken,
             } satisfies SocketAuth;
 
-            socket.connect();
+            socketIO.connect();
         }
 
         return () => {
-            socket.disconnect();
+            socketIO.disconnect();
         };
     }, [isAuthorized]);
 };

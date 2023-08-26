@@ -24,7 +24,11 @@ export const Header: FC = () => {
     return (
         <OverlayContextProvider>
             {({ openOverlay, isOverlayExist }) => {
-                const iconId = isOverlayExist ? IMAGES.SPRITE.CROSS_ICON.NAME : IMAGES.SPRITE.DROPDOWN_ARROW_ICON.NAME;
+                const iconId = (
+                    isOverlayExist
+                        ? IMAGES.SPRITE.CROSS_ICON.NAME
+                        : IMAGES.SPRITE.DROPDOWN_ARROW_ICON.NAME
+                );
 
                 return (
                     <TopBar className={twClassNames(

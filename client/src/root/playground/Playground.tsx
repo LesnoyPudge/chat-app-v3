@@ -2,7 +2,7 @@ import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSe
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff } from '@utils';
-import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, Suspense, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation, useLatest } from '@hooks';
@@ -612,13 +612,14 @@ import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
 import { AnyArray, AnyFunction, Endpoints, Entities, getRandomNumber, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
-import { AppSelectors, AppSlice, ChannelApi, UserApi, UserSelectors } from '@redux/features';
+import { AppSelectors, AppSlice, ChannelApi, UserApi, UserSelectors, UserSlice } from '@redux/features';
 import { useAppDispatch, useAppSelector, useMemoSelector } from '@redux/hooks';
 import { RootState, store } from '@redux/store';
 import { Key } from 'ts-key-enum';
 import { memoize } from 'proxy-memoize';
 import { createMemoSelector } from '@redux/utils';
 import isObject from 'is-object';
+import { Placeholder } from 'src/components/shared/Placeholder';
 
 
 
@@ -1686,9 +1687,117 @@ const PlaygroundInner27: FC = () => {
     );
 };
 
+const PromiseSuspense = <T extends AnyRecord>({
+    promise,
+    children,
+}: {
+    promise: Promise<T>,
+} & PropsWithChildrenAsNodeOrFunction<T>) => {
+    const [data, setData] = useState<T | null>(null);
 
+    useEffect(() => {
+        console.log('in effect');
+        promise.then(setData);
+    }, [promise]);
 
-const enabled = !!0;
+    useEffect(() => {
+        console.log('data is', data);
+    }, [data]);
+
+    return (
+        <>
+
+            {
+                data ? (
+                    <ChildrenAsNodeOrFunction args={data}>
+                        {children}
+                    </ChildrenAsNodeOrFunction>
+                ) : null
+            }
+        </>
+    );
+};
+
+// const testPromise = new Promise<string>((res) => {
+//     setTimeout(() => {
+//         res('qwe');
+//     }, 2000);
+// });
+
+// testPromise.then((v) => {
+//     console.log('resolved', v);
+// });
+
+// setTimeout(() => {
+//     console.log(testPromise);
+// }, 5000);
+
+const createPromise = <T,>() => {
+    let resolve: (v: T) => void = noop;
+    let reject: (v: T) => void = noop;
+
+    const promise = new Promise<T>((res, rej) => {
+        resolve = res;
+        reject = rej;
+    });
+
+    return {
+        promise,
+        resolve,
+        reject,
+    };
+};
+
+const usePromise = <T,>() => {
+    const [data, setData] = useState<T | null>(null);
+
+    const {
+        promise,
+        reject,
+        resolve,
+    } = useMemo(() => createPromise<T>(), []);
+
+    promise.then(setData);
+
+    return {
+        data,
+        promise,
+        reject,
+        resolve,
+    };
+};
+
+const PlaygroundInner28: FC = () => {
+    const { dispatch } = useAppDispatch();
+    const { promise, resolve } = usePromise<string>();
+    const qwe = promise.then((v) => ({ data: v.concat('zxc') }));
+
+    useTimeout(() => {
+        resolve('qwe');
+    }, 2000);
+
+    // useEffectOnce(() => {
+    //     dispatch(UserSlice.actions.anyAction('data'));
+    // });
+
+    return (
+        <div>
+            <div>wow</div>
+
+            <PromiseSuspense promise={qwe}>
+                {({ data }) => (
+                    <>{data}</>
+                )}
+            </PromiseSuspense>
+
+            {/* <Placeholder>
+                qwe
+            </Placeholder> */}
+        </div>
+    );
+};
+
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
@@ -1698,7 +1807,7 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </Conditional>
 
             <Conditional isRendered={enabled}>
-                <PlaygroundInner27/>
+                <PlaygroundInner28/>
             </Conditional>
         </>
     );
