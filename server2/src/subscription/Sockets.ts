@@ -14,7 +14,7 @@ export class Sockets {
         subscriptions: Map<EntityId, Entity>;
     }>;
     users: Map<UserId, Set<SocketId>>;
-    
+
     constructor(server: AuthorizedServer) {
         this.server = server;
         this.sockets = new Map();

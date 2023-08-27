@@ -34,17 +34,21 @@ const socketServer = new Server(server, {
 }) as AuthorizedServer;
 
 socketServer.use((socket, next) => {
-    const auth = socket.handshake.auth as SocketAuth;
+    const auth = socket.handshake.auth as Partial<SocketAuth>;
     console.log('get socket message', auth);
 
-    if (!auth.accessToken) return next(ApiError.unauthorized());
+    // if (!auth.accessToken) return next(ApiError.unauthorized());
 
-    const tokenData = token.validateAccessToken(auth.accessToken);
-    if (!tokenData) return next(ApiError.unauthorized());
+    // const tokenData = token.validateAccessToken(auth.accessToken);
+    // if (!tokenData) return next(ApiError.unauthorized());
 
     socket.data = {
-        ...tokenData,
-        accessToken: auth.accessToken,
+        id: '123',
+        email: null,
+        password: 'qwe',
+        accessToken: 'qwezxc',
+        // ...tokenData,
+        // accessToken: auth.accessToken,
     };
 
     next();
@@ -52,6 +56,9 @@ socketServer.use((socket, next) => {
 
 export const sockets = new Sockets(socketServer);
 
+// setInterval(() => {
+//     console.log(sockets.sockets);
+// }, 2000);
 const offer: object | null = null;
 const offers: object[] = [];
 const answers: object[] = [];

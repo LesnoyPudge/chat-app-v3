@@ -19,3 +19,4 @@ export * from './useSet';
 export * from './useLatest';
 export * from './useFocusVisibleEvent';
 export * from './useMountedApiWrapper';
+export * from './usePromise';

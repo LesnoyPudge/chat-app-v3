@@ -6,7 +6,7 @@ import { Socket, io } from 'socket.io-client';
 
 export const socketIO = io(
     getEnv().CUSTOM_SERVER_URL,
-    { autoConnect: false },
+    { autoConnect: true },
 ) as Socket<
     SocketServerEvents,
     SocketClientEvents

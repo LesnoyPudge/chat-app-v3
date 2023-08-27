@@ -22,7 +22,7 @@ export const useSocketStateHandler = () => {
         }
 
         return () => {
-            socketIO.disconnect();
+            // socketIO.disconnect();
         };
     }, [isAuthorized]);
 };

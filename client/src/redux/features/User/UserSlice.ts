@@ -1,17 +1,18 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState, store } from '@redux/store';
 import { createAction, createAsyncThunk, createListenerMiddleware, createSlice, EntityState, nanoid, PayloadAction } from '@reduxjs/toolkit';
-import { Endpoints, Entities, ENTITY_NAMES, EntityId, SOCKET_CLIENT_EVENT_NAMES, SOCKET_SERVER_EVENT_NAMES, SUBSCRIBABLE_ENTITIES, toSocketEventName, ValueOf } from '@shared';
-import { UserApi } from '@redux/features';
+import { Endpoints, Entities, ENTITY_NAMES, EntityId, SOCKET_CLIENT_EVENT_NAMES, SOCKET_SERVER_EVENT_NAMES, SUBSCRIBABLE_ENTITIES, toSocketEventName, ValueOf, WithId } from '@shared';
+import { ChannelSelectors, ChatSelectors, MessageSelectors, PrivateChannelSelectors, RoleSelectors, RoomSelectors, UserApi } from '@redux/features';
 import { createCustomizedEntityAdapter } from '@redux/utils';
 import { socketIO } from '@root/features';
 import { useAppDispatch, useMemoSelector } from '@redux/hooks';
 import { useEffect, useRef } from 'react';
 import { noop } from '@utils';
+import { usePromise } from '@hooks';
 
 
 
-type UserState = Entities.User.WithoutCredentials | Entities.User.Preview;
+type UserState = Entities.User.Preview;
 
 const adapter = createCustomizedEntityAdapter<UserState>();
 
@@ -40,110 +41,6 @@ const thunkTest = createAsyncThunk(ENTITY_NAMES.USER + '/thunktest', async(_, th
 
 // const a1 = createAction<number>('qwe')
 // a1(1)
-
-type SE = typeof SUBSCRIBABLE_ENTITIES;
-
-type EntitySubscriptionStore = Record<
-    ValueOf<SE>,
-    Map<EntityId, Set<string>>
->;
-
-const entitySubscriptionStore = Object.keys(SUBSCRIBABLE_ENTITIES).reduce((acc, cur) => {
-    acc[SUBSCRIBABLE_ENTITIES[cur]] = new Map();
-    return acc;
-}, {} as EntitySubscriptionStore);
-
-const selectors = {
-
-};
-const event = toSocketEventName('User', SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE);
-socketIO.on('User_error', (id) => {
-    console.log('error with', id);
-});
-socketIO.emit(event, '123');
-const useEntitySubscription = (entityName: ValueOf<SE>, entityId: string) => {
-    const hookIdRef = useRef(nanoid());
-    // const entity = useMemoSelector()
-
-    useEffect(() => {
-        const entities = entitySubscriptionStore[entityName];
-        if (!entities.has(entityId)) entities.set(entityId, new Set());
-
-        const entity = entities.get(entityId);
-        if (!entity) return;
-
-        if (entity.has(hookIdRef.current)) return;
-
-        entity.add(hookIdRef.current);
-
-        const event = toSocketEventName(entityName, SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE);
-        socketIO.emit(event, entityId);
-    }, []);
-
-    // const { dispatch } = useAppDispatch();
-
-    // const controlledPromiseRef = useRef((() => {
-    //     const controls = {
-    //         resolve: noop,
-    //         reject: noop,
-    //     };
-    //     const promise = new Promise((resolve, reject) => {
-    //         controls.resolve = resolve;
-    //         controls.reject = reject;
-    //     });
-    //     return {
-    //         promise,
-    //         controls,
-    //     };
-    // })());
-
-    // const selectors = {
-    //     User: UserSelectors,
-    // };
-
-    // const entity = useMemoSelector(selectors[qwe].selectById(id));
-    // if (!entity) {
-
-    // }
-
-};
-
-const createEntitySubscriptionFunctions = (entityName: ValueOf<SE>) => {
-    const id = nanoid();
-
-    return {
-        subscribe: (entityId: string) => {
-            const entities = entitySubscriptionStore[entityName];
-            if (!entities.has(entityId)) entities.set(entityId, new Set());
-
-            const entity = entities.get(entityId);
-            if (!entity) return;
-
-            if (entity.has(id)) return;
-
-            entity.add(id);
-
-            const event = toSocketEventName(entityName, SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE);
-            socketIO.emit(event, id);
-        },
-
-        unsubscribe: (entityId: string) => {
-            const entities = entitySubscriptionStore[entityName];
-            if (!entities.has(entityId)) return;
-
-            const entity = entities.get(entityId);
-            if (!entity) return;
-
-            if (!entity.has(id)) return;
-
-            entity.delete(id);
-
-            const event = toSocketEventName(entityName, SOCKET_CLIENT_EVENT_NAMES.UNSUBSCRIBE);
-            socketIO.emit(event, id);
-        },
-    };
-};
-
 
 
 

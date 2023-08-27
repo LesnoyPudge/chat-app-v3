@@ -11,7 +11,7 @@ export const ChannelServiceHelpers = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedChannel = await ChannelModel.findOneAndUpdate(
-                    { id: channelId }, 
+                    { id: channelId },
                     { $push: { rooms: roomId } },
                     { new: true },
                 ).session(session).lean();
@@ -31,11 +31,11 @@ export const ChannelServiceHelpers = {
         return transactionContainer(
             async({ session, onCommit }) => {
                 const updatedChannel = await ChannelModel.findOneAndUpdate(
-                    { rooms: roomId }, 
-                    { $pull: { rooms: roomId } }, 
+                    { rooms: roomId },
+                    { $pull: { rooms: roomId } },
                     { new: true },
                 ).session(session).lean();
-                
+
                 if (!updatedChannel) throw ApiError.internal();
 
                 onCommit(() => {
@@ -72,12 +72,12 @@ export const ChannelServiceHelpers = {
             async({ session, onCommit }) => {
                 const updatedChannel = await ChannelModel.findOneAndUpdate(
                     { roles: roleId },
-                    { $pull: { roles: roleId } }, 
+                    { $pull: { roles: roleId } },
                     { new: true },
                 ).session(session).lean();
 
                 if (!updatedChannel) throw ApiError.internal();
-                
+
                 onCommit(() => {
                     ChannelSubscription.update(updatedChannel);
                 });

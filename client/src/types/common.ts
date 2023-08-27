@@ -1,6 +1,6 @@
 import { deepMerge } from '@reExport';
 import { PropsWithChildren, ReactNode, RefObject } from 'react';
-import { AnyArray, Entities, Prettify, StrictOmit, ToType } from '@shared';
+import { AnyArray, Entities, Prettify, Primitive, StrictOmit, ToType } from '@shared';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
@@ -11,10 +11,10 @@ export type PropsWithClassName = {
 }
 
 export type PropsWithChildrenAsNodeOrFunction<
-    T extends AnyRecord | AnyArray
+    T extends Primitive | AnyRecord | AnyArray
 > = {
     children?: ReactNode | (
-        ToType<T> extends Record<string | number, unknown>
+        ToType<T> extends Record<string | number, unknown> | Primitive
             ? ((arg: T) => ReactNode)
             : T extends AnyArray
                 ? ((...args: T) => ReactNode)

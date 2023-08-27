@@ -5,7 +5,7 @@ import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedInt
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, Suspense, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useTimeout, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation, useLatest } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation, useLatest, usePromise, ControlledPromise } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -620,6 +620,8 @@ import { memoize } from 'proxy-memoize';
 import { createMemoSelector } from '@redux/utils';
 import isObject from 'is-object';
 import { Placeholder } from 'src/components/shared/Placeholder';
+import { socketIO } from '../features/soket';
+import { EntityContext, EntityContextProvider } from 'src/components/contexts/EntityContext/EntityContext';
 
 
 
@@ -1687,36 +1689,29 @@ const PlaygroundInner27: FC = () => {
     );
 };
 
-const PromiseSuspense = <T extends AnyRecord>({
-    promise,
-    children,
-}: {
-    promise: Promise<T>,
-} & PropsWithChildrenAsNodeOrFunction<T>) => {
-    const [data, setData] = useState<T | null>(null);
+// const PromiseSuspense = <T extends AnyRecord>({
+//     promise,
+//     children,
+// }: {
+//     promise: ControlledPromise<T>,
+// } & PropsWithChildrenAsNodeOrFunction<T>) => {
+//     const [data, setData] = useState<T | null>(promise.data);
 
-    useEffect(() => {
-        console.log('in effect');
-        promise.then(setData);
-    }, [promise]);
+//     promise.promise.then(setData);
 
-    useEffect(() => {
-        console.log('data is', data);
-    }, [data]);
+//     return (
+//         <>
 
-    return (
-        <>
-
-            {
-                data ? (
-                    <ChildrenAsNodeOrFunction args={data}>
-                        {children}
-                    </ChildrenAsNodeOrFunction>
-                ) : null
-            }
-        </>
-    );
-};
+//             {
+//                 data ? (
+//                     <ChildrenAsNodeOrFunction args={data}>
+//                         {children}
+//                     </ChildrenAsNodeOrFunction>
+//                 ) : null
+//             }
+//         </>
+//     );
+// };
 
 // const testPromise = new Promise<string>((res) => {
 //     setTimeout(() => {
@@ -1732,63 +1727,89 @@ const PromiseSuspense = <T extends AnyRecord>({
 //     console.log(testPromise);
 // }, 5000);
 
-const createPromise = <T,>() => {
-    let resolve: (v: T) => void = noop;
-    let reject: (v: T) => void = noop;
+// socketIO.connect();
+// socketIO.emit('User_subscribe', '123');
 
-    const promise = new Promise<T>((res, rej) => {
-        resolve = res;
-        reject = rej;
-    });
-
-    return {
-        promise,
-        resolve,
-        reject,
-    };
-};
-
-const usePromise = <T,>() => {
-    const [data, setData] = useState<T | null>(null);
-
-    const {
-        promise,
-        reject,
-        resolve,
-    } = useMemo(() => createPromise<T>(), []);
-
-    promise.then(setData);
-
-    return {
-        data,
-        promise,
-        reject,
-        resolve,
-    };
-};
+socketIO.on('connect_error', (err) => {
+    console.log(`connect_error due to ${err.message}`);
+});
 
 const PlaygroundInner28: FC = () => {
-    const { dispatch } = useAppDispatch();
-    const { promise, resolve } = usePromise<string>();
-    const qwe = promise.then((v) => ({ data: v.concat('zxc') }));
-
-    useTimeout(() => {
-        resolve('qwe');
-    }, 2000);
-
-    // useEffectOnce(() => {
-    //     dispatch(UserSlice.actions.anyAction('data'));
-    // });
+    const id1 = '64d6407ac557763795df726d';
+    const id2 = '64d8b4bf6d3e0ab5e5e9eb39';
+    const [state, toggle] = useToggle(true);
+    const idToShow = state ? id1 : id2;
 
     return (
-        <div>
-            <div>wow</div>
+        <div className='flex flex-col gap-6'>
+            <button onClick={toggle}>
+                <>{String(state)}</>
+            </button>
 
-            <PromiseSuspense promise={qwe}>
+            <div>
+                <EntityContextProvider.User id={idToShow}>
+                    {(data) => (
+                        <>
+                            <Conditional isRendered={!!data}>
+                                <>{JSON.stringify(data)}</>
+                            </Conditional>
+
+                            <Conditional isRendered={!data}>
+                                <>loading</>
+                            </Conditional>
+                        </>
+                    )}
+                </EntityContextProvider.User>
+            </div>
+
+            <div>
+                <EntityContextProvider.User id={idToShow}>
+                    {(data) => (
+                        <>
+                            <Conditional isRendered={!!data}>
+                                <>{JSON.stringify(data)}</>
+                            </Conditional>
+
+                            <Conditional isRendered={!data}>
+                                <>loading</>
+                            </Conditional>
+                        </>
+                    )}
+                </EntityContextProvider.User>
+            </div>
+            {/*
+            <EntityContextProvider.User id='64d8b44ee6cc309ce68b1f0e'>
                 {({ data }) => (
-                    <>{data}</>
+                    <>
+                        <Conditional isRendered={!!data}>
+                            <>{JSON.stringify(data)}</>
+                        </Conditional>
+
+                        <Conditional isRendered={!data}>
+                            <>loading</>
+                        </Conditional>
+
+                        <EntityContext.User.Consumer>
+                            {({ data }) => (
+                                <>
+                                    <Conditional isRendered={!!data}>
+                                        <>{JSON.stringify(data)} 2</>
+                                    </Conditional>
+
+                                    <Conditional isRendered={!data}>
+                                        <>loading</>
+                                    </Conditional>
+                                </>
+                            )}
+                        </EntityContext.User.Consumer>
+                    </>
+                    // <PromiseSuspense promise={promise}>
+                    //     {({ data }) => (
+                    //         <>{data}</>
+                    //     )}
+                    // </PromiseSuspense>
                 )}
-            </PromiseSuspense>
+            </EntityContextProvider.User> */}
 
             {/* <Placeholder>
                 qwe
