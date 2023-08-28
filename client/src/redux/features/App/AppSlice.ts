@@ -37,6 +37,7 @@ export const AppSlice = createSlice({
             state.myId = payload.id;
             state.lastRefresh = Date.now();
             localStorageApi.set('lastRefresh', state.lastRefresh);
+            localStorageApi.set('myId', state.myId)
         },
 
         toggleMute: (state) => {
@@ -50,6 +51,7 @@ export const AppSlice = createSlice({
     extraReducers(builder) {
         builder.addCase(globalReset, () => {
             localStorageApi.set('lastRefresh', null);
+            localStorageApi.set('myId', null)
 
             return {
                 ...getInitialState(),

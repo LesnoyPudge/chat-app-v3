@@ -1,4 +1,4 @@
-import { TopBar, UserStatus, Button,SpriteImage, Tooltip, Conditional, UserAvatar, Ref } from '@components';
+import { TopBar, UserStatus, Button,SpriteImage, Tooltip, UserAvatar, Ref } from '@components';
 import { Heading } from '@libs';
 import { twClassNames } from '@utils';
 import { FC, useState } from 'react';
@@ -55,7 +55,7 @@ export const Header: FC = () => {
                 </Ref>
             </TopBar>
 
-            <Conditional isRendered={inCall}>
+            <If condition={inCall}>
                 <div
                     className='flex flex-col justify-between items-center
                         gap-2 pb-4 px-4
@@ -87,7 +87,7 @@ export const Header: FC = () => {
                         </Button>
                     </div>
                 </div>
-            </Conditional>
+            </If>
         </div>
     );
 };

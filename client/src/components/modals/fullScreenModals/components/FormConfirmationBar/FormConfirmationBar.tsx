@@ -1,4 +1,4 @@
-import { AnimatedTransition, Button, Conditional } from '@components';
+import { AnimatedTransition, Button } from '@components';
 import { animated } from '@react-spring/web';
 import { getTransitionOptions, twClassNames } from '@utils';
 import { useFormikContext } from 'formik';
@@ -29,7 +29,7 @@ export const FormConfirmationBar: FC = () => {
         <AnimatedTransition isExist={dirty} transitionOptions={transitionOptions}>
             {({ style, isAnimatedExist }) => {
                 return (
-                    <Conditional isRendered={isAnimatedExist}>
+                    <If condition={isAnimatedExist}>
                         <animated.div 
                             className={styles.wrapper}
                             aria-live='polite'
@@ -68,7 +68,7 @@ export const FormConfirmationBar: FC = () => {
                                 </Button>
                             </div>
                         </animated.div>
-                    </Conditional>
+                    </If>
                 );
             }}
         </AnimatedTransition>

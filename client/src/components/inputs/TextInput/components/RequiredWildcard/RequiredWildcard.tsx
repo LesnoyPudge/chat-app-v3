@@ -1,7 +1,7 @@
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
-import { Conditional } from '@components';
+
 
 
 
@@ -18,10 +18,10 @@ export const RequiredWildcard: FC<RequiredWildcard> = ({
     hidden = false,
 }) => {
     return (
-        <Conditional isRendered={!hidden}>
+        <If condition={!hidden}>
             <span className={twClassNames(styles.wildcard, className)}>
                 <>*</>
             </span>
-        </Conditional>
+        </If>
     );
 };

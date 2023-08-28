@@ -1,6 +1,6 @@
 import { animated, UseTransitionProps } from '@react-spring/web';
 import { FC, useContext } from 'react';
-import { AnimatedTransition, ChildrenAsNodeOrFunction, Conditional, OverlayContext, OverlayItem } from '@components';
+import { AnimatedTransition, ChildrenAsNodeOrFunction, OverlayContext, OverlayItem } from '@components';
 import { getTransitionOptions, twClassNames } from '@utils';
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
 
@@ -56,7 +56,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                         aria-label={label}
                     >
                         <div className={styles.inner}>
-                            <Conditional isRendered={withBackdrop}>
+                            <If condition={withBackdrop}>
                                 <div
                                     className={twClassNames(
                                         styles.backdrop,
@@ -64,7 +64,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                                     )}
                                     onClick={closeOverlay}
                                 ></div>
-                            </Conditional>
+                            </If>
 
                             <div className={styles.contentWrapper}>
                                 <div className={twClassNames(

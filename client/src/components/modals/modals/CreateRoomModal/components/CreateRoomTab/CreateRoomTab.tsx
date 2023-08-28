@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Conditional, Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator,SpriteImage, FieldLabel, RequiredWildcard, ErrorInLabel, TextInput, CreateRoomModalTabs, CheckBox } from '@components';
+import {  Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator,SpriteImage, FieldLabel, RequiredWildcard, ErrorInLabel, TextInput, CreateRoomModalTabs, CheckBox } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
@@ -168,7 +168,7 @@ export const CreateRoomTab: FC = () => {
                     <>Отмена</>
                 </Button>
 
-                <Conditional isRendered={!values.isPrivate}>
+                <If condition={!values.isPrivate}>
                     <Button
                         stylingPreset='brand'
                         size='medium'
@@ -176,9 +176,9 @@ export const CreateRoomTab: FC = () => {
                     >
                         <>Создать комнату</>
                     </Button>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={values.isPrivate}>
+                <If condition={values.isPrivate}>
                     <Button
                         stylingPreset='brand'
                         size='medium'
@@ -187,7 +187,7 @@ export const CreateRoomTab: FC = () => {
                     >
                         <>Далее</>
                     </Button>
-                </Conditional>
+                </If>
             </ModalFooter>
         </>
     );

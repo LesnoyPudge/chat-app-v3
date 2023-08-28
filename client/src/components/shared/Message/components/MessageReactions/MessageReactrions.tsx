@@ -1,4 +1,4 @@
-import { AnimatedTransition, Button, Conditional, Emoji, EmojiPicker,SpriteImage, List, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, Tooltip } from '@components';
+import { AnimatedTransition, Button, Emoji, EmojiPicker,SpriteImage, List, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, Tooltip } from '@components';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { conditional, getTransitionOptions, twClassNames } from '@utils';
@@ -29,7 +29,7 @@ export const MessageReactions: FC<PropsWithClassName> = ({
     const showReactions = !!message.reactions.length;
 
     return (
-        <Conditional isRendered={showReactions}>
+        <If condition={showReactions}>
             <div
                 className={twClassNames(styles.wrapper, className)}
                 role='group'
@@ -143,6 +143,6 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                     )}
                 </OverlayContextProvider>
             </div>
-        </Conditional>
+        </If>
     );
 };

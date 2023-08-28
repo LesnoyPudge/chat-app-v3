@@ -1,4 +1,4 @@
-import { Button, Conditional,SpriteImage, Ref, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar , MoveFocusInside } from '@components';
+import { Button,SpriteImage, Ref, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar , MoveFocusInside } from '@components';
 import { useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
 import { useFormikContext } from 'formik';
@@ -62,7 +62,7 @@ export const AllowedRolesAndMembers: FC = () => {
             small
             followContentSize
         >
-            <Conditional isRendered={showRoles}>
+            <If condition={showRoles}>
                 <div className={styles.section}>
                     <Heading className={styles.heading}>
                         <>Роли</>
@@ -127,16 +127,16 @@ export const AllowedRolesAndMembers: FC = () => {
                         </ViewportList>
                     </ul>
                 </div>
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={showBoth}>
+            <If condition={showBoth}>
                 <Separator
                     className={styles.separator}
                     spacing={0}
                 />
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={showMembers}>
+            <If condition={showMembers}>
                 <div className={styles.section}>
                     <Heading className={styles.heading}>
                         <>Участники</>
@@ -204,7 +204,7 @@ export const AllowedRolesAndMembers: FC = () => {
                         </ViewportList>
                     </ul>
                 </div>
-            </Conditional>
+            </If>
         </Scrollable>
     );
 };

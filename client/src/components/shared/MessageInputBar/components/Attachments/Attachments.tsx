@@ -2,7 +2,7 @@ import { PropsWithClassName, Size } from '@types';
 import { twClassNames } from '@utils';
 import { useFormikContext } from 'formik';
 import { FC, useRef } from 'react';
-import { Button, Conditional,SpriteImage, Image, List, Ref, Scrollable, Tooltip } from '@components';
+import { Button,SpriteImage, Image, List, Ref, Scrollable, Tooltip } from '@components';
 import { MessageInputBarFormValues } from '../../MessageInputBar';
 import { FormikFileInputChildrenArgs } from '@libs';
 import fileTextImage from '@assets/file-text-image.svg';
@@ -36,7 +36,7 @@ export const Attachments: FC<Attachments> = ({
     };
 
     return (
-        <Conditional isRendered={!!values.attachments.length}>
+        <If condition={!!values.attachments.length}>
             <div ref={wrapperRef}>
                 <Scrollable
                     className='h-full'
@@ -102,6 +102,6 @@ export const Attachments: FC<Attachments> = ({
                     </ul>
                 </Scrollable>
             </div>
-        </Conditional>
+        </If>
     );
 };

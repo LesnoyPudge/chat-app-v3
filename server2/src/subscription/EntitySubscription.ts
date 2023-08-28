@@ -67,10 +67,19 @@ export class EntitySubscription<T extends WithId> {
 
         if (!entity) {
             const model = models[this.name] as unknown as Model<Document & T>;
-            const data = await model.findOne({ id: entityId }).lean() as T | null;
-            if (!data) return undefined;
+            const data = await model.findOne({ id: entityId }).lean();
 
-            const newEntity = new Entity(data);
+            let parsedData: T | null = null;
+
+            try {
+                parsedData = JSON.parse(JSON.stringify(data)) as T | null;
+            } catch (error) {
+                return undefined;
+            }
+
+            if (!parsedData) return undefined;
+
+            const newEntity = new Entity(parsedData);
             this.entities.set(entityId, newEntity);
             entity = newEntity;
         }
@@ -180,3 +189,9 @@ export class EntitySubscription<T extends WithId> {
         }
     }
 }
+
+
+
+const qwe = <Name extends Names,>(name: Name) => {
+
+};

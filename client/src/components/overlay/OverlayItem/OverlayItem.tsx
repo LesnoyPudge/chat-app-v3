@@ -1,4 +1,4 @@
-import { Conditional, OverlayContext, OverlayPortal } from '@components';
+import {  OverlayContext, OverlayPortal } from '@components';
 import { getHTML } from '@utils';
 import { FC, PropsWithChildren, useContext, useRef } from 'react';
 import ReactFocusLock from 'react-focus-lock';
@@ -54,7 +54,7 @@ export const OverlayItem: FC<OverlayItem> = ({
     useEventListener('keydown', handleKeyDown);
 
     return (
-        <Conditional isRendered={isRendered}>
+        <If condition={isRendered}>
             <OverlayPortal>
                 <div
                     className='overlay-item-wrapper'
@@ -70,6 +70,6 @@ export const OverlayItem: FC<OverlayItem> = ({
                     </ReactFocusLock>
                 </div>
             </OverlayPortal>
-        </Conditional>
+        </If>
     );
 };

@@ -1,4 +1,4 @@
-import { Button, Conditional,SpriteImage, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
+import { Button,SpriteImage, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar } from '@components';
 import { useTextInput } from '@hooks';
 import { getRandomNumber } from '@utils';
 import { FC, useContext } from 'react';
@@ -63,8 +63,8 @@ const AddFriendModalInner: FC = () => {
                 />
 
                 <div className={styles.resultWrapper}>
-                    <Conditional isRendered={!emptySearch}>
-                        <Conditional isRendered={showUserList}>
+                    <If condition={!emptySearch}>
+                        <If condition={showUserList}>
                             <Scrollable
                                 className={styles.scrollable}
                                 small
@@ -106,20 +106,20 @@ const AddFriendModalInner: FC = () => {
                                     </List>
                                 </ul>
                             </Scrollable>
-                        </Conditional>
+                        </If>
 
-                        <Conditional isRendered={noUsersFound}>
+                        <If condition={noUsersFound}>
                             <div>
                                 <>Пользователи не найдены</>
                             </div>
-                        </Conditional>
-                    </Conditional>
+                        </If>
+                    </If>
 
-                    <Conditional isRendered={emptySearch}>
+                    <If condition={emptySearch}>
                         <div>
                             <>Начните вводить имя</>
                         </div>
-                    </Conditional>
+                    </If>
                 </div>
             </ModalContent>
 

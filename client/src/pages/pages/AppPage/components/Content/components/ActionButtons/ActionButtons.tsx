@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Button, Conditional,SpriteImage, Ref, TabContext, Tooltip } from '@components';
+import { Button,SpriteImage, Ref, TabContext, Tooltip } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { getRandomNumber, twClassNames } from '@utils';
 import { useNavigator } from '@hooks';
@@ -35,7 +35,7 @@ export const ActionButtons: FC<ActionButtons> = ({
 
     return (
         <>
-            <Conditional isRendered={isActive.allFriends || isActive.onlineFriends}>
+            <If condition={isActive.allFriends || isActive.onlineFriends}>
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
@@ -86,9 +86,9 @@ export const ActionButtons: FC<ActionButtons> = ({
                         </>
                     )}
                 </Ref>
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={isActive.friendRequests && isIncomingRequest}>
+            <If condition={isActive.friendRequests && isIncomingRequest}>
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
@@ -140,9 +140,9 @@ export const ActionButtons: FC<ActionButtons> = ({
                         </>
                     )}
                 </Ref>
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={isActive.friendRequests && !isIncomingRequest}>
+            <If condition={isActive.friendRequests && !isIncomingRequest}>
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
@@ -168,9 +168,9 @@ export const ActionButtons: FC<ActionButtons> = ({
                         </>
                     )}
                 </Ref>
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={isActive.blocked}>
+            <If condition={isActive.blocked}>
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
@@ -196,7 +196,7 @@ export const ActionButtons: FC<ActionButtons> = ({
                         </>
                     )}
                 </Ref>
-            </Conditional>
+            </If>
         </>
     );
 };

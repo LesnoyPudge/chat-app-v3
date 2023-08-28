@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Button, Conditional, FieldLabel,SpriteImage, Id, List, ModalWindow, Scrollable, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
+import { Button, FieldLabel,SpriteImage, Id, List, ModalWindow, Scrollable, SearchBar, Separator, TextInput, TextInputWrapper, UserAvatar } from '@components';
 import { ModalContainer, ModalContent, ModalHeader, ModalTitle } from '../../components';
 import { conditional, copyToClipboard } from '@utils';
 import { useTextInput, useThrottle } from '@hooks';
@@ -72,7 +72,7 @@ export const InviteToChannelModal: FC = () => {
                 </ModalHeader>
 
                 <ModalContent>
-                    <Conditional isRendered={haveFriends}>
+                    <If condition={haveFriends}>
                         <SearchBar
                             className={styles.searchBar}
                             label='Поиск друзей по имени'
@@ -85,7 +85,7 @@ export const InviteToChannelModal: FC = () => {
                         <Separator spacing={16}/>
 
                         <div className={styles.content}>
-                            <Conditional isRendered={notEmptyList}>
+                            <If condition={notEmptyList}>
                                 <Scrollable className={styles.scrollable}>
                                     <ul className={styles.list}>
                                         <List list={filteredPrivateChats}>
@@ -118,32 +118,32 @@ export const InviteToChannelModal: FC = () => {
                                         </List>
                                     </ul>
                                 </Scrollable>
-                            </Conditional>
+                            </If>
 
-                            <Conditional isRendered={!notEmptyList}>
+                            <If condition={!notEmptyList}>
                                 <p className={styles.notFound}>
                                     <>Никого не найдено</>
                                 </p>
-                            </Conditional>
+                            </If>
                         </div>
 
                         <Separator spacing={16}/>
-                    </Conditional>
+                    </If>
 
-                    <Conditional isRendered={!haveFriends}>
+                    <If condition={!haveFriends}>
                         <p className={styles.share}>
                             <>Поделитесь ссылкой-приглашением, чтобы предоставить доступ к этому каналу!</>
                         </p>
-                    </Conditional>
+                    </If>
 
                     <Id>
                         {(id) => (
                             <div>
-                                <Conditional isRendered={haveFriends}>
+                                <If condition={haveFriends}>
                                     <FieldLabel htmlFor={id}>
                                         <>Или отправьте другу ссылку-приглашение на канал</>
                                     </FieldLabel>
-                                </Conditional>
+                                </If>
 
                                 <TextInputWrapper>
                                     <TextInput

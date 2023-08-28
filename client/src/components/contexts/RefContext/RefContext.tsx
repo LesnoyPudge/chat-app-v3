@@ -1,6 +1,6 @@
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
 import { createContext, FC, RefObject, useEffect, useRef, useState } from 'react';
-import { ChildrenAsNodeOrFunction, Conditional } from '@components';
+import { ChildrenAsNodeOrFunction } from '@components';
 
 
 
@@ -34,9 +34,9 @@ const RefContextProvider: FC<RefContextProvider> = ({
 
     return (
         <>
-            <Conditional isRendered={!targetRef.current && !providedRef}>
+            <If condition={!targetRef.current && !providedRef}>
                 <span className='hidden' ref={wrapperRef}></span>
-            </Conditional>
+            </If>
 
             <RefContext.Provider value={contextValues}>
                 <ChildrenAsNodeOrFunction args={contextValues}>

@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from 'react';
-import { Conditional, LoadingIndicator } from '@components';
+import {  LoadingIndicator } from '@components';
 import { twClassNames } from '@utils';
 
 
@@ -20,9 +20,9 @@ export const ContentWithLoading: FC<ContentWithLoading> = ({
 }) => {
     return (
         <div className={styles.wrapper}>
-            <Conditional isRendered={isLoading}>
+            <If condition={isLoading}>
                 <LoadingIndicator className={styles.indicator}/>
-            </Conditional>
+            </If>
 
             <div className={twClassNames({
                 [styles.child]: isLoading,

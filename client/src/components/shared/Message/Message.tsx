@@ -1,7 +1,7 @@
 import { PropsWithClassName, PropsWithInnerRef } from '@types';
 import { createContext, FC } from 'react';
 import { Descendant } from 'slate';
-import { EmojiCode, Conditional } from '@components';
+import { EmojiCode } from '@components';
 import { Heading } from '@libs';
 import { twClassNames } from '@utils';
 import { CompactMessage, CozyMessage, MessageControlBar } from './components';
@@ -99,17 +99,17 @@ export const Message: FC<MessageComponent> = ({
                     aria-labelledby={`${ids.timestampId} ${ids.usernameId}`}
                 />
 
-                <Conditional isRendered={isCompact}>
+                <If condition={isCompact}>
                     <CompactMessage/>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={isCozy}>
+                <If condition={isCozy}>
                     <CozyMessage/>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={!isInRedactorMode}>
+                <If condition={!isInRedactorMode}>
                     <MessageControlBar/>
-                </Conditional>
+                </If>
             </article>
         </MessageContext.Provider>
     );

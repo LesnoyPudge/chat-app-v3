@@ -1,4 +1,4 @@
-import { AnimatedTransition, Conditional, OverlayPortal, RelativelyPositioned } from '@components';
+import { AnimatedTransition, OverlayPortal, RelativelyPositioned } from '@components';
 import { RelativePositionOptions, useEventListener, useRefWithSetter, useSharedIntersectionObserver, useFocusVisibleEvent } from '@hooks';
 import { animated } from '@react-spring/web';
 import { PropsWithChildrenAndClassName, PropsWithLeaderElementRef } from '@types';
@@ -99,7 +99,7 @@ export const Tooltip: FC<Tooltip> = ({
             transitionOptions={transitionOptions}
         >
             {({ isAnimatedExist, style }) => (
-                <Conditional isRendered={isAnimatedExist}>
+                <If condition={isAnimatedExist}>
                     <OverlayPortal>
                         <div className={styles.overlayItem}>
                             <RelativelyPositioned
@@ -145,7 +145,7 @@ export const Tooltip: FC<Tooltip> = ({
                             </RelativelyPositioned>
                         </div>
                     </OverlayPortal>
-                </Conditional>
+                </If>
             )}
         </AnimatedTransition>
     );

@@ -12,7 +12,7 @@ export class Entity<T extends WithId = WithId> {
     }
 
     update(data: Partial<T>) {
-        Object.assign<T, Partial<T>>(this.data, data);
+        Object.assign(this.data, JSON.parse(JSON.stringify(data)) as Partial<T>);
     }
 
     subscribe(socketId: SocketId) {

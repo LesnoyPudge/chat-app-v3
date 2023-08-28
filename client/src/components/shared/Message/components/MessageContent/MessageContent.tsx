@@ -1,4 +1,4 @@
-import { Conditional } from '@components';
+
 import { SerializedSlateContent } from '@libs';
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
@@ -22,11 +22,11 @@ export const MessageContent: FC<PropsWithClassName> = ({
             className={twClassNames(styles.wrapper, className)}
             id={ids.contentId}
         >
-            <Conditional isRendered={!isInRedactorMode}>
+            <If condition={!isInRedactorMode}>
                 <SerializedSlateContent nodes={message.content}/>
 
                 <MessageEditTimestamp/>
-            </Conditional>
+            </If>
         </p>
     );
 };

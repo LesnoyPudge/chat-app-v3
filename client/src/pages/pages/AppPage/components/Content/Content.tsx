@@ -1,4 +1,4 @@
-import { Image, TabPanel, Separator, UserAvatar, TabContext, Conditional, Scrollable, List , MoveFocusInside } from '@components';
+import { Image, TabPanel, Separator, UserAvatar, TabContext, Scrollable, List , MoveFocusInside } from '@components';
 import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { FC, useContext, useRef } from 'react';
 import { ActionButtons } from './components';
@@ -83,7 +83,7 @@ export const Content: FC<Content> = ({ value }) => {
 
             <Separator className={styles.separator} spacing={12}/>
 
-            <Conditional isRendered={showList}>
+            <If condition={showList}>
                 <Scrollable>
                     <ul
                         className={styles.list}
@@ -105,7 +105,7 @@ export const Content: FC<Content> = ({ value }) => {
                                                 {user.username}
                                             </div>
 
-                                            <Conditional isRendered={isActive.friendRequests}>
+                                            <If condition={isActive.friendRequests}>
                                                 <div className={styles.extraInfo}>
                                                     {
                                                         getRandomNumber(0, 1)
@@ -113,7 +113,7 @@ export const Content: FC<Content> = ({ value }) => {
                                                             : 'Входящий запрос дружбы'
                                                     }
                                                 </div>
-                                            </Conditional>
+                                            </If>
                                         </div>
 
                                         <div className={styles.buttonsContainer}>
@@ -128,9 +128,9 @@ export const Content: FC<Content> = ({ value }) => {
                         </List>
                     </ul>
                 </Scrollable>
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={!showList}>
+            <If condition={!showList}>
                 <div className={styles.notFoundWrapper}>
                     <Image
                         className={styles.notFoundImage}
@@ -141,7 +141,7 @@ export const Content: FC<Content> = ({ value }) => {
                         <>Вампус внимательно искал, но не нашёл никого с таким именем.</>
                     </div>
                 </div>
-            </Conditional>
+            </If>
         </TabPanel>
     );
 };

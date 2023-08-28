@@ -1,6 +1,6 @@
 import { FormikCheckBox, FormikTextInput, Heading } from '@libs';
 import { FC } from 'react';
-import { Button, CheckBox, CheckBoxIndicatorSlide, Conditional, FieldLabel,SpriteImage, OverlayContextProvider, RoomSettingsModalFormValues, RoomWhitelistModal, Separator, TextInput } from '@components';
+import { Button, CheckBox, CheckBoxIndicatorSlide, FieldLabel,SpriteImage, OverlayContextProvider, RoomSettingsModalFormValues, RoomWhitelistModal, Separator, TextInput } from '@components';
 import { TabTitle } from '../../../components';
 import { twClassNames } from '@utils';
 import { AllowedRolesAndMembers } from './components';
@@ -117,7 +117,7 @@ export const OverviewTab: FC = () => {
                             </div>
                         </div>
 
-                        <Conditional isRendered={props.checked}>
+                        <If condition={props.checked}>
                             <div className={styles.bottomSide}>
                                 <div className={styles.bottomFirst}>
                                     <Heading className={styles.bottomFirstText}>
@@ -155,7 +155,7 @@ export const OverviewTab: FC = () => {
 
                                 <AllowedRolesAndMembers/>
                             </div>
-                        </Conditional>
+                        </If>
                     </div>
                 )}
             </FormikCheckBox>

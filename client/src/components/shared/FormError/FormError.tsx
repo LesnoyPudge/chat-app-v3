@@ -1,4 +1,4 @@
-import { Conditional } from '@components';
+
 import { SerializedError } from '@reduxjs/toolkit';
 import { CustomQueryError, PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
@@ -38,10 +38,10 @@ export const FormError: FC<FormError> = ({
     );
 
     return (
-        <Conditional isRendered={!!errorText}>
+        <If condition={!!errorText}>
             <div className={twClassNames(styles.wrapper, className)}>
                 {errorText}
             </div>
-        </Conditional>
+        </If>
     );
 };

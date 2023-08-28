@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { AnimatedTransition, Conditional, TabContext , MoveFocusInside } from '@components';
+import { AnimatedTransition, TabContext , MoveFocusInside } from '@components';
 import { animated, SpringValue } from '@react-spring/web';
 import { getTransitionOptions } from '@utils';
 import { AuthPageTabs } from '@pages/AuthPage/AuthPage';
@@ -52,7 +52,7 @@ export const Inner: FC = () => {
                 transitionOptions={getOptions(showLoginForm)}
             >
                 {({ isAnimatedExist, style }) => (
-                    <Conditional isRendered={isAnimatedExist}>
+                    <If condition={isAnimatedExist}>
                         <MoveFocusInside>
                             <div className={styles.wrapper}>
                                 <animated.div
@@ -63,7 +63,7 @@ export const Inner: FC = () => {
                                 </animated.div>
                             </div>
                         </MoveFocusInside>
-                    </Conditional>
+                    </If>
                 )}
             </AnimatedTransition>
 
@@ -72,7 +72,7 @@ export const Inner: FC = () => {
                 transitionOptions={getOptions(showRegistrationForm)}
             >
                 {({ isAnimatedExist, style }) => (
-                    <Conditional isRendered={isAnimatedExist}>
+                    <If condition={isAnimatedExist}>
                         <MoveFocusInside>
                             <div className={styles.wrapper}>
                                 <animated.div
@@ -83,7 +83,7 @@ export const Inner: FC = () => {
                                 </animated.div>
                             </div>
                         </MoveFocusInside>
-                    </Conditional>
+                    </If>
                 )}
             </AnimatedTransition>
         </>

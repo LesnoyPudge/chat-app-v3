@@ -1,5 +1,5 @@
 import { FC, useContext, useMemo } from 'react';
-import { Image, CheckBoxIndicatorSlide, Conditional, Separator, TabContext, TabPanel, CheckBox } from '@components';
+import { Image, CheckBoxIndicatorSlide, Separator, TabContext, TabPanel, CheckBox } from '@components';
 import { FormikCheckBox, Heading, HeadingLevel } from '@libs';
 import permissionNotFoundImage from '@assets/not-found-image.svg';
 import { RoleContentTabs } from '../..';
@@ -102,7 +102,7 @@ export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
                 className={styles.wrapper + ' relative'}
                 {...tabPanelProps.permissions}
             >
-                <Conditional isRendered={!showPermissions}>
+                <If condition={!showPermissions}>
                     <div className={styles.permissionNotFoundWrapper}>
                         <Image
                             className={styles.permissionNotFoundImage}
@@ -113,9 +113,9 @@ export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
                             <>Права не найдены</>
                         </div>
                     </div>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={showPermissions}>
+                <If condition={showPermissions}>
                     <div className={styles.list}>
                         {filteredPermissionGroups.map((group, groupIndex) => (
                             <div key={group.name}>
@@ -152,16 +152,16 @@ export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
                                                 {permission.description}
                                             </div>
 
-                                            <Conditional isRendered={showSeparator}>
+                                            <If condition={showSeparator}>
                                                 <Separator spacing={20}/>
-                                            </Conditional>
+                                            </If>
                                         </div>
                                     );
                                 })}
                             </div>
                         ))}
                     </div>
-                </Conditional>
+                </If>
             </TabPanel>
         </HeadingLevel>
     );

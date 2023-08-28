@@ -1,4 +1,4 @@
-import { Button, Conditional } from '@components';
+import { Button } from '@components';
 import { FC } from 'react';
 import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { useThrottle } from '@hooks';
@@ -48,7 +48,7 @@ export const ColorPicker: FC<ColorPicker> = ({
                 onChange={handleChange}
             />
 
-            <Conditional isRendered={withColorPresets}>
+            <If condition={withColorPresets}>
                 <div className={styles.presetsWrapper}>
                     {colorPresets.map((color) => (
                         <Button 
@@ -63,7 +63,7 @@ export const ColorPicker: FC<ColorPicker> = ({
                         </Button>
                     ))}
                 </div>
-            </Conditional>
+            </If>
         </div>
     );
 };

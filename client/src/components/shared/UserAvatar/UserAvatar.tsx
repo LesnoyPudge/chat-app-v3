@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Conditional, Tooltip, UserStatus, Image, Ref } from '@components';
+import {  Tooltip, UserStatus, Image, Ref } from '@components';
 import { getAvatarPath, twClassNames } from '@utils';
 import { PropsWithClassName } from '@types';
 import { STATUS_LABEL } from '@vars';
@@ -39,15 +39,15 @@ export const UserAvatar: FC<UserAvatar> = ({
 
     return (
         <div className={twClassNames(styles.wrapper, className)}>
-            <Conditional isRendered={hideStatus}>
+            <If condition={hideStatus}>
                 <Image
                     className={styles.avatar}
                     src={getAvatarPath(avatarId)}
                     alt={alt}
                 />
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={!hideStatus}>
+            <If condition={!hideStatus}>
                 <Ref<HTMLDivElement>>
                     {(ref) => (
                         <>
@@ -87,7 +87,7 @@ export const UserAvatar: FC<UserAvatar> = ({
                         </>
                     )}
                 </Ref>
-            </Conditional>
+            </If>
         </div>
     );
 };

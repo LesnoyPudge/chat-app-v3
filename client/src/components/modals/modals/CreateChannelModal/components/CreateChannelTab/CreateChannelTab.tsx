@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, Conditional, TabContext, Image,SpriteImage, CreateChannelModalTabs, FieldLabel, TextInput, RequiredWildcard, ErrorInLabel, FileInput, FormError } from '@components';
+import { Button, TabContext, Image,SpriteImage, CreateChannelModalTabs, FieldLabel, TextInput, RequiredWildcard, ErrorInLabel, FileInput, FormError } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { FormikFileInput, FormikTextInput } from '@libs';
 import { MBToBytes, createValidationSchema } from '@utils';
@@ -79,15 +79,15 @@ export const CreateChannelTab: FC = () => {
                                 {...fileInputProps}
                             >
                                 <div className='flex w-20 h-20 bg-primary-300 pointer-events-none'>
-                                    <Conditional isRendered={!!value}>
+                                    <If condition={!!value}>
                                         <Image
                                             className='rounded-full'
                                             file={value}
                                             alt='Значок канала'
                                         />
-                                    </Conditional>
+                                    </If>
 
-                                    <Conditional isRendered={!value}>
+                                    <If condition={!value}>
                                         <div className='flex relative w-full h-full rounded-full border-2 border-icon-100 border-dashed'>
                                             <span className='m-auto text-2xs uppercase font-semibold'>
                                                 <>Загрузить</>
@@ -100,7 +100,7 @@ export const CreateChannelTab: FC = () => {
                                                 />
                                             </div>
                                         </div>
-                                    </Conditional>
+                                    </If>
                                 </div>
                             </FileInput>
                         )}

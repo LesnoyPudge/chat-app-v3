@@ -1,7 +1,7 @@
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
-import { Conditional } from '@components';
+
 
 
 
@@ -18,12 +18,12 @@ export const ErrorInLabel: FC<ErrorInLabel> = ({
     error,
 }) => {
     return (
-        <Conditional isRendered={!!error}>
+        <If condition={!!error}>
             <span className={twClassNames(styles.error, className)}>
                 <> &#8722; </>
 
                 {error}
             </span>
-        </Conditional>
+        </If>
     );
 };

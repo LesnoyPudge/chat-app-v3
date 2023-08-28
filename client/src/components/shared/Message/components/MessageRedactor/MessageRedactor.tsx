@@ -1,4 +1,4 @@
-import { AnimatedTransition, Button, Conditional, EmojiPicker, EmojiSwitcher, MessageEditorWrapper, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned } from '@components';
+import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, MessageEditorWrapper, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned } from '@components';
 import { SlateContainer, SlateEditor, useSlateAddEmoji } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
@@ -43,7 +43,7 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
     };
 
     return (
-        <Conditional isRendered={isInRedactorMode}>
+        <If condition={isInRedactorMode}>
             <SlateContainer
                 value={redactorValue}
                 onChange={setRedactorValue}
@@ -54,7 +54,7 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
                     onCancel={handleCancel}
                 />
             </SlateContainer>
-        </Conditional>
+        </If>
     );
 };
 

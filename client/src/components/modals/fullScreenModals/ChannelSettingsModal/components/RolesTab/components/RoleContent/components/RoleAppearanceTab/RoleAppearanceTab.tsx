@@ -1,6 +1,6 @@
 import { FormikFileInput, FormikTextInput } from '@libs';
 import { FC, useContext } from 'react';
-import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button, Conditional,SpriteImage, ChannelSettingsModalFormValues, TabContext, TabPanel, FileInput } from '@components';
+import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button,SpriteImage, ChannelSettingsModalFormValues, TabContext, TabPanel, FileInput } from '@components';
 import { RoleColor } from './components';
 import { useFormikContext } from 'formik';
 import { RoleContentTabs } from '../..';
@@ -78,21 +78,21 @@ export const RoleAppearanceTab: FC = () => {
                     <div className={styles.fileInputsArea}>
                         <FileInput {...fileInputProps}>
                             <div className={styles.firstFileInputWrapper}>
-                                <Conditional isRendered={!!roleImage || !!value}>
+                                <If condition={!!roleImage || !!value}>
                                     <Image
                                         className={styles.firstFileInputImage}
                                         src={roleImage}
                                         file={value}
                                         alt='Значок роли'
                                     />
-                                </Conditional>
+                                </If>
 
-                                <Conditional isRendered={!values.roleImage && !value}>
+                                <If condition={!values.roleImage && !value}>
                                     <SpriteImage
                                         className={styles.firstFileInputIcon}
                                         name='ADD_IMAGE_ICON'
                                     />
-                                </Conditional>
+                                </If>
                             </div>
                         </FileInput>
 

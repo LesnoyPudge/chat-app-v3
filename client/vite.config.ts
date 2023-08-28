@@ -13,7 +13,11 @@ export default defineConfig(() => {
 
     return {
         plugins: [
-            react(),
+            react({
+                babel: {
+                    plugins: [['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }], 'jsx-control-statements'],
+                },
+            }),
             envCompalible(),
             tsconfigPaths(),
             svgrPlugin({

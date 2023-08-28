@@ -1,7 +1,7 @@
 import { twClassNames } from '@utils';
 import { isSameDay, differenceInMinutes } from 'date-fns';
 import { useRef, useEffect, FC, RefObject } from 'react';
-import { Conditional, Message, MessageComponent } from '@components';
+import {  Message, MessageComponent } from '@components';
 import { DayDivider } from '../DayDivider';
 import { chatMock } from '../../Chat';
 import { NormalizedViewportItemRefs } from '../../hooks';
@@ -110,9 +110,9 @@ export const ChatListItem: FC<ChatListItem> = ({
             aria-hidden
             ref={messageWrapperRef} 
         >
-            <Conditional isRendered={showDayDivider}>
+            <If condition={showDayDivider}>
                 <DayDivider time={message.createdAt}/>
-            </Conditional>
+            </If>
                     
             <div 
                 className={twClassNames({

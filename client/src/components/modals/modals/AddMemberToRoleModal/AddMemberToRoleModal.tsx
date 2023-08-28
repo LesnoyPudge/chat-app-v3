@@ -1,4 +1,4 @@
-import { Button, CheckBoxIndicatorCheck, Conditional,SpriteImage, Image, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar , MoveFocusInside } from '@components';
+import { Button, CheckBoxIndicatorCheck,SpriteImage, Image, List, ModalWindow, OverlayContext, Scrollable, SearchBar, UserAvatar , MoveFocusInside } from '@components';
 import { FC, useContext, useRef } from 'react';
 import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalSubtitle } from '../../components';
 import { useKeyboardNavigation, useTextInput, useSet } from '@hooks';
@@ -103,8 +103,8 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
                     />
 
                     <div className={styles.contentBlock}>
-                        <Conditional isRendered={!noMembers}>
-                            <Conditional isRendered={showFilteredMembers}>
+                        <If condition={!noMembers}>
+                            <If condition={showFilteredMembers}>
                                 <Scrollable
                                     className={styles.scrollable}
                                     small
@@ -155,9 +155,9 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
                                         </List>
                                     </ul>
                                 </Scrollable>
-                            </Conditional>
+                            </If>
 
-                            <Conditional isRendered={!showFilteredMembers}>
+                            <If condition={!showFilteredMembers}>
                                 <div className={styles.notFound}>
                                     <Image
                                         className={styles.notFoundImage}
@@ -168,14 +168,14 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
                                         <>Участники не найдены</>
                                     </div>
                                 </div>
-                            </Conditional>
-                        </Conditional>
+                            </If>
+                        </If>
 
-                        <Conditional isRendered={noMembers}>
+                        <If condition={noMembers}>
                             <div>
                                 <>На данном канале нет участников</>
                             </div>
-                        </Conditional>
+                        </If>
                     </div>
                 </ModalContent>
 

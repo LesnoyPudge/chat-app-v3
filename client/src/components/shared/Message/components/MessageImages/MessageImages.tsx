@@ -2,7 +2,7 @@ import { twClassNames } from '@utils';
 import { FC, useContext } from 'react';
 import { PropsWithClassName } from '@types';
 import { Grid1, Grid2, Grid3, Grid4, Grid5, Grid6, Grid7, Grid8, Grid9 } from './components';
-import { Conditional } from '@components';
+
 import { MessageContext } from '../../Message';
 
 
@@ -35,10 +35,10 @@ export const MessageImages: FC<PropsWithClassName> = ({
     };
     
     return (
-        <Conditional isRendered={!!imageCount}>
+        <If condition={!!imageCount}>
             <div className={twClassNames(styles.wrapper, className)}>
                 {grids[imageCount as keyof typeof grids]}
             </div>
-        </Conditional>
+        </If>
     );
 };

@@ -1,4 +1,4 @@
-import { Conditional, Scrollable, Image, Button, CheckBoxIndicatorCheck,SpriteImage, UserAvatar , MoveFocusInside } from '@components';
+import {  Scrollable, Image, Button, CheckBoxIndicatorCheck,SpriteImage, UserAvatar , MoveFocusInside } from '@components';
 import { Heading } from '@libs';
 import { ObjectWithId, PropsWithClassName } from '@types';
 import { FC, useRef } from 'react';
@@ -77,12 +77,12 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
             followContentSize
             setScrollableWrapper={setViewport}
         >
-            <Conditional isRendered={isAnyFound}>
+            <If condition={isAnyFound}>
                 <Heading className={styles.heading}>
                     <>Роли</>
                 </Heading>
 
-                <Conditional isRendered={isRolesFound}>
+                <If condition={isRolesFound}>
                     <ul
                         className={styles.list}
                         ref={rolesNavigation.setRoot}
@@ -135,19 +135,19 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                             }}
                         </ViewportList>
                     </ul>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={!isRolesFound}>
+                <If condition={!isRolesFound}>
                     <div className={styles.singleNotFound}>
                         <>Роли не найдены</>
                     </div>
-                </Conditional>
+                </If>
 
                 <Heading className={styles.heading}>
                     <>Участники</>
                 </Heading>
 
-                <Conditional isRendered={isMembersFound}>
+                <If condition={isMembersFound}>
                     <ul
                         className={styles.list}
                         ref={membersNavigation.setRoot}
@@ -200,16 +200,16 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                             }}
                         </ViewportList>
                     </ul>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={!isMembersFound}>
+                <If condition={!isMembersFound}>
                     <div className={styles.singleNotFound}>
                         <>Участники не найдены</>
                     </div>
-                </Conditional>
-            </Conditional>
+                </If>
+            </If>
 
-            <Conditional isRendered={!isAnyFound}>
+            <If condition={!isAnyFound}>
                 <div className={styles.notFoundWrapper}>
                     <Image
                         className={styles.notFoundImage}
@@ -220,7 +220,7 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                         <>Роли и участники не найдены</>
                     </div>
                 </div>
-            </Conditional>
+            </If>
         </Scrollable>
     );
 };

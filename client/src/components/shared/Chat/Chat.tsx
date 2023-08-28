@@ -1,4 +1,4 @@
-import { Conditional, EmojiCode, Memo, Message, Scrollable, Static } from '@components';
+import {  EmojiCode, Memo, Message, Scrollable, Static } from '@components';
 import { PropsWithClassName } from '@types';
 import { createContext, FC, RefObject, useCallback, useState } from 'react';
 import { IMessage } from '@backendTypes';
@@ -89,19 +89,19 @@ export const Chat: FC<Chat> = ({
                 aria-busy
                 aria-label='Лента сообщений'
             >
-                <Conditional isRendered={isLoading}>
+                <If condition={isLoading}>
                     <ChatMessagePlaceholderList/>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={showHelloMessage}>
+                <If condition={showHelloMessage}>
                     <Static>
                         <HelloFromRoom/>
                     </Static>
 
                     <DayDivider time={firstMessageCreationTimestamp}/>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={showPlaceholder}>
+                <If condition={showPlaceholder}>
                     <div
                         aria-hidden
                         ref={setPlaceholderElement}
@@ -110,9 +110,9 @@ export const Chat: FC<Chat> = ({
 
                         <DayDivider time={firstMessageCreationTimestamp}/>
                     </div>
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={!!messageList.length}>
+                <If condition={!!messageList.length}>
                     <ViewportList
                         items={messageList}
                         initialIndex={messageList.length - 1}
@@ -144,7 +144,7 @@ export const Chat: FC<Chat> = ({
                             </Memo>
                         )}
                     </ViewportList>
-                </Conditional>
+                </If>
 
                 <div
                     className='h-px'

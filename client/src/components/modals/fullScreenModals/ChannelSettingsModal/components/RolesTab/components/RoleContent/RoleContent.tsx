@@ -1,4 +1,4 @@
-import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional, DeleteRoleModal,SpriteImage, List, OverlayContextProvider, Ref, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip , MoveFocusInside } from '@components';
+import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, DeleteRoleModal,SpriteImage, List, OverlayContextProvider, Ref, SearchBar, TabContext, TabContextProvider, TabList, TabPanel, Tooltip , MoveFocusInside } from '@components';
 import { useKeyboardNavigation, useRefWithSetter, useTextInput } from '@hooks';
 import { HeadingLevel, Heading } from '@libs';
 import { ObjectWithId } from '@types';
@@ -172,7 +172,7 @@ export const RoleContent: FC = () => {
                                         </List>
                                     </TabList>
 
-                                    <Conditional isRendered={isActive.permissions}>
+                                    <If condition={isActive.permissions}>
                                         <SearchBar
                                             className={styles.permissionsSearchBar}
                                             value={permissionsSearch.value}
@@ -181,9 +181,9 @@ export const RoleContent: FC = () => {
                                             onChange={permissionsSearch.handleChange}
                                             onReset={permissionsSearch.handleReset}
                                         />
-                                    </Conditional>
+                                    </If>
 
-                                    <Conditional isRendered={isActive.members}>
+                                    <If condition={isActive.members}>
                                         <div className={styles.membersSearchWrapper}>
                                             <SearchBar
                                                 className={styles.membersSearch}
@@ -212,7 +212,7 @@ export const RoleContent: FC = () => {
                                                 )}
                                             </OverlayContextProvider>
                                         </div>
-                                    </Conditional>
+                                    </If>
                                 </div>
 
                                 {providedTabs[currentTab.identifier]}

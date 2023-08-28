@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Conditional, UserAvatar } from '@components';
+import {  UserAvatar } from '@components';
 import { MessageContext } from '../../Message';
 import { MessageAdditions, MessageContent, MessageCozyTimestamp, MessageTimestamp, MessageUsername } from '..';
 
@@ -29,29 +29,29 @@ export const CozyMessage: FC = () => {
     return (
         <div className={styles.wrapper}>
             <div className={styles.firstCol}>
-                <Conditional isRendered={isGroupHead}>
+                <If condition={isGroupHead}>
                     <UserAvatar
                         className={styles.avatar}
                         avatarId={user.avatar}
                         username={user.name}
                     />
-                </Conditional>
+                </If>
 
-                <Conditional isRendered={!isGroupHead}>
+                <If condition={!isGroupHead}>
                     <div>
                         <MessageTimestamp className={styles.headlessCreationTimestamp}/>
                     </div>
-                </Conditional>
+                </If>
             </div>
 
             <div className={styles.secondCol}>
-                <Conditional isRendered={isGroupHead}>
+                <If condition={isGroupHead}>
                     <div className={styles.infoRow}>
                         <MessageUsername className={styles.username}/>
 
                         <MessageCozyTimestamp/>
                     </div>
-                </Conditional>
+                </If>
 
                 <MessageContent/>
 

@@ -1,4 +1,4 @@
-import { Button, ChannelSettingsModalFormValues, ChannelSettingsModalTabs, Conditional, Image, OverlayContextProvider, SearchBar, Separator, TabContext, TabPanel, UnbanUserModal, UserAvatar } from '@components';
+import { Button, ChannelSettingsModalFormValues, ChannelSettingsModalTabs, Image, OverlayContextProvider, SearchBar, Separator, TabContext, TabPanel, UnbanUserModal, UserAvatar } from '@components';
 import { Heading, HeadingLevel } from '@libs';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
@@ -65,7 +65,7 @@ export const BannedTab: FC = () => {
                 <Separator spacing={0}/>
             </div>
 
-            <Conditional isRendered={!bannedUsers.length}>
+            <If condition={!bannedUsers.length}>
                 <HeadingLevel>
                     <div className={styles.noBansWrapper}>
                         <Image
@@ -82,9 +82,9 @@ export const BannedTab: FC = () => {
                         </div>
                     </div>
                 </HeadingLevel>
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={!!bannedUsers.length}>
+            <If condition={!!bannedUsers.length}>
                 <ul>
                     {filteredBannedUsers.map((user) => {
                         return (
@@ -123,7 +123,7 @@ export const BannedTab: FC = () => {
                         );
                     })}
                 </ul>
-            </Conditional>
+            </If>
         </TabPanel>
     );
 };

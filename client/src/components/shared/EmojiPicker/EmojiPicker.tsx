@@ -1,4 +1,4 @@
-import { Button, Conditional, Emoji, EmojiCode, emojiList, List, Scrollable, SearchBar } from '@components';
+import { Button, Emoji, EmojiCode, emojiList, List, Scrollable, SearchBar } from '@components';
 import { useTextInput } from '@hooks';
 import { PropsWithClassName } from '@types';
 import { conditional, getRandomNumber, twClassNames } from '@utils';
@@ -56,7 +56,7 @@ export const EmojiPicker: FC<EmojiPicker> = ({
 
             <Scrollable className={styles.scrollable}>
                 <div className={styles.scrollableInner}>
-                    <Conditional isRendered={!!emojiListToRender.length}>
+                    <If condition={!!emojiListToRender.length}>
                         <ul className={styles.emojiList}>
                             <List list={emojiListToRender}>
                                 {(emoji) => {
@@ -84,13 +84,13 @@ export const EmojiPicker: FC<EmojiPicker> = ({
                                 }}
                             </List>
                         </ul>
-                    </Conditional>
+                    </If>
 
-                    <Conditional isRendered={!emojiListToRender.length}>
+                    <If condition={!emojiListToRender.length}>
                         <div className={styles.notFound}>
                             <div>Эмодзи не найдены</div>
                         </div>
-                    </Conditional>
+                    </If>
                 </div>
             </Scrollable>
 

@@ -1,59 +1,17 @@
 import { globalReset } from '@redux/globalReset';
-import { RootState, store } from '@redux/store';
-import { createAction, createAsyncThunk, createListenerMiddleware, createSlice, EntityState, nanoid, PayloadAction } from '@reduxjs/toolkit';
-import { Endpoints, Entities, ENTITY_NAMES, EntityId, SOCKET_CLIENT_EVENT_NAMES, SOCKET_SERVER_EVENT_NAMES, SUBSCRIBABLE_ENTITIES, toSocketEventName, ValueOf, WithId } from '@shared';
-import { ChannelSelectors, ChatSelectors, MessageSelectors, PrivateChannelSelectors, RoleSelectors, RoomSelectors, UserApi } from '@redux/features';
+import { RootState } from '@redux/store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
+import { UserApi } from '@redux/features';
 import { createCustomizedEntityAdapter } from '@redux/utils';
-import { socketIO } from '@root/features';
-import { useAppDispatch, useMemoSelector } from '@redux/hooks';
-import { useEffect, useRef } from 'react';
-import { noop } from '@utils';
-import { usePromise } from '@hooks';
+import { SliceEntityState } from '@types';
+import { localStorageApi } from '@utils';
 
 
 
-type UserState = Entities.User.Preview;
-
-const adapter = createCustomizedEntityAdapter<UserState>();
+const adapter = createCustomizedEntityAdapter<SliceEntityState.User>();
 
 const initialState = adapter.getInitialState();
-
-const updateMe = <T>(fn: (me: Entities.User.WithoutCredentials, value: T) => void) => {
-    return (state: EntityState<UserState>, { payload }: PayloadAction<T>) => {
-        // import('@redux/store').then(({ store }) => {
-        //     // const id = store.getState().app.myId;
-        //     const id = undefined;
-        //     if (!id) return;
-
-        //     const me = state.entities[id];
-        //     if (!me) return;
-        //     if (!('email' in me)) return;
-
-        //     fn(me, payload);
-        // });
-    };
-};
-
-const thunkTest = createAsyncThunk(ENTITY_NAMES.USER + '/thunktest', async(_, thunkApi) => {
-    console.log('thunk test');
-
-});
-
-// const a1 = createAction<number>('qwe')
-// a1(1)
-
-
-
-// const listenerMiddleware = createListenerMiddleware();
-
-
-
-// const {
-//     subscribe,
-//     unsubscribe,
-// } = createEntitySubscriptionFunctions(SUBSCRIBABLE_ENTITIES.USER);
-
-// subscribe('qwe');
 
 export const UserSlice = createSlice({
     name: ENTITY_NAMES.USER,
@@ -62,17 +20,12 @@ export const UserSlice = createSlice({
         upsertOne: adapter.upsertOne,
         removeOne: adapter.removeOne,
 
-        anyAction: (state, { payload }: PayloadAction<string>) => {
-            console.log('any action dispatched', payload);
-        },
+        // updateMe: (state, { payload }: PayloadAction<Partial<Entities.User.WithoutCredentials>>) => {
+        //     const myId = localStorageApi.get('myId');
+        //     if (!myId) return;
 
-        // subscribe: (state, { payload }: PayloadAction<string>) => {
-        //     socketIO.emit(toSocketEventName(SUBSCRIBABLE_ENTITIES.USER, SOCKET_CLIENT_EVENT_NAMES.SUBSCRIBE), payload);
+        //     adapter.updateOne(state, { id: myId, changes: payload });
         // },
-
-        // addChannel: updateMe<Entities.Channel.Default>((me, channel) => {
-        //     me.channels.push(channel.id);
-        // }),
     },
     extraReducers(builder) {
         builder.addCase(globalReset, () => {

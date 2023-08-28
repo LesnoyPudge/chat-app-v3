@@ -1,6 +1,6 @@
 import { deepMerge } from '@reExport';
 import { PropsWithChildren, ReactNode, RefObject } from 'react';
-import { AnyArray, Entities, Prettify, Primitive, StrictOmit, ToType } from '@shared';
+import { AnyArray, ENTITY_NAMES, Entities, Prettify, Primitive, StrictOmit, ToType } from '@shared';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
@@ -69,3 +69,13 @@ export type CustomQueryError = Prettify<
         };
     }
 >;
+
+export module SliceEntityState {
+    export type Channel = Entities.Channel.Default;
+    export type Chat = Entities.Chat.Default;
+    export type Message = Entities.Message.Default;
+    export type PrivateChannel = Entities.PrivateChannel.Default;
+    export type Role = Entities.Role.Default;
+    export type Room = Entities.Room.Default;
+    export type User = Entities.User.Preview;
+}

@@ -1,4 +1,4 @@
-import { Conditional } from '@components';
+
 import { useEventListener } from '@hooks';
 import { EncodedFile, PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
@@ -108,13 +108,13 @@ export const Image: FC<Image> = ({
                 ref={imageRef}
             />
 
-            <Conditional isRendered={showPlaceholder}>
+            <If condition={showPlaceholder}>
                 {placeholder}
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={showFallback}>
+            <If condition={showFallback}>
                 {fallback}
-            </Conditional>
+            </If>
         </>
     );
 };

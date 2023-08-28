@@ -1,7 +1,7 @@
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
-import { Image, Conditional } from '@components';
+import { Image } from '@components';
 
 
 
@@ -26,21 +26,21 @@ export const ChannelAvatar: FC<ChannelAvatar> = ({
 
     return (
         <div className={twClassNames(styles.wrapper, className)}>
-            <Conditional isRendered={!!avatar}>
+            <If condition={!!avatar}>
                 <Image
                     className={styles.image}
                     src={avatar}
                     alt={`Изображение канала ${name}`}
                 />
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={!avatar}>
+            <If condition={!avatar}>
                 <div className={styles.nameWrapper}>
                     <div className={styles.name}>
                         {formattedName}
                     </div>
                 </div>
-            </Conditional>
+            </If>
         </div>
     );
 };

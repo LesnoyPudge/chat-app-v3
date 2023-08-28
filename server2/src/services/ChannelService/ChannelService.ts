@@ -59,7 +59,13 @@ export const ChannelService: ChannelService = {
     async create({ id }, { name, identifier, avatar }) {
         return transactionContainer(
             async({ session }) => {
-                const channelAvatar = !avatar ? null : (await FileServiceHelpers.create(avatar)).id;
+                let channelAvatar = null;
+
+                if (avatar) {
+                    const newAvatar = await FileServiceHelpers.create(avatar);
+                    channelAvatar = newAvatar.id;
+                }
+
                 const newChannel = modelWithId(new ChannelModel({
                     identifier,
                     name,

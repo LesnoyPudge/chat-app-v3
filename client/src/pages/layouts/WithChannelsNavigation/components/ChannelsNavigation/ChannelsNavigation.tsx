@@ -1,5 +1,5 @@
 import { FC, useRef } from 'react';
-import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Conditional, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List, Ref , MoveFocusInside, ToDo } from '@components';
+import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List, Ref , MoveFocusInside, ToDo } from '@components';
 import { WrapperWithBullet } from './components';
 import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { twClassNames } from '@utils';
@@ -87,12 +87,12 @@ export const ChannelsNavigation: FC = () => {
                 </Ref>
             </WrapperWithBullet>
 
-            <Conditional isRendered={showChannels}>
+            <If condition={showChannels}>
                 <Separator className={styles.separator} spacing={0}/>
-            </Conditional>
+            </If>
 
             <Scrollable className={styles.scrollbar} hidden followContentSize>
-                <Conditional isRendered={showChannels}>
+                <If condition={showChannels}>
                     <ul
                         className={styles.list}
                         tabIndex={0}
@@ -168,12 +168,12 @@ export const ChannelsNavigation: FC = () => {
                             }}
                         </List>
                     </ul>
-                </Conditional>
+                </If>
             </Scrollable>
 
-            <Conditional isRendered={showChannels}>
+            <If condition={showChannels}>
                 <Separator className={styles.separator} spacing={0}/>
-            </Conditional>
+            </If>
 
             <OverlayContextProvider>
                 {({ openOverlay, isOverlayExist }) => (

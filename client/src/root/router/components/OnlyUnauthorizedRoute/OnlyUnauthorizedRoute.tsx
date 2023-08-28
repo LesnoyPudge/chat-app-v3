@@ -1,4 +1,4 @@
-import { Conditional } from '@components';
+
 import { useNavigator } from '@hooks';
 import { AppSelectors, UserApi } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
@@ -39,8 +39,8 @@ export const OnlyUnauthorizedRoute: FC<PropsWithChildren> = () => {
     }, [navigateOutside, navigate, stateRef]);
 
     return (
-        <Conditional isRendered={showOutlet}>
+        <If condition={showOutlet}>
             <Outlet/>
-        </Conditional>
+        </If>
     );
 };

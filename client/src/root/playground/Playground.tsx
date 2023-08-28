@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, Conditional, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus } from '@components';
+import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff } from '@utils';
@@ -100,10 +100,10 @@ error:
                     />
                 </picture>
 
-                <Conditional isRendered={imageState.loading}>
+                <If condition={imageState.loading}>
                     <div className='absolute inset-0 bg-lime-500'>
                     </div>
-                </Conditional>
+                </If>
             </div>
         </>
     );
@@ -622,6 +622,7 @@ import isObject from 'is-object';
 import { Placeholder } from 'src/components/shared/Placeholder';
 import { socketIO } from '../features/soket';
 import { EntityContext, EntityContextProvider } from 'src/components/contexts/EntityContext/EntityContext';
+
 
 
 
@@ -1733,12 +1734,18 @@ const PlaygroundInner27: FC = () => {
 socketIO.on('connect_error', (err) => {
     console.log(`connect_error due to ${err.message}`);
 });
+// import transformer from 'tsx-control-statements';
+// import { If } from 'tsx-control-statements/components';
+
 
 const PlaygroundInner28: FC = () => {
     const id1 = '64d6407ac557763795df726d';
     const id2 = '64d8b4bf6d3e0ab5e5e9eb39';
     const [state, toggle] = useToggle(true);
     const idToShow = state ? id1 : id2;
+    const value: object | null = (() => {
+        return Math.random() < 0.5 ? { some: 'data' } : null;
+    })();
 
     return (
         <div className='flex flex-col gap-6'>
@@ -1746,17 +1753,21 @@ const PlaygroundInner28: FC = () => {
                 <>{String(state)}</>
             </button>
 
+            <If condition={!!value}>
+                <>{JSON.stringify(Object.keys(value!))}</>
+            </If>
+
             <div>
                 <EntityContextProvider.User id={idToShow}>
                     {(data) => (
                         <>
-                            <Conditional isRendered={!!data}>
+                            <If condition={!!data}>
                                 <>{JSON.stringify(data)}</>
-                            </Conditional>
+                            </If>
 
-                            <Conditional isRendered={!data}>
+                            <If condition={!data}>
                                 <>loading</>
-                            </Conditional>
+                            </If>
                         </>
                     )}
                 </EntityContextProvider.User>
@@ -1766,39 +1777,41 @@ const PlaygroundInner28: FC = () => {
                 <EntityContextProvider.User id={idToShow}>
                     {(data) => (
                         <>
-                            <Conditional isRendered={!!data}>
+                            <If condition={!!data}>
                                 <>{JSON.stringify(data)}</>
-                            </Conditional>
+                            </If>
 
-                            <Conditional isRendered={!data}>
+                            <If condition={!data}>
                                 <>loading</>
-                            </Conditional>
+                            </If>
                         </>
                     )}
                 </EntityContextProvider.User>
             </div>
+
+
             {/*
             <EntityContextProvider.User id='64d8b44ee6cc309ce68b1f0e'>
                 {({ data }) => (
                     <>
-                        <Conditional isRendered={!!data}>
+                        <If condition={!!data}>
                             <>{JSON.stringify(data)}</>
-                        </Conditional>
+                        </If>
 
-                        <Conditional isRendered={!data}>
+                        <If condition={!data}>
                             <>loading</>
-                        </Conditional>
+                        </If>
 
                         <EntityContext.User.Consumer>
                             {({ data }) => (
                                 <>
-                                    <Conditional isRendered={!!data}>
+                                    <If condition={!!data}>
                                         <>{JSON.stringify(data)} 2</>
-                                    </Conditional>
+                                    </If>
 
-                                    <Conditional isRendered={!data}>
+                                    <If condition={!data}>
                                         <>loading</>
-                                    </Conditional>
+                                    </If>
                                 </>
                             )}
                         </EntityContext.User.Consumer>
@@ -1823,13 +1836,13 @@ const enabled = !!1;
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
         <>
-            <Conditional isRendered={!enabled}>
+            <If condition={!enabled}>
                 {children}
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={enabled}>
+            <If condition={enabled}>
                 <PlaygroundInner28/>
-            </Conditional>
+            </If>
         </>
     );
 };

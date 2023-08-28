@@ -1,13 +1,14 @@
 import { globalReset } from '@redux/globalReset';
 import { RootState } from '@redux/store';
 import { createSlice } from '@reduxjs/toolkit';
-import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
+import { Endpoints, ENTITY_NAMES } from '@shared';
 import { PrivateChannelApi } from '@redux/features';
 import { createCustomizedEntityAdapter } from '@redux/utils';
+import { SliceEntityState } from '@types';
 
 
 
-const adapter = createCustomizedEntityAdapter<Entities.PrivateChannel.Default>();
+const adapter = createCustomizedEntityAdapter<SliceEntityState.PrivateChannel>();
 
 const initialState = adapter.getInitialState();
 

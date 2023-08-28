@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { Button, ChannelAvatar, Conditional, List, ModalWindow, OverlayContext, Scrollable, SearchBar, Separator } from '@components';
+import { Button, ChannelAvatar, List, ModalWindow, OverlayContext, Scrollable, SearchBar, Separator } from '@components';
 import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../components';
 import { useTextInput } from '@hooks';
 import { isOdd } from '@reExport';
@@ -99,9 +99,9 @@ export const FindChannelModal: FC = () => {
                                                     </div>
                                                 </div>
 
-                                                <Conditional isRendered={showSeparator}>
+                                                <If condition={showSeparator}>
                                                     <Separator spacing={8}/>
-                                                </Conditional>
+                                                </If>
                                             </li>
                                         );
                                     }}

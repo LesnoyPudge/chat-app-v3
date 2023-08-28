@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues, Conditional,SpriteImage, OverlayContextProvider, TabContext, TabPanel, UserAvatar } from '@components';
+import { AddMemberToRoleModal, Button, ChannelSettingsModalFormValues,SpriteImage, OverlayContextProvider, TabContext, TabPanel, UserAvatar } from '@components';
 import { RoleContentTabs } from '../..';
 import { useFormikContext } from 'formik';
 
@@ -48,7 +48,7 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
             className={styles.wrapper}
             {...tabPanelProps.members}
         >
-            <Conditional isRendered={!filteredMembers.length}>
+            <If condition={!filteredMembers.length}>
                 <div className={styles.membersNotFound}>
                     <div>Участники не найдены.</div>
 
@@ -70,9 +70,9 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
                         )}
                     </OverlayContextProvider>
                 </div>
-            </Conditional>
+            </If>
 
-            <Conditional isRendered={!!filteredMembers.length}>
+            <If condition={!!filteredMembers.length}>
                 <ul className={styles.list}>
                     {filteredMembers.map((member) => {
                         const handleRemoveMember = () => removeMember(member.id);
@@ -106,7 +106,7 @@ export const RoleMembersTab: FC<RoleMembersTab> = ({
                         );
                     })}
                 </ul>
-            </Conditional>
+            </If>
         </TabPanel>
     );
 };
