@@ -30,6 +30,7 @@
             "@backendTypes": ["../server/src/types/common"],
             "@components": ["src/components"],
             "@hooks": ["src/hooks"],
+            "@assets/*": ["src/assets/*"],
             "@redux/store": ["src/redux/store/store"],
             "@redux/features": ["src/redux/features"],
             "@redux/rootApi": ["src/redux/store/rootApi"],
