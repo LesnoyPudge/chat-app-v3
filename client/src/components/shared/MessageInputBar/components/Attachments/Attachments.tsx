@@ -5,7 +5,7 @@ import { FC, useRef } from 'react';
 import { Button,SpriteImage, Image, List, Ref, Scrollable, Tooltip } from '@components';
 import { MessageInputBarFormValues } from '../../MessageInputBar';
 import { FormikFileInputChildrenArgs } from '@libs';
-import fileTextImage from '@assets/file-text-image.svg';
+import { IMAGES } from '@generated';
 
 
 
@@ -48,7 +48,7 @@ export const Attachments: FC<Attachments> = ({
                             {(file, index) => {
                                 const fileIsImage = file.type.includes('image');
                                 const imageProps = {
-                                    src: fileIsImage ? null : fileTextImage,
+                                    src: fileIsImage ? null : IMAGES.COMMON.FILE_TEXT_IMAGE.PATH,
                                     file: fileIsImage ? file : null,
                                 };
 

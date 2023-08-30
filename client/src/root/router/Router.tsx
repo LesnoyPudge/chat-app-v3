@@ -1,8 +1,7 @@
 import { FC } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { WithChannelsNavigation, WithPrivateChatList, WithRoomList } from '@layouts';
-import { Loaded } from '../components';
-import { NavigateToRoom, OnlyUnauthorizedRoute, ProtectedRoute } from './components';
+import { NavigateToRoom, OnlyAuthorizedRoute, OnlyUnauthorizedRoute } from './components';
 
 import AppPage from '@pages/AppPage';
 import AuthPage from '@pages/AuthPage';
@@ -18,6 +17,15 @@ import InvitationPage from '@pages/InvitationPage';
 // const PrivateChatPage = lazy(() => import('@pages/PrivateChatPage'));
 // const ChannelPage = lazy(() => import('@pages/ChannelPage'));
 
+
+const Loaded: FC = () => {
+    return (
+        <>
+            <Outlet/>
+        </>
+    );
+};
+
 export const Router: FC = () => {
     return (
         <BrowserRouter>
@@ -31,7 +39,7 @@ export const Router: FC = () => {
                     </Route>
                 </Route>
 
-                <Route element={<ProtectedRoute/>}>
+                <Route element={<OnlyAuthorizedRoute/>}>
                     <Route
                         path='app'
                         element={<WithChannelsNavigation/>}

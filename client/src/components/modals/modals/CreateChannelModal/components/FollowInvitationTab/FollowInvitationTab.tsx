@@ -6,7 +6,7 @@ import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } fro
 import { FormikTextInput } from '@libs';
 import { Endpoints } from '@shared';
 import { ChannelApi } from '@redux/features';
-import { createValidationSchema } from '@utils';
+import { createValidationSchema, getEnv } from '@utils';
 
 
 
@@ -23,6 +23,8 @@ const validationSchema = createValidationSchema<FollowInvitationFormValues>(({
     code: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
 }));
 
+const { CUSTOM_CLIENT_URL } = getEnv();
+
 export const FollowInvitationTab: FC = () => {
     const { changeTab } = useContext<TabContext<CreateChannelModalTabs>>(TabContext);
     const { closeOverlay } = useContext(OverlayContext);
@@ -30,11 +32,15 @@ export const FollowInvitationTab: FC = () => {
     const { apiWrapper } = useMountedApiWrapper();
     const { navigateTo } = useNavigator();
 
+    const invitePlaceholder = `${CUSTOM_CLIENT_URL}/hTkzmak, hTkzmak`;
+
     const handleSubmit = async(values: FollowInvitationFormValues) => {
         if (helpers.isLoading) return;
 
+        const code = values.code.replace(CUSTOM_CLIENT_URL, '').replaceAll(/[^A-Za-z]/g, '');
+
         apiWrapper(
-            accept({ code: values.code }),
+            accept({ code }),
             (channel) => {
                 closeOverlay();
                 navigateTo.channel(channel.id);
@@ -48,7 +54,7 @@ export const FollowInvitationTab: FC = () => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
         >
-            <Form className='flex flex-col'>
+            <Form>
                 <ModalHeader>
                     <ModalTitle>
                         <>Присоединитесь к каналу</>
@@ -63,7 +69,7 @@ export const FollowInvitationTab: FC = () => {
                     <FormikTextInput
                         name='code'
                         label='Ссылка-приглашение'
-                        placeholder='https://discord.gg/hTkzmak, hTkzmak'
+                        placeholder={invitePlaceholder}
                         required
                     >
                         {(props) => (

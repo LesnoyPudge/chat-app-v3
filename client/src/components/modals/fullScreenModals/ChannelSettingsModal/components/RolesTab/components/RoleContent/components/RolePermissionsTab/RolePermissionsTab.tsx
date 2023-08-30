@@ -1,8 +1,8 @@
 import { FC, useContext, useMemo } from 'react';
 import { Image, CheckBoxIndicatorSlide, Separator, TabContext, TabPanel, CheckBox } from '@components';
 import { FormikCheckBox, Heading, HeadingLevel } from '@libs';
-import permissionNotFoundImage from '@assets/not-found-image.svg';
 import { RoleContentTabs } from '../..';
+import { IMAGES } from '@generated';
 
 
 
@@ -106,7 +106,7 @@ export const RolePermissionsTab: FC<RolePermissionsTab> = ({ value }) => {
                     <div className={styles.permissionNotFoundWrapper}>
                         <Image
                             className={styles.permissionNotFoundImage}
-                            src={permissionNotFoundImage}
+                            src={IMAGES.COMMON.NOT_FOUND_IMAGE.PATH}
                         />
 
                         <div className={styles.permissionNotFoundText}>

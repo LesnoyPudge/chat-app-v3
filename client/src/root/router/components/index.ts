@@ -1,3 +1,3 @@
 export * from './NavigateToRoom';
-export * from './ProtectedRoute';
+export * from './OnlyAuthorizedRoute';
 export * from './OnlyUnauthorizedRoute';

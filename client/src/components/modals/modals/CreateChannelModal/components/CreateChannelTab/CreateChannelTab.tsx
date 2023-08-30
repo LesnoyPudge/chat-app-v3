@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import { FC, useContext } from 'react';
-import { Button, TabContext, Image,SpriteImage, CreateChannelModalTabs, FieldLabel, TextInput, RequiredWildcard, ErrorInLabel, FileInput, FormError } from '@components';
+import { Button, TabContext, Image,SpriteImage, CreateChannelModalTabs, FieldLabel, TextInput, RequiredWildcard, ErrorInLabel, FileInput, FormError, OverlayContext } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalSubtitle, ModalTitle } from '../../../../components';
 import { FormikFileInput, FormikTextInput } from '@libs';
 import { MBToBytes, createValidationSchema } from '@utils';
@@ -14,7 +14,7 @@ import { useMountedApiWrapper, useNavigator } from '@hooks';
 type CreateChannelFormValues = Endpoints.V1.Channel.Create.RequestBody;
 
 const initialValues: CreateChannelFormValues = {
-    identifier: String(Math.floor(Math.random() * 100000)),
+    identifier: '',
     name: '',
     avatar: undefined,
 };
@@ -38,9 +38,11 @@ export const CreateChannelTab: FC = () => {
     const [create, helpers] = ChannelApi.useChannelCreateMutation();
     const { apiWrapper } = useMountedApiWrapper();
     const { navigateTo } = useNavigator();
+    const { closeOverlay } = useContext(OverlayContext);
 
     const handleSubmit = (value: CreateChannelFormValues) => {
         apiWrapper(create(value), (channel) => {
+            closeOverlay();
             navigateTo.channel(channel.id);
         });
     };
@@ -75,10 +77,10 @@ export const CreateChannelTab: FC = () => {
                     >
                         {({ value, fileInputProps }) => (
                             <FileInput
-                                className='self-center mb-6 rounded-full overflow-hidden'
+                                className='self-center rounded-full'
                                 {...fileInputProps}
                             >
-                                <div className='flex w-20 h-20 bg-primary-300 pointer-events-none'>
+                                <div className='flex w-20 h-20 bg-primary-300 rounded-full pointer-events-none'>
                                     <If condition={!!value}>
                                         <Image
                                             className='rounded-full'
@@ -107,13 +109,36 @@ export const CreateChannelTab: FC = () => {
                     </FormikFileInput>
 
                     <FormikTextInput
-                        name='name'
-                        label='Название канала'
+                        name='identifier'
+                        label='Идентификатор канала'
+                        placeholder='my-unique-channel'
                         maxLength={32}
                         required
                     >
                         {(props) => (
-                            <div>
+                            <div className='mt-6'>
+                                <FieldLabel htmlFor={props.id}>
+                                    {props.label}
+
+                                    <RequiredWildcard/>
+
+                                    <ErrorInLabel error={props.error}/>
+                                </FieldLabel>
+
+                                <TextInput {...props}/>
+                            </div>
+                        )}
+                    </FormikTextInput>
+
+                    <FormikTextInput
+                        name='name'
+                        label='Название канала'
+                        placeholder='Мой новый канал'
+                        maxLength={32}
+                        required
+                    >
+                        {(props) => (
+                            <div className='mt-4'>
                                 <FieldLabel htmlFor={props.id}>
                                     {props.label}
 

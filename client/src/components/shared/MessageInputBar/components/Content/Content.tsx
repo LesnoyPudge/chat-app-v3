@@ -2,10 +2,8 @@ import { twClassNames } from '@utils';
 import { FC, ReactNode, useContext } from 'react';
 import { Button, Image, OverlayContext } from '@components';
 import { Heading } from '@libs';
-import fileTextImage from '@assets/file-text-image.svg';
-import fileImageImage from '@assets/file-image-image.svg';
-import fileCodeImage from '@assets/file-code-image.svg';
 import { PropsWithClassName } from '@types';
+import { IMAGES } from '@generated';
 
 
 
@@ -35,26 +33,26 @@ export const Content: FC<Content> = ({
     const { closeOverlay } = useContext(OverlayContext);
 
     return (
-        <Button 
+        <Button
             className={twClassNames(styles.container, className)}
             label='Закрыть'
             onLeftClick={closeOverlay}
         >
             <div className={styles.inner}>
                 <div className={styles.imageWrapper}>
-                    <Image 
+                    <Image
                         className={twClassNames(styles.image, styles.firstImage)}
-                        src={fileTextImage}
+                        src={IMAGES.COMMON.FILE_TEXT_IMAGE.PATH}
                     />
 
-                    <Image 
+                    <Image
                         className={twClassNames(styles.image, styles.secondImage)}
-                        src={fileImageImage}
+                        src={IMAGES.COMMON.FILE_IMAGE_IMAGE.PATH}
                     />
 
-                    <Image 
+                    <Image
                         className={twClassNames(styles.image, styles.thirdImage)}
-                        src={fileCodeImage}
+                        src={IMAGES.COMMON.FILE_CODE_IMAGE.PATH}
                     />
                 </div>
 

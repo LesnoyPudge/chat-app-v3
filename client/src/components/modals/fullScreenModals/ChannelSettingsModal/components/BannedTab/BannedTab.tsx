@@ -2,9 +2,9 @@ import { Button, ChannelSettingsModalFormValues, ChannelSettingsModalTabs, Image
 import { Heading, HeadingLevel } from '@libs';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
-import banhummer from '@assets/banhummer.svg';
-import { useNavigator, useTextInput } from '@hooks';
+import { useTextInput } from '@hooks';
 import { useFormikContext } from 'formik';
+import { IMAGES } from '@generated';
 
 
 
@@ -70,7 +70,7 @@ export const BannedTab: FC = () => {
                     <div className={styles.noBansWrapper}>
                         <Image
                             className=''
-                            src={banhummer}
+                            src={IMAGES.COMMON.BANHUMMER.PATH}
                         />
 
                         <Heading className={styles.noBansHeading}>

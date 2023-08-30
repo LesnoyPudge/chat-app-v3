@@ -2,8 +2,8 @@ import { Button, CheckBoxIndicatorCheck,SpriteImage, Image, List, ModalWindow, O
 import { FC, useContext, useRef } from 'react';
 import { ModalContainer, ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalSubtitle } from '../../components';
 import { useKeyboardNavigation, useTextInput, useSet } from '@hooks';
-import notFoundImage from '@assets/not-found-image.svg';
 import { twClassNames } from '@utils';
+import { IMAGES } from '@generated';
 
 
 
@@ -161,7 +161,7 @@ export const AddMemberToRoleModal: FC<AddMemberToRoleModal> = ({
                                 <div className={styles.notFound}>
                                     <Image
                                         className={styles.notFoundImage}
-                                        src={notFoundImage}
+                                        src={IMAGES.COMMON.NOT_FOUND_IMAGE.PATH}
                                     />
 
                                     <div>

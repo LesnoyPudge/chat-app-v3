@@ -1,6 +1,7 @@
 import { extendedValidator } from 'src/validators/extendedValidator';
 import { Entities, MBToBytes } from '@shared';
 import { fromBuffer } from 'file-type';
+import isSvg from 'is-svg';
 
 
 
@@ -57,7 +58,17 @@ export const chainPresets = {
 
                     if (fileBuffer.length !== file.size) return Promise.reject();
 
-                    const typeResult = await fromBuffer(fileBuffer);
+                    let typeResult: undefined | {
+                        ext: string,
+                        mime: string,
+                    } = undefined;
+
+                    typeResult = await fromBuffer(fileBuffer);
+
+                    if (!typeResult && isSvg(fileBuffer)) {
+                        typeResult = { mime: 'image/svg+xml', ext: 'svg' };
+                    }
+
                     if (!typeResult) return Promise.reject();
 
                     if (file.type !== typeResult.mime) return Promise.reject();

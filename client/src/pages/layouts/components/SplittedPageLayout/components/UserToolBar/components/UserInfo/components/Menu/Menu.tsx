@@ -22,7 +22,7 @@ const styles = {
     button: 'flex gap-3 items-center w-full justify-start group/button',
     status: `w-3.5 h-3.5 group-hover/button:fill-white 
     group-focus-visible/button:fill-white group-data-[loading=true]/button:fill-white`,
-    copyButton: 'data-[active=true]:text-white data-[active=true]:bg-positive',
+    copyButton: 'data-[active=true]:text-white data-[active=true]:bg-positive justify-center',
 };
 
 export const Menu: FC = () => {

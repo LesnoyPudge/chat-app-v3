@@ -47,6 +47,7 @@ interface GetTransitionOptions {
     defaultModal: Options<[ReturnType<typeof opacity>, ReturnType<typeof defaultModal>]>;
     defaultContextMenu: Options<[ReturnType<typeof opacity>, ReturnType<typeof defaultContextMenu>]>;
     inOut: Options<[ReturnType<typeof inOut>]>;
+    empty: Options<[]>;
 }
 
 export const getTransitionOptions = {
@@ -68,5 +69,9 @@ export const getTransitionOptions = {
 
     inOut: (extendedOptions = {}) => {
         return deepMerge(inOut(), extendedOptions);
+    },
+
+    empty: (d = {}) => {
+        return d;
     },
 } as GetTransitionOptions;

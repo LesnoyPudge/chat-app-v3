@@ -608,7 +608,6 @@ const useConversation = (conversationId: string) => {
 //     );
 // };
 
-import imagesrc from '@assets/wallpaperflare.com_wallpaper.jpg';
 import { AnyRecord } from 'ts-essentials/dist/any-record';
 import { AnyArray, AnyFunction, Endpoints, Entities, getRandomNumber, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
@@ -632,7 +631,7 @@ const LocalImage: FC = () => {
         <>
             <div className='relative w-1/2 h-3/4 bg-lime-600'>
                 <picture className=''>
-                    <source srcSet={imagesrc} className='' type='image/jpg'/>
+                    <source srcSet={IMAGES.COMMON.FILE_CODE_IMAGE.PATH} className='' type='image/jpg'/>
                     {/* <img src={imagesrc} className='absolute object-cover inset-0'/> */}
                 </picture>
             </div>
@@ -1731,9 +1730,7 @@ const PlaygroundInner27: FC = () => {
 // socketIO.connect();
 // socketIO.emit('User_subscribe', '123');
 
-socketIO.on('connect_error', (err) => {
-    console.log(`connect_error due to ${err.message}`);
-});
+
 // import transformer from 'tsx-control-statements';
 // import { If } from 'tsx-control-statements/components';
 
@@ -1831,7 +1828,7 @@ const PlaygroundInner28: FC = () => {
     );
 };
 
-const enabled = !!1;
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

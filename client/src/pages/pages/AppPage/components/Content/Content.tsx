@@ -3,10 +3,9 @@ import { AppPageTabs } from '@pages/AppPage/AppPage';
 import { FC, useContext, useRef } from 'react';
 import { ActionButtons } from './components';
 import { getRandomNumber } from '@utils';
-import friendsNotFoundImage from '@assets/friendsNotFound.svg';
-
 import { useKeyboardNavigation } from '@hooks';
 import { Entities } from '@shared';
+import { IMAGES } from '@generated';
 
 
 
@@ -134,7 +133,7 @@ export const Content: FC<Content> = ({ value }) => {
                 <div className={styles.notFoundWrapper}>
                     <Image
                         className={styles.notFoundImage}
-                        src={friendsNotFoundImage}
+                        src={IMAGES.COMMON.FRIENDSNOTFOUND.PATH}
                     />
 
                     <div className={styles.notFoundText}>

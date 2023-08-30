@@ -61,33 +61,35 @@ export const DevDebugContent: FC = () => {
     );
 
     return (
-        <div className={styles.wrapper}>
-            <div
-                className={styles.inner}
-                ref={setRoot}
-                tabIndex={0}
-            >
-                <div>
-                    <>{Key.ArrowUp} / {Key.ArrowDown}</>
-                </div>
+        <>
+            <div className={styles.wrapper}>
+                <div
+                    className={styles.inner}
+                    ref={setRoot}
+                    tabIndex={0}
+                >
+                    <div>
+                        <>{Key.ArrowUp} / {Key.ArrowDown}</>
+                    </div>
 
-                <List list={Object.keys(actions)}>
-                    {(key) => {
-                        return (
-                            <MoveFocusInside enabled={getIsFocused(key)}>
-                                <Button
-                                    className={styles.button}
-                                    isActive={getIsFocused(key)}
-                                    tabIndex={getTabIndex(key)}
-                                    onLeftClick={withFocusSet(key, actions[key])}
-                                >
-                                    {key}
-                                </Button>
-                            </MoveFocusInside>
-                        );
-                    }}
-                </List>
+                    <List list={Object.keys(actions)}>
+                        {(key) => {
+                            return (
+                                <MoveFocusInside enabled={getIsFocused(key)}>
+                                    <Button
+                                        className={styles.button}
+                                        isActive={getIsFocused(key)}
+                                        tabIndex={getTabIndex(key)}
+                                        onLeftClick={withFocusSet(key, actions[key])}
+                                    >
+                                        {key}
+                                    </Button>
+                                </MoveFocusInside>
+                            );
+                        }}
+                    </List>
+                </div>
             </div>
-        </div>
+        </>
     );
 };

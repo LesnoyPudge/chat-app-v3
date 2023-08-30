@@ -1,5 +1,5 @@
 import { FC, lazy, StrictMode, Suspense } from 'react';
-import { ErrorBoundary, Loader, DevDebug, Sprite, Masks } from './components';
+import { ErrorBoundary, DevDebug, Sprite, Masks, GlobalLoader } from './components';
 import { usePreventDefault, useSocketListeners, useSocketStateHandler } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
@@ -31,11 +31,11 @@ const RootInner: FC = () => {
             <HeadingLevel>
                 <Playground>
                     <ErrorBoundary>
-                        <Loader>
+                        <GlobalLoader.Wrapper>
                             <Suspense>
                                 <Router/>
                             </Suspense>
-                        </Loader>
+                        </GlobalLoader.Wrapper>
                     </ErrorBoundary>
                 </Playground>
             </HeadingLevel>

@@ -17,7 +17,6 @@ export type AnimatedTransition<T extends UseTransitionProps<boolean> | object> =
     transitionOptions: T;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const AnimatedTransition = <T extends UseTransitionProps<boolean> | object>(props: AnimatedTransition<T>) => {
     const {
         transitionOptions,

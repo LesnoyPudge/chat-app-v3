@@ -31,3 +31,6 @@ export * from './cookies';
 export * from './getAvatarPath';
 export * from './getDiff';
 export * from './createValidationSchema';
+export * from './idArrayToObjectsWithId';
+export * from './getTextFallback';
+export * from './getReadImagePath';

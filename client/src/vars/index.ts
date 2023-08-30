@@ -27,3 +27,5 @@ export const MIME = {
     ALL: '*',
     IMAGES: 'image',
 } as const;
+
+export const RICK = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';

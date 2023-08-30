@@ -1,11 +1,11 @@
-import {  Scrollable, Image, Button, CheckBoxIndicatorCheck,SpriteImage, UserAvatar , MoveFocusInside } from '@components';
+import { Scrollable, Image, Button, CheckBoxIndicatorCheck,SpriteImage, UserAvatar , MoveFocusInside } from '@components';
 import { Heading } from '@libs';
 import { ObjectWithId, PropsWithClassName } from '@types';
 import { FC, useRef } from 'react';
 import { ViewportList } from 'react-viewport-list';
-import notFoundImage from '@assets/not-found-image.svg';
 import { twClassNames } from '@utils';
 import { useKeyboardNavigation, useRefWithSetter } from '@hooks';
+import { IMAGES } from '@generated';
 
 
 
@@ -213,7 +213,7 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
                 <div className={styles.notFoundWrapper}>
                     <Image
                         className={styles.notFoundImage}
-                        src={notFoundImage}
+                        src={IMAGES.COMMON.NOT_FOUND_IMAGE.PATH}
                     />
 
                     <div className={styles.notFoundText}>

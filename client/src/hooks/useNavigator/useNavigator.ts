@@ -105,6 +105,7 @@ export const useNavigator = () => {
         navigateTo: navigateToRef.current,
         params,
         stateRef,
+        paths,
         navigate,
     };
 };

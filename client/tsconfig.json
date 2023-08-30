@@ -28,7 +28,6 @@
             "@root": ["src/root"],
             "@root/features": ["src/root/features"],
             "@backendTypes": ["../server/src/types/common"],
-            "@assets/*": ["src/assets/*"],
             "@components": ["src/components"],
             "@hooks": ["src/hooks"],
             "@redux/store": ["src/redux/store/store"],

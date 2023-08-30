@@ -29,7 +29,7 @@ export const FileValidator = createValidator<FileEndpointsSchema>({
                 ._fileExistsById()
         ),
     }),
-    
+
     download: () => ({
         fileId: (
             body('fileId')

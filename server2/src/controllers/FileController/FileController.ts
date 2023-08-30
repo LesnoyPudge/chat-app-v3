@@ -20,10 +20,10 @@ export const FileController: FileController = {
     async download(req, res) {
         const file = await FileServiceHelpers.getOne({ id: req.body.fileId });
         if (!file) throw ApiError.internal();
-        
+
         const base64Data = file.base64.split(';base64,')[1];
         const fileBuffer = Buffer.from(base64Data, 'base64');
-        
+
         res.attachment(file.name);
         res.setHeader('Content-Type', file.type);
         res.send(fileBuffer);
@@ -32,10 +32,10 @@ export const FileController: FileController = {
     async read(req, res) {
         const file = await FileServiceHelpers.getOne({ id: req.body.fileId });
         if (!file) throw ApiError.internal();
-        
+
         const base64Data = file.base64.split(';base64,')[1];
         const fileBuffer = Buffer.from(base64Data, 'base64');
-        
+
         res.setHeader('Content-Type', file.type);
         res.send(fileBuffer);
     },

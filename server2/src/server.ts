@@ -35,20 +35,20 @@ const socketServer = new Server(server, {
 
 socketServer.use((socket, next) => {
     const auth = socket.handshake.auth as Partial<SocketAuth>;
-    console.log('get socket message', auth);
+    // console.log('get socket message', auth);
 
-    // if (!auth.accessToken) return next(ApiError.unauthorized());
+    if (!auth.accessToken) return next(ApiError.unauthorized());
 
-    // const tokenData = token.validateAccessToken(auth.accessToken);
-    // if (!tokenData) return next(ApiError.unauthorized());
+    const tokenData = token.validateAccessToken(auth.accessToken);
+    if (!tokenData) return next(ApiError.unauthorized());
 
     socket.data = {
-        id: '123',
-        email: null,
-        password: 'qwe',
-        accessToken: 'qwezxc',
-        // ...tokenData,
-        // accessToken: auth.accessToken,
+        // id: '123',
+        // email: null,
+        // password: 'qwe',
+        // accessToken: 'qwezxc',
+        ...tokenData,
+        accessToken: auth.accessToken,
     };
 
     next();

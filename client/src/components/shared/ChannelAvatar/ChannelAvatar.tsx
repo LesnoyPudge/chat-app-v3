@@ -6,8 +6,8 @@ import { Image } from '@components';
 
 
 interface ChannelAvatar extends PropsWithClassName {
-    avatar: string | null;
-    name: string;
+    avatar?: string | null;
+    name?: string;
 }
 
 const styles = {
@@ -20,7 +20,7 @@ const styles = {
 export const ChannelAvatar: FC<ChannelAvatar> = ({
     className = '',
     avatar,
-    name,
+    name = '',
 }) => {
     const formattedName = name.split(' ').map(word => word.charAt(0)).join('');
 

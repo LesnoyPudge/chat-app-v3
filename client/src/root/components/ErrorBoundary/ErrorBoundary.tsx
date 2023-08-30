@@ -1,10 +1,9 @@
 import { createContext, FC, PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import { ErrorBoundary as ReactErrorBoundary, FallbackProps } from 'react-error-boundary';
-import errorBgImage from '@assets/backgrounds/error-boundary-bg.svg';
-import errorImage from '@assets/error-boundary-image.svg';
 import { Button, Image } from '@components';
 import { secondsToMs } from '@utils';
 import { useIsMounted } from 'usehooks-ts';
+import { IMAGES } from '@generated';
 
 
 
@@ -62,13 +61,13 @@ const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
         <div className='h-screen w-screen isolate bg-primary-300 text-color-base flex'>
             <Image
                 className='image-bg-fullscreen'
-                src={errorBgImage}
+                src={IMAGES.COMMON.ERROR_BOUNDARY_BG.PATH}
             />
 
             <div className='flex flex-col m-auto items-center text-center'>
                 <Image
                     className='mb-5'
-                    src={errorImage}
+                    src={IMAGES.COMMON.ERROR_BOUNDARY_IMAGE.PATH}
                 />
 
                 <p className='text-xl text-color-primary mb-3 font-semibold'>

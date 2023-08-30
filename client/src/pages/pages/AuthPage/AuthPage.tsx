@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import fancyBgSrc from '@assets/backgrounds/fancy-bg.jpg';
 import { Image, TabContextProvider } from '@components';
 import { Inner, LoginForm, RegistrationForm } from './components';
+import { IMAGES } from '@generated';
 
 
 
@@ -17,7 +17,7 @@ export const AuthPage: FC = () => {
         <div className='flex h-screen isolate relative'>
             <Image
                 className='image-bg-fullscreen'
-                src={fancyBgSrc}
+                src={IMAGES.COMMON.FANCY_BG.PATH}
             />
 
             <TabContextProvider tabs={tabs}>

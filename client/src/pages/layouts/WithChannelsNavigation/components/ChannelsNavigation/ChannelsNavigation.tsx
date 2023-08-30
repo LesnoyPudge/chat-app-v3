@@ -1,22 +1,21 @@
-import { FC, useRef } from 'react';
-import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Separator, ContextMenu, Scrollable, FindChannelModal, ChannelAvatar, List, Ref , MoveFocusInside, ToDo } from '@components';
-import { WrapperWithBullet } from './components';
-import { useKeyboardNavigation, useNavigator } from '@hooks';
-import { twClassNames } from '@utils';
+import { FC } from 'react';
+import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Separator, ContextMenu, FindChannelModal, ChannelAvatar, Ref, ToDo, Memo, Static } from '@components';
+import { ChannelList, WrapperWithBullet } from './components';
+import { useNavigator } from '@hooks';
+import { getAvatarPath, getReadImagePath, getTextFallback, twClassNames } from '@utils';
 import { useMemoSelector } from '@redux/hooks';
-import { AppSelectors, ChannelSelectors } from '@redux/features';
+import { AppSelectors } from '@redux/features';
 import { RootState } from '@redux/store';
 
 
 
 const styles = {
     wrapper: 'h-screen w-[72px] flex flex-col gap-2 shrink-0 py-2 bg-primary-500',
-    scrollbar: 'grow-0',
     button: {
         base: `w-12 h-12 mx-auto flex justify-center items-center bg-primary-300 
         rounded-3xl overflow-hidden transition-all ease-linear duration-75
         hover:rounded-2xl focus-visible:rounded-2xl hover:text-white 
-        focus-visible:text-white peer`,
+        focus-visible:text-white data-[loading=true]:animate-pulse peer`,
         active: 'rounded-2xl text-white',
     },
     channelAvatar: 'w-full h-full rounded-none',
@@ -31,23 +30,12 @@ const styles = {
         fill-icon-200 hover:fill-white focus-visible:fill-white`,
         active: 'bg-brand fill-white',
     },
-    list: 'flex flex-col gap-2',
     separator: 'w-1/2',
 };
 
 export const ChannelsNavigation: FC = () => {
     const { myLocationIs, navigateTo } = useNavigator();
-    const ids = useMemoSelector((s: RootState) => AppSelectors.selectMe(s).channels);
-    const channels = useMemoSelector(ChannelSelectors.selectByIds(ids), [ids]);
-    const channelsRef = useRef(channels);
-    const {
-        getIsFocused,
-        getTabIndex,
-        setRoot,
-        withFocusSet,
-    } = useKeyboardNavigation(channelsRef);
-
-    const showChannels = !!channels.length;
+    const showChannels = useMemoSelector((s: RootState) => !!AppSelectors.selectMe(s).channels.length);
     const isInAppOrPrivateChatPage = myLocationIs.app() || myLocationIs.anyPrivateChat();
 
     return (
@@ -91,85 +79,73 @@ export const ChannelsNavigation: FC = () => {
                 <Separator className={styles.separator} spacing={0}/>
             </If>
 
-            <Scrollable className={styles.scrollbar} hidden followContentSize>
-                <If condition={showChannels}>
-                    <ul
-                        className={styles.list}
-                        tabIndex={0}
-                        aria-label='Список каналов'
-                        ref={setRoot}
-                    >
-                        <List list={channels}>
-                            {(channel) => {
-                                const isInChannel = myLocationIs.channel(channel.id);
-                                const handleNavigateToChannel = () => navigateTo.channel(channel.id);
+            <If condition={showChannels}>
+                <ChannelList>
+                    {(
+                        channelId,
+                        channel,
+                        isInChannel,
+                        navigateToChannel,
+                        { getTabIndex, withFocusSet },
+                    ) => (
+                        <Ref<HTMLButtonElement>>
+                            {(ref) => (
+                                <>
+                                    <Button
+                                        className={twClassNames(
+                                            styles.button.base,
+                                            styles.brandButton.base,
+                                            {
+                                                [styles.button.active]: isInChannel,
+                                                [styles.brandButton.active]: isInChannel,
+                                            },
+                                        )}
+                                        tabIndex={getTabIndex(channelId)}
+                                        label={getTextFallback(channel?.name)}
+                                        isLoading={!channel}
+                                        isActive={isInChannel}
+                                        innerRef={ref}
+                                        onLeftClick={withFocusSet(channelId, navigateToChannel)}
+                                        onAnyClick={withFocusSet(channelId)}
+                                    >
+                                        <ChannelAvatar
+                                            className={styles.channelAvatar}
+                                            avatar={getReadImagePath(channel?.avatar)}
+                                            name={channel?.name}
+                                        />
+                                    </Button>
 
-                                return (
-                                    <li>
-                                        <MoveFocusInside enabled={getIsFocused(channel.id)}>
-                                            <WrapperWithBullet isActive={isInChannel}>
-                                                <Ref<HTMLButtonElement>>
-                                                    {(ref) => (
-                                                        <>
-                                                            <Button
-                                                                className={twClassNames(
-                                                                    styles.button.base,
-                                                                    styles.brandButton.base,
-                                                                    {
-                                                                        [styles.button.active]: isInChannel,
-                                                                        [styles.brandButton.active]: isInChannel,
-                                                                    },
-                                                                )}
-                                                                tabIndex={getTabIndex(channel.id)}
-                                                                label={channel.name}
-                                                                innerRef={ref}
-                                                                onLeftClick={withFocusSet(channel.id, handleNavigateToChannel)}
-                                                                onAnyClick={withFocusSet(channel.id)}
-                                                            >
-                                                                <ChannelAvatar
-                                                                    className={styles.channelAvatar}
-                                                                    avatar={channel.avatar}
-                                                                    name={channel.name}
-                                                                />
-                                                            </Button>
+                                    <Tooltip
+                                        preferredAlignment='right'
+                                        leaderElementRef={ref}
+                                    >
+                                        <>{getTextFallback(channel?.name)}</>
+                                    </Tooltip>
 
-                                                            <Tooltip
-                                                                preferredAlignment='right'
-                                                                leaderElementRef={ref}
-                                                            >
-                                                                <>{channel.name}</>
-                                                            </Tooltip>
+                                    <OverlayContextProvider>
+                                        <ToDo>
+                                            <ContextMenu
+                                                preferredAlignment='right'
+                                                leaderElementRef={ref}
+                                            >
+                                                <>menu</>
 
-                                                            <OverlayContextProvider>
-                                                                <ToDo>
-                                                                    <ContextMenu
-                                                                        preferredAlignment='right'
-                                                                        leaderElementRef={ref}
-                                                                    >
-                                                                        <>menu</>
+                                                <Button>
+                                                    <>1</>
+                                                </Button>
 
-                                                                        <Button>
-                                                                            <>1</>
-                                                                        </Button>
-
-                                                                        <Button>
-                                                                            <>2</>
-                                                                        </Button>
-                                                                    </ContextMenu>
-                                                                </ToDo>
-                                                            </OverlayContextProvider>
-                                                        </>
-                                                    )}
-                                                </Ref>
-                                            </WrapperWithBullet>
-                                        </MoveFocusInside>
-                                    </li>
-                                );
-                            }}
-                        </List>
-                    </ul>
-                </If>
-            </Scrollable>
+                                                <Button>
+                                                    <>2</>
+                                                </Button>
+                                            </ContextMenu>
+                                        </ToDo>
+                                    </OverlayContextProvider>
+                                </>
+                            )}
+                        </Ref>
+                    )}
+                </ChannelList>
+            </If>
 
             <If condition={showChannels}>
                 <Separator className={styles.separator} spacing={0}/>

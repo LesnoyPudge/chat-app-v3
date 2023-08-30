@@ -80,6 +80,8 @@ export default {
                     track: 'var(--scrollbar-track)',
                     thumb: 'var(--scrollbar-thumb)',
                 },
+
+                link: 'var(--color-font-link)',
             },
 
             textColor: {
@@ -88,8 +90,8 @@ export default {
                     secondary: 'var(--color-font-secondary)',
                     base: 'var(--color-font-base)',
                     muted: 'var(--color-font-muted)',
-                    link: 'var(--color-font-link)',
                     error: 'var(--color-font-error)',
+                    link: 'var(--color-font-link)',
                 },
             },
 

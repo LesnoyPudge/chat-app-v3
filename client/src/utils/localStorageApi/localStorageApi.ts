@@ -4,7 +4,6 @@ import { Timestamp } from '@shared';
 
 type Values = {
     lastRefresh: Timestamp | null;
-    accessToken: string | null;
     myId: string | null;
 }
 

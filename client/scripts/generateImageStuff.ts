@@ -138,7 +138,13 @@ const scripts = {
                         plugins: [{ name: 'cleanupIds', params: { minify: false } }],
                     });
 
-                    fs.writeFileSync(path.join(currentPath, `${utils.toUpperSnake(name)}.${ext}`), optimized.data);
+                    let data = optimized.data.replace('<svg', `<svg id="${name}"`);
+
+                    if (!data.includes('xmlns="http://www.w3.org/2000/svg"')) {
+                        data = data.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+                    }
+
+                    fs.writeFileSync(path.join(currentPath, `${utils.toUpperSnake(name)}.${ext}`), data);
 
                     return;
                 }
@@ -179,15 +185,7 @@ const scripts = {
                 const imagePath = splittedPath.join('client');
 
                 const isSprite = folder.name === 'sprite';
-                if (isSprite) {
-                    const data = (
-                        file.data.toString()
-                            .replace('<svg', `<svg id="${name}"`)
-                            // .replace('</svg>', '</symbol>')
-                    );
-
-                    spriteArray.push(data);
-                }
+                if (isSprite) spriteArray.push(file.data.toString());
 
                 const section: keyof typeof imageObject = (
                     isSprite
@@ -223,8 +221,10 @@ const scripts = {
 } satisfies Record<string, () => void>;
 
 const main = async() => {
+    console.log('generation started');
     scripts.generateOptimizedImages();
     scripts.generateVarsFromImages();
+    console.log('generation complete');
 };
 
 main().catch((e) => {

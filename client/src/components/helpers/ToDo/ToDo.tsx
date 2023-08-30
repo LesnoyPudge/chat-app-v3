@@ -1,6 +1,5 @@
 import { getEnv } from '@utils';
-import { FC, PropsWithChildren } from 'react';
-import { useEffectOnce } from 'usehooks-ts';
+import { FC, PropsWithChildren, useEffect } from 'react';
 
 
 
@@ -14,10 +13,10 @@ export const ToDo: FC<ToDo> = ({
     text,
     children,
 }) => {
-    useEffectOnce(() => {
-        if (CUSTOM_NODE_ENV !== 'development') return;
+    useEffect(() => {
+        if (CUSTOM_NODE_ENV === 'production') return;
         console.warn(`ToDo: ${text}`);
-    });
+    }, [text]);
 
     return (
         <>

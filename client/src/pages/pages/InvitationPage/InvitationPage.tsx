@@ -1,7 +1,7 @@
 import { Button, Image } from '@components';
+import { IMAGES } from '@generated';
 import { Heading } from '@libs';
 import { FC } from 'react';
-import fancyBgSrc from '@assets/backgrounds/fancy-bg.jpg';
 
 
 
@@ -15,12 +15,12 @@ export const InvitationPage: FC = () => {
     const handleAcceptInvitation = () => {
         console.log('click accept');
     };
-    
+
     return (
         <div className='flex h-screen isolate'>
             <Image
                 className='image-bg-fullscreen'
-                src={fancyBgSrc}
+                src={IMAGES.COMMON.FANCY_BG.PATH}
             />
 
             <div className='flex flex-col items-center text-center p-8 max-[480px]:px-4 m-auto w-[480px] rounded bg-primary-200 shadow-elevation-high'>
@@ -42,7 +42,7 @@ export const InvitationPage: FC = () => {
                                 <>{channel.onlineCount} в сети</>
                             </span>
                         </div>
-                            
+
                         <div className='flex gap-1 items-center'>
                             <div className='w-2.5 h-2.5 bg-icon-200 rounded-full'></div>
 

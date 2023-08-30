@@ -1,9 +1,9 @@
 import { AppSelectors } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { socketIO } from '@root/features';
 import { SocketAuth } from '@shared';
-import { localStorageApi } from '@utils';
+import { cookies } from '@utils';
 
 
 
@@ -11,7 +11,7 @@ export const useSocketStateHandler = () => {
     const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized);
 
     useEffect(() => {
-        const accessToken = localStorageApi.get('accessToken');
+        const accessToken = cookies.get('accessToken');
 
         if (accessToken && isAuthorized) {
             socketIO.auth = {
@@ -22,7 +22,7 @@ export const useSocketStateHandler = () => {
         }
 
         return () => {
-            // socketIO.disconnect();
+            socketIO.disconnect();
         };
     }, [isAuthorized]);
 };

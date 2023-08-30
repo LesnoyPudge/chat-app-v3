@@ -1,7 +1,7 @@
 import { FC, useContext } from 'react';
 import { Button, ChangeEmailModalTabs, Image, OverlayContext, TabContext } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter, ModalContainer } from '../../../../components';
-import emailConfirmationImage from '@assets/email-confirmation.png';
+import { IMAGES } from '@generated';
 
 
 
@@ -31,7 +31,7 @@ export const RequestCodeSlide: FC = () => {
             <div className={styles.imageWrapper}>
                 <Image
                     className={styles.image}
-                    src={emailConfirmationImage}
+                    src={IMAGES.COMMON.EMAIL_CONFIRMATION.PATH}
                 />
             </div>
 
