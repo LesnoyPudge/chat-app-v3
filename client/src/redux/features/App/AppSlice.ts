@@ -11,6 +11,8 @@ import { globalReset, triggerGlobalReset } from '@redux/globalReset';
 type AppState = {
     isInitialized: boolean;
     isRefreshing: boolean;
+    isInternetConnected: boolean;
+    isSocketConnected: boolean;
     myId: Id | null;
     lastRefresh: Timestamp | null;
     muted: boolean;
@@ -21,6 +23,8 @@ const getInitialState = (): AppState => {
     return {
         isInitialized: false,
         isRefreshing: false,
+        isInternetConnected: navigator.onLine,
+        isSocketConnected: false,
         myId: null,
         lastRefresh: localStorageApi.get('lastRefresh'),
         muted: false,
@@ -46,6 +50,14 @@ export const AppSlice = createSlice({
 
         toggleDeaf: (state) => {
             state.deaf = !state.deaf;
+        },
+
+        setIsInternetConnected: (state, { payload }: PayloadAction<boolean>) => {
+            state.isInternetConnected = payload;
+        },
+
+        setIsSocketConnected: (state, { payload }: PayloadAction<boolean>) => {
+            state.isSocketConnected = payload;
         },
     },
     extraReducers(builder) {
@@ -115,9 +127,11 @@ const selectAppState = (state: RootState) => state.app;
 
 const selectIsAuthorized = (state: RootState) => !!selectAppState(state).myId;
 
-const selectIsRefreshing = (state: RootState) => selectAppState(state).isRefreshing;
+const selectIsOnline = (state: RootState) => {
+    const { isInternetConnected, isSocketConnected } = selectAppState(state);
 
-const selectIsInitialized = (state: RootState) => selectAppState(state).isInitialized;
+    return isInternetConnected && isSocketConnected;
+};
 
 const userDummy: Entities.User.WithoutCredentials = {
     id: String(Math.floor(Math.random() * 100_000)),
@@ -164,7 +178,6 @@ const selectMe = (state: RootState): Entities.User.WithoutCredentials => {
 export const AppSelectors = {
     selectAppState,
     selectIsAuthorized,
-    selectIsRefreshing,
-    selectIsInitialized,
     selectMe,
+    selectIsOnline,
 };

@@ -2,21 +2,15 @@ import plugin from 'tailwindcss/plugin';
 
 
 
-const scrollbarClasses = {
+const customClasses = {
     '.simplebar-custom': {},
 
     '.scrollbar-hidden': {},
-};
 
-const colorPickerClasses = {
     '.color-picker': {},
-};
 
-const sliderInputClasses = {
     '.slider-input': {},
-};
 
-const otherClasses = {
     '.image-bg-fullscreen': {
         '@apply fixed top-0 left-0 w-screen h-screen -z-[1] object-cover object-center': {},
     },
@@ -59,13 +53,10 @@ const otherClasses = {
     '.message-group-head': {
         'padding-top': 'var(--message-gap)',
     },
-};
 
-const customClasses = {
-    ...scrollbarClasses,
-    ...sliderInputClasses,
-    ...colorPickerClasses,
-    ...otherClasses,
+    '.page': {
+        '@apply h-screen w-screen isolate': {},
+    },
 };
 
 export const getCustomClasses = () => (

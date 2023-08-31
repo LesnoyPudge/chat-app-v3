@@ -1,6 +1,6 @@
 import { FC, lazy, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, DevDebug, Sprite, Masks, GlobalLoader } from './components';
-import { usePreventDefault, useSocketListeners, useSocketStateHandler } from './hooks';
+import { useInternetState, usePreventDefault, useSocketListeners, useSocketStateHandler } from './hooks';
 import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import { Provider } from 'react-redux';
@@ -15,6 +15,7 @@ const RootInner: FC = () => {
     usePreventDefault();
     useSocketStateHandler();
     useSocketListeners();
+    useInternetState();
 
     return (
         <>

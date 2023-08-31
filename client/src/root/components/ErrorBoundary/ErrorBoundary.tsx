@@ -1,9 +1,7 @@
 import { createContext, FC, PropsWithChildren, useContext, useEffect, useRef } from 'react';
 import { ErrorBoundary as ReactErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { Button, Image } from '@components';
-import { secondsToMs } from '@utils';
 import { useIsMounted } from 'usehooks-ts';
-import { IMAGES } from '@generated';
+import { ErrorPage } from '@pages/ErrorPage';
 
 
 
@@ -29,7 +27,7 @@ export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
         setTimeout(() => {
             if (!isMounted()) return;
             isCrushedRef.current = false;
-        }, secondsToMs(30));
+        }, 30 * 1000);
 
         cb();
     };
@@ -51,43 +49,13 @@ export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
 const ErrorFallback: FC<FallbackProps> = ({ resetErrorBoundary }) => {
     const { handleReset, onCrush } = useContext(ErrorContext);
 
-    const handleClick = () => handleReset(resetErrorBoundary);
+    const handleReload = () => handleReset(resetErrorBoundary);
 
     useEffect(() => {
         onCrush();
     }, [onCrush]);
 
     return (
-        <div className='h-screen w-screen isolate bg-primary-300 text-color-base flex'>
-            <Image
-                className='image-bg-fullscreen'
-                src={IMAGES.COMMON.ERROR_BOUNDARY_BG.PATH}
-            />
-
-            <div className='flex flex-col m-auto items-center text-center'>
-                <Image
-                    className='mb-5'
-                    src={IMAGES.COMMON.ERROR_BOUNDARY_IMAGE.PATH}
-                />
-
-                <p className='text-xl text-color-primary mb-3 font-semibold'>
-                    Как-то неловко получается
-                </p>
-
-                <div className='text-color-muted mb-6'>
-                    <p>В приложении возник неожиданный сбой....</p>
-
-                    <p>Мы отследили ошибку и вскоре ей займёмся.</p>
-                </div>
-
-                <Button
-                    className='font-semibold h-11'
-                    stylingPreset='brand'
-                    onLeftClick={handleClick}
-                >
-                    Перезагрузить
-                </Button>
-            </div>
-        </div>
+        <ErrorPage onReload={handleReload}/>
     );
 };

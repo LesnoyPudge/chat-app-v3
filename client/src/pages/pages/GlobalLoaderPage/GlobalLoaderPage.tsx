@@ -2,7 +2,7 @@ import { AnimatedTransition, Link, SpriteImage } from '@components';
 import { IMAGES } from '@generated';
 import { RICK } from '@vars';
 import { FC, useState } from 'react';
-import { useTimeout } from 'usehooks-ts';
+import { useTimeout } from '@hooks';
 import animatedLogo from '@assets/video/discord-animated-logo.webm';
 import { getTransitionOptions } from '@utils';
 import { animated } from '@react-spring/web';
@@ -22,7 +22,7 @@ const styles = {
 
 const transitionOptions = getTransitionOptions.inOut();
 
-export const Content: FC = () => {
+export const GlobalLoaderPage: FC = () => {
     const [showProblemBlock, setShowProblemBlock] = useState(false);
 
     useTimeout(() => {

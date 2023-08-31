@@ -10,7 +10,6 @@ export * from './twClassNames';
 export * from './getHTML';
 export * from './getOneOf';
 export * from './getRandomNumber';
-export * from './secondsToMs';
 export * from './conditional';
 export * from './getTransitionOptions';
 export * from './encodeFiles';

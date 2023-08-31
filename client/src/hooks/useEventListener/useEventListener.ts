@@ -6,11 +6,11 @@ import { isRef } from '@typeGuards';
 
 type ProvidedElement = RefObject<HTMLElement> | HTMLElement | Document | Window | null;
 
-type EventMaps = HTMLElementEventMap | DocumentEventMap | WindowEventMap;
+type EventMap = HTMLElementEventMap & DocumentEventMap & WindowEventMap;
 
-export const useEventListener = <T extends keyof EventMaps>(
+export const useEventListener = <T extends keyof EventMap>(
     event: T,
-    providedListener: (e: EventMaps[T]) => void,
+    providedListener: (e: EventMap[T]) => void,
     providedElement: ProvidedElement,
 ) => {
     const [element, setElement] = useProvidedValue(providedElement);
@@ -20,7 +20,7 @@ export const useEventListener = <T extends keyof EventMaps>(
         const target = isRef(element) ? element.current : element;
         if (!target) return;
 
-        const listener: EventListener = (e) => savedListener.current(e as EventMaps[T]);
+        const listener: EventListener = (e) => savedListener.current(e as EventMap[T]);
 
         target.addEventListener(event, listener);
 

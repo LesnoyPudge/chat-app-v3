@@ -1,9 +1,11 @@
 import { AnimatedTransition, OverlayPortal } from '@components';
-import { FC, PropsWithChildren, createContext, useContext, useState } from 'react';
-import { useIsFirstRender, useTimeout } from 'usehooks-ts';
-import { Content } from './components';
+import { FC, PropsWithChildren, createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { getTransitionOptions } from '@utils';
 import { animated } from '@react-spring/web';
+import { useLatest } from '@hooks';
+import { useMemoSelector } from '@redux/hooks';
+import { AppSelectors } from '@redux/features';
+import { GlobalLoaderPage } from '@pages/GlobalLoaderPage';
 
 
 
@@ -16,26 +18,31 @@ const GlobalLoaderContext = createContext(undefined as unknown as GlobalLoaderCo
 const transitionOptions = getTransitionOptions.empty({
     enter: {
         opacity: 1,
+        scale: 1,
     },
     leave: {
         opacity: 0,
+        scale: 1.5,
     },
 });
 
+const styles = {
+    overlay: 'overlay-item-wrapper',
+};
+
 const Wrapper: FC<PropsWithChildren> = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
+    const isLoadingRef = useLatest(isLoading);
+
+    const finishLoading = useCallback(() => {
+        if (!isLoadingRef.current) return;
+
+        setIsLoading(false);
+    }, [isLoadingRef]);
 
     const contextArgs: GlobalLoaderContext = {
-        finishLoading: () => {
-            if (!isLoading) return;
-
-            setIsLoading(false);
-        },
+        finishLoading,
     };
-
-    useTimeout(() => {
-        // setIsLoading(false);
-    }, 5000);
 
     return (
         <GlobalLoaderContext.Provider value={contextArgs}>
@@ -49,10 +56,10 @@ const Wrapper: FC<PropsWithChildren> = ({ children }) => {
                     <If condition={isAnimatedExist}>
                         <OverlayPortal>
                             <animated.div
-                                className='overlay-item-wrapper'
+                                className={styles.overlay}
                                 style={style}
                             >
-                                <Content/>
+                                <GlobalLoaderPage/>
                             </animated.div>
                         </OverlayPortal>
                     </If>
@@ -64,11 +71,26 @@ const Wrapper: FC<PropsWithChildren> = ({ children }) => {
 
 const Loaded: FC<PropsWithChildren> = ({ children }) => {
     const { finishLoading } = useContext(GlobalLoaderContext);
-    const isFirstRender = useIsFirstRender();
+    const isOnline = useMemoSelector(AppSelectors.selectIsOnline);
 
-    if (isFirstRender) {
+    useEffect(() => {
+        if (!isOnline) return;
         finishLoading();
-    }
+    }, [isOnline, finishLoading]);
+
+    return (
+        <>
+            {children}
+        </>
+    );
+};
+
+const LoadedForced: FC<PropsWithChildren> = ({ children }) => {
+    const { finishLoading } = useContext(GlobalLoaderContext);
+
+    useEffect(() => {
+        finishLoading();
+    }, [finishLoading]);
 
     return (
         <>
@@ -80,4 +102,5 @@ const Loaded: FC<PropsWithChildren> = ({ children }) => {
 export const GlobalLoader = {
     Wrapper,
     Loaded,
+    LoadedForced,
 };
