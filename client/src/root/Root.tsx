@@ -6,10 +6,12 @@ import { Heading, HeadingLevel } from '@libs';
 import { Provider } from 'react-redux';
 import { store } from '@redux/store';
 import './styles/main.scss';
+import Router from './router';
 
 
 
-const Router = lazy(() => import('./router'));
+// const Router = lazy(() => import('./router'));
+
 
 const RootInner: FC = () => {
     usePreventDefault();
@@ -33,9 +35,9 @@ const RootInner: FC = () => {
                 <Playground>
                     <ErrorBoundary>
                         <GlobalLoader.Wrapper>
-                            <Suspense>
-                                <Router/>
-                            </Suspense>
+                            {/* <Suspense> */}
+                            <Router/>
+                            {/* </Suspense> */}
                         </GlobalLoader.Wrapper>
                     </ErrorBoundary>
                 </Playground>

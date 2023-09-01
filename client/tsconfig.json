@@ -26,6 +26,7 @@
         "baseUrl": "./",
         "paths": {
             "@root": ["src/root"],
+            "@root/components": ["src/root/components"],
             "@root/features": ["src/root/features"],
             "@backendTypes": ["../server/src/types/common"],
             "@components": ["src/components"],
@@ -40,6 +41,7 @@
             "@types": ["src/types"],
             "@utils": ["src/utils"],
             "@pages/*": ["src/pages/pages/*"],
+            "@subPages/*": ["src/pages/subPages/*"],
             "@layouts": ["src/pages/layouts"],
             "@libs": ["src/libs"],
             "@reExport": ["src/reExport"],

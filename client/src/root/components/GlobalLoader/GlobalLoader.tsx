@@ -11,6 +11,7 @@ import { GlobalLoaderPage } from '@pages/GlobalLoaderPage';
 
 interface GlobalLoaderContext {
     finishLoading: () => void;
+    reset: () => void;
 }
 
 const GlobalLoaderContext = createContext(undefined as unknown as GlobalLoaderContext);
@@ -40,8 +41,15 @@ const Wrapper: FC<PropsWithChildren> = ({ children }) => {
         setIsLoading(false);
     }, [isLoadingRef]);
 
+    const reset = useCallback(() => {
+        if (isLoadingRef.current) return;
+
+        setIsLoading(true);
+    }, [isLoadingRef]);
+
     const contextArgs: GlobalLoaderContext = {
         finishLoading,
+        reset,
     };
 
     return (
@@ -85,7 +93,7 @@ const Loaded: FC<PropsWithChildren> = ({ children }) => {
     );
 };
 
-const LoadedForced: FC<PropsWithChildren> = ({ children }) => {
+const LoadedUnauthorized: FC<PropsWithChildren> = ({ children }) => {
     const { finishLoading } = useContext(GlobalLoaderContext);
 
     useEffect(() => {
@@ -99,8 +107,20 @@ const LoadedForced: FC<PropsWithChildren> = ({ children }) => {
     );
 };
 
+const Reset: FC = () => {
+    const { reset } = useContext(GlobalLoaderContext);
+
+    useEffect(() => {
+        console.log('reset global loader');
+        reset();
+    }, [reset]);
+
+    return null;
+};
+
 export const GlobalLoader = {
     Wrapper,
     Loaded,
-    LoadedForced,
+    LoadedUnauthorized,
+    Reset,
 };

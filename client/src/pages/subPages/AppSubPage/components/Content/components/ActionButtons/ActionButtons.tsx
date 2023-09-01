@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
 import { Button,SpriteImage, Ref, TabContext, Tooltip } from '@components';
-import { AppPageTabs } from '@pages/AppPage/AppPage';
+import { AppSubPageTabs } from '@subPages/AppSubPage';
 import { getRandomNumber, twClassNames } from '@utils';
 import { useNavigator } from '@hooks';
 
@@ -22,7 +22,7 @@ export const ActionButtons: FC<ActionButtons> = ({
     userId,
     tabIndex,
 }) => {
-    const { isActive } = useContext<TabContext<AppPageTabs>>(TabContext);
+    const { isActive } = useContext<TabContext<AppSubPageTabs>>(TabContext);
     const { navigateTo } = useNavigator();
 
     const handleNavigateToChat = () => navigateTo.privateChat(userId);

@@ -5,7 +5,7 @@ import { useTextInput } from '@hooks';
 
 
 
-export type AppPageTabs = typeof tabs;
+export type AppSubPageTabs = typeof tabs;
 
 const tabs = {
     onlineFriends: '',
@@ -19,14 +19,14 @@ const styles = {
     searchBar: 'w-auto h-9 mx-2.5 mb-5',
 };
 
-export const AppPage: FC = () => {
+export const AppSubPage: FC = () => {
     const { value, handleChange, handleReset } = useTextInput();
 
     return (
         <TabContextProvider tabs={tabs}>
             <Navigation/>
 
-            <div className={styles.wrapper + ''}>
+            <div className={styles.wrapper}>
                 <SearchBar
                     className={styles.searchBar}
                     placeholder='Поиск по имени'

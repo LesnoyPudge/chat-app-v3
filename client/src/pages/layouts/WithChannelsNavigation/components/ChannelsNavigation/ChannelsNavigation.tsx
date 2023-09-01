@@ -36,11 +36,11 @@ const styles = {
 export const ChannelsNavigation: FC = () => {
     const { myLocationIs, navigateTo } = useNavigator();
     const showChannels = useMemoSelector((s: RootState) => !!AppSelectors.selectMe(s).channels.length);
-    const isInAppOrPrivateChatPage = myLocationIs.app() || myLocationIs.anyPrivateChat();
+    const isInAppOrPrivateChatSubPage = myLocationIs.app() || myLocationIs.anyPrivateChat();
 
     return (
         <div className={styles.wrapper}>
-            <WrapperWithBullet isActive={isInAppOrPrivateChatPage}>
+            <WrapperWithBullet isActive={isInAppOrPrivateChatSubPage}>
                 <Ref<HTMLButtonElement>>
                     {(ref) => (
                         <>
@@ -49,12 +49,12 @@ export const ChannelsNavigation: FC = () => {
                                     styles.button.base,
                                     styles.brandButton.base,
                                     {
-                                        [styles.button.active]: isInAppOrPrivateChatPage,
-                                        [styles.brandButton.active]: isInAppOrPrivateChatPage,
+                                        [styles.button.active]: isInAppOrPrivateChatSubPage,
+                                        [styles.brandButton.active]: isInAppOrPrivateChatSubPage,
                                     },
                                 )}
                                 innerRef={ref}
-                                isActive={isInAppOrPrivateChatPage}
+                                isActive={isInAppOrPrivateChatSubPage}
                                 label='Перейти на главную страницу'
                                 onLeftClick={() => navigateTo.app()}
                             >

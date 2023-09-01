@@ -1,4 +1,3 @@
-
 import { useNavigator } from '@hooks';
 import { AppSelectors, UserApi } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
@@ -11,7 +10,6 @@ export const OnlyAuthorizedRoute: FC<PropsWithChildren> = () => {
     const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized);
     const isInitialized = useMemoSelector((state) => AppSelectors.selectAppState(state).isInitialized);
     const isRefreshing = useMemoSelector((state) => AppSelectors.selectAppState(state).isRefreshing);
-
     const { navigateTo } = useNavigator();
     const [refresh] = UserApi.useUserRefreshMutation();
 
@@ -23,7 +21,6 @@ export const OnlyAuthorizedRoute: FC<PropsWithChildren> = () => {
 
     useEffect(() => {
         if (isInitialized) return;
-
         refresh();
     }, [isInitialized, refresh]);
 

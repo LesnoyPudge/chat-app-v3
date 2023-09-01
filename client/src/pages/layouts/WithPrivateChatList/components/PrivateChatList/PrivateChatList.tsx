@@ -1,9 +1,9 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { List, Scrollable } from '@components';
+import { List, Scrollable , MoveFocusInside } from '@components';
 import { useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
 import { FC, useRef } from 'react';
-import { MoveFocusInside } from '@components';
+
 import { PrivateChatItem } from './components';
 
 
@@ -18,252 +18,11 @@ interface PrivateChats {
 
 const privateChats: PrivateChats[] = [
     {
-        id: '1' + Math.random().toString(),
+        id: '1',
         username: 'friend 1 qweqweqweqweqweqweqweqweqweqweqweqweqweqwwew',
         avatar: 'https://i.pravatar.cc/51',
         status: 'online',
         extraStatus: 'default',
-    },
-
-    {
-        id: '2' + Math.random().toString(),
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'dnd',
-    },
-
-    {
-        id: '3' + Math.random().toString(),
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-    },
-
-    {
-        id: '4' + Math.random().toString(),
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
-    },
-    {
-        id: '1' + Math.random().toString(),
-        username: 'friend 1',
-        avatar: 'https://i.pravatar.cc/51',
-        status: 'online',
-        extraStatus: 'default',
-    },
-
-    {
-        id: '2' + Math.random().toString(),
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'dnd',
-    },
-
-    {
-        id: '3' + Math.random().toString(),
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-    },
-
-    {
-        id: '4' + Math.random().toString(),
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
-    },
-    {
-        id: '1' + Math.random().toString(),
-        username: 'friend 1',
-        avatar: 'https://i.pravatar.cc/51',
-        status: 'online',
-        extraStatus: 'default',
-    },
-
-    {
-        id: '2' + Math.random().toString(),
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'dnd',
-    },
-
-    {
-        id: '3' + Math.random().toString(),
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-    },
-
-    {
-        id: '4' + Math.random().toString(),
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
-    },
-    {
-        id: '1' + Math.random().toString(),
-        username: 'friend 1',
-        avatar: 'https://i.pravatar.cc/51',
-        status: 'online',
-        extraStatus: 'default',
-    },
-
-    {
-        id: '2' + Math.random().toString(),
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'dnd',
-    },
-
-    {
-        id: '3' + Math.random().toString(),
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-    },
-
-    {
-        id: '4' + Math.random().toString(),
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
-    },
-    {
-        id: '1' + Math.random().toString(),
-        username: 'friend 1',
-        avatar: 'https://i.pravatar.cc/51',
-        status: 'online',
-        extraStatus: 'default',
-    },
-
-    {
-        id: '2' + Math.random().toString(),
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'dnd',
-    },
-
-    {
-        id: '3' + Math.random().toString(),
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-    },
-
-    {
-        id: '4' + Math.random().toString(),
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
-    },
-    {
-        id: '1' + Math.random().toString(),
-        username: 'friend 1',
-        avatar: 'https://i.pravatar.cc/51',
-        status: 'online',
-        extraStatus: 'default',
-    },
-
-    {
-        id: '2' + Math.random().toString(),
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'dnd',
-    },
-
-    {
-        id: '3' + Math.random().toString(),
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-    },
-
-    {
-        id: '4' + Math.random().toString(),
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
-    },
-    {
-        id: '1' + Math.random().toString(),
-        username: 'friend 1',
-        avatar: 'https://i.pravatar.cc/51',
-        status: 'online',
-        extraStatus: 'default',
-    },
-
-    {
-        id: '2' + Math.random().toString(),
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'dnd',
-    },
-
-    {
-        id: '3' + Math.random().toString(),
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-    },
-
-    {
-        id: '4' + Math.random().toString(),
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
-    },
-    {
-        id: '1' + Math.random().toString(),
-        username: 'friend 1',
-        avatar: 'https://i.pravatar.cc/51',
-        status: 'online',
-        extraStatus: 'default',
-    },
-
-    {
-        id: '2' + Math.random().toString(),
-        username: 'friend 2',
-        avatar: 'https://i.pravatar.cc/52',
-        status: 'offline',
-        extraStatus: 'dnd',
-    },
-
-    {
-        id: '3' + Math.random().toString(),
-        username: 'friend 3',
-        avatar: 'https://i.pravatar.cc/53',
-        status: 'online',
-        extraStatus: 'afk',
-    },
-
-    {
-        id: '4' + Math.random().toString(),
-        username: 'friend 4',
-        avatar: 'https://i.pravatar.cc/54',
-        status: 'online',
-        extraStatus: 'dnd',
     },
 ];
 
@@ -288,12 +47,12 @@ export const PrivateChatList: FC = () => {
                 <>Личные сообщения</>
             </Heading>
 
-            <Scrollable 
-                withOppositeGutter 
-                autoHide 
+            <Scrollable
+                withOppositeGutter
+                autoHide
                 small
             >
-                <ul 
+                <ul
                     className={styles.list}
                     tabIndex={0}
                     aria-label='Список приватных сообщений'
@@ -303,7 +62,7 @@ export const PrivateChatList: FC = () => {
                         {(privateChat) => (
                             <li key={privateChat.id}>
                                 <MoveFocusInside enabled={getIsFocused(privateChat.id)}>
-                                    <PrivateChatItem 
+                                    <PrivateChatItem
                                         privateChat={privateChat}
                                         tabIndex={getTabIndex(privateChat.id)}
                                         withFocusSet={withFocusSet}

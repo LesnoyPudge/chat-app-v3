@@ -14,7 +14,7 @@ export type AuthPageTabs = typeof tabs;
 
 export const AuthPage: FC = () => {
     return (
-        <div className='flex h-screen isolate relative'>
+        <div className='page flex relative'>
             <Image
                 className='image-bg-fullscreen'
                 src={IMAGES.COMMON.FANCY_BG.PATH}

@@ -10,7 +10,7 @@ import { animated } from '@react-spring/web';
 
 
 const styles = {
-    wrapper: 'grid place-items-center h-full pointer-events-auto bg-primary-400',
+    wrapper: 'page grid place-items-center pointer-events-auto bg-primary-400',
     logo: 'h-[200px] w-[200px]',
     problemBlock: `flex flex-col gap-2 absolute bottom-0 pb-8 px-4 text-center
     bg-primary-400`,

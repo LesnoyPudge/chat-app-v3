@@ -1,5 +1,5 @@
 import { Image, TabPanel, Separator, UserAvatar, TabContext, Scrollable, List , MoveFocusInside } from '@components';
-import { AppPageTabs } from '@pages/AppPage/AppPage';
+import { AppSubPageTabs } from '@subPages/AppSubPage';
 import { FC, useContext, useRef } from 'react';
 import { ActionButtons } from './components';
 import { getRandomNumber } from '@utils';
@@ -46,7 +46,7 @@ const styles = {
 };
 
 export const Content: FC<Content> = ({ value }) => {
-    const { currentTab, tabs, tabPanelProps, isActive } = useContext<TabContext<AppPageTabs>>(TabContext);
+    const { currentTab, tabs, tabPanelProps, isActive } = useContext<TabContext<AppSubPageTabs>>(TabContext);
 
     const filterByName = (users: Entities.User.Preview[]) => {
         if (!value) return users;

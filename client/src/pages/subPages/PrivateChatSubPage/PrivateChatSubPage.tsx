@@ -60,18 +60,18 @@ const privateChats: PrivateChat[] = [
     },
 ];
 
-export const PrivateChatPage: FC = () => {
+export const PrivateChatSubPage: FC = () => {
     const { params } = useNavigator();
     const friend = privateChats.filter(item => item.id === params.privateChatId)[0]?.friend || privateChats[0].friend;
     const placeholder = `Отправьте сообщение для ${friend.username}`;
-    
+
     return (
         <>
             <Header/>
 
             <Chat/>
 
-            <MessageInputBar placeholder={placeholder}/> 
+            <MessageInputBar placeholder={placeholder}/>
         </>
     );
 };

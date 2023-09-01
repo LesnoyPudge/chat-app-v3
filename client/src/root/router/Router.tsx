@@ -1,27 +1,45 @@
-import { FC } from 'react';
+import { FC, PropsWithChildren, Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { WithChannelsNavigation, WithPrivateChatList, WithRoomList } from '@layouts';
 import { NavigateToRoom, OnlyAuthorizedRoute, OnlyUnauthorizedRoute } from './components';
-
-import AppPage from '@pages/AppPage';
-import AuthPage from '@pages/AuthPage';
-import ChannelPage from '@pages/ChannelPage';
-import PrivateChatPage from '@pages/PrivateChatPage';
-import InvitationPage from '@pages/InvitationPage';
 import { GlobalLoader } from '../components';
 import { getEnv, noop } from '@utils';
 import { ErrorPage } from '@pages/ErrorPage';
 import { GlobalLoaderPage } from '@pages/GlobalLoaderPage';
+import { ToDo } from '@components';
 
 
 
-
-// const AppPage = lazy(() => import('@pages/AppPage'));
-// const AuthPage = lazy(() => import('@pages/AuthPage'));
-// const PrivateChatPage = lazy(() => import('@pages/PrivateChatPage'));
-// const ChannelPage = lazy(() => import('@pages/ChannelPage'));
+const AuthPage = lazy(() => import('@pages/AuthPage'));
+const InvitationPage = lazy(() => import('@pages/AuthPage'));
+const AppSubPage = lazy(() => import('@subPages/AppSubPage'));
+const ChannelSubPage = lazy(() => import('@subPages/ChannelSubPage'));
+const PrivateChatSubPage = lazy(() => import('@subPages/PrivateChatSubPage'));
 
 const { CUSTOM_NODE_ENV } = getEnv();
+
+const SubPageSkeleton: FC = () => {
+    console.log('in sub page skeleton');
+
+    useEffect(() => {
+        console.log('subPageSkeleton');
+    }, []);
+
+    return (
+        // <ToDo text='change SubPageSkeleton to actual skeleton'>
+        <>loading...</>
+        // </ToDo>
+    );
+};
+
+const Wr: FC<PropsWithChildren> = ({ children }) => {
+    console.log('in sus fallback');
+    return (
+        <>
+            {children}
+        </>
+    );
+};
 
 export const Router: FC = () => {
     return (
@@ -31,18 +49,22 @@ export const Router: FC = () => {
                     <Route
                         path='loader'
                         element={(
-                            <GlobalLoader.LoadedForced>
-                                <GlobalLoaderPage/>
-                            </GlobalLoader.LoadedForced>
+                            <Suspense fallback={<GlobalLoader.Reset/>}>
+                                <GlobalLoader.LoadedUnauthorized>
+                                    <GlobalLoaderPage/>
+                                </GlobalLoader.LoadedUnauthorized>
+                            </Suspense>
                         )}
                     />
 
                     <Route
                         path='error'
                         element={(
-                            <GlobalLoader.LoadedForced>
-                                <ErrorPage onReload={noop}/>
-                            </GlobalLoader.LoadedForced>
+                            <Suspense fallback={<GlobalLoader.Reset/>}>
+                                <GlobalLoader.LoadedUnauthorized>
+                                    <ErrorPage onReload={noop}/>
+                                </GlobalLoader.LoadedUnauthorized>
+                            </Suspense>
                         )}
                     />
                 </If>
@@ -51,9 +73,11 @@ export const Router: FC = () => {
                     <Route
                         path='auth'
                         element={(
-                            <GlobalLoader.Loaded>
-                                <AuthPage/>
-                            </GlobalLoader.Loaded>
+                            <Suspense fallback={<GlobalLoader.Reset/>}>
+                                <GlobalLoader.LoadedUnauthorized>
+                                    <AuthPage/>
+                                </GlobalLoader.LoadedUnauthorized>
+                            </Suspense>
                         )}
                     />
                 </Route>
@@ -65,17 +89,21 @@ export const Router: FC = () => {
                     >
                         <Route element={<WithPrivateChatList/>}>
                             <Route index element={(
-                                <GlobalLoader.Loaded>
-                                    <AppPage/>
-                                </GlobalLoader.Loaded>
+                                <Suspense fallback={<SubPageSkeleton/>}>
+                                    <GlobalLoader.Loaded>
+                                        <AppSubPage/>
+                                    </GlobalLoader.Loaded>
+                                </Suspense>
                             )}/>
 
                             <Route
                                 path='private-chat/:privateChatId'
                                 element={(
-                                    <GlobalLoader.Loaded>
-                                        <PrivateChatPage/>
-                                    </GlobalLoader.Loaded>
+                                    <Suspense fallback={<SubPageSkeleton/>}>
+                                        <GlobalLoader.Loaded>
+                                            <PrivateChatSubPage/>
+                                        </GlobalLoader.Loaded>
+                                    </Suspense>
                                 )}
                             />
                         </Route>
@@ -86,19 +114,17 @@ export const Router: FC = () => {
                         >
                             <Route
                                 index
-                                element={(
-                                    <GlobalLoader.Loaded>
-                                        <NavigateToRoom/>
-                                    </GlobalLoader.Loaded>
-                                )}
+                                element={<NavigateToRoom/>}
                             />
 
                             <Route
                                 path='room/:roomId'
                                 element={(
-                                    <GlobalLoader.Loaded>
-                                        <ChannelPage/>
-                                    </GlobalLoader.Loaded>
+                                    <Suspense fallback={<SubPageSkeleton/>}>
+                                        <GlobalLoader.Loaded>
+                                            <ChannelSubPage/>
+                                        </GlobalLoader.Loaded>
+                                    </Suspense>
                                 )}
                             />
                         </Route>
@@ -111,15 +137,11 @@ export const Router: FC = () => {
                 </Route>
 
                 <Route path='invitation/:invitationLink' element={(
-                    <GlobalLoader.Loaded>
-                        <InvitationPage/>
-                    </GlobalLoader.Loaded>
-                )}/>
-
-                <Route path='account-activation/:activationLink' element={(
-                    <GlobalLoader.Loaded>
-                        <>activation page</>
-                    </GlobalLoader.Loaded>
+                    <Suspense fallback={<GlobalLoader.Reset/>}>
+                        <GlobalLoader.Loaded>
+                            <InvitationPage/>
+                        </GlobalLoader.Loaded>
+                    </Suspense>
                 )}/>
 
                 <Route path='*' element={<Navigate to={'/app'} replace/>}/>
