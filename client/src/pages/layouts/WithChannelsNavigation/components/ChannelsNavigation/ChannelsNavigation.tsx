@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Separator, ContextMenu, FindChannelModal, ChannelAvatar, Ref, ToDo, Memo, Static } from '@components';
+import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Separator, ContextMenu, FindChannelModal, ChannelAvatar, Ref, ToDo } from '@components';
 import { ChannelList, WrapperWithBullet } from './components';
 import { useNavigator } from '@hooks';
-import { getAvatarPath, getReadImagePath, getTextFallback, twClassNames } from '@utils';
+import { getReadImagePath, getTextFallback, twClassNames } from '@utils';
 import { useMemoSelector } from '@redux/hooks';
 import { AppSelectors } from '@redux/features';
 import { RootState } from '@redux/store';

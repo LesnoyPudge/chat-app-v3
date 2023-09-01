@@ -7,13 +7,13 @@ import { Navigate } from 'react-router-dom';
 
 
 export const ChannelPage: FC = () => {
-    const { params, paths } = useNavigator();
+    const { params, navigatorPath } = useNavigator();
     const placeholder = 'Написать в комнату';
 
     return (
         <>
             <If condition={!params.channelId}>
-                <Navigate to={paths.app()} replace/>
+                <Navigate to={navigatorPath.app()} replace/>
             </If>
 
             <If condition={!!params.channelId}>

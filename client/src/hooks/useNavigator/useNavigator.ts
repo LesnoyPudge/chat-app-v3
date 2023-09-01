@@ -1,4 +1,4 @@
-import { startTransition, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { NavigateOptions, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLatest } from '@hooks';
 
@@ -14,7 +14,7 @@ type CustomNavigateOptions = NavigateOptions & {
     withState?: boolean;
 }
 
-const paths = {
+export const navigatorPath = {
     auth: () => '/auth',
     app: () => '/app',
     anyPrivateChat: () => '/app/private-chat',
@@ -29,26 +29,26 @@ export const useNavigator = () => {
     const { pathname } = useLocation();
     const latestPathRef = useLatest(pathname);
     const stateRef = useRef({ from: '/app' });
-    const latestNavigate = useLatest(navigateInner);
+    const latestNavigateRef = useLatest(navigateInner);
 
     const navigate = useCallback((to: string, options?: NavigateOptions) => {
         console.log(`Navigate to: ${to}`);
 
-        latestNavigate.current(to, options);
-    }, [latestNavigate]);
+        latestNavigateRef.current(to, options);
+    }, [latestNavigateRef]);
 
     const myLocationIsRef = useRef({
-        auth: () => latestPathRef.current === paths.auth(),
-        app: () => latestPathRef.current === paths.app(),
-        anyPrivateChat: () => latestPathRef.current.includes(paths.anyPrivateChat()),
-        privateChat: (...args: Parameters<typeof paths.privateChat>) => {
-            return latestPathRef.current === paths.privateChat(...args);
+        auth: () => latestPathRef.current === navigatorPath.auth(),
+        app: () => latestPathRef.current === navigatorPath.app(),
+        anyPrivateChat: () => latestPathRef.current.includes(navigatorPath.anyPrivateChat()),
+        privateChat: (...args: Parameters<typeof navigatorPath.privateChat>) => {
+            return latestPathRef.current === navigatorPath.privateChat(...args);
         },
-        channel: (...args: Parameters<typeof paths.channel>) => {
-            return latestPathRef.current.includes(paths.channel(...args));
+        channel: (...args: Parameters<typeof navigatorPath.channel>) => {
+            return latestPathRef.current.includes(navigatorPath.channel(...args));
         },
-        room: (...args: Parameters<typeof paths.room>) => {
-            return latestPathRef.current === paths.room(...args);
+        room: (...args: Parameters<typeof navigatorPath.room>) => {
+            return latestPathRef.current === navigatorPath.room(...args);
         },
     });
 
@@ -60,7 +60,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            startTransition(() => navigate(paths.auth(), options));
+            navigate(navigatorPath.auth(), options);
         },
         app: (options?: CustomNavigateOptions) => {
             if (myLocationIsRef.current.app()) return;
@@ -69,7 +69,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            startTransition(() => navigate(paths.app(), options));
+            navigate(navigatorPath.app(), options);
         },
         privateChat: (privateChatId: string, options?: CustomNavigateOptions) => {
             if (myLocationIsRef.current.privateChat(privateChatId)) return;
@@ -78,7 +78,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            startTransition(() => navigate(paths.privateChat(privateChatId), options));
+            navigate(navigatorPath.privateChat(privateChatId), options);
         },
         channel: (channelId: string, options?: CustomNavigateOptions) => {
             if (myLocationIsRef.current.channel(channelId)) return;
@@ -87,7 +87,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            startTransition(() => navigate(paths.channel(channelId), options));
+            navigate(navigatorPath.channel(channelId), options);
         },
         room: (channelId: string, roomId: string, options?: CustomNavigateOptions) => {
             if (myLocationIsRef.current.room(channelId, roomId)) return;
@@ -96,7 +96,7 @@ export const useNavigator = () => {
                 stateRef.current.from = latestPathRef.current;
             }
 
-            startTransition(() => navigate(paths.room(channelId, roomId), options));
+            navigate(navigatorPath.room(channelId, roomId), options);
         },
     });
 
@@ -105,7 +105,7 @@ export const useNavigator = () => {
         navigateTo: navigateToRef.current,
         params,
         stateRef,
-        paths,
+        navigatorPath,
         navigate,
     };
 };

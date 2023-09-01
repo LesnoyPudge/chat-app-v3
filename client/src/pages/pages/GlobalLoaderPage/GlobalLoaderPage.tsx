@@ -17,7 +17,7 @@ const styles = {
     problemText: 'text-sm text-color-secondary',
     links: `flex justify-center gap-x-5 flex-wrap text-color-link 
     [&>a]:inline-flex [&>a]:items-center [&>a]:gap-2`,
-    icon: 'inline-block fill-link w-5 h-4',
+    icon: 'inline-block fill-current w-5 h-4',
 };
 
 const transitionOptions = getTransitionOptions.inOut();

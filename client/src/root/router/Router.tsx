@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, Suspense, lazy, useEffect } from 'react';
+import { FC, Suspense, lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { WithChannelsNavigation, WithPrivateChatList, WithRoomList } from '@layouts';
 import { NavigateToRoom, OnlyAuthorizedRoute, OnlyUnauthorizedRoute } from './components';
@@ -7,37 +7,38 @@ import { getEnv, noop } from '@utils';
 import { ErrorPage } from '@pages/ErrorPage';
 import { GlobalLoaderPage } from '@pages/GlobalLoaderPage';
 import { ToDo } from '@components';
+import { navigatorPath } from '@hooks';
 
 
-
-const AuthPage = lazy(() => import('@pages/AuthPage'));
-const InvitationPage = lazy(() => import('@pages/AuthPage'));
-const AppSubPage = lazy(() => import('@subPages/AppSubPage'));
-const ChannelSubPage = lazy(() => import('@subPages/ChannelSubPage'));
-const PrivateChatSubPage = lazy(() => import('@subPages/PrivateChatSubPage'));
 
 const { CUSTOM_NODE_ENV } = getEnv();
 
-const SubPageSkeleton: FC = () => {
-    console.log('in sub page skeleton');
+const lazyWithDevDelay = (
+    cb: Parameters<typeof lazy>[number],
+    delay: number,
+): ReturnType<typeof lazy> => {
+    return lazy(async() => {
+        if (CUSTOM_NODE_ENV === 'development') {
+            await new Promise((res) => setTimeout(() => {
+                res('');
+            }, delay));
+        }
 
-    useEffect(() => {
-        console.log('subPageSkeleton');
-    }, []);
-
-    return (
-        // <ToDo text='change SubPageSkeleton to actual skeleton'>
-        <>loading...</>
-        // </ToDo>
-    );
+        return cb();
+    });
 };
 
-const Wr: FC<PropsWithChildren> = ({ children }) => {
-    console.log('in sus fallback');
+const AuthPage = lazyWithDevDelay(() => import('@pages/AuthPage'), 3000);
+const InvitationPage = lazyWithDevDelay(() => import('@pages/AuthPage'), 3000);
+const AppSubPage = lazyWithDevDelay(() => import('@subPages/AppSubPage'), 3000);
+const ChannelSubPage = lazyWithDevDelay(() => import('@subPages/ChannelSubPage'), 3000);
+const PrivateChatSubPage = lazyWithDevDelay(() => import('@subPages/PrivateChatSubPage'), 3000);
+
+const SubPageSkeleton: FC = () => {
     return (
-        <>
-            {children}
-        </>
+        <ToDo text='change SubPageSkeleton to actual skeleton'>
+            <>loading...</>
+        </ToDo>
     );
 };
 
@@ -118,6 +119,7 @@ export const Router: FC = () => {
                             />
 
                             <Route
+                                index
                                 path='room/:roomId'
                                 element={(
                                     <Suspense fallback={<SubPageSkeleton/>}>
@@ -131,7 +133,7 @@ export const Router: FC = () => {
 
                         <Route
                             path='*'
-                            element={<Navigate to={'/app'} replace/>}
+                            element={<Navigate to={navigatorPath.app()} replace/>}
                         />
                     </Route>
                 </Route>
@@ -144,7 +146,10 @@ export const Router: FC = () => {
                     </Suspense>
                 )}/>
 
-                <Route path='*' element={<Navigate to={'/app'} replace/>}/>
+                <Route
+                    path='*'
+                    element={<Navigate to={navigatorPath.app()} replace/>}
+                />
             </Routes>
         </BrowserRouter>
     );
