@@ -1,4 +1,4 @@
-import { globalReset } from '@redux/globalReset';
+import { resetApiStateAction } from '@redux/globalReset';
 import { RootState } from '@redux/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
@@ -28,7 +28,7 @@ export const UserSlice = createSlice({
         // },
     },
     extraReducers(builder) {
-        builder.addCase(globalReset, () => {
+        builder.addCase(resetApiStateAction, () => {
             return initialState;
         });
 

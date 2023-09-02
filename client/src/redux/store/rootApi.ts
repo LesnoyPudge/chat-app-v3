@@ -1,17 +1,17 @@
 import { BaseQueryFn, FetchArgs, createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 import { getEnv } from '@utils';
 import { Endpoints, HTTP_STATUS_CODES } from '@shared';
-import { globalReset } from './globalReset';
 import { FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/fetchBaseQuery';
 import { CustomQueryError } from '@types';
+import { triggerGlobalResetAction } from '@redux/globalReset';
 
 
 
-const { CUSTOM_NODE_ENV } = getEnv();
+const { CUSTOM_NODE_ENV, CUSTOM_SERVER_URL } = getEnv();
 const maxRetries = CUSTOM_NODE_ENV === 'production' ? 5 : 2;
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: getEnv().CUSTOM_SERVER_URL,
+    baseUrl: CUSTOM_SERVER_URL,
     credentials: 'include',
 }) as BaseQueryFn<string | FetchArgs, unknown, CustomQueryError, {}, FetchBaseQueryMeta>;
 
@@ -33,7 +33,7 @@ const queryWithRetry = retry(async(...args: Parameters<typeof baseQuery>) => {
             result.error.status !== HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
         )
     );
-
+    console.log('shouldBail', shouldBail);
     if (shouldBail) retry.fail(result.error);
 
     return result;
@@ -43,7 +43,7 @@ const queryWithReAuth = async(...args: Parameters<typeof baseQuery>) => {
     const result = await queryWithRetry(...args);
 
     if (result.error?.status !== HTTP_STATUS_CODES.UNAUTHORIZED) {
-        console.log('vse ok', result);
+        console.log(`error is not ${HTTP_STATUS_CODES.UNAUTHORIZED}:`, result.error?.status);
         return result;
     }
 
@@ -57,7 +57,8 @@ const queryWithReAuth = async(...args: Parameters<typeof baseQuery>) => {
     console.log('after refresh', refreshResponse);
     if (!refreshResponse.error) return queryWithRetry(...args);
     console.log('reset');
-    api.dispatch(globalReset);
+    api.dispatch(triggerGlobalResetAction());
+
 
     return result;
 };

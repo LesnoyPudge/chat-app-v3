@@ -3,7 +3,7 @@ import { Endpoints, Entities, Id, Timestamp, defaultAvatar } from '@shared';
 import { UserApi, UserSelectors } from '@redux/features';
 import { localStorageApi } from '@utils';
 import { RootState } from '@redux/store';
-import { globalReset, triggerGlobalReset } from '@redux/globalReset';
+import { resetApiStateAction, triggerGlobalReset } from '@redux/globalReset';
 
 
 
@@ -61,7 +61,7 @@ export const AppSlice = createSlice({
         },
     },
     extraReducers(builder) {
-        builder.addCase(globalReset, () => {
+        builder.addCase(resetApiStateAction, () => {
             localStorageApi.set('lastRefresh', null);
             localStorageApi.set('myId', null);
 
@@ -100,12 +100,12 @@ export const AppSlice = createSlice({
             },
         );
 
-        builder.addMatcher(
-            UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchRejected,
-            () => {
-                triggerGlobalReset();
-            },
-        );
+        // builder.addMatcher(
+        //     UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchRejected,
+        //     () => {
+        //         triggerGlobalReset();
+        //     },
+        // );
 
         builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Logout.ActionNameWithEntity].matchPending,

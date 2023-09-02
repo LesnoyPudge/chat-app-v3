@@ -111,7 +111,6 @@ const Reset: FC = () => {
     const { reset } = useContext(GlobalLoaderContext);
 
     useEffect(() => {
-        console.log('reset global loader');
         reset();
     }, [reset]);
 

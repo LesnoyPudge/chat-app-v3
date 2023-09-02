@@ -1,4 +1,4 @@
-import { globalReset } from '@redux/globalReset';
+import { resetApiStateAction } from '@redux/globalReset';
 import { RootState } from '@redux/store';
 import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
@@ -20,7 +20,7 @@ export const RoleSlice = createSlice({
         removeOne: adapter.removeOne,
     },
     extraReducers(builder) {
-        builder.addCase(globalReset, () => {
+        builder.addCase(resetApiStateAction, () => {
             return initialState;
         });
 
