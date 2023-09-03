@@ -6,3 +6,4 @@ export * from './MessageService';
 export * from './RoleService';
 export * from './FileService';
 export * from './ChatService';
+export * from './HelperService';

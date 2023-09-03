@@ -805,5 +805,21 @@ export module Endpoints {
                 export type Response = Entities.Chat.Default;
             }
         }
+
+        export module Helper {
+            export module GetAvailableTextRoomIds {
+                export const Path = v1('/helper/getAvailableTextRoomIds');
+
+                export const ActionName = 'getAvailableTextRoomIds';
+
+                export const ActionNameWithEntity = actionNameWithEntity('Helper', ActionName);
+
+                export const Method = METHOD.POST;
+
+                export type RequestBody = WithChannelId;
+
+                export type Response = Entities.Room.Default['id'][];
+            }
+        }
     }
 }

@@ -121,10 +121,16 @@ PeerServer({ port: 9000, path: `${CUSTOM_API_V1_URL}/peer` });
 import {
     ChannelRouter, ChatRouter, FileRouter,
     MessageRouter, PrivateChannelRouter, RoleRouter,
-    RoomRouter, UserRouter,
+    RoomRouter, UserRouter, HelperRouter,
 } from '@routers';
 
 
+
+app.use((req, res, next) => {
+    console.log('Get request:', req.url);
+
+    next();
+});
 
 app.use([
     UserRouter,
@@ -135,6 +141,7 @@ app.use([
     RoleRouter,
     FileRouter,
     ChatRouter,
+    HelperRouter,
 ]);
 
 app.use(errorHandlerMiddleware);

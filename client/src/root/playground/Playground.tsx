@@ -611,7 +611,7 @@ const useConversation = (conversationId: string) => {
 import { AnyRecord } from 'ts-essentials/dist/any-record';
 import { AnyArray, AnyFunction, Endpoints, Entities, getRandomNumber, Id, objectKeys, Prettify, SocketClientEvents, SocketServerEvents, StrictExclude, StrictOmit, SUBSCRIBABLE_ENTITIES, Tuple, ValueOf } from '@shared';
 import { IMAGES } from '@generated';
-import { AppSelectors, AppSlice, ChannelApi, UserApi, UserSelectors, UserSlice } from '@redux/features';
+import { AppSelectors, AppSlice, ChannelApi, HelperApi, UserApi, UserSelectors, UserSlice } from '@redux/features';
 import { useAppDispatch, useAppSelector, useMemoSelector } from '@redux/hooks';
 import { RootState, store } from '@redux/store';
 import { Key } from 'ts-key-enum';
@@ -1828,6 +1828,31 @@ const PlaygroundInner28: FC = () => {
     );
 };
 
+const PlaygroundInner29: FC = () => {
+    // const { data, isError, isFetching, isLoading, isSuccess, isUninitialized } = HelperApi.useHelperGetAvailableTextRoomIdsQuery({ channelId: 'qwe' });
+
+    // console.log(data, isUninitialized, isLoading, isError, isSuccess);
+    // // useEffect(() => {
+    // //     getRoomIds({ channelId: 'qwe' });
+    // // }, [getRoomIds]);
+
+    // useEffect(() => {
+    //     // fetch('api/v1/helper/getAvailableTextRoomIds', {
+    //     //     body: JSON.stringify({
+    //     //         channelId: 'qwe',
+    //     //     }),
+    //     // }).then((v) => {
+    //     //     console.log(v);
+    //     // }).catch((e) => {
+    //     //     console.log(e);
+    //     // });
+    // }, []);
+
+    return (
+        <>qwe</>
+    );
+};
+
 const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
@@ -1838,7 +1863,7 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </If>
 
             <If condition={enabled}>
-                <PlaygroundInner28/>
+                <PlaygroundInner29/>
             </If>
         </>
     );

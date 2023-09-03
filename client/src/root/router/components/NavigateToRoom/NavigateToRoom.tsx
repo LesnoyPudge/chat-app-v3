@@ -1,44 +1,53 @@
+import { EntityContext } from '@components';
 import { useNavigator } from '@hooks';
-import { FC, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { HelperApi } from '@redux/features';
+import { FC, ReactNode, useContext, useEffect } from 'react';
 
 
 
-const channels = [
-    { avatar: '', id: '1asd', name: 'amazing channel', rooms: [{ id: '0' }] },
-    { avatar: '', id: '2yk', name: 'wow', rooms: [{ id: '0' }] },
-    { avatar: '', id: '3eh', name: 'first', rooms: [{ id: '0' }] },
-    { avatar: '', id: '4tu.', name: '0', rooms: [{ id: '0' }] },
-    { avatar: '', id: '5szb', name: '3', rooms: [{ id: '0' }] },
-    { avatar: '', id: '6tru', name: '4', rooms: [{ id: '0' }] },
-    { avatar: '', id: '7nfk', name: '5', rooms: [{ id: '0' }] },
-    { avatar: '', id: '8f.', name: '6', rooms: [{ id: '0' }] },
-    { avatar: '', id: '9aerg', name: '7', rooms: [{ id: '0' }] },
-    { avatar: '', id: '10uik', name: '8', rooms: [{ id: '0' }] },
-    { avatar: '', id: '11ou;', name: '9', rooms: [{ id: '0' }] },
-    { avatar: '', id: '10wfEGA', name: '1 0', rooms: [{ id: '0' }] },
-    { avatar: '', id: '13tyhd', name: '1 1', rooms: [{ id: '0' }] },
-    { avatar: '', id: '14zfbv', name: '1 0', rooms: [{ id: '0' }] },
-    { avatar: '', id: '15sryth', name: '1 3', rooms: [{ id: '0' }] },
-    { avatar: '', id: '16gra', name: '1 4 4 56 78 8', rooms: [{ id: '0' }] },
-    { avatar: '', id: '17tyjtjd', name: 'last', rooms: [{ id: '0' }] },
-];
+type NavigateToRoom = {
+    loader: ReactNode;
+    fallback: ReactNode;
+}
 
-export const NavigateToRoom: FC = () => {
-    const { params } = useNavigator();
-    const navigate = useNavigate();
+export const NavigateToRoom: FC<NavigateToRoom> = ({
+    loader,
+    fallback,
+}) => {
+    const { navigateTo } = useNavigator();
+    const channel = useContext(EntityContext.Channel);
+    const [getRoomIds, { data, isUninitialized }] = HelperApi.useHelperGetAvailableTextRoomIdsMutation();
+
+    const showLoader = !data;
+    const showFallback = !!data && !data.length;
 
     useEffect(() => {
-        if (!params.channelId) return;
+        if (!channel?.id) return;
+        if (!isUninitialized) return;
+        if (data) return;
 
-        const channel = channels.find((item) => item.id === params.channelId);
+        getRoomIds({ channelId: channel.id });
+    }, [data, channel, getRoomIds, isUninitialized]);
 
-        if (!channel) return;
+    useEffect(() => {
+        if (!channel?.id) return;
+        if (!data) return;
+        if (!data.length) return;
 
-        const room = channel.rooms[0];
+        const roomToNavigate = data[0];
 
-        navigate(`room/${room.id}`, { replace: true });
-    }, [navigate, params.channelId]);
+        navigateTo.room(channel.id, roomToNavigate);
+    }, [channel?.id, data, navigateTo]);
 
-    return null;
+    return (
+        <>
+            <If condition={showLoader}>
+                {loader}
+            </If>
+
+            <If condition={showFallback}>
+                {fallback}
+            </If>
+        </>
+    );
 };

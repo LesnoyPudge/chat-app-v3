@@ -1,5 +1,6 @@
 import { Button, Image } from '@components';
 import { IMAGES } from '@generated';
+import { Heading } from '@libs';
 import { FC } from 'react';
 
 
@@ -31,9 +32,9 @@ export const ErrorPage: FC<ErrorPage> = ({ onReload }) => {
                 src={IMAGES.COMMON.ERROR_BOUNDARY_IMAGE.PATH}
             />
 
-            <p className={styles.heading}>
+            <Heading className={styles.heading}>
                 <>Как-то неловко получается</>
-            </p>
+            </Heading>
 
             <div className={styles.text}>
                 <p>В приложении возник неожиданный сбой....</p>

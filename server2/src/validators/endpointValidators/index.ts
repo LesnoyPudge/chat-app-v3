@@ -6,3 +6,4 @@ export * from './RoleValidator';
 export * from './RoomValidator';
 export * from './PrivateChannelValidator';
 export * from './ChatValidator';
+export * from './HelperValidator';

@@ -6,3 +6,4 @@ export * from './Message';
 export * from './PrivateChannel';
 export * from './Role';
 export * from './Room';
+export * from './Helper';

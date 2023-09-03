@@ -21,6 +21,7 @@ export const OnlyAuthorizedRoute: FC<PropsWithChildren> = () => {
 
     useEffect(() => {
         if (isInitialized) return;
+
         refresh();
     }, [isInitialized, refresh]);
 

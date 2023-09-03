@@ -6,3 +6,4 @@ export * from './MessageController';
 export * from './RoleController';
 export * from './FileController';
 export * from './ChatController';
+export * from './HelperController';

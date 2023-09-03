@@ -4,10 +4,11 @@ import { useLatest } from '@hooks';
 
 
 
-interface Params {
-    privateChatId?: string;
+export type Params = {
+    privateChannelId?: string;
     channelId?: string;
     roomId?: string,
+    invitationLink?: string;
 }
 
 type CustomNavigateOptions = NavigateOptions & {
@@ -25,7 +26,7 @@ export const navigatorPath = {
 
 export const useNavigator = () => {
     const navigateInner = useNavigate();
-    const params = useParams<Readonly<Params>>();
+    const params = useParams<Params>();
     const { pathname } = useLocation();
     const latestPathRef = useLatest(pathname);
     const stateRef = useRef({ from: '/app' });

@@ -52,4 +52,8 @@ export const RoomServiceHelpers = {
     async isExist(filter: FilterQuery<Entities.Room.Default>) {
         return !!await RoomModel.exists(filter).lean();
     },
+
+    async getMany(filter: FilterQuery<Entities.Room.Default>) {
+        return await RoomModel.find(filter).lean();
+    },
 };
