@@ -1,7 +1,7 @@
-import { Button,SpriteImage, OverlayContextProvider, Ref, TopBar } from '@components';
+import { Button,SpriteImage, OverlayContextProvider, Ref, TopBar, EntityContext } from '@components';
 import { useNavigator } from '@hooks';
-import { twClassNames } from '@utils';
-import { FC } from 'react';
+import { getTextFallback, twClassNames } from '@utils';
+import { FC, useContext } from 'react';
 import { ChannelMenu } from './components';
 import { IMAGES } from '@generated';
 
@@ -10,7 +10,7 @@ import { IMAGES } from '@generated';
 const styles = {
     topBar: {
         base: 'relative hover:bg-primary-hover focus-within:bg-primary-hover',
-        acvive: 'bg-primary-hover',
+        active: 'bg-primary-hover',
     },
     button: 'flex justify-between items-center w-full h-full px-4',
     buttonText: 'font-semibold text-color-primary truncate',
@@ -18,11 +18,10 @@ const styles = {
 };
 
 export const Header: FC = () => {
-    const { params } = useNavigator();
-    const channelLabel = `ch name ${params.channelId}`;
+    const channel = useContext(EntityContext.Channel);
 
     return (
-        <OverlayContextProvider>
+        <OverlayContextProvider disabled={!channel}>
             {({ openOverlay, isOverlayExist }) => {
                 const iconId = (
                     isOverlayExist
@@ -33,7 +32,7 @@ export const Header: FC = () => {
                 return (
                     <TopBar className={twClassNames(
                         styles.topBar.base,
-                        { [styles.topBar.acvive]: isOverlayExist },
+                        { [styles.topBar.active]: isOverlayExist },
                     )}>
                         <Ref<HTMLButtonElement>>
                             {(ref) => (
@@ -47,7 +46,7 @@ export const Header: FC = () => {
                                         onLeftClick={openOverlay}
                                     >
                                         <span className={styles.buttonText}>
-                                            {channelLabel}
+                                            {getTextFallback(channel?.name)}
                                         </span>
 
                                         <SpriteImage
@@ -56,7 +55,9 @@ export const Header: FC = () => {
                                         />
                                     </Button>
 
-                                    <ChannelMenu leaderElementRef={ref}/>
+                                    <If condition={!!channel}>
+                                        <ChannelMenu leaderElementRef={ref}/>
+                                    </If>
                                 </>
                             )}
                         </Ref>

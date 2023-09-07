@@ -15,6 +15,7 @@ export interface OverlayContext {
 }
 
 interface OverlayContextProvider extends PropsWithChildrenAsNodeOrFunction<OverlayContext> {
+    disabled?: boolean;
     isOverlayExistInitial?: boolean;
 }
 
@@ -22,6 +23,7 @@ export const OverlayContext = createContext(undefined as unknown as OverlayConte
 
 export const OverlayContextProvider: FC<OverlayContextProvider> = ({
     children,
+    disabled = false,
     isOverlayExistInitial = false,
 }) => {
     const [
@@ -33,20 +35,26 @@ export const OverlayContextProvider: FC<OverlayContextProvider> = ({
 
     const handleClose = useCallback(() => {
         if (!isOverlayExistRef.current) return;
+        if (disabled) return;
+
         throttle(() => {
             setIsOverlayExist(false);
         }, fpsToMs(60))();
-    }, [isOverlayExistRef, setIsOverlayExist, throttle]);
+    }, [isOverlayExistRef, setIsOverlayExist, throttle, disabled]);
 
     const handleOpen = useCallback(() => {
         if (isThrottlingRef.current) return;
+        if (disabled) return;
+
         setIsOverlayExist(true);
-    }, [isThrottlingRef, setIsOverlayExist]);
+    }, [isThrottlingRef, setIsOverlayExist, disabled]);
 
     const handleToggle = useCallback(() => {
         if (isThrottlingRef.current) return;
+        if (disabled) return;
+
         setIsOverlayExist((v) => !v);
-    }, [isThrottlingRef, setIsOverlayExist]);
+    }, [isThrottlingRef, setIsOverlayExist, disabled]);
 
     const contextValues: OverlayContext = {
         isOverlayExist,
