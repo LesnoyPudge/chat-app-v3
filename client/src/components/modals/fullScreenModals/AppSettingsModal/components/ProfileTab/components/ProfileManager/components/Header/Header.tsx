@@ -1,8 +1,10 @@
 import { FC } from 'react';
 import { UserStatus, Image, FileInput } from '@components';
 import { FormikFileInput } from '@libs';
-import { MBToBytes } from '@utils';
+import { MBToBytes, getAvatarPath } from '@utils';
 import { MIME } from '@vars';
+import { useMemoSelector } from '@redux/hooks';
+import { AppSelectors } from '@redux/features';
 
 
 
@@ -23,8 +25,19 @@ const styles = {
 };
 
 export const Header: FC = () => {
-    const status = 'online';
-    const extraStatus = 'default';
+    const {
+        avatarId,
+        extraStatus,
+        status,
+    } = useMemoSelector((state) => {
+        const user = AppSelectors.selectMe(state);
+
+        return {
+            avatarId: user.avatarId,
+            status: user.status,
+            extraStatus: user.extraStatus,
+        };
+    });
 
     return (
         <div className={styles.header}>
@@ -40,19 +53,16 @@ export const Header: FC = () => {
                         }}
                     >
                         {({ value, fileInputProps }) => (
-                            <>
-                                <FileInput
-                                    className={styles.avatarButton}
-                                    {...fileInputProps}
-                                >
-                                    <Image
-                                        className={styles.avatar}
-                                        src='https://i.pravatar.cc/52'
-                                        file={value}
-                                        alt='Изображение профиля'
-                                    />
-                                </FileInput>
-                            </>
+                            <FileInput
+                                className={styles.avatarButton}
+                                {...fileInputProps}
+                            >
+                                <Image
+                                    className={styles.avatar}
+                                    src={value?.base64 ?? getAvatarPath(avatarId)}
+                                    alt='Изображение профиля'
+                                />
+                            </FileInput>
                         )}
                     </FormikFileInput>
 

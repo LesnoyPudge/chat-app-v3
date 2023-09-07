@@ -1,7 +1,7 @@
 import { PropsWithClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC, useRef } from 'react';
-import {  List } from '@components';
+import { List, Placeholder } from '@components';
 import { createPlaceholderVariation, PlaceholderVariation } from './placeholderVariation';
 
 
@@ -29,11 +29,11 @@ export const MessagePlaceholder: FC<MessagePlaceholder> = ({
     placeholderVariation = createPlaceholderVariation(),
 }) => {
     const variationRef = useRef(placeholderVariation);
-    
+
     return (
-        <div 
+        <Placeholder
             className={twClassNames(styles.wrapper, className)}
-            aria-hidden
+            title='Загрузка сообщения...'
         >
             <div className={styles.firstCol}>
                 <If condition={displayMode === 'cozy'}>
@@ -48,12 +48,12 @@ export const MessagePlaceholder: FC<MessagePlaceholder> = ({
 
             <div className={styles.content}>
                 <If condition={displayMode === 'cozy'}>
-                    <div 
+                    <div
                         className={styles.username}
                         style={variationRef.current.username}
                     ></div>
                 </If>
-                
+
                 <List list={variationRef.current.lines}>
                     {(words, lineIndex) => (
                         <div className={styles.line}>
@@ -61,18 +61,18 @@ export const MessagePlaceholder: FC<MessagePlaceholder> = ({
                                 {(style, wordIndex) => (
                                     <>
                                         <If condition={
-                                            displayMode === 'compact' && 
+                                            displayMode === 'compact' &&
                                             lineIndex === 0 &&
                                             wordIndex === 0
                                         }>
-                                            <div 
+                                            <div
                                                 className={styles.username}
                                                 style={variationRef.current.username}
                                             ></div>
                                         </If>
 
-                                        <div 
-                                            className={styles.word} 
+                                        <div
+                                            className={styles.word}
                                             style={style}
                                         ></div>
                                     </>
@@ -83,7 +83,7 @@ export const MessagePlaceholder: FC<MessagePlaceholder> = ({
                 </List>
 
                 <If condition={variationRef.current.withAttachment}>
-                    <div 
+                    <div
                         className={styles.attachment}
                         style={{
                             width: `min(${variationRef.current.attachment.width}px, 100%)`,
@@ -92,6 +92,6 @@ export const MessagePlaceholder: FC<MessagePlaceholder> = ({
                     ></div>
                 </If>
             </div>
-        </div>
+        </Placeholder>
     );
 };

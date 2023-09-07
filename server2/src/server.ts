@@ -123,6 +123,7 @@ import {
     MessageRouter, PrivateChannelRouter, RoleRouter,
     RoomRouter, UserRouter, HelperRouter,
 } from '@routers';
+import { emails } from './emails/emails';
 
 
 

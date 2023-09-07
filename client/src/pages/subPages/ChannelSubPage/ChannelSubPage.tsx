@@ -7,26 +7,19 @@ import { Navigate } from 'react-router-dom';
 
 
 export const ChannelPage: FC = () => {
-    const { params, navigatorPath } = useNavigator();
     const placeholder = 'Написать в комнату';
 
     return (
         <>
-            <If condition={!params.channelId}>
-                <Navigate to={navigatorPath.app()} replace/>
-            </If>
+            <EntityContextProvider.Channel id={''}>
+                <Header/>
 
-            <If condition={!!params.channelId}>
-                <EntityContextProvider.Channel id={params.channelId!}>
-                    <Header/>
+                <Chat/>
 
-                    <Chat/>
-
-                    <ToDo text='заменить на отдельный компонент для чата канала'>
-                        <MessageInputBar placeholder={placeholder}/>
-                    </ToDo>
-                </EntityContextProvider.Channel>
-            </If>
+                <ToDo text='заменить на отдельный компонент для чата канала'>
+                    <MessageInputBar placeholder={placeholder}/>
+                </ToDo>
+            </EntityContextProvider.Channel>
         </>
     );
 };

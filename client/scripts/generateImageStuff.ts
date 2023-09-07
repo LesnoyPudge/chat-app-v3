@@ -20,7 +20,8 @@ export interface Folder<FNAME = string> {
 const dirs = {
     images: {
         source: path.resolve(__dirname, '../images'),
-        assets: path.resolve(__dirname, '../src/assets/generatedImages'),
+        assets: path.resolve(__dirname, '../GENERATED_IMAGES'),
+        public: path.resolve(__dirname, '../public/GENERATED_IMAGES'),
     },
     generated: path.resolve(__dirname, '../src/generated'),
     vars: path.resolve(__dirname, '../src/generated/vars'),
@@ -122,6 +123,8 @@ const scripts = {
 
         fs.rmSync(dirs.images.assets, { recursive: true, force: true });
         fs.mkdirSync(dirs.images.assets);
+        fs.rmSync(dirs.images.public, { recursive: true, force: true });
+        fs.mkdirSync(dirs.images.public);
 
         const optimizeTree = (tree: Folder, currentPath: string) => {
             if (tree.name) fs.mkdirSync(currentPath);
@@ -158,6 +161,7 @@ const scripts = {
         };
 
         optimizeTree(tree, dirs.images.assets);
+        optimizeTree(tree, dirs.images.public);
     },
 
     generateVarsFromImages: () => {

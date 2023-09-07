@@ -1,21 +1,28 @@
 import { IMAGES } from '@generated';
 import { defaultAvatar } from '@shared';
-import { getReadImagePath } from '@utils';
+import { getEnv, getReadImagePath } from '@utils';
 
 
 
+type Return<T extends string | undefined | null> = (
+    NonNullable<T> extends never ? (undefined | null) : string
+);
 
-export const getAvatarPath = (avatarId: string | undefined | null): string | null => {
-    if (avatarId === undefined) return 'undefined';
+const { CUSTOM_NODE_ENV } = getEnv();
 
-    if (avatarId === null) return avatarId;
+export const getAvatarPath = <T extends string | undefined | null>(
+    avatarId: T,
+): Return<T> => {
+    if (typeof avatarId !== 'string') return avatarId as Return<T>;
 
-    if (avatarId.includes('http')) {
-        console.warn('fake avatar found', avatarId);
-        return avatarId;
+    if (CUSTOM_NODE_ENV === 'development') {
+        if (avatarId.includes('http')) {
+            console.warn('fake avatar found', avatarId);
+            return avatarId as Return<T>;
+        }
     }
 
-    if (defaultAvatar.isAvatar(avatarId)) return IMAGES.COMMON[avatarId].PATH;
+    if (defaultAvatar.isAvatar(avatarId)) return IMAGES.COMMON[avatarId].PATH as Return<T>;
 
-    return getReadImagePath(avatarId);
+    return getReadImagePath(avatarId) as Return<T>;
 };

@@ -1,11 +1,11 @@
 import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff } from '@utils';
+import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff, setTitle } from '@utils';
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, Suspense, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { useBoolean, useCounter, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useBoolean, useCounter, useDocumentTitle, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation, useLatest, usePromise, ControlledPromise } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation, useLatest, usePromise, ControlledPromise, useTimeout } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -67,12 +67,12 @@ const ImageV2: FC<ImageV2> = ({
         <>
             <div>
                 <>
-loading:
-                    {' '}
+                    <>loading:</>
+                    <Space/>
                     {`${imageState.loading}`}
-                    {' '}
-error:
-                    {' '}
+                    <Space/>
+                    <>error:</>
+                    <Space/>
                     {`${imageState.error}`}
                 </>
             </div>
@@ -621,25 +621,9 @@ import isObject from 'is-object';
 import { Placeholder } from 'src/components/shared/Placeholder';
 import { socketIO } from '../features/soket';
 import { EntityContext, EntityContextProvider } from 'src/components/contexts/EntityContext/EntityContext';
+import { MessagePlaceholder } from 'src/components/shared/Chat/components';
 
 
-
-
-
-const LocalImage: FC = () => {
-    return (
-        <>
-            <div className='relative w-1/2 h-3/4 bg-lime-600'>
-                <picture className=''>
-                    <source srcSet={IMAGES.COMMON.FILE_CODE_IMAGE.PATH} className='' type='image/jpg'/>
-                    {/* <img src={imagesrc} className='absolute object-cover inset-0'/> */}
-                </picture>
-            </div>
-            {/* <img src={imagesrc} className='w-1/2 h-3/4'/> */}
-
-        </>
-    );
-};
 
 type ChildrenArgs<FormValues extends AnyRecord, Name extends keyof FormValues> = {
     value: FormValues[Name];
@@ -786,8 +770,6 @@ const PlaygroundInner16: FC = () => {
                 placeholder={<div className='bg-red-700'>qwe</div>}
                 src='https://images.placeholders.dev'
             /> */}
-
-            <LocalImage/>
 
             {/* <ImageV2 src='https://images.placeholders.dev'/> */}
         </div>
@@ -1828,32 +1810,41 @@ const PlaygroundInner28: FC = () => {
     );
 };
 
-const PlaygroundInner29: FC = () => {
-    // const { data, isError, isFetching, isLoading, isSuccess, isUninitialized } = HelperApi.useHelperGetAvailableTextRoomIdsQuery({ channelId: 'qwe' });
+const TestContext = createContext<string | undefined>(undefined);
 
-    // console.log(data, isUninitialized, isLoading, isError, isSuccess);
-    // // useEffect(() => {
-    // //     getRoomIds({ channelId: 'qwe' });
-    // // }, [getRoomIds]);
-
-    // useEffect(() => {
-    //     // fetch('api/v1/helper/getAvailableTextRoomIds', {
-    //     //     body: JSON.stringify({
-    //     //         channelId: 'qwe',
-    //     //     }),
-    //     // }).then((v) => {
-    //     //     console.log(v);
-    //     // }).catch((e) => {
-    //     //     console.log(e);
-    //     // });
-    // }, []);
+const ETest: FC = () => {
+    const val = useContext(TestContext);
+    if (!val) throw new Error('');
 
     return (
         <>qwe</>
     );
 };
 
-const enabled = !!0;
+const PlaygroundInner29: FC = () => {
+    const [state, setState] = useState<string | undefined>(undefined);
+
+    useTimeout(() => {
+        setState('qwe');
+    }, 2000);
+
+
+    useTimeout(() => {
+        setState(undefined);
+    }, 6000);
+
+    return (
+        <div className='grid gap-4'>
+            <TestContext.Provider value={state}>
+                <If condition={!!state}>
+                    <ETest/>
+                </If>
+            </TestContext.Provider>
+        </div>
+    );
+};
+
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

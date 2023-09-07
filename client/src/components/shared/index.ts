@@ -19,3 +19,4 @@ export * from './LoadingIndicator';
 export * from './ContentWithLoading';
 export * from './FormError';
 export * from './MoveFocusInside';
+export * from './Placeholder';

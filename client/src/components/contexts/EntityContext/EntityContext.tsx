@@ -108,11 +108,25 @@ export const createEntityContextProvider = <Entity extends WithId>(
 };
 
 export const EntityContextProvider = {
-    [SUBSCRIBABLE_ENTITIES.CHANNEL]: createEntityContextProvider<SliceEntityState.Channel>(SUBSCRIBABLE_ENTITIES.CHANNEL),
-    [SUBSCRIBABLE_ENTITIES.CHAT]: createEntityContextProvider<SliceEntityState.Chat>(SUBSCRIBABLE_ENTITIES.CHAT),
-    [SUBSCRIBABLE_ENTITIES.MESSAGE]: createEntityContextProvider<SliceEntityState.Message>(SUBSCRIBABLE_ENTITIES.MESSAGE),
-    [SUBSCRIBABLE_ENTITIES.PRIVATE_CHANNEL]: createEntityContextProvider<SliceEntityState.PrivateChannel>(SUBSCRIBABLE_ENTITIES.PRIVATE_CHANNEL),
-    [SUBSCRIBABLE_ENTITIES.ROLE]: createEntityContextProvider<SliceEntityState.Role>(SUBSCRIBABLE_ENTITIES.ROLE),
-    [SUBSCRIBABLE_ENTITIES.ROOM]: createEntityContextProvider<SliceEntityState.Room>(SUBSCRIBABLE_ENTITIES.ROOM),
-    [SUBSCRIBABLE_ENTITIES.USER]: createEntityContextProvider<SliceEntityState.User>(SUBSCRIBABLE_ENTITIES.USER),
+    [SUBSCRIBABLE_ENTITIES.CHANNEL]: createEntityContextProvider<SliceEntityState.Channel>(
+        SUBSCRIBABLE_ENTITIES.CHANNEL,
+    ),
+    [SUBSCRIBABLE_ENTITIES.CHAT]: createEntityContextProvider<SliceEntityState.Chat>(
+        SUBSCRIBABLE_ENTITIES.CHAT,
+    ),
+    [SUBSCRIBABLE_ENTITIES.MESSAGE]: createEntityContextProvider<SliceEntityState.Message>(
+        SUBSCRIBABLE_ENTITIES.MESSAGE,
+    ),
+    [SUBSCRIBABLE_ENTITIES.PRIVATE_CHANNEL]: createEntityContextProvider<SliceEntityState.PrivateChannel>(
+        SUBSCRIBABLE_ENTITIES.PRIVATE_CHANNEL,
+    ),
+    [SUBSCRIBABLE_ENTITIES.ROLE]: createEntityContextProvider<SliceEntityState.Role>(
+        SUBSCRIBABLE_ENTITIES.ROLE,
+    ),
+    [SUBSCRIBABLE_ENTITIES.ROOM]: createEntityContextProvider<SliceEntityState.Room>(
+        SUBSCRIBABLE_ENTITIES.ROOM,
+    ),
+    [SUBSCRIBABLE_ENTITIES.USER]: createEntityContextProvider<SliceEntityState.User>(
+        SUBSCRIBABLE_ENTITIES.USER,
+    ),
 };

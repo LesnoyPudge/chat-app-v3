@@ -1,9 +1,10 @@
-import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput,SpriteImage, CheckBox, FileInput } from '@components';
+import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput,SpriteImage, CheckBox, FileInput, ChannelAvatar, EntityContext } from '@components';
 import { FormikCheckBox, FormikFileInput, FormikTextInput } from '@libs';
 import { MBToBytes } from '@utils';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
 import { MIME } from '@vars';
+import { useDefinedContext } from '@hooks';
 
 
 
@@ -30,6 +31,7 @@ const styles = {
 
 export const OverviewTab: FC = () => {
     const { tabPanelProps } = useContext<TabContext<ChannelSettingsModalTabs>>(TabContext);
+    const channel = useDefinedContext(EntityContext.Channel);
 
     return (
         <TabPanel
@@ -57,11 +59,10 @@ export const OverviewTab: FC = () => {
                                     className={styles.firstFileInput}
                                     {...fileInputProps}
                                 >
-                                    <Image
+                                    <ChannelAvatar
                                         className={styles.channelImage}
-                                        src='https://i.pravatar.cc/150'
-                                        file={value}
-                                        alt='Значок канала'
+                                        avatar={value?.base64}
+                                        name={channel.name}
                                     />
                                 </FileInput>
 

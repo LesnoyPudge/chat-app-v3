@@ -2,7 +2,6 @@ import { FC, useContext } from 'react';
 import { Button, ChannelAvatar, List, ModalWindow, OverlayContext, Scrollable, SearchBar, Separator } from '@components';
 import { ModalContainer, ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../components';
 import { useTextInput } from '@hooks';
-import { isOdd } from '@reExport';
 
 
 
@@ -26,7 +25,7 @@ export const FindChannelModal: FC = () => {
     const channels = [...Array(50)].map((_, i) => ({
         id: i.toString(),
         name: `some channel ${i}`,
-        avatar: isOdd(i) ? null : 'https://i.pravatar.cc/80',
+        avatar: i % 2 === 0 ? null : 'https://i.pravatar.cc/80',
         members: 21950,
         online: 1945,
     }));

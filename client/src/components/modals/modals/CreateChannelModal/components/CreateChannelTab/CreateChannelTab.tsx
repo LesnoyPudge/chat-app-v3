@@ -84,7 +84,7 @@ export const CreateChannelTab: FC = () => {
                                     <If condition={!!value}>
                                         <Image
                                             className='rounded-full'
-                                            file={value}
+                                            src={value?.base64}
                                             alt='Значок канала'
                                         />
                                     </If>

@@ -19,6 +19,7 @@ export const UserSlice = createSlice({
     reducers: {
         upsertOne: adapter.upsertOne,
         removeOne: adapter.removeOne,
+        updateOne: adapter.updateOne,
 
         // updateMe: (state, { payload }: PayloadAction<Partial<Entities.User.WithoutCredentials>>) => {
         //     const myId = localStorageApi.get('myId');

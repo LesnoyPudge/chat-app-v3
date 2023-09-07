@@ -1,11 +1,13 @@
 import { FormikFileInput, FormikTextInput } from '@libs';
 import { FC, useContext } from 'react';
-import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button,SpriteImage, ChannelSettingsModalFormValues, TabContext, TabPanel, FileInput } from '@components';
+import { FieldLabel, RequiredWildcard, Separator, TextInput, Image, Button,SpriteImage, ChannelSettingsModalFormValues, TabContext, TabPanel, FileInput, ToDo } from '@components';
 import { RoleColor } from './components';
 import { useFormikContext } from 'formik';
 import { RoleContentTabs } from '../..';
 import { KBToBytes } from '@utils';
 import { MIME } from '@vars';
+import { useMemoSelector } from '@redux/hooks';
+import { RoleSelectors } from '@redux/features';
 
 
 
@@ -23,8 +25,7 @@ const styles = {
 export const RoleAppearanceTab: FC = () => {
     const { values } = useFormikContext<ChannelSettingsModalFormValues>();
     const { tabPanelProps } = useContext<TabContext<RoleContentTabs>>(TabContext);
-
-    const roleImage = (() => `getRoleImageById, ${values.roleId}`)();
+    const roleImage = useMemoSelector((state) => RoleSelectors.selectById(values.roleId)(state)?.image);
 
     return (
         <TabPanel
@@ -78,21 +79,22 @@ export const RoleAppearanceTab: FC = () => {
                     <div className={styles.fileInputsArea}>
                         <FileInput {...fileInputProps}>
                             <div className={styles.firstFileInputWrapper}>
-                                <If condition={!!roleImage || !!value}>
-                                    <Image
-                                        className={styles.firstFileInputImage}
-                                        src={roleImage}
-                                        file={value}
-                                        alt='Значок роли'
-                                    />
-                                </If>
+                                <ToDo text='изменить контекст с ролью, сделать entityprovider.role'>
+                                    <If condition={!!roleImage || !!value}>
+                                        <Image
+                                            className={styles.firstFileInputImage}
+                                            src={roleImage || value?.base64}
+                                            alt='Значок роли'
+                                        />
+                                    </If>
 
-                                <If condition={!values.roleImage && !value}>
-                                    <SpriteImage
-                                        className={styles.firstFileInputIcon}
-                                        name='ADD_IMAGE_ICON'
-                                    />
-                                </If>
+                                    <If condition={!(!!roleImage || !!value)}>
+                                        <SpriteImage
+                                            className={styles.firstFileInputIcon}
+                                            name='ADD_IMAGE_ICON'
+                                        />
+                                    </If>
+                                </ToDo>
                             </div>
                         </FileInput>
 

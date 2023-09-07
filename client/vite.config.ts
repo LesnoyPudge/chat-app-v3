@@ -15,7 +15,10 @@ export default defineConfig(() => {
         plugins: [
             react({
                 babel: {
-                    plugins: [['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }], 'jsx-control-statements'],
+                    plugins: [
+                        ['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }],
+                        'jsx-control-statements',
+                    ],
                 },
             }),
             envCompalible(),
@@ -35,6 +38,11 @@ export default defineConfig(() => {
             port: 3000,
         },
         envDir: '..',
-        // assetsInclude: ['assets/rawImages/**'],
+        build: {
+            assetsInlineLimit: 0,
+        },
+
+        // assetsInclude: ['assets/**/*'],
+
     };
 });
