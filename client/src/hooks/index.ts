@@ -21,4 +21,4 @@ export * from './useFocusVisibleEvent';
 export * from './useMountedApiWrapper';
 export * from './usePromise';
 export * from './useTimeout';
-export * from './useDefinedContext';
+export * from './useEntitySubscription';

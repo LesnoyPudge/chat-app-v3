@@ -38,6 +38,16 @@ export class Sockets {
             accessToken: socket.data.accessToken,
             subscriptions: new Map(),
         });
+
+        const user = this.users.get(socket.data.id);
+
+        if (user) {
+            user.add(socket.id);
+        }
+
+        if (!user) {
+            this.users.set(socket.data.id, new Set([socket.id]));
+        }
     }
 
     remove(socket: AuthorizedSocket) {
@@ -45,10 +55,17 @@ export class Sockets {
         if (!socketItem) return;
 
         socketItem.subscriptions.forEach((entity) => {
-            entity.unsubscribe(socket.handshake.auth.id);
+            entity.unsubscribe(socket.id);
         });
 
         this.sockets.delete(socket.id);
+
+        const user = this.users.get(socketItem.userId);
+        if (!user) return;
+
+        user.delete(socket.id);
+
+        if (user.size === 0) this.users.delete(socketItem.userId);
     }
 
     addSubscription(socketId: SocketId, entity: Entity) {

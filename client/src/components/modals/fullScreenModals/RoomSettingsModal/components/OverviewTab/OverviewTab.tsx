@@ -1,10 +1,11 @@
 import { FormikCheckBox, FormikTextInput, Heading } from '@libs';
-import { FC } from 'react';
-import { Button, CheckBox, CheckBoxIndicatorSlide, FieldLabel,SpriteImage, OverlayContextProvider, RoomSettingsModalFormValues, RoomWhitelistModal, Separator, TextInput } from '@components';
+import { FC, useCallback } from 'react';
+import { Button, CheckBox, CheckBoxIndicatorSlide, FieldLabel,SpriteImage, OverlayContextProvider, RoomSettingsModalFormValues, RoomWhitelistModal, Separator, TextInput, ErrorInLabel, RequiredWildcard } from '@components';
 import { TabTitle } from '../../../components';
 import { twClassNames } from '@utils';
 import { AllowedRolesAndMembers } from './components';
 import { useFormikContext } from 'formik';
+import { SliceEntityState } from '@types';
 
 
 
@@ -29,30 +30,9 @@ const styles = {
 export const OverviewTab: FC = () => {
     const { values, setFieldValue } = useFormikContext<RoomSettingsModalFormValues>();
 
-    const members = Array(20).fill(null).map((_, i) => ({
-        id: i.toString(),
-        username: `username ${i}`,
-        avatar: 'https://i.pravatar.cc/50',
-    }));
-
-    const roles = Array.from(values.allowedRoles).map((_, i) => ({
-        id: i.toString(),
-        name: `role name ${i}`,
-        color: 'red',
-    }));
-
-    const onSubmit = ({
-        members,
-        roles,
-    }: {
-        members: Set<string>;
-        roles: Set<string>;
-    }) => {
-        const newRoles = new Set([...Array.from(roles), ...Array.from(values.allowedRoles)]);
-        const newMembers = new Set([...Array.from(members), ...Array.from(values.allowedMembers)]);
-        setFieldValue('allowedRoles', newRoles);
-        setFieldValue('allowedMembers', newMembers);
-    };
+    const setValue = useCallback((whiteList: Pick<SliceEntityState.Room, 'whiteList'>['whiteList']) => {
+        setFieldValue('whiteList', whiteList);
+    }, [setFieldValue]);
 
     return (
         <div className={styles.wrapper}>
@@ -61,13 +41,17 @@ export const OverviewTab: FC = () => {
             </TabTitle>
 
             <FormikTextInput
-                name='roomName'
+                name='name'
                 label='Название комнаты'
             >
                 {(props) => (
                     <>
                         <FieldLabel htmlFor={props.id}>
                             {props.label}
+
+                            <RequiredWildcard/>
+
+                            <ErrorInLabel error={props.error}/>
                         </FieldLabel>
 
                         <TextInput
@@ -139,9 +123,8 @@ export const OverviewTab: FC = () => {
                                                 </Button>
 
                                                 <RoomWhitelistModal
-                                                    members={members}
-                                                    roles={roles}
-                                                    onSubmit={onSubmit}
+                                                    whiteList={values.whiteList}
+                                                    handleChange={setValue}
                                                 />
                                             </>
                                         )}

@@ -1,24 +1,18 @@
 import { Scrollable, Image, Button, CheckBoxIndicatorCheck,SpriteImage, UserAvatar , MoveFocusInside } from '@components';
 import { Heading } from '@libs';
-import { ObjectWithId, PropsWithClassName } from '@types';
+import { PropsWithClassName, SliceEntityState } from '@types';
 import { FC, useRef } from 'react';
 import { ViewportList } from 'react-viewport-list';
 import { twClassNames } from '@utils';
-import { useKeyboardNavigation, useRefWithSetter } from '@hooks';
+import { useKeyboardNavigation, useLatest, useRefWithSetter } from '@hooks';
 import { IMAGES } from '@generated';
 
 
 
 
 export interface RolesAndMembersCheckList extends PropsWithClassName {
-    roles: (ObjectWithId & {
-        name: string;
-        color: string;
-    })[];
-    members: (ObjectWithId & {
-        username: string;
-        avatar: string;
-    })[];
+    roles: SliceEntityState.Role[];
+    members: SliceEntityState.User[];
     checkRole: (id: string) => void;
     checkMember: (id: string) => void;
     getIsRoleChecked: (id: string) => boolean;
@@ -29,7 +23,7 @@ const styles = {
     heading: 'text-xs uppercase bold mb-2',
     list: 'mb-2',
     singleNotFound: 'flex justify-center items-center h-full font-medium text-sm',
-    notFoundWrapper: 'flex flex-col h-full justify-center items-center',
+    notFoundWrapper: 'flex flex-col h-full justify-center items-center py-6',
     notFoundImage: 'w-[85px] h-[85px] mb-4',
     notFoundText: 'text-sm text-color-secondary',
     item: {
@@ -51,10 +45,9 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
     getIsMemberChecked,
     getIsRoleChecked,
 }) => {
-    // const [viewport, viewportRef, setViewport] = useStateAndRef<HTMLElement | null>(null);
     const [viewportRef, setViewport] = useRefWithSetter<HTMLElement | null>(null);
 
-    const rolesRef = useRef(roles);
+    const rolesRef = useLatest(roles);
     const rolesNavigation = useKeyboardNavigation(rolesRef, undefined, {
         virtualized: true,
     });
@@ -186,8 +179,9 @@ export const RolesAndMembersCheckList: FC<RolesAndMembersCheckList> = ({
 
                                                 <UserAvatar
                                                     className={styles.itemImage}
-                                                    avatarId={member.avatar}
+                                                    avatarId={member.avatarId}
                                                     username={member.username}
+                                                    hideStatus
                                                 />
 
                                                 <div className={styles.itemName}>

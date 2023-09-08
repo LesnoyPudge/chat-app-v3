@@ -1,3 +1,4 @@
+import { EntityContextProvider } from '@components';
 import { useNavigator } from '@hooks';
 import { AppSelectors, UserApi } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
@@ -10,6 +11,7 @@ export const OnlyAuthorizedRoute: FC<PropsWithChildren> = () => {
     const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized);
     const isInitialized = useMemoSelector((state) => AppSelectors.selectAppState(state).isInitialized);
     const isRefreshing = useMemoSelector((state) => AppSelectors.selectAppState(state).isRefreshing);
+    const myId = useMemoSelector((state) => AppSelectors.selectMe(state).id);
     const { navigateTo } = useNavigator();
     const [refresh] = UserApi.useUserRefreshMutation();
 
@@ -33,7 +35,9 @@ export const OnlyAuthorizedRoute: FC<PropsWithChildren> = () => {
 
     return (
         <If condition={isAuthorized}>
-            <Outlet/>
+            <EntityContextProvider.User id={myId}>
+                <Outlet/>
+            </EntityContextProvider.User>
         </If>
     );
 };

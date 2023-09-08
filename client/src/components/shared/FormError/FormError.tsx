@@ -8,7 +8,7 @@ import { FC } from 'react';
 
 
 interface FormError extends PropsWithClassName {
-    error?: CustomQueryError | SerializedError;
+    error: CustomQueryError | SerializedError | undefined;
 }
 
 const isCustomQueryError = (
@@ -39,7 +39,10 @@ export const FormError: FC<FormError> = ({
 
     return (
         <If condition={!!errorText}>
-            <div className={twClassNames(styles.wrapper, className)}>
+            <div
+                className={twClassNames(styles.wrapper, className)}
+                aria-live='polite'
+            >
                 {errorText}
             </div>
         </If>

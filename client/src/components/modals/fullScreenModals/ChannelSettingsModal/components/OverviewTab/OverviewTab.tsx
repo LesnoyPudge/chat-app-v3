@@ -1,10 +1,9 @@
-import { Button, ChannelSettingsModalTabs, Image, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput,SpriteImage, CheckBox, FileInput, ChannelAvatar, EntityContext } from '@components';
+import { Button, ChannelSettingsModalTabs, CheckBoxIndicatorSlide, FieldLabel, Separator, TabContext, TabPanel, TextInput,SpriteImage, CheckBox, FileInput, ChannelAvatar, LoadedEntityContext } from '@components';
 import { FormikCheckBox, FormikFileInput, FormikTextInput } from '@libs';
 import { MBToBytes } from '@utils';
 import { FC, useContext } from 'react';
 import { TabTitle } from '../../../components';
 import { MIME } from '@vars';
-import { useDefinedContext } from '@hooks';
 
 
 
@@ -12,6 +11,7 @@ const styles = {
     wrapper: 'pt-[60px] pl-10',
     firstSection: 'grid grid-cols-2 gap-5',
     sectionSide: 'flex gap-5',
+    avatarSide: 'flex-shrink-0',
     removeFile: 'w-full mt-1.5',
     firstFileInput: 'w-[100px] h-[100px] rounded-full relative group bg-primary-300',
     channelImage: 'h-full w-full rounded-full',
@@ -31,7 +31,7 @@ const styles = {
 
 export const OverviewTab: FC = () => {
     const { tabPanelProps } = useContext<TabContext<ChannelSettingsModalTabs>>(TabContext);
-    const channel = useDefinedContext(EntityContext.Channel);
+    const [channel] = useContext(LoadedEntityContext.Channel);
 
     return (
         <TabPanel
@@ -54,7 +54,7 @@ export const OverviewTab: FC = () => {
                 >
                     {({ value, fileInputProps, removeFiles }) => (
                         <div className={styles.sectionSide}>
-                            <div>
+                            <div className={styles.avatarSide}>
                                 <FileInput
                                     className={styles.firstFileInput}
                                     {...fileInputProps}

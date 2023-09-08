@@ -1,11 +1,10 @@
-import { FC, useContext } from 'react';
-import { Button, CreateRoomFormValues, CreateRoomModalTabs, SearchBar, TabContext, RolesAndMembersCheckList } from '@components';
+import { FC, useContext, useEffect } from 'react';
+import { Button, CreateRoomFormValues, CreateRoomModalTabs, SearchBar, TabContext, RolesAndMembersCheckList, LoadedEntityContext } from '@components';
 import { ModalContent, ModalFooter, ModalHeader, ModalTitle } from '../../../../components';
-import { conditional } from '@utils';
-import { IRole, IUserPreview } from '@backendTypes';
 import { useFormikContext } from 'formik';
-import { useTextInput } from '@hooks';
-
+import { useEntitySubscription, useSet, useTextInput } from '@hooks';
+import { SliceEntityState } from '@types';
+import { SUBSCRIBABLE_ENTITIES } from '@shared';
 
 
 
@@ -16,45 +15,30 @@ const styles = {
     scrollLimiter: 'min-h-[300px] max-h-[300px]',
 };
 
-const roles = Array(15).fill('').map((_, index) => ({
-    id: `roleid ${index}`,
-    name: `role ${index}`,
-    color: 'red',
-    image: '',
-} as IRole));
-
-const members = Array(15).fill('').map((_, index) => ({
-    id: `userid ${index}`,
-    avatar: `https://i.pravatar.cc/5${Math.min(9, index)}`,
-    username: `member ${index}`,
-} as IUserPreview));
-
 export const AddWhiteListTab: FC = () => {
     const { changeTab } = useContext<TabContext<CreateRoomModalTabs>>(TabContext);
-    const { values, setFieldValue } = useFormikContext<CreateRoomFormValues>();
+    const { values, isSubmitting, setFieldValue } = useFormikContext<CreateRoomFormValues>();
     const { value, handleChange, handleReset } = useTextInput();
+    const [checkedRoleIds, roleHelpers] = useSet<string>(values.whiteList.roles);
+    const [checkedMemberIds, memberHelpers] = useSet<string>(values.whiteList.users);
+    const [channel] = useContext(LoadedEntityContext.Channel);
+    const roles = useEntitySubscription<SliceEntityState.Role>(SUBSCRIBABLE_ENTITIES.ROLE, channel.roles);
+    const members = useEntitySubscription<SliceEntityState.User>(SUBSCRIBABLE_ENTITIES.USER, channel.members);
 
-    const isAnyChecked = !!values.allowedRoles.size || !!values.allowedMembers.size;
-    const submitButtonText = conditional('Создать комнату', 'Пропустить', isAnyChecked);
+    useEffect(() => {
+        const newWhiteList: CreateRoomFormValues['whiteList'] = {
+            roles: Array.from(checkedRoleIds),
+            users: Array.from(checkedMemberIds),
+        };
 
-    const handleCheck = (field: 'allowedRoles' | 'allowedMembers', roleOrUserId: string) => {
-        const newValue = new Set(values[field]);
-
-        if (isChecked(field, roleOrUserId)) {
-            newValue.delete(roleOrUserId);
-        } else {
-            newValue.add(roleOrUserId);
-        }
-
-        setFieldValue(field, newValue);
-    };
-
-    const isChecked = (field: 'allowedRoles' | 'allowedMembers', roleOrUserId: string) => {
-        return !!values[field].has(roleOrUserId);
-    };
+        setFieldValue('whiteList', newWhiteList);
+    }, [checkedRoleIds, checkedMemberIds, setFieldValue]);
 
     const filteredRoles = roles.filter((role) => role.name.includes(value));
     const filteredMembers = members.filter((member) => member.username.includes(value));
+
+    const isAnyChecked = !!checkedRoleIds.size || !!checkedMemberIds.size;
+    const submitButtonText = isAnyChecked ? 'Создать комнату' : 'Пропустить';
 
     return (
         <>
@@ -78,10 +62,10 @@ export const AddWhiteListTab: FC = () => {
                     className={styles.scrollLimiter}
                     members={filteredMembers}
                     roles={filteredRoles}
-                    checkMember={(id) => handleCheck('allowedMembers', id)}
-                    checkRole={(id) => handleCheck('allowedRoles', id)}
-                    getIsMemberChecked={(id) => isChecked('allowedMembers', id)}
-                    getIsRoleChecked={(id) => isChecked('allowedRoles', id)}
+                    checkMember={memberHelpers.toggle}
+                    checkRole={roleHelpers.toggle}
+                    getIsMemberChecked={memberHelpers.has}
+                    getIsRoleChecked={roleHelpers.has}
                 />
             </ModalContent>
 
@@ -98,6 +82,7 @@ export const AddWhiteListTab: FC = () => {
                     stylingPreset='brand'
                     size='medium'
                     type='submit'
+                    isLoading={isSubmitting}
                 >
                     {submitButtonText}
                 </Button>

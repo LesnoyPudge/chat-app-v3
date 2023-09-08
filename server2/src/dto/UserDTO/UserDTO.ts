@@ -27,6 +27,7 @@ interface UserDTO {
 }
 
 const getStatus = (id: string): Entities.User.Status => {
+    console.log(`id is: ${id}, status is: ${sockets.users.has(id) ? 'online' : 'offline'}`, sockets.users);
     return sockets.users.has(id) ? 'online' : 'offline';
 };
 

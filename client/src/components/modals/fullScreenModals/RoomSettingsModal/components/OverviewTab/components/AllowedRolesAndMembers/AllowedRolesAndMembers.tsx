@@ -1,10 +1,11 @@
 import { Button,SpriteImage, Ref, RoomSettingsModalFormValues, Scrollable, Separator, Tooltip, UserAvatar , MoveFocusInside } from '@components';
-import { useKeyboardNavigation } from '@hooks';
+import { useEntitySubscription, useKeyboardNavigation } from '@hooks';
 import { Heading } from '@libs';
 import { useFormikContext } from 'formik';
 import { FC, useRef } from 'react';
-
 import { ViewportList } from 'react-viewport-list';
+import { SUBSCRIBABLE_ENTITIES } from '@shared';
+import { SliceEntityState } from '@types';
 
 
 
@@ -23,16 +24,8 @@ const styles = {
 export const AllowedRolesAndMembers: FC = () => {
     const { values, setFieldValue } = useFormikContext<RoomSettingsModalFormValues>();
 
-    const roles = Array.from(values.allowedRoles).map((id) => ({
-        id,
-        name: `role name ${id}`,
-        color: 'red',
-    }));
-    const members = Array.from(values.allowedMembers).map((id) => ({
-        id,
-        username: `member name ${id}`,
-        avatar: 'https://i.pravatar.cc/50',
-    }));
+    const roles = useEntitySubscription<SliceEntityState.Role>(SUBSCRIBABLE_ENTITIES.ROLE, values.whiteList.roles);
+    const members = useEntitySubscription<SliceEntityState.User>(SUBSCRIBABLE_ENTITIES.USER, values.whiteList.users);
 
     const rolesRef = useRef(roles);
     const rolesNavigation = useKeyboardNavigation(rolesRef, undefined, {
@@ -44,47 +37,58 @@ export const AllowedRolesAndMembers: FC = () => {
         virtualized: true,
     });
 
-    const removeItem = (name: 'allowedRoles' | 'allowedMembers', id: string) => {
-        const newValue = new Set(values[name]);
-        newValue.delete(id);
-        setFieldValue(name, newValue);
+    const removeRole = (id: string) => {
+        const newWhiteList: RoomSettingsModalFormValues['whiteList'] = {
+            roles: values.whiteList.roles.filter((roleId) => roleId !== id),
+            users: values.whiteList.users,
+        };
+
+        setFieldValue('whiteList', newWhiteList);
     };
 
-    const showRoles = !!values.allowedRoles.size;
-    const showMembers = !!values.allowedMembers.size;
+    const removeMember = (id: string) => {
+        const newWhiteList: RoomSettingsModalFormValues['whiteList'] = {
+            roles: values.whiteList.roles,
+            users: values.whiteList.users.filter((userId) => userId !== id),
+        };
+
+        setFieldValue('whiteList', newWhiteList);
+    };
+
+    const showRoles = !!roles.length;
+    const showMembers = !!members.length;
     const showBoth = showRoles && showMembers;
+    const nothingToShow = !showMembers && !showRoles;
 
     return (
-        <Scrollable
-            className={styles.scrollbar}
-            label='Роли и участники'
-            focusable
-            small
-            followContentSize
-        >
-            <If condition={showRoles}>
-                <div className={styles.section}>
-                    <Heading className={styles.heading}>
-                        <>Роли</>
-                    </Heading>
+        <If condition={!nothingToShow}>
+            <Scrollable
+                className={styles.scrollbar}
+                label='Роли и участники'
+                focusable
+                small
+                followContentSize
+            >
+                <If condition={showRoles}>
+                    <div className={styles.section}>
+                        <Heading className={styles.heading}>
+                            <>Роли</>
+                        </Heading>
 
-                    <ul
-                        tabIndex={0}
-                        ref={rolesNavigation.setRoot}
-                    >
-                        <ViewportList
-                            items={roles}
-                            onViewportIndexesChange={rolesNavigation.setViewportIndexes}
+                        <ul
+                            tabIndex={0}
+                            ref={rolesNavigation.setRoot}
                         >
-                            {(role) => {
-                                const handleRemove = () => removeItem('allowedRoles', role.id);
-
-                                return (
-                                    <MoveFocusInside
-                                        enabled={rolesNavigation.getIsFocused(role.id)}
-                                        key={role.id}
-                                    >
-                                        <li className={styles.item}>
+                            <ViewportList
+                                items={roles}
+                                onViewportIndexesChange={rolesNavigation.setViewportIndexes}
+                            >
+                                {(role) => (
+                                    <li key={role.id}>
+                                        <MoveFocusInside
+                                            className={styles.item}
+                                            enabled={rolesNavigation.getIsFocused(role.id)}
+                                        >
                                             <SpriteImage
                                                 className={styles.image}
                                                 style={{ fill: role.color }}
@@ -103,7 +107,7 @@ export const AllowedRolesAndMembers: FC = () => {
                                                             label='Лишить доступа к комнате'
                                                             tabIndex={rolesNavigation.getTabIndex(role.id)}
                                                             innerRef={ref}
-                                                            onLeftClick={handleRemove}
+                                                            onLeftClick={() => removeRole(role.id)}
                                                         >
                                                             <SpriteImage
                                                                 className={styles.icon}
@@ -120,40 +124,36 @@ export const AllowedRolesAndMembers: FC = () => {
                                                     </>
                                                 )}
                                             </Ref>
-                                        </li>
-                                    </MoveFocusInside>
-                                );
-                            }}
-                        </ViewportList>
-                    </ul>
-                </div>
-            </If>
+                                        </MoveFocusInside>
+                                    </li>
+                                )}
+                            </ViewportList>
+                        </ul>
+                    </div>
+                </If>
 
-            <If condition={showBoth}>
-                <Separator
-                    className={styles.separator}
-                    spacing={0}
-                />
-            </If>
+                <If condition={showBoth}>
+                    <Separator
+                        className={styles.separator}
+                        spacing={0}
+                    />
+                </If>
 
-            <If condition={showMembers}>
-                <div className={styles.section}>
-                    <Heading className={styles.heading}>
-                        <>Участники</>
-                    </Heading>
+                <If condition={showMembers}>
+                    <div className={styles.section}>
+                        <Heading className={styles.heading}>
+                            <>Участники</>
+                        </Heading>
 
-                    <ul
-                        ref={membersNavigation.setRoot}
-                        tabIndex={0}
-                    >
-                        <ViewportList
-                            items={members}
-                            onViewportIndexesChange={membersNavigation.setViewportIndexes}
+                        <ul
+                            ref={membersNavigation.setRoot}
+                            tabIndex={0}
                         >
-                            {(member) => {
-                                const handleRemove = () => removeItem('allowedMembers', member.id);
-
-                                return (
+                            <ViewportList
+                                items={members}
+                                onViewportIndexesChange={membersNavigation.setViewportIndexes}
+                            >
+                                {(member) => (
                                     <MoveFocusInside
                                         enabled={membersNavigation.getIsFocused(member.id)}
                                         key={member.id}
@@ -164,7 +164,7 @@ export const AllowedRolesAndMembers: FC = () => {
                                         >
                                             <UserAvatar
                                                 className={styles.image}
-                                                avatarId={member.avatar}
+                                                avatarId={member.avatarId}
                                                 username={member.username}
                                             />
 
@@ -180,7 +180,7 @@ export const AllowedRolesAndMembers: FC = () => {
                                                             label='Лишить доступа к комнате'
                                                             tabIndex={membersNavigation.getTabIndex(member.id)}
                                                             innerRef={ref}
-                                                            onLeftClick={handleRemove}
+                                                            onLeftClick={() => removeMember(member.id)}
                                                         >
                                                             <SpriteImage
                                                                 className={styles.icon}
@@ -199,12 +199,12 @@ export const AllowedRolesAndMembers: FC = () => {
                                             </Ref>
                                         </li>
                                     </MoveFocusInside>
-                                );
-                            }}
-                        </ViewportList>
-                    </ul>
-                </div>
-            </If>
-        </Scrollable>
+                                )}
+                            </ViewportList>
+                        </ul>
+                    </div>
+                </If>
+            </Scrollable>
+        </If>
     );
 };

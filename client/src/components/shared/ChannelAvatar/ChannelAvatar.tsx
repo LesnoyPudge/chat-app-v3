@@ -14,8 +14,9 @@ const styles = {
     wrapper: '@container h-10 w-10 shrink-0 rounded-full overflow-hidden',
     image: 'h-full w-full',
     nameWrapper: 'h-full flex justify-center items-center',
-    name: 'px-1.5 truncate font-medium text-base @[40px]:text-lg',
+    name: 'select-none px-1.5 truncate font-medium  text-[50cqh] ',
 };
+// text-base @[40px]:text-lg
 
 export const ChannelAvatar: FC<ChannelAvatar> = ({
     className = '',

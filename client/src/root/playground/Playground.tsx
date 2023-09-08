@@ -5,7 +5,7 @@ import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedInt
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, Suspense, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useDocumentTitle, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useSet, useKeyboardNavigation, useLatest, usePromise, ControlledPromise, useTimeout } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useKeyboardNavigation, useLatest, usePromise, ControlledPromise, useTimeout } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -620,7 +620,7 @@ import { createMemoSelector } from '@redux/utils';
 import isObject from 'is-object';
 import { Placeholder } from 'src/components/shared/Placeholder';
 import { socketIO } from '../features/soket';
-import { EntityContext, EntityContextProvider } from 'src/components/contexts/EntityContext/EntityContext';
+import { EntityContext, EntityContextHelpers, EntityContextProvider } from 'src/components/contexts/EntityContext/EntityContext';
 import { MessagePlaceholder } from 'src/components/shared/Chat/components';
 
 
@@ -1055,45 +1055,6 @@ const TmpSetTest: FC<{add: AnyFunction}> = ({ add }) => {
     );
 };
 
-const PlaygroundInner20: FC = () => {
-    const { _actions, _value } = useSet(['0']);
-    const {
-        add,
-        has,
-        remove,
-        reset,
-        toggle,
-    } = _actions;
-
-    return (
-        <div>
-            <div>
-                <>value is {JSON.stringify(Array.from(_value))}</>
-            </div>
-
-            <Memo>
-                <TmpSetTest add={add}/>
-            </Memo>
-
-
-            <button onClick={() => console.log(has('0'))}>
-                <>has</>
-            </button>
-
-            <button onClick={() => remove('0')}>
-                <>remove</>
-            </button>
-
-            <button onClick={reset}>
-                <>reset</>
-            </button>
-
-            <button onClick={() => toggle('0')}>
-                <>toggle</>
-            </button>
-        </div>
-    );
-};
 
 const PlaygroundInner21: FC = () => {
     return (
@@ -1821,26 +1782,32 @@ const ETest: FC = () => {
     );
 };
 
+
+
 const PlaygroundInner29: FC = () => {
-    const [state, setState] = useState<string | undefined>(undefined);
-
-    useTimeout(() => {
-        setState('qwe');
-    }, 2000);
-
-
-    useTimeout(() => {
-        setState(undefined);
-    }, 6000);
+    const Testc: FC = () => {
+        console.log('failed');
+        return (
+            <></>
+        );
+    };
 
     return (
-        <div className='grid gap-4'>
-            <TestContext.Provider value={state}>
-                <If condition={!!state}>
-                    <ETest/>
-                </If>
-            </TestContext.Provider>
-        </div>
+        <EntityContextProvider.Channel id='qwe'>
+            <div className='grid gap-4'>
+                <EntityContextHelpers.Channel.Loading>
+                    {(_, id) => (
+                        <>
+                            {id}
+                        </>
+                    )}
+                </EntityContextHelpers.Channel.Loading>
+
+                <EntityContextHelpers.Channel.Loaded>
+                    <Testc/>
+                </EntityContextHelpers.Channel.Loaded>
+            </div>
+        </EntityContextProvider.Channel>
     );
 };
 

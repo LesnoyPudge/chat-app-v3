@@ -23,14 +23,14 @@ const validationSchema = createValidationSchema<CreateChannelFormValues>(({
     yup,
     VALIDATION_MESSAGES,
 }) => ({
-    name: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+    name: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
     avatar: createValidationSchema<CreateChannelFormValues['avatar']>(() => ({
-        base64: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
-        name: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
-        type: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+        base64: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
+        name: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
+        type: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
         size: yup.number().required(VALIDATION_MESSAGES.REQUIRED),
     })).optional().default(undefined),
-    identifier: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+    identifier: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
 }));
 
 export const CreateChannelTab: FC = () => {

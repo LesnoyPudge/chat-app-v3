@@ -1,4 +1,4 @@
-import { Button,SpriteImage, OverlayContextProvider, Ref, TopBar, EntityContext } from '@components';
+import { Button,SpriteImage, OverlayContextProvider, Ref, TopBar, EntityContext, EntityContextHelpers } from '@components';
 import { useNavigator } from '@hooks';
 import { getTextFallback, twClassNames } from '@utils';
 import { FC, useContext } from 'react';
@@ -18,7 +18,7 @@ const styles = {
 };
 
 export const Header: FC = () => {
-    const channel = useContext(EntityContext.Channel);
+    const [channel] = useContext(EntityContext.Channel);
 
     return (
         <OverlayContextProvider disabled={!channel}>
@@ -55,9 +55,9 @@ export const Header: FC = () => {
                                         />
                                     </Button>
 
-                                    <If condition={!!channel}>
+                                    <EntityContextHelpers.Channel.Loaded>
                                         <ChannelMenu leaderElementRef={ref}/>
-                                    </If>
+                                    </EntityContextHelpers.Channel.Loaded>
                                 </>
                             )}
                         </Ref>

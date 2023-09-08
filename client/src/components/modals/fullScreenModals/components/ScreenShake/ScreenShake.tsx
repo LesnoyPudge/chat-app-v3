@@ -2,8 +2,9 @@ import { ChildrenAsNodeOrFunction } from '@components';
 import { useThrottle } from '@hooks';
 import { animated, useReducedMotion, useSpringValue } from '@react-spring/web';
 import { PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { getRandomNumber } from '@utils';
+import { getRandomNumber, noop } from '@utils';
 import { createContext, FC, useRef } from 'react';
+import { AnyFunction } from 'ts-essentials';
 
 
 
@@ -11,6 +12,7 @@ export interface ScreenShakeContext {
     isThrottling: boolean;
     triggerScreenShake: () => void;
     resetShakeStacks: () => void;
+    withResetShakeStacks: <T extends AnyFunction>(fn: T) => (...args: Parameters<T>) => void;
 }
 
 type ScreenShake = PropsWithClassName & PropsWithChildrenAsNodeOrFunction<ScreenShakeContext>
@@ -37,10 +39,17 @@ export const ScreenShake: FC<ScreenShake> = ({
 
     const resetShakeStacks = () => shakeStackRef.current = shakeStack.min;
 
+    const withResetShakeStacks = <T extends AnyFunction>(fn: T) => {
+        return (...args: Parameters<T>) => {
+            shakeStackRef.current = shakeStack.min;
+            fn(...args);
+        };
+    };
+
     const triggerScreenShake = () => {
         if (isMotionReduced) return;
 
-        throttle(() => {}, 2000)();
+        throttle(noop, 2000)();
 
         windowShake.start(1, {
             config: {
@@ -70,6 +79,7 @@ export const ScreenShake: FC<ScreenShake> = ({
         isThrottling,
         resetShakeStacks,
         triggerScreenShake,
+        withResetShakeStacks,
     };
 
     return (

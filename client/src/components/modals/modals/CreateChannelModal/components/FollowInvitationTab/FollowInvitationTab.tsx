@@ -20,7 +20,7 @@ const validationSchema = createValidationSchema<FollowInvitationFormValues>(({
     yup,
     VALIDATION_MESSAGES,
 }) => ({
-    code: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+    code: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
 }));
 
 const { CUSTOM_CLIENT_URL } = getEnv();

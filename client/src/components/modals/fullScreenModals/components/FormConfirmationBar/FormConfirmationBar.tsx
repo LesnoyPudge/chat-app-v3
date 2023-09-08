@@ -22,7 +22,7 @@ const styles = {
 const transitionOptions = getTransitionOptions.inOut();
 
 export const FormConfirmationBar: FC = () => {
-    const { dirty } = useFormikContext();
+    const { dirty, isSubmitting } = useFormikContext();
     const { isThrottling } = useContext(ScreenShakeContext);
 
     return (
@@ -30,7 +30,7 @@ export const FormConfirmationBar: FC = () => {
             {({ style, isAnimatedExist }) => {
                 return (
                     <If condition={isAnimatedExist}>
-                        <animated.div 
+                        <animated.div
                             className={styles.wrapper}
                             aria-live='polite'
                             style={{
@@ -42,15 +42,15 @@ export const FormConfirmationBar: FC = () => {
                         >
                             <div className={twClassNames(
                                 styles.inner.base,
-                                { 
-                                    [styles.inner.active]: style.value.idle, 
+                                {
+                                    [styles.inner.active]: style.value.idle,
                                     [styles.inner.throttle]: isThrottling,
                                 },
                             )}>
                                 <div className={styles.text}>
                                     <>Аккуратнее, вы не сохранили изменения!</>
                                 </div>
-    
+
                                 <Button
                                     stylingPreset='lite'
                                     size='small'
@@ -58,11 +58,12 @@ export const FormConfirmationBar: FC = () => {
                                 >
                                     <>Сброс</>
                                 </Button>
-    
+
                                 <Button
                                     stylingPreset='brandPositive'
                                     size='small'
                                     type='submit'
+                                    isLoading={isSubmitting}
                                 >
                                     <>Сохранить изменения</>
                                 </Button>

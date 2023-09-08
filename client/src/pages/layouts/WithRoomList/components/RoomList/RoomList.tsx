@@ -1,54 +1,22 @@
-import { Button,SpriteImage, OverlayContextProvider, Ref, RoomSettingsModal, Scrollable, Tooltip , MoveFocusInside } from '@components';
-import { IMAGES } from '@generated';
-import { useKeyboardNavigation, useNavigator } from '@hooks';
-import { twClassNames } from '@utils';
-import { FC, useRef } from 'react';
-
+import { Scrollable, EntityContext, EntityContextProvider, EntityContextHelpers, Memo, Placeholder } from '@components';
+import { useKeyboardNavigation, useLatest } from '@hooks';
+import { idArrayToObjectsWithId } from '@utils';
+import { FC, useContext } from 'react';
 import { ViewportList } from 'react-viewport-list';
+import { LoadedRoomItem } from './components';
 
 
-
-interface Room {
-    id: string;
-    name: string;
-    type: 'voice' | 'text';
-}
-
-const rooms: Room[] = Array(150).fill(null).map((_, i) => ({
-    id: String(i),
-    name: `room ${i}`.repeat(10),
-    type: 'text',
-} satisfies Room));
 
 const styles = {
     wrapper: 'mt-4',
     list: 'flex flex-col gap-1',
-    item: {
-        base: `relative flex items-center gap-1.5 p-1.5 rounded-md 
-        hover:bg-primary-hover focus-within:bg-primary-hover group/item`,
-        selected: 'bg-primary-selected',
-    },
-    navigationButton: 'absolute inset-0',
-    roomTypeIcon: 'h-5 w-5 fill-icon-300',
-    name: {
-        base: `font-medium text-color-muted truncate
-        group-focus-within/item:text-color-primary group-hover/item:text-color-primary`,
-        selected: 'text-color-primary',
-    },
-    actionButton: {
-        base: `shrink-0 ml-auto h-4 w-0 opacity-0 
-        group-focus-within/item:opacity-100 group-hover/item:opacity-100 group/action
-        group-focus-within/item:w-4 group-hover/item:w-4`,
-        selected: 'opacity-100 w-4',
-    },
-    actionIcon: `w-full h-full fill-icon-300 group-hover/action:fill-icon-100 
-    group-focus-visible/action:fill-icon-100`,
+    placeholder: 'h-9 bg-primary-hover cursor-not-allowed rounded-md',
 };
 
 export const RoomList: FC = () => {
-    const { params, navigateTo, myLocationIs } = useNavigator();
-
-    const roomListRef = useRef(rooms);
+    const [channel] = useContext(EntityContext.Channel);
+    const roomIds = channel?.rooms ?? [];
+    const roomListRef = useLatest(idArrayToObjectsWithId(roomIds));
     const {
         setRoot,
         withFocusSet,
@@ -57,18 +25,8 @@ export const RoomList: FC = () => {
         setViewportIndexes,
     } = useKeyboardNavigation(roomListRef, undefined, {
         virtualized: true,
-        initialFocusableId: params.roomId,
+        initialFocusableId: roomIds.at(0),
     });
-
-    const handleRoomNavigation = (roomId: string) => {
-        if (!params.channelId) return;
-        navigateTo.room(params.channelId, roomId);
-    };
-
-    const getIsActive = (roomId: string) => {
-        if (!params.channelId) return;
-        return myLocationIs.room(params.channelId, roomId);
-    };
 
     return (
         <Scrollable
@@ -86,96 +44,37 @@ export const RoomList: FC = () => {
                 ref={setRoot}
             >
                 <ViewportList
-                    items={rooms}
+                    items={roomIds}
                     onViewportIndexesChange={setViewportIndexes}
                     withCache
                     initialPrerender={30}
                     overscan={3}
                 >
-                    {(room) => {
-                        const roomTypeIconId = (
-                            room.type === 'voice'
-                                ? IMAGES.SPRITE.VOICE_ROOM_ICON.NAME
-                                : IMAGES.SPRITE.TEXT_ROOM_ICON.NAME
-                        );
-                        const isRoomActive = getIsActive(room.id);
-                        const navigationLabel = `Перейти к комнате ${room.name}`;
-                        const settingsLabel = `Настройки комнаты ${room.name}`;
-                        const tabIndex = getTabIndex(room.id);
-                        const isFocused = getIsFocused(room.id);
-
-                        const handleNavigation = () => handleRoomNavigation(room.id);
-
+                    {(roomId) => {
                         return (
-                            <MoveFocusInside
-                                enabled={isFocused}
-                                key={room.id}
-                            >
-                                <li
-                                    className={twClassNames(
-                                        styles.item.base,
-                                        { [styles.item.selected]: isRoomActive, [String(isRoomActive)]: isRoomActive },
-                                    )}
-                                >
-                                    <Button
-                                        className={styles.navigationButton}
-                                        label={navigationLabel}
-                                        tabIndex={tabIndex}
-                                        onLeftClick={withFocusSet(room.id, handleNavigation)}
-                                        onAnyClick={withFocusSet(room.id)}
-                                    ></Button>
-
-                                    <SpriteImage
-                                        className={styles.roomTypeIcon}
-                                        name={roomTypeIconId}
-                                    />
-
-                                    <span className={twClassNames(
-                                        styles.name.base,
-                                        { [styles.name.selected]: isRoomActive },
-                                    )}>
-                                        {room.name}
-                                    </span>
-
-                                    <OverlayContextProvider>
-                                        {({ openOverlay, isOverlayExist }) => (
-                                            <Ref<HTMLButtonElement>>
-                                                {(ref) => (
-                                                    <>
-                                                        <Button
-                                                            className={twClassNames(
-                                                                styles.actionButton.base,
-                                                                { [styles.actionButton.selected]: isRoomActive },
-                                                            )}
-                                                            tabIndex={tabIndex}
-                                                            isActive={isOverlayExist}
-                                                            hasPopup='dialog'
-                                                            label={settingsLabel}
-                                                            innerRef={ref}
-                                                            onLeftClick={withFocusSet(room.id, openOverlay)}
-                                                        >
-                                                            <SpriteImage
-                                                                className={styles.actionIcon}
-                                                                name='SETTINGS_GEAR'
-                                                            />
-                                                        </Button>
-
-                                                        <RoomSettingsModal roomId={room.id}/>
-
-                                                        <Tooltip
-                                                            preferredAlignment='top'
-                                                            spacing={5}
-                                                            leaderElementRef={ref}
-                                                        >
-                                                            <>Настроить комнату</>
-                                                        </Tooltip>
-                                                    </>
-                                                )}
-                                            </Ref>
+                            <li key={roomId}>
+                                <EntityContextProvider.Room id={roomId}>
+                                    <EntityContextHelpers.Room.Loaded>
+                                        {(room) => (
+                                            <Memo>
+                                                <LoadedRoomItem
+                                                    room={room}
+                                                    withFocusSet={withFocusSet}
+                                                    getIsFocused={getIsFocused}
+                                                    getTabIndex={getTabIndex}
+                                                />
+                                            </Memo>
                                         )}
-                                    </OverlayContextProvider>
-                                </li>
-                            </MoveFocusInside>
+                                    </EntityContextHelpers.Room.Loaded>
+
+                                    <EntityContextHelpers.Room.Loading>
+                                        <Placeholder
+                                            className={styles.placeholder}
+                                            title='Загрузка комнаты...'
+                                        />
+                                    </EntityContextHelpers.Room.Loading>
+                                </EntityContextProvider.Room>
+                            </li>
                         );
                     }}
                 </ViewportList>

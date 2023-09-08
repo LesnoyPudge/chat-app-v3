@@ -1,5 +1,5 @@
 import { FC, useContext } from 'react';
-import {  Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator,SpriteImage, FieldLabel, RequiredWildcard, ErrorInLabel, TextInput, CreateRoomModalTabs, CheckBox } from '@components';
+import { Button, OverlayContext, CreateRoomFormValues, TabContext, CheckBoxIndicatorSlide, RadioInputIndicator,SpriteImage, FieldLabel, RequiredWildcard, ErrorInLabel, TextInput, CreateRoomModalTabs, CheckBox, FormError, MutationErrorContext } from '@components';
 import { ModalHeader, ModalTitle, ModalContent, ModalFooter } from '../../../../components';
 import { useFormikContext } from 'formik';
 import { Heading, FormikRadioInput, FormikCheckBox, FormikTextInput } from '@libs';
@@ -19,18 +19,20 @@ const styles = {
     checkBoxInfo: 'flex gap-1 items-center',
     checkBoxIcon: 'w-4 h-4 fill-icon-200',
     checkBoxExtraInfo: 'text-sm text-color-muted mt-2',
+    formError: 'mt-4',
 };
 
 export const CreateRoomTab: FC = () => {
     const { closeOverlay } = useContext(OverlayContext);
     const { changeTab } = useContext<TabContext<CreateRoomModalTabs>>(TabContext);
-    const { values, isValid, validateField } = useFormikContext<CreateRoomFormValues>();
+    const { values, isSubmitting, isValid, setTouched, validateForm } = useFormikContext<CreateRoomFormValues>();
+    const error = useContext(MutationErrorContext);
 
-    const handleNextStep = () => {
-        validateField('name');
-        if (!isValid) return;
+    const handleNextStep = async() => {
+        setTouched({ name: true }, false);
+        await validateForm();
 
-        changeTab.addWhiteListTab();
+        if (isValid) changeTab.addWhiteListTab();
     };
 
     return (
@@ -48,7 +50,7 @@ export const CreateRoomTab: FC = () => {
                     </Heading>
 
                     <FormikRadioInput
-                        name='roomType'
+                        name='type'
                         value='text'
                         label='Текстовый тип комнаты'
                     >
@@ -78,7 +80,7 @@ export const CreateRoomTab: FC = () => {
                     </FormikRadioInput>
 
                     <FormikRadioInput
-                        name='roomType'
+                        name='text'
                         value='voice'
                         label='Голосовой тип комнаты'
                     >
@@ -156,6 +158,11 @@ export const CreateRoomTab: FC = () => {
                         <>Только выбранные участники и участники </>
                         <>с выбранными ролями смогут просматривать этот канал.</>
                     </div>
+
+                    <FormError
+                        className={styles.formError}
+                        error={error}
+                    />
                 </div>
             </ModalContent>
 
@@ -173,6 +180,7 @@ export const CreateRoomTab: FC = () => {
                         stylingPreset='brand'
                         size='medium'
                         type='submit'
+                        isLoading={isSubmitting}
                     >
                         <>Создать комнату</>
                     </Button>
@@ -182,7 +190,7 @@ export const CreateRoomTab: FC = () => {
                     <Button
                         stylingPreset='brand'
                         size='medium'
-                        type='submit'
+                        isLoading={isSubmitting}
                         onLeftClick={handleNextStep}
                     >
                         <>Далее</>

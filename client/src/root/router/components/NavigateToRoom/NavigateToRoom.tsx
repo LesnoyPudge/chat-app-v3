@@ -15,29 +15,27 @@ export const NavigateToRoom: FC<NavigateToRoom> = ({
     fallback,
 }) => {
     const { navigateTo } = useNavigator();
-    const channel = useContext(EntityContext.Channel);
+    const [_, id] = useContext(EntityContext.Channel);
     const [getRoomIds, { data, isUninitialized }] = HelperApi.useHelperGetAvailableTextRoomIdsMutation();
 
     const showLoader = !data;
     const showFallback = !!data && !data.length;
 
     useEffect(() => {
-        if (!channel?.id) return;
         if (!isUninitialized) return;
         if (data) return;
 
-        getRoomIds({ channelId: channel.id });
-    }, [data, channel, getRoomIds, isUninitialized]);
+        getRoomIds({ channelId: id });
+    }, [data, id, getRoomIds, isUninitialized]);
 
     useEffect(() => {
-        if (!channel?.id) return;
         if (!data) return;
         if (!data.length) return;
 
         const roomToNavigate = data[0];
 
-        navigateTo.room(channel.id, roomToNavigate);
-    }, [channel?.id, data, navigateTo]);
+        navigateTo.room(id, roomToNavigate);
+    }, [id, data, navigateTo]);
 
     return (
         <>

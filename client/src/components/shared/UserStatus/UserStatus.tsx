@@ -43,6 +43,8 @@ export const UserStatus: FC<UserStatus> = ({
             : extraStatus
     );
 
+    console.log(`statusToShow: ${statusToShow}, status: ${status}, extraStatus: ${extraStatus}, ${statusNames[statusToShow]}`);
+
     return (
         <SpriteImage
             className={twClassNames(styles[statusToShow], className)}

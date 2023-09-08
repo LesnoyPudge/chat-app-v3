@@ -10,7 +10,7 @@ export const useMountedApiWrapper = () => {
     const isMounted = useIsMounted();
 
     const apiWrapper = <T,>(mutation: Promise<Result<T>>, cb: (value: T) => void) => {
-        mutation.then((value) => {
+        return mutation.then((value) => {
             if (!isMounted()) return;
             if (!('data' in value)) return;
 

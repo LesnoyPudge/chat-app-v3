@@ -189,9 +189,3 @@ export class EntitySubscription<T extends WithId> {
         }
     }
 }
-
-
-
-const qwe = <Name extends Names,>(name: Name) => {
-
-};

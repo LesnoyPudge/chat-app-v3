@@ -13,13 +13,13 @@ const styles = {
     avatarWrapper: 'w-[94px] relative',
     avatarInner: `absolute w-full aspect-square bottom-0 
     bg-primary-500 rounded-full p-[7px]`,
-    avatarButton: 'relative w-full h-full rounded-full group',
+    avatarButton: 'relative w-full h-full rounded-full peer',
     avatarOverlay: `grid place-items-center absolute inset-0 
-    rounded-full opacity-0 bg-black bg-opacity-40 pointer-events-none 
-    group-focus-within:opacity-100 group-hover:opacity-100 transition-all`,
+    rounded-full opacity-0 bg-black bg-opacity-80 pointer-events-none 
+    peer-focus-within:opacity-100 peer-hover:opacity-100 transition-all`,
     avatarOverlayText: 'uppercase font-bold text-2xs text-white text-center',
     avatar: 'w-full h-full rounded-full',
-    userStatusWrapper: 'absolute w-7 h-7 p-1.5 -bottom-1 -right-1 bg-primary-500 rounded-full',
+    userStatusWrapper: 'absolute w-8 h-8 p-1.5 bottom-0 right-0 bg-primary-500 rounded-full',
     userStatus: 'w-full h-full',
     username: 'ml-4 text-xl text-color-primary font-medium',
 };
@@ -73,11 +73,16 @@ export const Header: FC = () => {
                     </div>
 
                     <div className={styles.userStatusWrapper}>
-                        <UserStatus
-                            className={styles.userStatus}
-                            status={status}
-                            extraStatus={extraStatus}
-                        />
+                        {(() => {
+                            console.log('props is', status, extraStatus);
+                            return (
+                                <UserStatus
+                                    className={styles.userStatus}
+                                    status={status}
+                                    extraStatus={extraStatus}
+                                />
+                            );
+                        })()}
                     </div>
                 </div>
             </div>

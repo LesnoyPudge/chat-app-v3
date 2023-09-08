@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useLatest } from '@hooks';
 
 
@@ -11,20 +11,12 @@ type Actions<T> = {
     toggle: (value: T) => void;
 }
 
-type ArrayReturn<T> = [Set<T>, Actions<T>];
-
-type ObjectReturn<T> = {
-    _value: Set<T>;
-    _actions: Actions<T>;
-};
-
-type UseSetReturn<T> = ArrayReturn<T> & ObjectReturn<T>;
-
-export const useSet = <T,>(initial?: Iterable<T> | null): UseSetReturn<T> => {
+export const useSet = <T,>(initial?: Iterable<T> | null): [Set<T>, Actions<T>] => {
     const [set, setSet] = useState(new Set(initial));
+    const initialRef = useLatest(initial);
     const latestSet = useLatest(set);
 
-    const actionsRef = useRef<Actions<T>>({
+    const actions = useMemo<Actions<T>>(() => ({
         add: (value) => {
             setSet((prev) => new Set([...prev, value]));
         },
@@ -36,7 +28,7 @@ export const useSet = <T,>(initial?: Iterable<T> | null): UseSetReturn<T> => {
         },
 
         reset: () => {
-            setSet(new Set(initial));
+            setSet(new Set(initialRef.current));
         },
 
         toggle: (value) => {
@@ -48,10 +40,10 @@ export const useSet = <T,>(initial?: Iterable<T> | null): UseSetReturn<T> => {
                 return new Set([...prev, value]);
             });
         },
-    });
+    }), [initialRef, latestSet]);
 
-    const arr: ArrayReturn<T> = [set, actionsRef.current];
-    const obj: ObjectReturn<T> = { _value: set, _actions: actionsRef.current };
-
-    return Object.assign(arr, obj);
+    return [
+        set,
+        actions,
+    ];
 };

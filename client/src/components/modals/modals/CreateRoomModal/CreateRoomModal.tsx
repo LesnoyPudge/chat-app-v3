@@ -1,27 +1,36 @@
-import { FC } from 'react';
-import { ModalWindow, TabContextProvider } from '@components';
+import { FC, useContext } from 'react';
+import { LoadedEntityContext, ModalWindow, MutationErrorContextProvider, OverlayContext, TabContextProvider } from '@components';
 import { ModalContainer } from '../../components';
 import { Form, Formik } from 'formik';
 import { AddWhiteListTab, CreateRoomTab } from './components';
-import { IRole, IUserPreview } from '@backendTypes';
+import { SliceEntityState } from '@types';
+import { RoomApi } from '@redux/features';
+import { createValidationSchema } from '@utils';
+import { useMountedApiWrapper } from '@hooks';
 
 
 
-export interface CreateRoomFormValues {
-    roomType: 'text' | 'voice';
-    name: string;
-    isPrivate: boolean;
-    allowedRoles: Set<string>;
-    allowedMembers: Set<string>;
-}
+export type CreateRoomFormValues = Pick<
+    SliceEntityState.Room,
+    'whiteList' | 'type' | 'name' | 'isPrivate'
+>;
 
 const initialValues: CreateRoomFormValues = {
-    roomType: 'text',
     name: '',
     isPrivate: false,
-    allowedRoles: new Set([]),
-    allowedMembers: new Set([]),
+    type: 'text',
+    whiteList: {
+        roles: [],
+        users: [],
+    },
 };
+
+const validationSchema = createValidationSchema<Pick<CreateRoomFormValues, 'name'>>(({
+    yup,
+    VALIDATION_MESSAGES,
+}) => ({
+    name: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
+}));
 
 const tabs = {
     createRoomTab: <CreateRoomTab/>,
@@ -31,28 +40,39 @@ const tabs = {
 export type CreateRoomModalTabs = typeof tabs;
 
 export const CreateRoomModal: FC = () => {
-    const handleSubmit = (values: CreateRoomFormValues) => {
-        console.log('submit', values);
+    const [{ id }] = useContext(LoadedEntityContext.Channel);
+    const [create, { error }] = RoomApi.useRoomCreateMutation();
+    const { apiWrapper } = useMountedApiWrapper();
+    const { closeOverlay } = useContext(OverlayContext);
+
+    const handleSubmit = async(values: CreateRoomFormValues) => {
+        await apiWrapper(create({
+            channelId: id,
+            ...values,
+        }), closeOverlay);
     };
 
     return (
-        <ModalWindow 
+        <ModalWindow
             label='Создать комнату'
             withBackdrop
         >
             <Formik
                 initialValues={initialValues}
+                validationSchema={validationSchema}
                 onSubmit={handleSubmit}
             >
-                <Form>
-                    <ModalContainer>
-                        <TabContextProvider tabs={tabs}>
-                            {({ currentTab }) => (
-                                <>{currentTab.tab}</>
-                            )}
-                        </TabContextProvider>
-                    </ModalContainer>
-                </Form>
+                <MutationErrorContextProvider error={error}>
+                    <Form>
+                        <ModalContainer>
+                            <TabContextProvider tabs={tabs}>
+                                {({ currentTab }) => (
+                                    <>{currentTab.tab}</>
+                                )}
+                            </TabContextProvider>
+                        </ModalContainer>
+                    </Form>
+                </MutationErrorContextProvider>
             </Formik>
         </ModalWindow>
     );

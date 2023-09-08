@@ -1,24 +1,21 @@
-import { FC } from 'react';
-import { ModalWindow, TabContextProvider } from '@components';
+import { FC, useContext, useMemo } from 'react';
+import { LoadedEntityContext, ModalWindow, TabContextProvider } from '@components';
 import { FullScreenModalContentSide, FullScreenModalNavigationSide, FullScreenModalWrapper, ScreenShake } from '../components';
 import { Form, Formik } from 'formik';
-import { getTransitionOptions } from '@utils';
+import { createValidationSchema, getTransitionOptions } from '@utils';
 import { Navigation, OverviewTab } from './components';
+import { SliceEntityState } from '@types';
+import { RoomApi } from '@redux/features';
 
 
-
-interface RoomSettingsModal {
-    roomId: string;
-}
 
 export type RoomSettingsModalTabs = typeof tabs;
 
-export interface RoomSettingsModalFormValues {
-    roomName: string;
-    isPrivate: boolean;
-    allowedRoles: Set<string>;
-    allowedMembers: Set<string>;
-}
+
+export type RoomSettingsModalFormValues = Pick<
+    SliceEntityState.Room,
+    'name' | 'isPrivate' | 'whiteList'
+>;
 
 const transitionOptions = getTransitionOptions.fullScreenModal();
 
@@ -26,35 +23,47 @@ const tabs = {
     overviewTab: <OverviewTab/>,
 };
 
-export const RoomSettingsModal: FC<RoomSettingsModal> = ({
-    roomId,
-}) => {
-    const initialValues: RoomSettingsModalFormValues = {
-        roomName: 'some room name',
-        isPrivate: false,
-        allowedRoles: new Set(['1', '2', '3', '4', '5']),
-        allowedMembers: new Set(['1', '2', '3', '4', '5']),
+const validationSchema = createValidationSchema<Pick<RoomSettingsModalFormValues, 'name'>>(({
+    yup,
+    VALIDATION_MESSAGES,
+}) => ({
+    name: yup.string().trim().required(VALIDATION_MESSAGES.REQUIRED),
+}));
+
+export const RoomSettingsModal: FC = () => {
+    const [room] = useContext(LoadedEntityContext.Room);
+    const [update] = RoomApi.useRoomUpdateMutation();
+    const initialValues: RoomSettingsModalFormValues = useMemo(() => ({
+        name: room.name,
+        isPrivate: room.isPrivate,
+        whiteList: room.whiteList,
+    }), [room.name, room.isPrivate, room.whiteList]);
+
+    const handleSubmit = async(values: RoomSettingsModalFormValues) => {
+        await update({
+            channelId: room.channel,
+            roomId: room.id,
+            ...values,
+        });
     };
 
     return (
-        <ModalWindow 
+        <ModalWindow
             label='Настройки комнаты'
             transitionOptions={transitionOptions}
         >
             <ScreenShake>
-                {({ triggerScreenShake, resetShakeStacks }) => (
-                    <Formik 
+                {({ triggerScreenShake, resetShakeStacks, withResetShakeStacks }) => (
+                    <Formik
                         initialValues={initialValues}
-                        onSubmit={(values) => {
-                            resetShakeStacks();
-                            console.log(roomId, values);
-                        }}
+                        validationSchema={validationSchema}
+                        onSubmit={withResetShakeStacks(handleSubmit)}
                         onReset={resetShakeStacks}
                         enableReinitialize
                     >
                         {({ dirty }) => (
-                            <TabContextProvider 
-                                tabs={tabs} 
+                            <TabContextProvider
+                                tabs={tabs}
                                 onTabChange={(prevent) => {
                                     if (!dirty) return;
                                     prevent();
@@ -67,7 +76,7 @@ export const RoomSettingsModal: FC<RoomSettingsModal> = ({
                                             <FullScreenModalNavigationSide>
                                                 <Navigation/>
                                             </FullScreenModalNavigationSide>
-    
+
                                             <FullScreenModalContentSide>
                                                 {currentTab.tab}
                                             </FullScreenModalContentSide>
