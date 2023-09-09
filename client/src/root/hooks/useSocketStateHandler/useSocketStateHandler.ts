@@ -27,18 +27,34 @@ export const useSocketStateHandler = () => {
         };
     }, [isAuthorized]);
 
+
     useEffect(() => {
         socketIO.on('connect', () => {
             dispatch(AppSlice.actions.setIsSocketConnected(true));
         });
 
         socketIO.on('disconnect', () => {
-            dispatch(AppSlice.actions.setIsSocketConnected(true));
+            dispatch(AppSlice.actions.setIsSocketConnected(false));
         });
 
         return () => {
             socketIO.off('connect');
             socketIO.off('disconnect');
+        };
+    }, [dispatch]);
+
+    useEffect(() => {
+        socketIO.on('connect_error', (err) => {
+            console.log(`Socket event: connect_error | reason: ${err.message}`);
+        });
+
+        socketIO.onAny((event, ...args) => {
+            console.log(`Socket event: ${event}`);
+        });
+
+        return () => {
+            socketIO.off('connect_error');
+            socketIO.offAny();
         };
     }, [dispatch]);
 };

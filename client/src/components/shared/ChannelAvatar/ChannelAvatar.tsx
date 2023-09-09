@@ -11,12 +11,10 @@ interface ChannelAvatar extends PropsWithClassName {
 }
 
 const styles = {
-    wrapper: '@container h-10 w-10 shrink-0 rounded-full overflow-hidden',
+    wrapper: '@container flex justify-center items-center h-10 w-10 shrink-0 rounded-full overflow-hidden pointer-events-none',
     image: 'h-full w-full',
-    nameWrapper: 'h-full flex justify-center items-center',
-    name: 'select-none px-1.5 truncate font-medium  text-[50cqh] ',
+    name: 'select-none px-1.5 truncate font-medium text-[35cqw] leading-none uppercase',
 };
-// text-base @[40px]:text-lg
 
 export const ChannelAvatar: FC<ChannelAvatar> = ({
     className = '',
@@ -36,10 +34,8 @@ export const ChannelAvatar: FC<ChannelAvatar> = ({
             </If>
 
             <If condition={!avatar}>
-                <div className={styles.nameWrapper}>
-                    <div className={styles.name}>
-                        {formattedName}
-                    </div>
+                <div className={styles.name}>
+                    {formattedName}
                 </div>
             </If>
         </div>

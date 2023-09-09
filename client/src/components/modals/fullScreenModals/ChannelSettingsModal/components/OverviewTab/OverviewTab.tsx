@@ -16,10 +16,10 @@ const styles = {
     firstFileInput: 'w-[100px] h-[100px] rounded-full relative group bg-primary-300',
     channelImage: 'h-full w-full rounded-full',
     channelImageOverlay: `grid place-items-center absolute inset-0 
-    rounded-full opacity-0 bg-black bg-opacity-40 pointer-events-none 
+    rounded-full opacity-0 bg-black bg-opacity-80 pointer-events-none 
     group-focus-within:opacity-100 group-hover:opacity-100 transition-all`,
     overlayText: 'uppercase font-bold text-2xs text-white text-center',
-    addFileIconWrapper: `absolute top-0 right-0 translate-x-1/3 w-7 h-7 
+    addFileIconWrapper: `absolute top-0 right-0  w-7 h-7 
     p-1 rounded-full bg-primary-600 pointer-events-none shadow-elevation-high`,
     addFileIcon: 'w-full h-full fill-icon-200',
     fileRecommendation: 'text-sm text-color-secondary mb-4',
@@ -64,20 +64,20 @@ export const OverviewTab: FC = () => {
                                         avatar={value?.base64}
                                         name={channel.name}
                                     />
-                                </FileInput>
 
-                                <div className={styles.channelImageOverlay}>
-                                    <div className={styles.overlayText}>
-                                        <>Сменить <br/> значок</>
+                                    <div className={styles.channelImageOverlay}>
+                                        <div className={styles.overlayText}>
+                                            <>Сменить <br/> значок</>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className={styles.addFileIconWrapper}>
-                                    <SpriteImage
-                                        className={styles.addFileIcon}
-                                        name='ADD_FILE_ICON'
-                                    />
-                                </div>
+                                    <div className={styles.addFileIconWrapper}>
+                                        <SpriteImage
+                                            className={styles.addFileIcon}
+                                            name='ADD_FILE_ICON'
+                                        />
+                                    </div>
+                                </FileInput>
 
                                 <Button
                                     className={styles.removeFile}

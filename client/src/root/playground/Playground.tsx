@@ -1771,43 +1771,42 @@ const PlaygroundInner28: FC = () => {
     );
 };
 
-const TestContext = createContext<string | undefined>(undefined);
 
-const ETest: FC = () => {
-    const val = useContext(TestContext);
-    if (!val) throw new Error('');
-
+const Scroller: FC = () => {
     return (
-        <>qwe</>
+        <>
+        </>
     );
 };
 
+const Tab1: FC = () => {
+    return (
+        <div>1</div>
+    );
+};
 
+const Tab2: FC = () => {
+    return (
+        <div>2</div>
+    );
+};
+
+const tabs = [
+    Tab1,
+    Tab2,
+];
 
 const PlaygroundInner29: FC = () => {
-    const Testc: FC = () => {
-        console.log('failed');
-        return (
-            <></>
-        );
-    };
-
     return (
-        <EntityContextProvider.Channel id='qwe'>
-            <div className='grid gap-4'>
-                <EntityContextHelpers.Channel.Loading>
-                    {(_, id) => (
-                        <>
-                            {id}
-                        </>
-                    )}
-                </EntityContextHelpers.Channel.Loading>
-
-                <EntityContextHelpers.Channel.Loaded>
-                    <Testc/>
-                </EntityContextHelpers.Channel.Loaded>
-            </div>
-        </EntityContextProvider.Channel>
+        <div className='grid gap-4'>
+            <OverlayContextProvider isOverlayExistInitial>
+                <ModalWindow label=''>
+                    <div className='bg-purple-600'>
+                        <>qwe</>
+                    </div>
+                </ModalWindow>
+            </OverlayContextProvider>
+        </div>
     );
 };
 
