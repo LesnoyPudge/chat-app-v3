@@ -1,6 +1,7 @@
 import { EntityContext } from '@components';
-import { useNavigator } from '@hooks';
+import { useLatest, useNavigator } from '@hooks';
 import { HelperApi } from '@redux/features';
+import { localStorageApi } from '@utils';
 import { FC, ReactNode, useContext, useEffect } from 'react';
 
 
@@ -17,6 +18,7 @@ export const NavigateToRoom: FC<NavigateToRoom> = ({
     const { navigateTo } = useNavigator();
     const [_, id] = useContext(EntityContext.Channel);
     const [getRoomIds, { data, isUninitialized }] = HelperApi.useHelperGetAvailableTextRoomIdsMutation();
+    const lastRoomId = localStorageApi.get('lastVisitedTextRooms')?.[id ?? ''];
 
     const showLoader = !data;
     const showFallback = !!data && !data.length;
@@ -24,13 +26,16 @@ export const NavigateToRoom: FC<NavigateToRoom> = ({
     useEffect(() => {
         if (!isUninitialized) return;
         if (data) return;
+        if (!id) return;
+        if (lastRoomId) return;
 
         getRoomIds({ channelId: id });
-    }, [data, id, getRoomIds, isUninitialized]);
+    }, [data, id, getRoomIds, isUninitialized, lastRoomId]);
 
     useEffect(() => {
         if (!data) return;
         if (!data.length) return;
+        if (!id) return;
 
         const roomToNavigate = data[0];
 

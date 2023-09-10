@@ -6,7 +6,7 @@ import { useEntitySubscription } from '@hooks';
 
 
 
-type ContextArgs<Entity extends WithId> = [Entity | undefined, Id];
+type ContextArgs<Entity extends WithId> = [Entity | undefined, Id | undefined];
 
 type LoadedContextArgs<Entity extends WithId> = [Entity, Id];
 
@@ -23,11 +23,14 @@ export const EntityContext = {
 export const createEntityContextProvider = <Entity extends WithId>(
     entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>,
 ) => {
-    const Provider: FC<WithId & PropsWithChildrenAsNodeOrFunction<ContextArgs<Entity>>> = ({
+    const Provider: FC<Partial<WithId> & PropsWithChildrenAsNodeOrFunction<ContextArgs<Entity>>> = ({
         id,
         children,
     }) => {
-        const ids = useMemo(() => [id], [id]);
+        const ids = useMemo(() => {
+            if (id === undefined) return [];
+            return [id];
+        }, [id]);
         const [entity] = useEntitySubscription(entityName, ids) as (Entity | undefined)[];
 
         const SelectedContext = EntityContext[entityName];

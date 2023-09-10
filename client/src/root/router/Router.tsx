@@ -31,7 +31,7 @@ const lazyWithDevDelay = (
 const AuthPage = lazyWithDevDelay(() => import('@pages/AuthPage'), 3000);
 const InvitationPage = lazyWithDevDelay(() => import('@pages/AuthPage'), 3000);
 const AppSubPage = lazyWithDevDelay(() => import('@subPages/AppSubPage'), 3000);
-const ChannelSubPage = lazyWithDevDelay(() => import('@subPages/ChannelSubPage'), 3000);
+const RoomSubPage = lazyWithDevDelay(() => import('@subPages/RoomSubPage'), 3000);
 const PrivateChatSubPage = lazyWithDevDelay(() => import('@subPages/PrivateChatSubPage'), 3000);
 const NoRoomsSubPage = lazyWithDevDelay(() => import('@subPages/NoRoomsSubPage'), 3000);
 
@@ -164,7 +164,7 @@ export const Router: FC = () => {
                                                 <Route index element={(
                                                     <Suspense fallback={<SubPageSkeleton/>}>
                                                         <GlobalLoader.Loaded>
-                                                            <ChannelSubPage/>
+                                                            <RoomSubPage/>
                                                         </GlobalLoader.Loaded>
                                                     </Suspense>
                                                 )}/>

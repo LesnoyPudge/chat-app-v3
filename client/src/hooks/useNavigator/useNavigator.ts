@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 import { NavigateOptions, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLatest } from '@hooks';
+import { localStorageApi } from '@utils';
 
 
 
@@ -29,14 +30,13 @@ export const useNavigator = () => {
     const params = useParams<Params>();
     const { pathname } = useLocation();
     const latestPathRef = useLatest(pathname);
-    const stateRef = useRef({ from: '/app' });
-    const latestNavigateRef = useLatest(navigateInner);
+    const stateRef = useRef({ from: navigatorPath.app() });
 
     const navigate = useCallback((to: string, options?: NavigateOptions) => {
         console.log(`Navigate to: ${to}`);
 
-        latestNavigateRef.current(to, options);
-    }, [latestNavigateRef]);
+        navigateInner(to, options);
+    }, [navigateInner]);
 
     const myLocationIsRef = useRef({
         auth: () => latestPathRef.current === navigatorPath.auth(),
@@ -86,6 +86,12 @@ export const useNavigator = () => {
 
             if (options?.withState) {
                 stateRef.current.from = latestPathRef.current;
+            }
+
+            const latestRoomId = localStorageApi.get('lastVisitedTextRooms')?.[channelId];
+            if (latestRoomId) {
+                navigate(navigatorPath.room(channelId, latestRoomId), options);
+                return;
             }
 
             navigate(navigatorPath.channel(channelId), options);

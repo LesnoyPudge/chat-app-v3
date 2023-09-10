@@ -1,22 +1,28 @@
-import { Timestamp } from '@shared';
+import { Id, Timestamp } from '@shared';
 
 
+
+type ChannelId = Id;
+type RoomId = Id;
 
 type Values = {
-    lastRefresh: Timestamp | null;
-    myId: string | null;
+    lastRefresh: Timestamp;
+    myId: string;
+    lastVisitedTextRooms: Record<ChannelId, RoomId>;
 }
 
 export const localStorageApi = {
-    get: <T extends keyof Values>(key: T): Values[T] => {
+    get: <T extends keyof Values>(key: T): Values[T] | null => {
         const value = localStorage.getItem(key);
-        if (typeof value !== 'string') return value;
+        if (typeof value !== 'string') return null;
 
         try {
             const parsed = JSON.parse(value) as Values[T];
             return parsed;
         } catch (e) {
-            return value as unknown as Values[T];
+            localStorage.removeItem(key);
+            return null;
+            // return value as unknown as Values[T];
         }
     },
 
@@ -30,5 +36,11 @@ export const localStorageApi = {
 
     clear: () => {
         localStorage.clear();
+    },
+
+    removeSensitive: () => {
+        localStorageApi.remove('lastRefresh');
+        localStorageApi.remove('myId');
+        localStorageApi.remove('lastVisitedTextRooms');
     },
 };

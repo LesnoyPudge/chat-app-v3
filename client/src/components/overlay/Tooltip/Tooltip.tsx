@@ -4,6 +4,7 @@ import { animated } from '@react-spring/web';
 import { PropsWithChildrenAndClassName, PropsWithLeaderElementRef } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
 import { FC, useState } from 'react';
+import { useTooltip } from './hooks';
 
 
 
@@ -45,53 +46,7 @@ export const Tooltip: FC<Tooltip> = ({
     swappableAlignment = true,
     unbounded,
 }) => {
-    const [isExist, setIsExist] = useState(false);
-    const [withKeyboardRef, setWithKeyboard] = useRefWithSetter(false);
-    const [withMouseRef, setWithMouse] = useRefWithSetter(false);
-
-    const changeState = () => {
-        const newState = withKeyboardRef.current || withMouseRef.current;
-        if (newState === isExist) return;
-
-        setIsExist(newState);
-    };
-
-    const handleFocusIn = (e: FocusEvent) => {
-        if (!leaderElementRef.current) return;
-        if (e.target !== leaderElementRef.current) return;
-
-        setWithKeyboard(true);
-        changeState();
-    };
-
-    const handleFocusOut = (e: FocusEvent) => {
-        if (!leaderElementRef.current) return;
-        if (e.target !== leaderElementRef.current) return;
-
-        setWithKeyboard(false);
-        changeState();
-    };
-
-    const handleMouseEnter = () => {
-        setWithMouse(true);
-        changeState();
-    };
-
-    const handleMouseLeave = () => {
-        setWithMouse(false);
-        changeState();
-    };
-
-    useFocusVisibleEvent(handleFocusIn, handleFocusOut, leaderElementRef);
-    useEventListener('mouseenter', handleMouseEnter, leaderElementRef);
-    useEventListener('mouseleave', handleMouseLeave, leaderElementRef);
-
-    useSharedIntersectionObserver(leaderElementRef, ({ isIntersecting }) => {
-        if (isIntersecting === isExist) return;
-        if (!withKeyboardRef.current && !withMouseRef.current) return;
-
-        setIsExist(isIntersecting);
-    });
+    const [isExist] = useTooltip(leaderElementRef);
 
     return (
         <AnimatedTransition

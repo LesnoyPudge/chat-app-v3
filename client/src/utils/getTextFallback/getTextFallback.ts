@@ -2,7 +2,7 @@
 
 
 export const getTextFallback = (
-    text: string | undefined,
+    text?: string,
     fallback = 'Загрузка...',
 ) => {
     return text ?? fallback;

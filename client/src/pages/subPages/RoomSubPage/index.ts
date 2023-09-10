@@ -1,0 +1,1 @@
+export { RoomSubPage as default } from './RoomSubPage';

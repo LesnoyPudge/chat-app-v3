@@ -62,8 +62,7 @@ export const AppSlice = createSlice({
     },
     extraReducers(builder) {
         builder.addCase(resetApiStateAction, () => {
-            localStorageApi.set('lastRefresh', null);
-            localStorageApi.set('myId', null);
+            localStorageApi.removeSensitive();
 
             return {
                 ...getInitialState(),
@@ -99,13 +98,6 @@ export const AppSlice = createSlice({
                 AppSlice.caseReducers.refreshAuth(state, data);
             },
         );
-
-        // builder.addMatcher(
-        //     UserApi.endpoints[Endpoints.V1.User.Refresh.ActionNameWithEntity].matchRejected,
-        //     () => {
-        //         triggerGlobalReset();
-        //     },
-        // );
 
         builder.addMatcher(
             UserApi.endpoints[Endpoints.V1.User.Logout.ActionNameWithEntity].matchPending,
