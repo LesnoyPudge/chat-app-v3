@@ -6,28 +6,31 @@
     data-chat-font-size="16"
     data-outline="false"
 >
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1"/>
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="description" content="ChatApp" />
+        
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/manifest.json">
 
-<head>
-    <meta charset="utf-8" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="ChatApp" />
-    <title>ChatApp</title>
-</head>
+        <title>ChatApp</title>
+    </head>
 
-<body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    
-    <main>
-        <div id="app"></div>
-        <div id="overlay"></div>
-    </main>
-    
-    <div aria-hidden="true" id="dev"></div>
-    <script type="module" src="/src/index.tsx"></script>
-</body>
-
+    <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        
+        <main>
+            <div id="app"></div>
+            <div id="overlay"></div>
+        </main>
+        
+        <div aria-hidden="true" id="dev"></div>
+        
+        <script type="module" src="/src/index.tsx"></script>
+    </body>
 </html>

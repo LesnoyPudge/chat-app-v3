@@ -25,7 +25,7 @@ export const Header: FC = () => {
     const [room] = useContext(EntityContext.Room);
     const roomLabel = (
         room?.name
-            ? `Комната ${room.name}`
+            ? room.name
             : getTextFallback(undefined, 'Загрузка комнаты...')
     );
 

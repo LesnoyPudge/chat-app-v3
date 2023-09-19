@@ -1,4 +1,4 @@
-import { Image, TabPanel, Separator, UserAvatar, TabContext, Scrollable, List , MoveFocusInside } from '@components';
+import { Image, TabPanel, Separator, UserAvatar, TabContext, Scrollable, List , MoveFocusInside, ToDo } from '@components';
 import { AppSubPageTabs } from '@subPages/AppSubPage';
 import { FC, useContext, useRef } from 'react';
 import { ActionButtons } from './components';
@@ -136,9 +136,11 @@ export const Content: FC<Content> = ({ value }) => {
                         src={IMAGES.COMMON.FRIENDSNOTFOUND.PATH}
                     />
 
-                    <div className={styles.notFoundText}>
-                        <>Вампус внимательно искал, но не нашёл никого с таким именем.</>
-                    </div>
+                    <ToDo text='показывается даже при пустом поле ввода'>
+                        <div className={styles.notFoundText}>
+                            <>Вампус внимательно искал, но не нашёл никого с таким именем.</>
+                        </div>
+                    </ToDo>
                 </div>
             </If>
         </TabPanel>
