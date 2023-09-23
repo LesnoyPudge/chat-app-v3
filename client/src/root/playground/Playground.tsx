@@ -1791,12 +1791,13 @@ const Tab2: FC = () => {
     );
 };
 
-const tabs = [
-    Tab1,
-    Tab2,
-];
+
 
 const PlaygroundInner29: FC = () => {
+    const tabs = [
+        Tab1,
+        Tab2,
+    ];
     return (
         <div className='grid gap-4'>
             <OverlayContextProvider isOverlayExistInitial>
@@ -1806,6 +1807,37 @@ const PlaygroundInner29: FC = () => {
                     </div>
                 </ModalWindow>
             </OverlayContextProvider>
+        </div>
+    );
+};
+
+const ScrollableV2: FC = () => {
+    return (
+        <>
+        </>
+    );
+};
+
+const PlaygroundInner30: FC = () => {
+    const Item: FC<PropsWithChildren> = ({ children }) => {
+        return (
+            <>{children}</>
+        );
+    };
+
+    return (
+        <div className='bg-slate-500 p-2'>
+            <div className='bg-orange-900'>
+                <div>
+                    <>qwe</>
+                </div>
+
+                <Scrollable>
+                    <Item>
+                        <>zxc</>
+                    </Item>
+                </Scrollable>
+            </div>
         </div>
     );
 };
@@ -1820,7 +1852,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
             </If>
 
             <If condition={enabled}>
-                <PlaygroundInner29/>
+                {/* <PlaygroundInner29/> */}
+                <PlaygroundInner30/>
             </If>
         </>
     );
