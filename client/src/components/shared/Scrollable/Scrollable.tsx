@@ -20,7 +20,7 @@ PropsWithChildrenAsNodeOrFunction<RefObject<SimpleBarCore>>
     small?: boolean;
     focusable?: boolean;
     followContentSize?: boolean;
-    setSimpleBar?: MutableRefObject<SimpleBarCore | null> | ((el: SimpleBarCore | null) => void);
+    // setSimpleBar?: MutableRefObject<SimpleBarCore | null> | ((el: SimpleBarCore | null) => void);
     setScrollableWrapper?: MutableRefObject<HTMLElement | null> | ((el: HTMLElement | null) => void);
     setScrollable?: MutableRefObject<HTMLElement | null> | ((el: HTMLElement | null) => void);
     onContentResize?: (size: Size) => void;
@@ -48,7 +48,7 @@ export const Scrollable: FC<Scrollable> = ({
     onContentResize,
     setScrollable = noop,
     setScrollableWrapper = noop,
-    setSimpleBar = noop,
+    // setSimpleBar = noop,
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { throttle, isThrottling: isAlive } = useThrottle();
@@ -81,10 +81,10 @@ export const Scrollable: FC<Scrollable> = ({
 
         setSimpleBarApi(simpleBarApi);
 
-        isCallable(setSimpleBar)
-            ? setSimpleBar(simpleBarApi)
-            : setSimpleBar.current = simpleBarApi
-        ;
+        // isCallable(setSimpleBar)
+        //     ? setSimpleBar(simpleBarApi)
+        //     : setSimpleBar.current = simpleBarApi
+        // ;
 
         isCallable(setScrollable)
             ? setScrollable(simpleBarApi.contentEl)
@@ -136,7 +136,7 @@ export const Scrollable: FC<Scrollable> = ({
         const size = getCorrectContentSize(entry.borderBoxSize[0].inlineSize, entry.borderBoxSize[0].blockSize);
 
         if (wrapperRef.current) {
-            wrapperRef.current.style.width = size.width + 'px';
+            // wrapperRef.current.style.width = size.width + 'px';
             wrapperRef.current.style.height = size.height + 'px';
         }
 

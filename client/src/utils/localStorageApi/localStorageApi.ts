@@ -1,14 +1,17 @@
 import { Id, Timestamp } from '@shared';
+import { Descendant } from 'slate';
 
 
 
 type ChannelId = Id;
 type RoomId = Id;
+type ChatId = Id;
 
 type Values = {
     lastRefresh: Timestamp;
     myId: string;
     lastVisitedTextRooms: Record<ChannelId, RoomId>;
+    savedMessageDrafts: Record<ChatId, Descendant[]>;
 }
 
 export const localStorageApi = {

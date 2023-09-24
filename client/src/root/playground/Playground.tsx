@@ -1819,30 +1819,16 @@ const ScrollableV2: FC = () => {
 };
 
 const PlaygroundInner30: FC = () => {
-    const Item: FC<PropsWithChildren> = ({ children }) => {
-        return (
-            <>{children}</>
-        );
-    };
-
     return (
-        <div className='bg-slate-500 p-2'>
-            <div className='bg-orange-900'>
-                <div>
-                    <>qwe</>
-                </div>
+        <div className='bg-slate-500 p-2 h-full'>
+            <div className='bg-orange-900 h-full flex flex-col'>
 
-                <Scrollable>
-                    <Item>
-                        <>zxc</>
-                    </Item>
-                </Scrollable>
             </div>
         </div>
     );
 };
 
-const enabled = !!0;
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

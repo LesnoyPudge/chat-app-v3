@@ -133,7 +133,7 @@
             transition: var(--track-transition);
 
             &::before {
-                @apply bg-scrollbar-track;
+                // @apply bg-scrollbar-track;
 
                 content: '';
                 position: absolute;
