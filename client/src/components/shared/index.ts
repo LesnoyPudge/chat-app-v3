@@ -12,7 +12,7 @@ export * from './ChannelAvatar';
 export * from './EmojiPicker';
 export * from './EmojiSwitcher';
 export * from './Message';
-export * from './MessageEditorWrapper';
+export * from './MessageEditor';
 export * from './Chat';
 export * from './RolesAndMembersCheckList';
 export * from './LoadingIndicator';

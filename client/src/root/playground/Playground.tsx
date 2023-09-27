@@ -621,7 +621,6 @@ import isObject from 'is-object';
 import { Placeholder } from 'src/components/shared/Placeholder';
 import { socketIO } from '../features/soket';
 import { EntityContext, EntityContextHelpers, EntityContextProvider } from 'src/components/contexts/EntityContext/EntityContext';
-import { MessagePlaceholder } from 'src/components/shared/Chat/components';
 
 
 
@@ -1820,15 +1819,15 @@ const ScrollableV2: FC = () => {
 
 const PlaygroundInner30: FC = () => {
     return (
-        <div className='bg-slate-500 p-2 h-full'>
-            <div className='bg-orange-900 h-full flex flex-col'>
-
+        <div className='p-2 h-full'>
+            <div className='border-orange-900 border-8 h-full flex flex-col'>
+                qwe
             </div>
         </div>
     );
 };
 
-const enabled = !!1;
+const enabled = !!0;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (

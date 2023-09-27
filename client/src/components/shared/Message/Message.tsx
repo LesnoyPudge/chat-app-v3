@@ -24,8 +24,9 @@ interface SharedProps {
 }
 
 export interface MessageComponent extends PropsWithClassName,
-PropsWithInnerRef<HTMLElement>,
-SharedProps {
+    PropsWithInnerRef<HTMLElement>,
+    SharedProps
+{
     displayMode: 'cozy' | 'compact';
     openEditor: (id: string) => void;
     closeEditor: () => void;

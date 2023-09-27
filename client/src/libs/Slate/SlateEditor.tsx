@@ -1,26 +1,24 @@
-import { twClassNames } from '@utils';
-import { FC, useEffect } from 'react';
-import { Editable, ReactEditor, useSlateStatic } from 'slate-react';
+import { FC, useCallback, useEffect, useRef } from 'react';
+import { Editable, ReactEditor, useSlateStatic, useSlate, useSlateSelector } from 'slate-react';
 import { EditableProps, RenderElementProps } from 'slate-react/dist/components/editable';
-import { useIsFirstRender } from 'usehooks-ts';
 import { SlateEmoji, SlateLink, SlateParagraph } from './components';
 import { Key } from 'ts-key-enum';
 import { Descendant } from 'slate';
+import { useIsFirstRender } from 'usehooks-ts';
+import { useEventListener } from '@hooks';
+import { getSlateDomNode } from './utils';
 
 
 
-interface SlateEditor {
+export interface SlateEditor {
     className?: string;
-    label: string;
+    label?: string;
     placeholder?: string;
+    name?: string;
     rest?: Omit<EditableProps, keyof SlateEditor>;
-    onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
+    onKeyDown?: (e: KeyboardEvent) => void;
     onSubmit?: (value: Descendant[]) => void;
 }
-
-const styles = {
-    base: 'w-full break-all px-2 h-fit min-h-[44px] message-font-size message-y-padding',
-};
 
 const renderElement = ({ attributes, children, element }: RenderElementProps) => {
     switch (element.type) {
@@ -30,7 +28,7 @@ const renderElement = ({ attributes, children, element }: RenderElementProps) =>
         case 'emoji':
             return <SlateEmoji code={element.code} attributes={attributes}>{children}</SlateEmoji>;
 
-        case 'link': 
+        case 'link':
             return <SlateLink url={element.url} attributes={attributes}>{children}</SlateLink>;
 
         default:
@@ -42,37 +40,57 @@ export const SlateEditor: FC<SlateEditor> = ({
     className = '',
     placeholder = 'Введите текст',
     label,
+    name,
     rest,
     onKeyDown,
     onSubmit,
 }) => {
     const editor = useSlateStatic();
-    const isFirstRender = useIsFirstRender();
 
-    useEffect(() => {
-        if (!isFirstRender) return;
-        const prevFocusedElem = document.activeElement as HTMLElement;
-        ReactEditor.focus(editor);
-        ReactEditor.blur(editor);
-        prevFocusedElem && prevFocusedElem.focus();
-    }, [editor, isFirstRender]);
+    useEventListener('keydown', (e) => {
+        e.stopPropagation();
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key === Key.Enter && !e.shiftKey) {
             e.preventDefault();
             onSubmit && onSubmit(editor.children);
-        } 
-        
+        }
+
         onKeyDown && onKeyDown(e);
-    };
+    }, getSlateDomNode(editor));
+
+    // const isFirstRender = useIsFirstRender();
+
+
+    // useEffect(() => {
+    //     if (!isFirstRender) return;
+    //     const prevFocusedElem = document.activeElement as HTMLElement;
+    //     ReactEditor.focus(editor);
+    //     ReactEditor.blur(editor);
+    //     prevFocusedElem && prevFocusedElem.focus();
+    // }, [editor, isFirstRender]);
+
+    // const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    //     console.log('keydown', e);
+    //     if (e.key === Key.Enter && !e.shiftKey) {
+    //         e.preventDefault();
+    //         onSubmit && onSubmit(editor.children);
+    //     }
+
+    //     onKeyDown && onKeyDown(e);
+    // }, [editor, onKeyDown, onSubmit]);
+
+    // const stopPropagation = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    //     // e.stopPropagation();
+    //     console.log('stop prop');
+    // };
 
     return (
         <Editable
-            className={twClassNames(styles.base, className)}
+            className={className}
             placeholder={placeholder}
+            name={name}
             suppressContentEditableWarning
             renderElement={renderElement}
-            onKeyDown={handleKeyDown}
             aria-label={label}
             {...rest}
         />

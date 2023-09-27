@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { SlateEditor, SlateContainer, FormikFileInput, getInitialSlateValue, isDescendantEmpty } from '@libs';
-import { Button,SpriteImage, MessageEditorWrapper, FileInput, OverlayContextProvider } from '@components';
+import { Button,SpriteImage, FileInput, OverlayContextProvider, MessageEditor } from '@components';
 import { OpenEmojiPickerButton, Attachments, SizeModal, FileDropModal, OverflowModal, AlertOverlays } from './components';
 import { Form, Formik } from 'formik';
 import { Descendant } from 'slate';
@@ -47,7 +47,7 @@ export const MessageInputBar: FC<MessageInputBar> = ({
     //     }
 
     const initialValues: MessageInputBarFormValues = {
-        content: [],
+        content: getInitialSlateValue(),
         // content: localStorageApi.get('savedMessageDrafts')[] ?? getInitialSlateValue(),
         attachments: [],
     };
@@ -58,6 +58,12 @@ export const MessageInputBar: FC<MessageInputBar> = ({
 
         console.log('send message', formValues);
     };
+
+    return (
+        <>
+            <div>wow</div>
+        </>
+    );
 
     return (
         <Formik
@@ -86,7 +92,7 @@ export const MessageInputBar: FC<MessageInputBar> = ({
                                 {({ fileInputProps, handleFileUpload, removeFile }) => (
                                     <>
                                         <Form className={twClassNames(styles.wrapper, className)}>
-                                            <MessageEditorWrapper>
+                                            <MessageEditor.Wrapper>
                                                 <div>
                                                     <Attachments removeFile={removeFile}/>
 
@@ -121,7 +127,7 @@ export const MessageInputBar: FC<MessageInputBar> = ({
                                                         </Button>
                                                     </div>
                                                 </div>
-                                            </MessageEditorWrapper>
+                                            </MessageEditor.Wrapper>
                                         </Form>
 
                                         <OverlayContextProvider>

@@ -1,29 +1,41 @@
-import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, MessageEditorWrapper, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned } from '@components';
-import { SlateContainer, SlateEditor, useSlateAddEmoji } from '@libs';
+import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, MessageEditor, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, RichTextEditor } from '@components';
+import { isDescendantArray, isDescendantEmpty, parseSlateContent, useSlateAddEmoji } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
-import { getTransitionOptions, parseSlateContent, twClassNames } from '@utils';
-import { FC, useContext, useRef, useState } from 'react';
-import { Descendant } from 'slate';
-import { useEventListener } from 'usehooks-ts';
+import { createValidationSchema, getTransitionOptions, twClassNames } from '@utils';
+import { FC, useContext, useMemo } from 'react';
 import { MessageContext } from '../../Message';
+import { Form, Formik } from 'formik';
+import { Descendant } from 'slate';
+import { Key } from 'ts-key-enum';
 
 
 
-interface MessageRedactorInner extends PropsWithClassName {
-    onSave: () => void;
-    onCancel: () => void;
+type RedactorFormValues = {
+    content: Descendant[];
 }
 
 const styles = {
-    editorWrapper: 'flex items-start rounded-md bg-primary-100 min-h-[44px] max-h-[50vh]',
-    scrollable: 'h-full',
     emojiButton: 'w-11 h-11 p-2.5 sticky top-0 rounded-lg shrink-0',
     controlWrapper: 'text-xs text-color-primary mt-1',
     controlButton: 'inline',
+    inner: 'flex',
+    editable: 'message-font-size',
 };
 
 const transitionOptions = getTransitionOptions.withOpacity();
+
+const validationSchema = createValidationSchema<RedactorFormValues>(({
+    yup,
+    VALIDATION_MESSAGES,
+}) => ({
+    content: yup.array().test({
+        test: (v) => {
+            return isDescendantArray(v) && !isDescendantEmpty(v);
+        },
+        message: VALIDATION_MESSAGES.REQUIRED,
+    }),
+}));
 
 export const MessageRedactor: FC<PropsWithClassName> = ({
     className = '',
@@ -34,119 +46,118 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
         handleSaveEditor,
         handleCloseEditor,
     } = useContext(MessageContext);
-    const [redactorValue, setRedactorValue] = useState<Descendant[]>(() => (parseSlateContent(message.content)));
 
-    const handleSave = () => handleSaveEditor(redactorValue);
-    const handleCancel = () => {
-        setRedactorValue(parseSlateContent(message.content));
+    const initialValues: RedactorFormValues = useMemo(() => ({
+        content: parseSlateContent(message.content),
+    }), [message.content]);
+
+    const handleEscape = (e: KeyboardEvent) => {
+        if (e.key !== Key.Escape) return;
+
         handleCloseEditor();
+    };
+
+    const handleSubmit = (values: RedactorFormValues) => {
+        handleSaveEditor(values.content);
     };
 
     return (
         <If condition={isInRedactorMode}>
-            <SlateContainer
-                value={redactorValue}
-                onChange={setRedactorValue}
+            <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
             >
-                <MessageRedactorInner
-                    className={className}
-                    onSave={handleSave}
-                    onCancel={handleCancel}
-                />
-            </SlateContainer>
+                {({ submitForm, values, setFieldValue }) => (
+                    <RichTextEditor.ContextProvider
+                        value={values.content}
+                        label='Редактор'
+                        name='content'
+                        placeholder='Введите сообщение'
+                        onSubmit={submitForm}
+                        onKeyDown={handleEscape}
+                        onChange={(v) => setFieldValue('content', v)}
+                    >
+                        <MessageRedactorInner className={className}/>
+                    </RichTextEditor.ContextProvider>
+                )}
+            </Formik>
         </If>
     );
 };
 
-const MessageRedactorInner: FC<MessageRedactorInner> = ({
+const MessageRedactorInner: FC<PropsWithClassName> = ({
     className = '',
-    onSave,
-    onCancel,
 }) => {
+    const { handleCloseEditor } = useContext(MessageContext);
     const { addEmoji } = useSlateAddEmoji();
-    const isEmojiPickerOpenRef = useRef(false);
-
-    useEventListener('keydown', (e) => {
-        if (isEmojiPickerOpenRef.current) return;
-        if (e.key !== 'Escape') return;
-
-        onCancel();
-    });
 
     return (
-        <div className={className}>
-            <MessageEditorWrapper>
-                <div className='flex'>
-                    <SlateEditor
-                        placeholder='Введите отредактированное сообщение'
-                        label='Редактируемое сообщение'
-                        onSubmit={onSave}
-                    />
+        <Form className={className}>
+            <MessageEditor.Wrapper>
+                <div className={styles.inner}>
+                    <RichTextEditor.Editable className={styles.editable}/>
 
                     <OverlayContextProvider>
-                        {({ isOverlayExist, openOverlay }) => {
-                            isEmojiPickerOpenRef.current = isOverlayExist;
+                        {({ isOverlayExist, openOverlay }) => (
+                            <Ref<HTMLButtonElement>>
+                                {(ref) => (
+                                    <>
+                                        <EmojiSwitcher isActive={isOverlayExist}>
+                                            {({ emojiComponent, switchEmojiCode, wrapperClassName }) => (
+                                                <Button
+                                                    className={twClassNames(
+                                                        styles.emojiButton,
+                                                        wrapperClassName,
+                                                    )}
+                                                    label='Выбрать эмодзи'
+                                                    hasPopup='dialog'
+                                                    innerRef={ref}
+                                                    isActive={isOverlayExist}
+                                                    onMouseEnter={switchEmojiCode}
+                                                    onLeftClick={openOverlay}
+                                                >
+                                                    {emojiComponent}
+                                                </Button>
+                                            )}
+                                        </EmojiSwitcher>
 
-                            return (
-                                <Ref<HTMLButtonElement>>
-                                    {(ref) => (
-                                        <>
-                                            <EmojiSwitcher isActive={isOverlayExist}>
-                                                {({ emojiComponent, switchEmojiCode, wrapperClassName }) => (
-                                                    <Button
-                                                        className={twClassNames(
-                                                            styles.emojiButton,
-                                                            wrapperClassName,
-                                                        )}
-                                                        label='Выбрать эмодзи'
-                                                        hasPopup='dialog'
-                                                        innerRef={ref}
-                                                        isActive={isOverlayExist}
-                                                        onMouseEnter={switchEmojiCode}
-                                                        onLeftClick={openOverlay}
+                                        <AnimatedTransition
+                                            isExist={isOverlayExist}
+                                            transitionOptions={transitionOptions}
+                                        >
+                                            {({ isAnimatedExist, style }) => (
+                                                <OverlayItem
+                                                    isRendered={isAnimatedExist}
+                                                    blockable
+                                                    blocking
+                                                    closeOnClickOutside
+                                                    closeOnEscape
+                                                    focused
+                                                >
+                                                    <RelativelyPositioned
+                                                        preferredAlignment='top'
+                                                        swappableAlignment
+                                                        leaderElementOrRectRef={ref}
                                                     >
-                                                        {emojiComponent}
-                                                    </Button>
-                                                )}
-                                            </EmojiSwitcher>
-
-                                            <AnimatedTransition
-                                                isExist={isOverlayExist}
-                                                transitionOptions={transitionOptions}
-                                            >
-                                                {({ isAnimatedExist, style }) => (
-                                                    <OverlayItem
-                                                        isRendered={isAnimatedExist}
-                                                        blockable
-                                                        blocking
-                                                        closeOnClickOutside
-                                                        closeOnEscape
-                                                        focused
-                                                    >
-                                                        <RelativelyPositioned
-                                                            preferredAlignment='top'
-                                                            swappableAlignment
-                                                            leaderElementOrRectRef={ref}
+                                                        <animated.div
+                                                            style={style}
+                                                            role='dialog'
+                                                            aria-label='Выбрать эмодзи'
                                                         >
-                                                            <animated.div
-                                                                style={style}
-                                                                role='dialog'
-                                                                aria-label='Выбрать эмодзи'
-                                                            >
-                                                                <EmojiPicker onEmojiAdd={addEmoji}/>
-                                                            </animated.div>
-                                                        </RelativelyPositioned>
-                                                    </OverlayItem>
-                                                )}
-                                            </AnimatedTransition>
-                                        </>
-                                    )}
-                                </Ref>
-                            );
-                        }}
+                                                            <EmojiPicker onEmojiAdd={addEmoji}/>
+                                                        </animated.div>
+                                                    </RelativelyPositioned>
+                                                </OverlayItem>
+                                            )}
+                                        </AnimatedTransition>
+                                    </>
+                                )}
+                            </Ref>
+                        )}
                     </OverlayContextProvider>
                 </div>
-            </MessageEditorWrapper>
+            </MessageEditor.Wrapper>
 
             <div className={styles.controlWrapper}>
                 <>Esc для </>
@@ -155,7 +166,7 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                     className={styles.controlButton}
                     stylingPreset='link'
                     label='Отменить редактирование'
-                    onLeftClick={onCancel}
+                    onLeftClick={handleCloseEditor}
                 >
                     <>отмены</>
                 </Button>
@@ -166,11 +177,11 @@ const MessageRedactorInner: FC<MessageRedactorInner> = ({
                     className={styles.controlButton}
                     stylingPreset='link'
                     label='Сохранить отредактированное сообщение'
-                    onLeftClick={onSave}
+                    type='submit'
                 >
                     <>сохранить</>
                 </Button>
             </div>
-        </div>
+        </Form>
     );
 };

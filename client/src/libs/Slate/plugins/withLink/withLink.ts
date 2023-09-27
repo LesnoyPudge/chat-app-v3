@@ -3,7 +3,12 @@ import { CustomEditor, CustomText, LinkElement } from '../../types';
 
 
 
-type WrapLinkType = (args: {node: CustomText, url: string, path: Path, editor: CustomEditor}) => void;
+type WrapLinkType = (args: {
+    node: CustomText,
+    url: string,
+    path: Path,
+    editor: CustomEditor
+}) => void;
 
 const wrapLink: WrapLinkType = ({ editor, node, path, url }) => {
     const startOfUrl = node.text.indexOf(url);
@@ -13,8 +18,8 @@ const wrapLink: WrapLinkType = ({ editor, node, path, url }) => {
         url: url,
         children: [{ text: url }],
     };
-    const options = { 
-        split: true, 
+    const options = {
+        split: true,
         at: {
             anchor: {
                 path,
@@ -32,7 +37,7 @@ const wrapLink: WrapLinkType = ({ editor, node, path, url }) => {
 
 export const withLink = (editor: CustomEditor) => {
     const { isInline, normalizeNode } = editor;
-  
+
     editor.isInline = (element) => {
         return element.type === 'link' ? true : isInline(element);
     };

@@ -21,7 +21,7 @@ const styles = {
     emoji: 'inline-block w-full h-full',
 };
 
-export const SlateEmoji: FC<SlateEmoji> = ({ 
+export const SlateEmoji: FC<SlateEmoji> = ({
     className = '',
     code,
     attributes,
@@ -35,7 +35,7 @@ export const SlateEmoji: FC<SlateEmoji> = ({
             {...attributes}
         >
             {children}
-              
+
             <Emoji
                 className={styles.emoji}
                 code={code}
