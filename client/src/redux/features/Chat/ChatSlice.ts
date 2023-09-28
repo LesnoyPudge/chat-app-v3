@@ -2,7 +2,7 @@ import { resetApiStateAction } from '@redux/globalReset';
 import { RootState } from '@redux/store';
 import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, ENTITY_NAMES } from '@shared';
-import { ChatApi } from '@redux/features';
+import { AppSelectors, ChannelSelectors, ChatApi, PrivateChannelSelectors, RoleSelectors, RoomSelectors, UserSelectors } from '@redux/features';
 import { createCustomizedEntityAdapter } from '@redux/utils';
 import { SliceEntityState } from '@types';
 
@@ -40,4 +40,41 @@ const adapterSelectors = adapter.customGetSelectors(selectChatState);
 export const ChatSelectors = {
     ...adapterSelectors,
     selectChatState,
+
+    selectHasAccessToRoomChat: (chatId?: string) => {
+        return (state: RootState): boolean => {
+            if (!chatId) return false;
+
+            const me = AppSelectors.selectMe(state);
+            if (!me) return false;
+
+            const chat = ChatSelectors.selectById(chatId)(state);
+            if (!chat) return false;
+
+            if (chat.owner !== 'Room') return false;
+
+            const room = RoomSelectors.selectById(chat.ownerId)(state);
+            if (!room) return false;
+
+            if (!room.isPrivate) return true;
+            if (room.whiteList.users.includes(me.id)) return true;
+
+            const isChannelOwner = ChannelSelectors.selectIsChannelOwner(room.channel)(state);
+            if (isChannelOwner) return true;
+
+            const roles = RoleSelectors.selectMyRolesByChannelId(room.channel)(state);
+            const isRolesIntersect = roles.some((role) => {
+                return room.whiteList.roles.includes(role.id);
+            });
+            if (isRolesIntersect) return true;
+
+            const permissions = RoleSelectors.getMyPermissionsByChannelId(room.channel)(state);
+
+            return (
+                permissions.isAdministrator ||
+                permissions.channelControl ||
+                permissions.roomControl
+            );
+        };
+    },
 };

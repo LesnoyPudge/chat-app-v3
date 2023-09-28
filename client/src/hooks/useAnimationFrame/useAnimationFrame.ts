@@ -8,11 +8,13 @@ type Callback = (time: number) => void;
 type Options = {
     initialState?: boolean;
     logDuration?: boolean;
+    skipFrames?: number;
 }
 
 const defaultOption: Required<Options> = {
     initialState: true,
     logDuration: false,
+    skipFrames: 0,
 };
 
 export const useAnimationFrame = (
@@ -22,9 +24,20 @@ export const useAnimationFrame = (
     const frameRef = useRef<number | null>(null);
     const optionsRef = useRef(Object.assign({}, defaultOption, options));
     const isWorkingRef = useRef(optionsRef.current.initialState);
+    const skipFramesRef = useRef(optionsRef.current.skipFrames);
 
     const animateRef = useLatest<Callback>((time) => {
         if (!isWorkingRef.current) return;
+
+        if (skipFramesRef.current > 0) {
+            skipFramesRef.current--;
+            frameRef.current = requestAnimationFrame(animateRef.current);
+            return;
+        }
+
+        if (skipFramesRef.current <= 0) {
+            skipFramesRef.current = optionsRef.current.skipFrames;
+        }
 
         if (optionsRef.current.logDuration) {
             console.time('logDuration');
@@ -33,7 +46,6 @@ export const useAnimationFrame = (
         callback(time);
 
         if (optionsRef.current.logDuration) {
-            console.timeLog('logDuration');
             console.timeEnd('logDuration');
         }
 
@@ -64,7 +76,8 @@ export const useAnimationFrame = (
 
     useEffect(() => {
         return () => {
-            if (!frameRef.current) return;
+            if (frameRef.current === null) return;
+
             cancelAnimationFrame(frameRef.current);
         };
     }, []);

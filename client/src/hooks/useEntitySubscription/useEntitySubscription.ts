@@ -1,3 +1,4 @@
+import { useAnimationFrame } from '@hooks';
 import { ChannelSelectors, ChatSelectors, MessageSelectors, PrivateChannelSelectors, RoleSelectors, RoomSelectors, UserSelectors } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
 import { nanoid } from '@reduxjs/toolkit';
@@ -29,14 +30,17 @@ const selectors = {
 
 export const useEntitySubscription = <Entity extends WithId>(
     entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>,
-    ids: EntityId[],
+    ids?: EntityId[],
 ) => {
     const componentIdRef = useRef(nanoid());
     const entities = useMemoSelector((state) => {
+        if (!ids) return [];
         return selectors[entityName].selectByIds(ids)(state);
     }, [ids]) as unknown as Entity[];
 
     useEffect(() => {
+        if (!ids) return;
+
         const componentId = componentIdRef.current;
         const entitiesMap = entitySubscriptionStore[entityName];
 
@@ -61,6 +65,8 @@ export const useEntitySubscription = <Entity extends WithId>(
         const componentId = componentIdRef.current;
 
         return () => {
+            if (!ids) return;
+
             const entitiesMap = entitySubscriptionStore[entityName];
 
             ids.forEach((id) => {

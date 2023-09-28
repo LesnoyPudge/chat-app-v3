@@ -80,7 +80,7 @@ export const CreateRoomTab: FC = () => {
                     </FormikRadioInput>
 
                     <FormikRadioInput
-                        name='text'
+                        name='type'
                         value='voice'
                         label='Голосовой тип комнаты'
                     >

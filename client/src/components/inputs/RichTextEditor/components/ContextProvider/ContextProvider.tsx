@@ -1,7 +1,8 @@
 import { SlateContainer, SlateEditor } from '@libs';
 import { noop } from '@utils';
-import { FC, PropsWithChildren, createContext, useMemo } from 'react';
+import { FC, PropsWithChildren, createContext, useEffect, useMemo } from 'react';
 import { Descendant } from 'slate';
+import { useSlate, useSlateStatic } from 'slate-react';
 
 
 
@@ -16,10 +17,10 @@ export type ContextValues = Required<Pick<
 type ContextProvider = Required<Pick<
     ContextValues,
     'label' | 'name' | 'placeholder'
->> & Pick<
+>> & Required<Pick<
     SlateContainer,
     'value' | 'onChange'
-> & Partial<ContextValues> & PropsWithChildren;
+>> & Partial<ContextValues> & PropsWithChildren;
 
 export const RichTextEditorContext = createContext(undefined as unknown as ContextValues);
 
@@ -47,8 +48,22 @@ export const ContextProvider: FC<ContextProvider> = ({
                 value={value}
                 onChange={onChange}
             >
+                <Fix value={value}/>
+
                 {children}
             </SlateContainer>
         </RichTextEditorContext.Provider>
     );
+};
+
+const Fix: FC<{value: Descendant[]}> = ({
+    value,
+}) => {
+    const editor = useSlateStatic();
+
+    useEffect(() => {
+        editor.children = value;
+    }, [value, editor]);
+
+    return null;
 };

@@ -147,7 +147,7 @@ const userDummy: Entities.User.WithoutCredentials = {
         messageGroupSpacing: 16,
         theme: 'auto',
     },
-    username: 'dummy user',
+    username: 'user',
     status: 'offline',
 };
 

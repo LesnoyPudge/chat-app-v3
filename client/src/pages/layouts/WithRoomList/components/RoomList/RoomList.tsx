@@ -15,8 +15,8 @@ const styles = {
 
 export const RoomList: FC = () => {
     const [channel] = useContext(EntityContext.Channel);
-    const roomIds = channel?.rooms ?? [];
-    const roomListRef = useLatest(idArrayToObjectsWithId(roomIds));
+    const roomListRef = useLatest(idArrayToObjectsWithId(channel?.rooms ?? []));
+
     const {
         setRoot,
         withFocusSet,
@@ -25,7 +25,7 @@ export const RoomList: FC = () => {
         setViewportIndexes,
     } = useKeyboardNavigation(roomListRef, undefined, {
         virtualized: true,
-        initialFocusableId: roomIds.at(0),
+        initialFocusableId: roomListRef.current.at(0)?.id,
     });
 
     return (
@@ -44,7 +44,7 @@ export const RoomList: FC = () => {
                 ref={setRoot}
             >
                 <ViewportList
-                    items={roomIds}
+                    items={channel?.rooms}
                     onViewportIndexesChange={setViewportIndexes}
                     withCache
                     initialPrerender={30}

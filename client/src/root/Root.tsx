@@ -46,10 +46,10 @@ const RootInner: FC = () => {
 
 export const Root: FC = () => {
     return (
-        <StrictMode>
-            <Provider store={store}>
-                <RootInner/>
-            </Provider>
-        </StrictMode>
+        // <StrictMode>
+        <Provider store={store}>
+            <RootInner/>
+        </Provider>
+        // </StrictMode>
     );
 };

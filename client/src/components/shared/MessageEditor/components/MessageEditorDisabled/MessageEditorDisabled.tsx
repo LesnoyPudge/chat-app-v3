@@ -1,17 +1,13 @@
-import { PropsWithClassName } from '@types';
+import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
 import { styles } from '../../styles';
 
 
 
-type MessageEditorDisabled = PropsWithClassName & {
-    text: string;
-}
-
-export const MessageEditorDisabled: FC<MessageEditorDisabled> = ({
+export const MessageEditorDisabled: FC<PropsWithChildrenAndClassName> = ({
     className = '',
-    text,
+    children,
 }) => {
     return (
         <div className={twClassNames(
@@ -21,7 +17,7 @@ export const MessageEditorDisabled: FC<MessageEditorDisabled> = ({
             className,
         )}>
             <div className={styles.disabledText}>
-                {text}
+                {children}
             </div>
         </div>
     );

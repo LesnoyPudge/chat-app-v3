@@ -7,11 +7,7 @@ import { useFocused } from 'slate-react';
 
 
 
-type MessageEditorWrapper = PropsWithChildrenAndClassName & {
-    with?: boolean;
-}
-
-export const MessageEditorWrapper: FC<MessageEditorWrapper> = ({
+export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
     className = '',
     children,
 }) => {

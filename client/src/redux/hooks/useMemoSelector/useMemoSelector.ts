@@ -14,6 +14,6 @@ export const useMemoSelector = <T,>(
 ) => {
     return useAppSelector(
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        useCallback(memoize(fn, { size: 50 }), deps),
+        useCallback(memoize(fn, cacheSize), deps),
     );
 };

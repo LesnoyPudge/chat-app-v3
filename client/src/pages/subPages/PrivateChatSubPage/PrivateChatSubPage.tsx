@@ -1,8 +1,9 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { MessageInputBar, Chat } from '@components';
+import { MessageInputBar, Chat, EntityContext, EntityContextProvider } from '@components';
 import { useNavigator } from '@hooks';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { Header } from './components';
+import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
 
 
 
@@ -62,17 +63,15 @@ const privateChats: PrivateChat[] = [
 
 export const PrivateChatSubPage: FC = () => {
     const { params } = useNavigator();
+    const [privateChannel] = useContext(EntityContext.PrivateChannel);
     // const friend = privateChats.filter(item => item.id === params.privateChatId)[0]?.friend || privateChats[0].friend;
     // const placeholder = `Отправьте сообщение для ${friend.username}`;
 
     return (
-        <>
-            PrivateChatSubPage comp tmp
-            {/* <Header/>
+        <EntityContextProvider.Chat id={privateChannel?.chat}>
+            <Header/>
 
-            <Chat/>
-
-            <MessageInputBar placeholder={placeholder}/> */}
-        </>
+            <ChatV3.PrivateChannel/>
+        </EntityContextProvider.Chat>
     );
 };

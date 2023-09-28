@@ -2,7 +2,7 @@ import { resetApiStateAction } from '@redux/globalReset';
 import { RootState } from '@redux/store';
 import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, ENTITY_NAMES } from '@shared';
-import { ChannelApi } from '@redux/features';
+import { AppSelectors, ChannelApi } from '@redux/features';
 import { createCustomizedEntityAdapter } from '@redux/utils';
 import { SliceEntityState } from '@types';
 
@@ -102,4 +102,13 @@ const adapterSelectors = adapter.customGetSelectors(selectChannelState);
 export const ChannelSelectors = {
     ...adapterSelectors,
     selectChannelState,
+
+    selectIsChannelOwner: (channelId: string) => {
+        return (state: RootState): boolean => {
+            const { myId } = AppSelectors.selectAppState(state);
+            if (!myId) return false;
+
+            return ChannelSelectors.selectById(channelId)(state)?.owner === myId;
+        };
+    },
 };

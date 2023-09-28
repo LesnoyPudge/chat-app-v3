@@ -2,7 +2,7 @@ import { resetApiStateAction } from '@redux/globalReset';
 import { RootState } from '@redux/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Endpoints, Entities, ENTITY_NAMES } from '@shared';
-import { UserApi } from '@redux/features';
+import { AppSelectors, UserApi } from '@redux/features';
 import { createCustomizedEntityAdapter } from '@redux/utils';
 import { SliceEntityState } from '@types';
 import { localStorageApi } from '@utils';
@@ -140,4 +140,29 @@ const adapterSelectors = adapter.customGetSelectors(selectUserState);
 export const UserSelectors = {
     ...adapterSelectors,
     selectUserState,
+
+    selectAmIBlocked: (userId?: string) => {
+        return (state: RootState): boolean => {
+            if (!userId) return false;
+
+            const { myId } = AppSelectors.selectAppState(state);
+            if (!myId) return false;
+
+            const user = UserSelectors.selectById(userId)(state);
+            if (!user) return false;
+
+            return user.blocked.includes(myId);
+        };
+    },
+
+    selectIsBlockedByMe: (userId?: string) => {
+        return (state: RootState): boolean => {
+            if (!userId) return false;
+
+            const me = AppSelectors.selectMe(state);
+            if (!me) return false;
+
+            return me.blocked.includes(userId);
+        };
+    },
 };

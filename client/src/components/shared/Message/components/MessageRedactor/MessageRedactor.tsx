@@ -47,9 +47,9 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
         handleCloseEditor,
     } = useContext(MessageContext);
 
-    const initialValues: RedactorFormValues = useMemo(() => ({
+    const initialValues: RedactorFormValues = {
         content: parseSlateContent(message.content),
-    }), [message.content]);
+    };
 
     const handleEscape = (e: KeyboardEvent) => {
         if (e.key !== Key.Escape) return;

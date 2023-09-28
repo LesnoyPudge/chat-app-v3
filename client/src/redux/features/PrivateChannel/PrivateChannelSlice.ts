@@ -2,7 +2,7 @@ import { resetApiStateAction } from '@redux/globalReset';
 import { RootState } from '@redux/store';
 import { createSlice } from '@reduxjs/toolkit';
 import { Endpoints, ENTITY_NAMES } from '@shared';
-import { PrivateChannelApi } from '@redux/features';
+import { AppSelectors, PrivateChannelApi } from '@redux/features';
 import { createCustomizedEntityAdapter } from '@redux/utils';
 import { SliceEntityState } from '@types';
 
@@ -47,4 +47,18 @@ const adapterSelectors = adapter.customGetSelectors(selectPrivateChannelState);
 export const PrivateChannelSelectors = {
     ...adapterSelectors,
     selectPrivateChannelState,
+
+    selectSecondMemberId: (privateChannelId?: string) => {
+        return (state: RootState): string | undefined => {
+            if (!privateChannelId) return undefined;
+
+            const { myId } = AppSelectors.selectAppState(state);
+            if (!myId) return undefined;
+
+            const privateChannel = PrivateChannelSelectors.selectById(privateChannelId)(state);
+            if (!privateChannel) return;
+
+            return privateChannel.members.filter((id) => id !== myId).at(0);
+        };
+    },
 };

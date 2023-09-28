@@ -2,6 +2,7 @@ import { Chat, EntityContextProvider, EntityContext } from '@components';
 import { FC, useContext, useEffect } from 'react';
 import { Header, RoomMessageBar } from './components';
 import { localStorageApi } from '@utils';
+import { ChatV2, ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
 
 
 
@@ -32,9 +33,11 @@ export const RoomSubPage: FC = () => {
             <Header/>
 
             <EntityContextProvider.Chat id={room?.chat}>
-                <Chat/>
+                {/* <Chat/>
 
-                <RoomMessageBar/>
+                <RoomMessageBar/> */}
+
+                <ChatV3.Room/>
             </EntityContextProvider.Chat>
         </>
     );
