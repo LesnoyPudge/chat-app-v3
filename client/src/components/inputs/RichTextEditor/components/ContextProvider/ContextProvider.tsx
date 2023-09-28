@@ -48,22 +48,8 @@ export const ContextProvider: FC<ContextProvider> = ({
                 value={value}
                 onChange={onChange}
             >
-                <Fix value={value}/>
-
                 {children}
             </SlateContainer>
         </RichTextEditorContext.Provider>
     );
-};
-
-const Fix: FC<{value: Descendant[]}> = ({
-    value,
-}) => {
-    const editor = useSlateStatic();
-
-    useEffect(() => {
-        editor.children = value;
-    }, [value, editor]);
-
-    return null;
 };

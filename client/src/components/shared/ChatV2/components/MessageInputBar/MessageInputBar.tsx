@@ -74,7 +74,7 @@ export const MessageInputBar: FC<PropsWithClassName> = ({
                     onSubmit={submitForm}
                     onChange={(value) => {
                         handleLocalStorageSync(value);
-                        // setFieldValue('content', value);
+                        setFieldValue('content', value);
                     }}
                 >
                     <Form className={twClassNames(styles.wrapper, className)}>

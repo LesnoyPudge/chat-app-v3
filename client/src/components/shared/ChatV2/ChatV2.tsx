@@ -17,7 +17,10 @@ const RoomChat: FC<PropsWithClassName> = ({
     className = '',
 }) => {
     const [chat] = useContext(EntityContext.Chat);
-    const hasAccessToRoomChat = useMemoSelector(ChatSelectors.selectHasAccessToRoomChat(chat?.id));
+    const hasAccessToRoomChat = useMemoSelector(
+        ChatSelectors.selectHasAccessToRoomChat(chat?.id),
+        [chat?.id],
+    );
 
     return (
         <div className={className}>
@@ -50,7 +53,7 @@ const PrivateChannelChat: FC<PropsWithClassName> = ({
     const secondMemberIdArr = useMemoSelector((state) => {
         const id = PrivateChannelSelectors.selectSecondMemberId(privateChannel?.id)(state);
         return id ? [id] : undefined;
-    });
+    }, [privateChannel?.id]);
 
     const [chat] = useContext(EntityContext.Chat);
     const secondMember = useEntitySubscription<SliceEntityState.User>(
@@ -60,11 +63,11 @@ const PrivateChannelChat: FC<PropsWithClassName> = ({
 
     const isBlockedByMe = useMemoSelector(UserSelectors.selectIsBlockedByMe(
         secondMemberIdArr?.at(0),
-    ));
+    ), [secondMemberIdArr]);
 
     const amIBlocked = useMemoSelector(UserSelectors.selectAmIBlocked(
         secondMemberIdArr?.at(0),
-    ));
+    ), [secondMemberIdArr]);
 
     const isLoading = !chat || !secondMember;
     const showPlaceholderBar = isLoading;
