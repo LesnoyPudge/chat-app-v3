@@ -29,6 +29,8 @@ export const emojiCodeList: EmojiCode[] = [
     ':ok:',
 ];
 
+export const emojiCodeRegExp = new RegExp(emojiCodeList.map(code => code.replace(/[^a-zA-Z]/g, '\\$&')).join('|'));
+
 export const emojiList: EmojiItem[] = [
     {
         code: [':smile:'],

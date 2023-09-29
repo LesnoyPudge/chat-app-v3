@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { Editable, ReactEditor, useSlateStatic, useSlate, useSlateSelector } from 'slate-react';
 import { EditableProps, RenderElementProps } from 'slate-react/dist/components/editable';
 import { SlateEmoji, SlateLink, SlateParagraph } from './components';
@@ -46,18 +46,22 @@ export const SlateEditor: FC<SlateEditor> = ({
     onSubmit,
 }) => {
     const editor = useSlateStatic();
+    const [element, setElement] = useState(getSlateDomNode(editor));
 
     useEventListener('keydown', (e) => {
         e.stopPropagation();
 
-        if (e.key === Key.Enter && !e.shiftKey) {
+        if ((e.key === Key.Enter) && !e.shiftKey) {
             e.preventDefault();
             onSubmit && onSubmit(editor.children);
         }
 
         onKeyDown && onKeyDown(e);
-    }, getSlateDomNode(editor));
+    }, element);
 
+    useEffect(() => {
+        setElement(getSlateDomNode(editor));
+    }, [editor]);
     // const isFirstRender = useIsFirstRender();
 
 

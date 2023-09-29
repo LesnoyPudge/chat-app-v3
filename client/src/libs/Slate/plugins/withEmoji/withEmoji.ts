@@ -1,4 +1,4 @@
-import { EmojiCode, emojiCodeList } from '@components';
+import { EmojiCode, emojiCodeList, emojiCodeRegExp } from '@components';
 import { Editor, Element, Text, Transforms } from 'slate';
 import { CustomEditor } from '../../types';
 
@@ -6,11 +6,11 @@ import { CustomEditor } from '../../types';
 
 export const withEmoji = (editor: CustomEditor) => {
     const { isVoid, isInline, normalizeNode, onChange } = editor;
-  
+
     editor.isVoid = (element) => {
         return element.type === 'emoji' ? true : isVoid(element);
     };
-  
+
     editor.isInline = (element) => {
         return element.type === 'emoji' ? true : isInline(element);
     };
@@ -18,7 +18,7 @@ export const withEmoji = (editor: CustomEditor) => {
     editor.normalizeNode = (entry) => {
         try {
             const [entryNode, entryPath] = entry;
-            
+
             if (!Text.isText(entryNode)) return normalizeNode(entry);
 
             const [parentNode] = Editor.parent(editor, entryPath);
@@ -26,11 +26,9 @@ export const withEmoji = (editor: CustomEditor) => {
 
             if (!inParagraph) return normalizeNode(entry);
 
-            const emojiCodeRegExp = new RegExp(emojiCodeList.map(code => code.replace(/[^a-zA-Z]/g, '\\$&')).join('|'));
-
             const nodeText = entryNode.text.toLowerCase();
             const match = nodeText.match(emojiCodeRegExp);
-            
+
             const noMatch = !match || !match.length;
 
             if (noMatch) return normalizeNode(entry);
@@ -91,9 +89,9 @@ export const withEmoji = (editor: CustomEditor) => {
             const anchorOld = moveOperation.properties.anchor!;
 
             const isMoveBackward = anchorNew.path[1] < anchorOld.path[1];
-            
-            Transforms.move(editor, { reverse: isMoveBackward }); 
-        
+
+            Transforms.move(editor, { reverse: isMoveBackward });
+
             onChange();
         } catch (error) {
             console.log('error caught emoji onchange', error);

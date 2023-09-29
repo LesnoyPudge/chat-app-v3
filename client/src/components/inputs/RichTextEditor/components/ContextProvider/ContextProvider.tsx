@@ -1,8 +1,10 @@
 import { SlateContainer, SlateEditor } from '@libs';
 import { noop } from '@utils';
-import { FC, PropsWithChildren, createContext, useEffect, useMemo } from 'react';
-import { Descendant } from 'slate';
-import { useSlate, useSlateStatic } from 'slate-react';
+import { FC, PropsWithChildren, createContext, useMemo, useState } from 'react';
+import { Descendant, createEditor } from 'slate';
+import { withHistory } from 'slate-history';
+import { Slate, useSlate, useSlateStatic, withReact } from 'slate-react';
+import { withEmoji, withLink } from 'src/libs/Slate/plugins';
 
 
 
@@ -17,10 +19,28 @@ export type ContextValues = Required<Pick<
 type ContextProvider = Required<Pick<
     ContextValues,
     'label' | 'name' | 'placeholder'
->> & Required<Pick<
-    SlateContainer,
-    'value' | 'onChange'
->> & Partial<ContextValues> & PropsWithChildren;
+>> & Partial<ContextValues> & PropsWithChildren & {
+    value: Descendant[];
+    onChange: (value: Descendant[]) => void;
+};
+
+const createEditorWithPlugins = () => {
+    let editor = createEditor();
+    editor = withHistory(editor);
+    editor = withReact(editor);
+    editor = withEmoji(editor);
+    editor = withLink(editor);
+
+    // const normalizeNode = editor.normalizeNode;
+
+    // editor.normalizeNode = (entry, options) => {
+    //     console.log('normalizeNode', entry, options);
+
+    //     return normalizeNode(entry, options);
+    // };
+
+    return editor;
+};
 
 export const RichTextEditorContext = createContext(undefined as unknown as ContextValues);
 
@@ -34,6 +54,8 @@ export const ContextProvider: FC<ContextProvider> = ({
     onSubmit = noop,
     onKeyDown = noop,
 }) => {
+    const [editor] = useState(() => createEditorWithPlugins());
+
     const contextValues: ContextValues = useMemo(() => ({
         label,
         name,
@@ -44,12 +66,13 @@ export const ContextProvider: FC<ContextProvider> = ({
 
     return (
         <RichTextEditorContext.Provider value={contextValues}>
-            <SlateContainer
+            <Slate
+                editor={editor}
                 value={value}
                 onChange={onChange}
             >
                 {children}
-            </SlateContainer>
+            </Slate>
         </RichTextEditorContext.Provider>
     );
 };

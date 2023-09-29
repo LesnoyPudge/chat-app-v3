@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus } from '@components';
+import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, RichTextEditor, Emoji, emojiCodeRegExp } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff, setTitle } from '@utils';
@@ -621,6 +621,7 @@ import isObject from 'is-object';
 import { Placeholder } from 'src/components/shared/Placeholder';
 import { socketIO } from '../features/soket';
 import { EntityContext, EntityContextHelpers, EntityContextProvider } from 'src/components/contexts/EntityContext/EntityContext';
+import { getInitialSlateValue } from '@libs';
 
 
 
@@ -1812,19 +1813,287 @@ const PlaygroundInner29: FC = () => {
 
 
 
+import { $getRoot, $getSelection, $isParagraphNode, DecoratorNode, DOMExportOutput, EditorState, LexicalEditor, LexicalNode, NodeKey, SerializedLexicalNode, TextNode } from 'lexical';
+import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer';
+import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { AutoLinkPlugin, LinkMatcher } from '@lexical/react/LexicalAutoLinkPlugin';
+import { AutoLinkNode, LinkNode } from '@lexical/link';
+import { } from '@lexical/utils';
+import { $generateHtmlFromNodes } from '@lexical/html';
 
+
+
+const theme = {
+};
+
+const onError = (error: Error, editor: LexicalEditor) => {
+    console.error(error);
+};
+
+const getInitialState = () => {
+    const value = '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
+
+    return value;
+};
+
+type ControllablePlugin = {
+    value: string;
+    onChange: (value: string) => void;
+}
+
+const ControllablePlugin: FC<ControllablePlugin> = ({
+    value,
+    onChange,
+}) => {
+    const [editor] = useLexicalComposerContext();
+    const lastStateRef = useRef<string>(JSON.stringify(editor.getEditorState().toJSON()));
+
+    useEffect(() => {
+        editor.registerUpdateListener(({ editorState }) => {
+            const stateString = JSON.stringify(editorState.toJSON());
+            lastStateRef.current = stateString;
+            onChange(stateString);
+        });
+    }, [editor, onChange]);
+
+    useEffect(() => {
+        if (value === lastStateRef.current) return;
+        console.log('controllable state set');
+        editor.setEditorState(editor.parseEditorState(value));
+    }, [editor, value]);
+
+    return null;
+};
+
+const linkMatchers: LinkMatcher[] = (() => {
+    const URL_MATCHER = /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+
+    const matcher: LinkMatcher = (text) => {
+        const match = URL_MATCHER.exec(text);
+        if (!match) return null;
+
+        const fullMatch = match[0];
+
+        return {
+            index: match.index,
+            length: fullMatch.length,
+            text: fullMatch,
+            url: fullMatch.startsWith('http') ? fullMatch : `https://${fullMatch}`,
+            attributes: {
+                title: 'Внешняя ссылка',
+                rel: 'noreferrer',
+                target: '_blank',
+            },
+        };
+    };
+
+    return [matcher];
+})();
+
+type EmojiComponent = PropsWithClassName & {
+    code: EmojiCode;
+}
+
+const EmojiComponent: FC<EmojiComponent> = ({
+    className = '',
+    code,
+}) => {
+    const styles = {
+        wrapper: 'inline-block mx-0.5 message-emoji-size',
+        emoji: 'inline-block w-full h-full',
+    };
+
+    return (
+        <span
+            className={twClassNames(styles.wrapper, className)}
+            contentEditable={false}
+            draggable={false}
+        >
+            <Emoji
+                className={styles.emoji}
+                code={code}
+            />
+        </span>
+    );
+};
+
+class EmojiNode extends DecoratorNode<ReactNode> {
+    __code: EmojiCode;
+
+    constructor(code: EmojiCode, key?: NodeKey) {
+        super(key);
+        this.__code = code;
+    }
+
+    static getType() {
+        return 'emoji';
+    }
+
+    static clone(node: EmojiNode): EmojiNode {
+        return new EmojiNode(node.__code, node.__key);
+    }
+
+    createDOM(): HTMLElement {
+        return document.createElement('span');
+    }
+
+    updateDOM(): boolean {
+        return false;
+    }
+
+    decorate(): ReactNode {
+        return (
+            <EmojiComponent code={this.__code}/>
+        );
+    }
+
+    exportJSON(): SerializedLexicalNode {
+        return {
+            type: this.getType(),
+            version: 1,
+        };
+    }
+
+    exportDOM(editor: LexicalEditor): DOMExportOutput {
+        const element = document.createElement('b');
+        element.innerText = this.__code;
+        return {
+            element,
+        };
+    }
+}
+
+const $createEmojiNode = (code: EmojiCode): EmojiNode => {
+    return new EmojiNode(code);
+};
+
+function $isEmojiNode(node: LexicalNode | null | undefined): node is EmojiNode {
+    return node instanceof EmojiNode;
+}
+
+const EmojiPlugin: FC = () => {
+    const [editor] = useLexicalComposerContext();
+
+    useEffect(() => {
+        editor.registerNodeTransform(TextNode, (textNode) => {
+            const parent = textNode.getParent();
+            if (!parent || !$isParagraphNode(parent)) return;
+
+            const text = textNode.getTextContent();
+            const match = emojiCodeRegExp.exec(text);
+            if (!match) return;
+
+            const fullMatch = match[0] as EmojiCode;
+
+            const splitedNodes = textNode.splitText(
+                match.index,
+                match.index + fullMatch.length,
+            );
+
+            const emojiCodeNode = splitedNodes.find((node) => node.__text === fullMatch);
+            if (!emojiCodeNode) return;
+
+            const emojiNode = RichTextEmoji.$createEmojiNode(fullMatch);
+            emojiCodeNode.replace(emojiNode);
+        });
+    }, [editor]);
+
+    return null;
+};
+
+export const RichTextEmoji = {
+    Node: EmojiNode,
+    Plugin: EmojiPlugin,
+    $createEmojiNode,
+    $isEmojiNode,
+};
+
+import { TreeView } from '@lexical/react/LexicalTreeView';
+
+
+
+function TreeViewPlugin() {
+    const [editor] = useLexicalComposerContext();
+
+    return (
+        <TreeView
+            treeTypeButtonClassName=''
+            viewClassName='tree-view-output'
+            timeTravelPanelClassName='debug-timetravel-panel'
+            timeTravelButtonClassName='debug-timetravel-button'
+            timeTravelPanelSliderClassName='debug-timetravel-panel-slider'
+            timeTravelPanelButtonClassName='debug-timetravel-panel-button'
+            editor={editor}
+        />
+    );
+}
+
+const Editor: FC = () => {
+    const [editorState, setEditorState] = useState(() => getInitialState());
+
+    const initialConfig: InitialConfigType = {
+        namespace: 'MyEditor',
+        theme,
+        editorState,
+        nodes: [
+            AutoLinkNode,
+            RichTextEmoji.Node,
+        ],
+        onError,
+    };
+
+
+    return (
+        <LexicalComposer initialConfig={initialConfig}>
+            <PlainTextPlugin
+                contentEditable={<ContentEditable />}
+                placeholder={<div>Enter some text...</div>}
+                ErrorBoundary={LexicalErrorBoundary}
+            />
+
+            <HistoryPlugin />
+
+            <AutoLinkPlugin matchers={linkMatchers}/>
+
+            <ControllablePlugin
+                value={editorState}
+                onChange={setEditorState}
+            />
+
+            <RichTextEmoji.Plugin/>
+
+            <TreeViewPlugin/>
+        </LexicalComposer>
+    );
+};
 
 const PlaygroundInner30: FC = () => {
     return (
         <div className='p-2 h-full'>
             <div className='border-orange-900 border-8 h-full flex flex-col'>
-                qwe
+                <Editor/>
+
+
+                {/* <RichTextEditor.ContextProvider
+                    label=''
+                    name=''
+                    placeholder='placeholder'
+                    value={getInitialSlateValue()}
+                    onChange={() => {}}
+                >
+                    <RichTextEditor.Editable/>
+                </RichTextEditor.ContextProvider> */}
             </div>
         </div>
     );
 };
 
-const enabled = !!0;
+const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     return (
