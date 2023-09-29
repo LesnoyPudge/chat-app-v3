@@ -25,7 +25,7 @@ const styles = {
 export const RoleAppearanceTab: FC = () => {
     const { values } = useFormikContext<ChannelSettingsModalFormValues>();
     const { tabPanelProps } = useContext<TabContext<RoleContentTabs>>(TabContext);
-    const roleImage = useMemoSelector((state) => RoleSelectors.selectById(values.roleId)(state)?.image);
+    const roleImage = useMemoSelector((state) => RoleSelectors.selectById(values.roleId)(state)?.image, []);
 
     return (
         <TabPanel

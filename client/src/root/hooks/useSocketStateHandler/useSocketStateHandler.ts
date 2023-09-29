@@ -9,7 +9,7 @@ import { cookies } from '@utils';
 
 export const useSocketStateHandler = () => {
     const { dispatch } = useAppDispatch();
-    const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized);
+    const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized, []);
 
     useEffect(() => {
         const accessToken = cookies.get('accessToken');

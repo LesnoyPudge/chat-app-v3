@@ -16,8 +16,8 @@ const styles = {
 };
 
 export const UserToolBar: FC = () => {
-    const isMuted = useMemoSelector((state) => AppSelectors.selectAppState(state).muted);
-    const isDeaf = useMemoSelector((state) => AppSelectors.selectAppState(state).deaf);
+    const isMuted = useMemoSelector((state) => AppSelectors.selectAppState(state).muted, []);
+    const isDeaf = useMemoSelector((state) => AppSelectors.selectAppState(state).deaf, []);
     const { dispatch } = useAppDispatch();
 
     const toggleMute = () => dispatch(AppSlice.actions.toggleMute());

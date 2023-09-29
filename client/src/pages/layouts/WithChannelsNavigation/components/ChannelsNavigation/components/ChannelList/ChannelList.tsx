@@ -5,7 +5,6 @@ import { WrapperWithBullet } from '../WrapperWithBullet';
 import { useNavigator, useLatest, useKeyboardNavigation } from '@hooks';
 import { AppSelectors, ChannelSelectors } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
-import { RootState } from '@redux/store';
 import { AnyFunction } from 'ts-essentials';
 
 
@@ -27,7 +26,7 @@ export const ChannelList: FC<PropsWithChildrenAsNodeOrFunction<ChildrenArgs>> = 
     children,
 }) => {
     const { myLocationIs, navigateTo } = useNavigator();
-    const ids = useMemoSelector((s: RootState) => AppSelectors.selectMe(s).channels);
+    const ids = useMemoSelector((s) => AppSelectors.selectMe(s).channels, []);
     const channels = useMemoSelector(ChannelSelectors.selectByIds(ids), [ids]);
     const channelsRef = useLatest(channels);
     const keyboardNavigation = useKeyboardNavigation(channelsRef);

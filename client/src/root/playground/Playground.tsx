@@ -1091,7 +1091,7 @@ const PlaygroundInner21: FC = () => {
 
 const PlaygroundInner22: FC = () => {
     const [refresh] = UserApi.useUserRefreshMutation();
-    const qwe = useMemoSelector(AppSelectors.selectAppState);
+    const qwe = useMemoSelector(AppSelectors.selectAppState, []);
 
     useEffect(() => {
         if (qwe.isInitialized) return;
@@ -1581,7 +1581,7 @@ const PlaygroundInner26: FC = () => {
 };
 
 const PlaygroundInner27: FC = () => {
-    const user = useMemoSelector(AppSelectors.selectMe);
+    const user = useMemoSelector(AppSelectors.selectMe, []);
     const [login] = UserApi.useUserLoginMutation();
 
     useEffectOnce(() => {
@@ -1810,12 +1810,9 @@ const PlaygroundInner29: FC = () => {
     );
 };
 
-const ScrollableV2: FC = () => {
-    return (
-        <>
-        </>
-    );
-};
+
+
+
 
 const PlaygroundInner30: FC = () => {
     return (

@@ -10,7 +10,7 @@ const cacheSize = { size: 50 };
 
 export const useMemoSelector = <T,>(
     fn: (state: RootState) => T,
-    deps: AnyArray = [],
+    deps: AnyArray,
 ) => {
     return useAppSelector(
         // eslint-disable-next-line react-hooks/exhaustive-deps

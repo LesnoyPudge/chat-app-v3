@@ -8,9 +8,9 @@ import { Outlet } from 'react-router-dom';
 
 
 export const OnlyUnauthorizedRoute: FC<PropsWithChildren> = () => {
-    const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized);
-    const isInitialized = useMemoSelector((state) => AppSelectors.selectAppState(state).isInitialized);
-    const isRefreshing = useMemoSelector((state) => AppSelectors.selectAppState(state).isRefreshing);
+    const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized, []);
+    const isInitialized = useMemoSelector((state) => AppSelectors.selectAppState(state).isInitialized, []);
+    const isRefreshing = useMemoSelector((state) => AppSelectors.selectAppState(state).isRefreshing, []);
     const { navigate, stateRef } = useNavigator();
     const [refresh] = UserApi.useUserRefreshMutation();
 

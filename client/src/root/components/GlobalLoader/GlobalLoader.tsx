@@ -79,7 +79,7 @@ const Wrapper: FC<PropsWithChildren> = ({ children }) => {
 
 const Loaded: FC<PropsWithChildren> = ({ children }) => {
     const { finishLoading } = useContext(GlobalLoaderContext);
-    const isOnline = useMemoSelector(AppSelectors.selectIsOnline);
+    const isOnline = useMemoSelector(AppSelectors.selectIsOnline, []);
 
     useEffect(() => {
         if (!isOnline) return;

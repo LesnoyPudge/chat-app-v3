@@ -14,9 +14,9 @@ const styles = {
 };
 
 export const UserInfo: FC = () => {
-    const username = useMemoSelector((s) => AppSelectors.selectMe(s).username);
-    const avatarId = useMemoSelector((s) => AppSelectors.selectMe(s).avatarId);
-    const extraStatus = useMemoSelector((s) => AppSelectors.selectMe(s).extraStatus);
+    const username = useMemoSelector((s) => AppSelectors.selectMe(s).username, []);
+    const avatarId = useMemoSelector((s) => AppSelectors.selectMe(s).avatarId, []);
+    const extraStatus = useMemoSelector((s) => AppSelectors.selectMe(s).extraStatus, []);
 
     return (
         <Ref<HTMLButtonElement>>

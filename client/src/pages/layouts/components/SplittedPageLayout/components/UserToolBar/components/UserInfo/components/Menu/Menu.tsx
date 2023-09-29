@@ -26,8 +26,8 @@ const styles = {
 };
 
 export const Menu: FC = () => {
-    const username = useMemoSelector((s) => AppSelectors.selectMe(s).username);
-    const extraStatus = useMemoSelector((s) => AppSelectors.selectMe(s).extraStatus);
+    const username = useMemoSelector((s) => AppSelectors.selectMe(s).username, []);
+    const extraStatus = useMemoSelector((s) => AppSelectors.selectMe(s).extraStatus, []);
     const { throttle, isThrottling } = useThrottle();
     const { closeOverlay } = useContext(OverlayContext);
     const [updateProfile, { isLoading }] = UserApi.useUserProfileUpdateMutation();

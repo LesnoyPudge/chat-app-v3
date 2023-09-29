@@ -23,7 +23,7 @@ const styles = {
 };
 
 export const Header: FC = () => {
-    const avatarId = useMemoSelector((state) => AppSelectors.selectMe(state).avatarId);
+    const avatarId = useMemoSelector((state) => AppSelectors.selectMe(state).avatarId, []);
 
     return (
         <div className={styles.header}>

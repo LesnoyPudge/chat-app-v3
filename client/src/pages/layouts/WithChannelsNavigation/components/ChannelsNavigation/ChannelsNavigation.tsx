@@ -35,7 +35,7 @@ const styles = {
 
 export const ChannelsNavigation: FC = () => {
     const { myLocationIs, navigateTo } = useNavigator();
-    const showChannels = useMemoSelector((s: RootState) => !!AppSelectors.selectMe(s).channels.length);
+    const showChannels = useMemoSelector((s) => !!AppSelectors.selectMe(s).channels.length, []);
     const isInAppOrPrivateChatSubPage = myLocationIs.app() || myLocationIs.anyPrivateChat();
 
     return (

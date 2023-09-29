@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "@juggle/resize-observer": "^3.4.0",
+        "@lexical/react": "^0.12.2",
         "@oyyds/react-auto-sizer": "^1.2.11",
         "@react-hook/intersection-observer": "^3.1.1",
         "@react-hook/resize-observer": "^1.2.6",
@@ -37,6 +38,7 @@
         "formik": "^2.2.9",
         "is-object": "^1.0.2",
         "js-cookie": "^3.0.1",
+        "lexical": "^0.12.2",
         "lorem-ipsum": "^2.0.8",
         "nouislider": "^15.7.0",
         "nouislider-react": "^3.4.1",
