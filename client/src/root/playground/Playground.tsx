@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, RichTextEditor, Emoji, emojiCodeRegExp } from '@components';
+import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, RichTextEditor, Emoji, emojiCodeRegExp, emojiList } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff, setTitle } from '@utils';
@@ -1813,7 +1813,7 @@ const PlaygroundInner29: FC = () => {
 
 
 
-import { $getRoot, $getSelection, $isParagraphNode, DecoratorNode, DOMExportOutput, EditorState, LexicalEditor, LexicalNode, NodeKey, SerializedLexicalNode, TextNode } from 'lexical';
+import { $applyNodeReplacement, $createTextNode, $getRoot, $getSelection, $isParagraphNode, DecoratorNode, DOMConversionMap, DOMExportOutput, EditorConfig, EditorState, LexicalEditor, LexicalNode, NodeKey, SerializedLexicalNode, SerializedTextNode, TextNode } from 'lexical';
 import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -1922,15 +1922,120 @@ const EmojiComponent: FC<EmojiComponent> = ({
     );
 };
 
-class EmojiNode extends DecoratorNode<ReactNode> {
+// type SerializedEmojiNode = SerializedLexicalNode & {
+//     code: EmojiCode,
+// }
+
+type SerializedEmojiNode = SerializedTextNode & {
+    code: EmojiCode,
+}
+
+// class EmojiNode extends DecoratorNode<ReactNode> {
+//     __code: EmojiCode;
+
+//     constructor(code: EmojiCode, key?: NodeKey) {
+//         super(key);
+//         this.__code = code;
+//     }
+
+//     static getType(): string {
+//         return 'emoji';
+//     }
+
+//     static clone(node: EmojiNode): EmojiNode {
+//         return new EmojiNode(node.__code, node.__key);
+//     }
+
+//     static importJSON(serializedNode: SerializedEmojiNode): EmojiNode {
+//         console.log('import json', serializedNode);
+//         return $createEmojiNode(serializedNode.code);
+//     }
+
+//     // static importDOM(): DOMConversionMap {
+//     //     return {
+//     //         span: (_) => ({
+//     //             priority: 0,
+//     //             conversion: (domNode) => {
+//     //                 console.log('import dom', domNode);
+//     //                 if (!(domNode instanceof HTMLSpanElement)) return null;
+
+//     //                 const code = domNode.dataset.code;
+//     //                 if (!code) return null;
+
+//     //                 const isMatch = emojiCodeRegExp.test(code);
+//     //                 if (!isMatch) return null;
+
+//     //                 const node = $createEmojiNode(code as EmojiCode);
+
+//     //                 return {
+//     //                     node,
+//     //                 };
+//     //             },
+//     //         }),
+//     //     };
+//     // }
+
+//     createDOM(): HTMLElement {
+//         return document.createElement('span');
+//     }
+
+//     updateDOM(): boolean {
+//         return false;
+//     }
+
+//     decorate(): ReactNode {
+//         return (
+//             <EmojiComponent code={this.__code}/>
+//         );
+//     }
+
+//     exportJSON(): SerializedEmojiNode {
+//         // const json = new TextNode(this.__code).exportJSON();
+//         console.log('export json');
+//         return {
+//             code: this.__code,
+//             type: this.getType(),
+//             version: 1,
+//         };
+//     }
+
+//     exportDOM(editor: LexicalEditor): DOMExportOutput {
+//         const element = document.createElement('span');
+//         element.dataset.code = this.__code;
+
+//         const emoji = emojiList.find(item => item.code.includes(this.__code));
+//         if (!emoji) return { element: null };
+
+//         element.innerHTML = emoji.label;
+//         console.log('export dom');
+//         return { element };
+//     }
+
+//     // isParentRequired(): boolean {
+//     //     return true;
+//     // }
+
+//     isInline(): boolean {
+//         return true;
+//     }
+
+//     isIsolated(): boolean {
+//         return true;
+//     }
+// }
+
+const pl = () => {};
+
+export class EmojiNode extends TextNode {
     __code: EmojiCode;
 
     constructor(code: EmojiCode, key?: NodeKey) {
-        super(key);
+        const emoji = emojiList.find((item) => item.code.includes(code)) || emojiList[0];
+        super(emoji.label, key);
         this.__code = code;
     }
 
-    static getType() {
+    static getType(): string {
         return 'emoji';
     }
 
@@ -1938,38 +2043,37 @@ class EmojiNode extends DecoratorNode<ReactNode> {
         return new EmojiNode(node.__code, node.__key);
     }
 
-    createDOM(): HTMLElement {
-        return document.createElement('span');
+    static importJSON(serializedNode: SerializedEmojiNode): EmojiNode {
+        return $createEmojiNode(serializedNode.code);
     }
 
-    updateDOM(): boolean {
-        return false;
+    getCode(): string {
+        return this.getLatest().__code;
     }
 
-    decorate(): ReactNode {
-        return (
-            <EmojiComponent code={this.__code}/>
-        );
-    }
-
-    exportJSON(): SerializedLexicalNode {
+    exportJSON(): SerializedEmojiNode {
         return {
+            code: this.__code,
+            detail: this.__detail,
+            format: this.__format,
+            mode: 'token',
+            style: this.__style,
+            text: this.__text,
             type: this.getType(),
             version: 1,
         };
     }
 
-    exportDOM(editor: LexicalEditor): DOMExportOutput {
-        const element = document.createElement('b');
-        element.innerText = this.__code;
-        return {
-            element,
-        };
+    createDOM(config: EditorConfig): HTMLElement {
+        const element = super.createDOM(config);
+        element.dataset.code = this.__code;
+        return element;
     }
 }
 
 const $createEmojiNode = (code: EmojiCode): EmojiNode => {
-    return new EmojiNode(code);
+    // return new EmojiNode(code);
+    return new EmojiNode(code).setMode('token');
 };
 
 function $isEmojiNode(node: LexicalNode | null | undefined): node is EmojiNode {
@@ -1980,7 +2084,7 @@ const EmojiPlugin: FC = () => {
     const [editor] = useLexicalComposerContext();
 
     useEffect(() => {
-        editor.registerNodeTransform(TextNode, (textNode) => {
+        return editor.registerNodeTransform(TextNode, (textNode) => {
             const parent = textNode.getParent();
             if (!parent || !$isParagraphNode(parent)) return;
 
@@ -1999,6 +2103,7 @@ const EmojiPlugin: FC = () => {
             if (!emojiCodeNode) return;
 
             const emojiNode = RichTextEmoji.$createEmojiNode(fullMatch);
+            // emojiNode.insertAfter($createTextNode(''), true);
             emojiCodeNode.replace(emojiNode);
         });
     }, [editor]);
@@ -2014,6 +2119,7 @@ export const RichTextEmoji = {
 };
 
 import { TreeView } from '@lexical/react/LexicalTreeView';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 
 
 
@@ -2047,16 +2153,21 @@ const Editor: FC = () => {
         onError,
     };
 
-
     return (
         <LexicalComposer initialConfig={initialConfig}>
-            <PlainTextPlugin
+            {/* <PlainTextPlugin
+                contentEditable={<ContentEditable />}
+                placeholder={<div>Enter some text...</div>}
+                ErrorBoundary={LexicalErrorBoundary}
+            /> */}
+
+            <RichTextPlugin
                 contentEditable={<ContentEditable />}
                 placeholder={<div>Enter some text...</div>}
                 ErrorBoundary={LexicalErrorBoundary}
             />
 
-            <HistoryPlugin />
+            <HistoryPlugin/>
 
             <AutoLinkPlugin matchers={linkMatchers}/>
 
@@ -2073,18 +2184,23 @@ const Editor: FC = () => {
 };
 
 const PlaygroundInner30: FC = () => {
+    const [slateState, setSlateState] = useState(() => getInitialSlateValue());
+
+    useTimeout(() => {
+        setSlateState(getInitialSlateValue());
+    }, 3000);
+
     return (
         <div className='p-2 h-full'>
             <div className='border-orange-900 border-8 h-full flex flex-col'>
                 <Editor/>
 
-
                 {/* <RichTextEditor.ContextProvider
                     label=''
                     name=''
                     placeholder='placeholder'
-                    value={getInitialSlateValue()}
-                    onChange={() => {}}
+                    value={slateState}
+                    onChange={setSlateState}
                 >
                     <RichTextEditor.Editable/>
                 </RichTextEditor.ContextProvider> */}

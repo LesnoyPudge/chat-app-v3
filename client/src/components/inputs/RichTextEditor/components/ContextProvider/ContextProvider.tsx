@@ -1,7 +1,7 @@
 import { SlateContainer, SlateEditor } from '@libs';
 import { noop } from '@utils';
-import { FC, PropsWithChildren, createContext, useMemo, useState } from 'react';
-import { Descendant, createEditor } from 'slate';
+import { FC, PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react';
+import { Descendant, Editor, Transforms, createEditor } from 'slate';
 import { withHistory } from 'slate-history';
 import { Slate, useSlate, useSlateStatic, withReact } from 'slate-react';
 import { withEmoji, withLink } from 'src/libs/Slate/plugins';
@@ -63,6 +63,19 @@ export const ContextProvider: FC<ContextProvider> = ({
         onSubmit,
         onKeyDown,
     }), [label, name, onKeyDown, onSubmit, placeholder]);
+
+    useEffect(() => {
+        // if (editor.children === value) return;
+
+        // Transforms.delete(editor, {
+        //     at: {
+        //         anchor: Editor.start(editor, []),
+        //         focus: Editor.end(editor, []),
+        //     },
+        // });
+
+        // Transforms.insertNodes(editor, value);
+    }, [editor, value]);
 
     return (
         <RichTextEditorContext.Provider value={contextValues}>

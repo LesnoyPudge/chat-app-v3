@@ -76,6 +76,7 @@ export const Emoji: FC<Emoji> = ({
             className={twClassNames(styles.base, className)}
             src={emoji.path}
             alt={emoji.label}
+            lazy
         />
     );
 };

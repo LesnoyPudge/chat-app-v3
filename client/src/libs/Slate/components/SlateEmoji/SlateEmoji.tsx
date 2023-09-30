@@ -34,12 +34,11 @@ export const SlateEmoji: FC<SlateEmoji> = ({
             draggable={false}
             {...attributes}
         >
-            {children}
-
             <Emoji
                 className={styles.emoji}
                 code={code}
             />
+            {children}
         </span>
     );
 };
