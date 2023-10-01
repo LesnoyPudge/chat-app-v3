@@ -1813,7 +1813,7 @@ const PlaygroundInner29: FC = () => {
 
 
 
-import { $applyNodeReplacement, $createTextNode, $getRoot, $getSelection, $isParagraphNode, DecoratorNode, DOMConversionMap, DOMExportOutput, EditorConfig, EditorState, LexicalEditor, LexicalNode, NodeKey, SerializedLexicalNode, SerializedTextNode, TextNode } from 'lexical';
+import { $applyNodeReplacement, $createTextNode, $getRoot, $getSelection, $isParagraphNode, DecoratorNode, DOMConversionMap, DOMExportOutput, EditorConfig, EditorState, ElementNode, LexicalEditor, LexicalNode, NodeKey, SerializedElementNode, SerializedLexicalNode, SerializedTextNode, TextNode } from 'lexical';
 import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -1895,189 +1895,27 @@ const linkMatchers: LinkMatcher[] = (() => {
     return [matcher];
 })();
 
-type EmojiComponent = PropsWithClassName & {
-    code: EmojiCode;
-}
 
-const EmojiComponent: FC<EmojiComponent> = ({
-    className = '',
-    code,
-}) => {
-    const styles = {
-        wrapper: 'inline-block mx-0.5 message-emoji-size',
-        emoji: 'inline-block w-full h-full',
-    };
-
-    return (
-        <span
-            className={twClassNames(styles.wrapper, className)}
-            contentEditable={false}
-            draggable={false}
-        >
-            <Emoji
-                className={styles.emoji}
-                code={code}
-            />
-        </span>
-    );
-};
-
-// type SerializedEmojiNode = SerializedLexicalNode & {
-//     code: EmojiCode,
-// }
-
-type SerializedEmojiNode = SerializedTextNode & {
-    code: EmojiCode,
-}
-
-// class EmojiNode extends DecoratorNode<ReactNode> {
-//     __code: EmojiCode;
-
-//     constructor(code: EmojiCode, key?: NodeKey) {
-//         super(key);
-//         this.__code = code;
-//     }
-
-//     static getType(): string {
-//         return 'emoji';
-//     }
-
-//     static clone(node: EmojiNode): EmojiNode {
-//         return new EmojiNode(node.__code, node.__key);
-//     }
-
-//     static importJSON(serializedNode: SerializedEmojiNode): EmojiNode {
-//         console.log('import json', serializedNode);
-//         return $createEmojiNode(serializedNode.code);
-//     }
-
-//     // static importDOM(): DOMConversionMap {
-//     //     return {
-//     //         span: (_) => ({
-//     //             priority: 0,
-//     //             conversion: (domNode) => {
-//     //                 console.log('import dom', domNode);
-//     //                 if (!(domNode instanceof HTMLSpanElement)) return null;
-
-//     //                 const code = domNode.dataset.code;
-//     //                 if (!code) return null;
-
-//     //                 const isMatch = emojiCodeRegExp.test(code);
-//     //                 if (!isMatch) return null;
-
-//     //                 const node = $createEmojiNode(code as EmojiCode);
-
-//     //                 return {
-//     //                     node,
-//     //                 };
-//     //             },
-//     //         }),
-//     //     };
-//     // }
-
-//     createDOM(): HTMLElement {
-//         return document.createElement('span');
-//     }
-
-//     updateDOM(): boolean {
-//         return false;
-//     }
-
-//     decorate(): ReactNode {
-//         return (
-//             <EmojiComponent code={this.__code}/>
-//         );
-//     }
-
-//     exportJSON(): SerializedEmojiNode {
-//         // const json = new TextNode(this.__code).exportJSON();
-//         console.log('export json');
-//         return {
-//             code: this.__code,
-//             type: this.getType(),
-//             version: 1,
-//         };
-//     }
-
-//     exportDOM(editor: LexicalEditor): DOMExportOutput {
-//         const element = document.createElement('span');
-//         element.dataset.code = this.__code;
-
-//         const emoji = emojiList.find(item => item.code.includes(this.__code));
-//         if (!emoji) return { element: null };
-
-//         element.innerHTML = emoji.label;
-//         console.log('export dom');
-//         return { element };
-//     }
-
-//     // isParentRequired(): boolean {
-//     //     return true;
-//     // }
-
-//     isInline(): boolean {
-//         return true;
-//     }
-
-//     isIsolated(): boolean {
-//         return true;
-//     }
-// }
-
-const pl = () => {};
-
-export class EmojiNode extends TextNode {
-    __code: EmojiCode;
-
-    constructor(code: EmojiCode, key?: NodeKey) {
-        const emoji = emojiList.find((item) => item.code.includes(code)) || emojiList[0];
-        super(emoji.label, key);
-        this.__code = code;
-    }
-
+class SpacerNode extends TextNode {
     static getType(): string {
-        return 'emoji';
+        return 'spacer';
     }
 
-    static clone(node: EmojiNode): EmojiNode {
-        return new EmojiNode(node.__code, node.__key);
+    static clone(node: SpacerNode): SpacerNode {
+        return new SpacerNode(node.__text, node.__key);
     }
 
-    static importJSON(serializedNode: SerializedEmojiNode): EmojiNode {
-        return $createEmojiNode(serializedNode.code);
+    isUnmergeable(): boolean {
+        return true;
     }
 
-    getCode(): string {
-        return this.getLatest().__code;
-    }
-
-    exportJSON(): SerializedEmojiNode {
+    exportJSON(): SerializedTextNode {
         return {
-            code: this.__code,
-            detail: this.__detail,
-            format: this.__format,
-            mode: 'token',
-            style: this.__style,
-            text: this.__text,
-            type: this.getType(),
+            ...super.exportJSON(),
+            type: 'spacer',
             version: 1,
         };
     }
-
-    createDOM(config: EditorConfig): HTMLElement {
-        const element = super.createDOM(config);
-        element.dataset.code = this.__code;
-        return element;
-    }
-}
-
-const $createEmojiNode = (code: EmojiCode): EmojiNode => {
-    // return new EmojiNode(code);
-    return new EmojiNode(code).setMode('token');
-};
-
-function $isEmojiNode(node: LexicalNode | null | undefined): node is EmojiNode {
-    return node instanceof EmojiNode;
 }
 
 const EmojiPlugin: FC = () => {
@@ -2092,19 +1930,33 @@ const EmojiPlugin: FC = () => {
             const match = emojiCodeRegExp.exec(text);
             if (!match) return;
 
+            const prevSel = $getSelection();
+            console.log(textNode, '????');
             const fullMatch = match[0] as EmojiCode;
-
-            const splitedNodes = textNode.splitText(
+            const splittedNodes = textNode.splitText(
                 match.index,
                 match.index + fullMatch.length,
             );
 
-            const emojiCodeNode = splitedNodes.find((node) => node.__text === fullMatch);
+            const emojiCodeNode = splittedNodes.find((node) => node.__text === fullMatch);
             if (!emojiCodeNode) return;
 
             const emojiNode = RichTextEmoji.$createEmojiNode(fullMatch);
-            // emojiNode.insertAfter($createTextNode(''), true);
+
             emojiCodeNode.replace(emojiNode);
+
+
+
+            // spacer.select();
+
+            // emojiNode.selectNext();
+
+
+            // // $selection;
+
+            // const nextSel = $getSelection();
+
+            // console.log(nextSel);
         });
     }, [editor]);
 
@@ -2120,6 +1972,7 @@ export const RichTextEmoji = {
 
 import { TreeView } from '@lexical/react/LexicalTreeView';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { EmojiNode, $createEmojiNode, $isEmojiNode, EmojiWrapper, EmojiDecoratorNode } from './emoji';
 
 
 
@@ -2149,18 +2002,15 @@ const Editor: FC = () => {
         nodes: [
             AutoLinkNode,
             RichTextEmoji.Node,
+            EmojiWrapper,
+            EmojiDecoratorNode,
+            SpacerNode,
         ],
         onError,
     };
 
     return (
         <LexicalComposer initialConfig={initialConfig}>
-            {/* <PlainTextPlugin
-                contentEditable={<ContentEditable />}
-                placeholder={<div>Enter some text...</div>}
-                ErrorBoundary={LexicalErrorBoundary}
-            /> */}
-
             <RichTextPlugin
                 contentEditable={<ContentEditable />}
                 placeholder={<div>Enter some text...</div>}
@@ -2171,10 +2021,10 @@ const Editor: FC = () => {
 
             <AutoLinkPlugin matchers={linkMatchers}/>
 
-            <ControllablePlugin
+            {/* <ControllablePlugin
                 value={editorState}
                 onChange={setEditorState}
-            />
+            /> */}
 
             <RichTextEmoji.Plugin/>
 
