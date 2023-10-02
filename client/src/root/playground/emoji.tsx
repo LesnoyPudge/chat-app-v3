@@ -1,151 +1,29 @@
-import { EmojiCode, Emoji, emojiList } from '@components';
-import { PropsWithClassName } from '@types';
-import { twClassNames } from '@utils';
-import { SerializedTextNode, TextNode, NodeKey, ElementNode, SerializedElementNode, SerializedLexicalNode, DecoratorNode, LexicalEditor, DOMExportOutput, LexicalNode, EditorConfig } from 'lexical';
-import { FC, ReactNode } from 'react';
-import { createPortal } from 'react-dom';
-import { createRoot } from 'react-dom/client';
+import { EmojiCode, EmojiItem } from '@components';
+import { SerializedTextNode, TextNode, NodeKey, LexicalEditor, DOMExportOutput, LexicalNode, EditorConfig } from 'lexical';
 
 
-
-type EmojiComponent = PropsWithClassName & {
-    code: EmojiCode;
-}
-
-export const EmojiComponent: FC<EmojiComponent> = ({
-    className = '',
-    code,
-}) => {
-    const styles = {
-        wrapper: 'inline-block mx-0.5 message-emoji-size',
-        emoji: 'inline-block w-full h-full',
-    };
-
-    return (
-        <span
-            className={twClassNames(styles.wrapper, className)}
-            contentEditable={false}
-            draggable={false}
-        >
-            <Emoji
-                className={styles.emoji}
-                code={code}
-            />
-        </span>
-    );
-};
-
-// type SerializedEmojiNode = SerializedLexicalNode & {
-//     code: EmojiCode,
-// }
 
 type SerializedEmojiNode = SerializedTextNode & {
-    code: EmojiCode,
+    code: EmojiCode;
+    emojiItem: EmojiItem;
 }
 
-// class EmojiNode extends DecoratorNode<ReactNode> {
-//     __code: EmojiCode;
-
-//     constructor(code: EmojiCode, key?: NodeKey) {
-//         super(key);
-//         this.__code = code;
-//     }
-
-//     static getType(): string {
-//         return 'emoji';
-//     }
-
-//     static clone(node: EmojiNode): EmojiNode {
-//         return new EmojiNode(node.__code, node.__key);
-//     }
-
-//     static importJSON(serializedNode: SerializedEmojiNode): EmojiNode {
-//         console.log('import json', serializedNode);
-//         return $createEmojiNode(serializedNode.code);
-//     }
-
-//     // static importDOM(): DOMConversionMap {
-//     //     return {
-//     //         span: (_) => ({
-//     //             priority: 0,
-//     //             conversion: (domNode) => {
-//     //                 console.log('import dom', domNode);
-//     //                 if (!(domNode instanceof HTMLSpanElement)) return null;
-
-//     //                 const code = domNode.dataset.code;
-//     //                 if (!code) return null;
-
-//     //                 const isMatch = emojiCodeRegExp.test(code);
-//     //                 if (!isMatch) return null;
-
-//     //                 const node = $createEmojiNode(code as EmojiCode);
-
-//     //                 return {
-//     //                     node,
-//     //                 };
-//     //             },
-//     //         }),
-//     //     };
-//     // }
-
-//     createDOM(): HTMLElement {
-//         return document.createElement('span');
-//     }
-
-//     updateDOM(): boolean {
-//         return false;
-//     }
-
-//     decorate(): ReactNode {
-//         return (
-//             <EmojiComponent code={this.__code}/>
-//         );
-//     }
-
-//     exportJSON(): SerializedEmojiNode {
-//         // const json = new TextNode(this.__code).exportJSON();
-//         console.log('export json');
-//         return {
-//             code: this.__code,
-//             type: this.getType(),
-//             version: 1,
-//         };
-//     }
-
-//     exportDOM(editor: LexicalEditor): DOMExportOutput {
-//         const element = document.createElement('span');
-//         element.dataset.code = this.__code;
-
-//         const emoji = emojiList.find(item => item.code.includes(this.__code));
-//         if (!emoji) return { element: null };
-
-//         element.innerHTML = emoji.label;
-//         console.log('export dom');
-//         return { element };
-//     }
-
-//     // isParentRequired(): boolean {
-//     //     return true;
-//     // }
-
-//     isInline(): boolean {
-//         return true;
-//     }
-
-//     isIsolated(): boolean {
-//         return true;
-//     }
-// }
-
-const pl = () => {};
+const styles = {
+    base: `inline-block message-emoji-wrapper-size 
+    message-emoji-font-size message-emoji-bg-size bg-center 
+    bg-no-repeat overflow-hidden align-bottom caret-base 
+    font-mono text-transparent selection:text-transparent 
+    selection:bg-selection`,
+};
 
 export class EmojiNode extends TextNode {
     __code: EmojiCode;
+    __emojiItem: EmojiItem;
 
-    constructor(code: EmojiCode, key?: NodeKey) {
-        const emoji = emojiList.find((item) => item.code.includes(code)) || emojiList[0];
-        super(emoji.label, key);
+    constructor(code: EmojiCode, emojiItem: EmojiItem, key?: NodeKey) {
+        super(emojiItem.label, key);
         this.__code = code;
+        this.__emojiItem = emojiItem;
     }
 
     static getType(): string {
@@ -153,182 +31,65 @@ export class EmojiNode extends TextNode {
     }
 
     static clone(node: EmojiNode): EmojiNode {
-        return new EmojiNode(node.__code, node.__key);
-    }
-
-    // static importJSON(serializedNode: SerializedEmojiNode): EmojiNode {
-    //     return $createEmojiNode(serializedNode.code);
-    // }
-
-    getCode(): string {
-        return this.getLatest().__code;
+        return new EmojiNode(node.__code, node.__emojiItem, node.__key);
     }
 
     exportJSON(): SerializedEmojiNode {
         return {
-            code: this.__code,
-            detail: this.__detail,
-            format: this.__format,
-            mode: 'token',
-            style: this.__style,
-            text: this.__text,
-            type: this.getType(),
-            version: 1,
-        };
-    }
-
-    updateDOM() {
-        return false;
-    }
-
-    createDOM(config: EditorConfig) {
-        const element = super.createDOM(config);
-        element.dataset.code = this.__code;
-
-        // const root = document.createElement('span');
-        // element.appendChild(root);
-        // console.log('create dom');
-        // // <EmojiComponent code={this.__code}/>
-        // setTimeout(() => {
-        //     createRoot(root).render(<>wow</>);
-        // });
-        // return <EmojiComponent code={this.__code}/>
-        return element;
-    }
-}
-
-export class EmojiWrapper extends ElementNode {
-    constructor(key?: NodeKey) {
-        super(key);
-    }
-
-    static clone(node: EmojiWrapper): EmojiWrapper {
-        return new EmojiWrapper(node.__key);
-    }
-
-    static getType(): string {
-        return 'emoji-wrapper';
-    }
-
-    exportJSON(): SerializedElementNode<SerializedLexicalNode> {
-        return {
             ...super.exportJSON(),
+            code: this.__code,
+            emojiItem: this.__emojiItem,
+            text: this.__text,
+            mode: 'token',
             type: this.getType(),
             version: 1,
-            // children: $createEmojiNode(':poop:').getChildren().map((node) => node.exportJSON()),
         };
     }
 
-    createDOM(): HTMLElement {
-        const dom = document.createElement('div');
-        return dom;
-    }
-
-    updateDOM(): boolean {
+    updateDOM(
+        prevNode: TextNode,
+        dom: HTMLElement,
+        config: EditorConfig,
+    ) {
+        super.updateDOM(prevNode, dom, config);
         return false;
-    }
-
-    isInline(): boolean {
-        return true;
-    }
-
-    canBeEmpty(): boolean {
-        return false;
-    }
-}
-
-type SerializedEmojiDecoratorNode = SerializedLexicalNode & {
-    code: EmojiCode,
-}
-
-export class EmojiDecoratorNode extends DecoratorNode<ReactNode> {
-    __code: EmojiCode;
-
-    constructor(code: EmojiCode, key?: NodeKey) {
-        super(key);
-        this.__code = code;
-    }
-
-    static getType(): string {
-        return 'emoji-decorator';
-    }
-
-    static clone(node: EmojiDecoratorNode) {
-        return new EmojiDecoratorNode(node.__code, node.__key);
-        // return new TextNode(node.__code, node.__key);
-    }
-
-    static importJSON(_serializedNode: SerializedEmojiDecoratorNode) {
-        return $createEmojiNode(_serializedNode.code);
     }
 
     exportDOM(editor: LexicalEditor): DOMExportOutput {
-        const element = document.createElement('span');
-        element.dataset.code = this.__code;
-        element.innerHTML = this.__code;
+
+        const element = this.createDOM(editor._config);
+        // const element = htmlStringToElement(renderToString(
+        //     <div className='inline-block relative'>
+        //         <div>
+        //             {this.__emojiItem.label}
+        //         </div>
+
+        //         <div
+        //             className='absolute right-0 pointer-events-none'
+        //             contentEditable={false}
+        //         >
+        //             {this.__code}
+        //         </div>
+        //     </div>,
+        // ));
 
         return {
-            element: element,
+            element,
         };
     }
 
-    exportJSON() {
-        return {
-            code: this.__code,
-            type: this.getType(),
-            version: 1,
-        };
-    }
+    createDOM(config: EditorConfig) {
+        const dom = super.createDOM(config);
 
-    createDOM(): HTMLElement {
-        return document.createElement('span');
-    }
+        dom.className = styles.base;
+        dom.style.backgroundImage = `url("${this.__emojiItem.path.replaceAll('\\', '/')}")`;
 
-    updateDOM(): boolean {
-        return false;
+        return dom;
     }
-
-    decorate(): ReactNode {
-        return (
-            <span>
-                <>{this.__code}</>
-            </span>
-        );
-        return (
-            <EmojiComponent code={this.__code}/>
-        );
-    }
-
-    isParentRequired(): boolean {
-        return true;
-    }
-
-    isInline(): boolean {
-        return true;
-    }
-
-    isIsolated(): boolean {
-        return true;
-    }
-
-    isKeyboardSelectable(): boolean {
-        return true;
-    }
-
 }
 
-export const $createEmojiNode = (code: EmojiCode) => {
-    // return new EmojiNode(code);
-    // return new EmojiNode(code).setMode('token');
-
-    // const wrapper = new EmojiWrapper();
-    const text = new EmojiNode(code).setMode('token');
-    return text;
-    // const decorator = new EmojiDecoratorNode(code);
-    // return decorator;
-    // wrapper.append(text, decorator);
-
-    // return wrapper;
+export const $createEmojiNode = (code: EmojiCode, emoji: EmojiItem) => {
+    return new EmojiNode(code, emoji).setMode('token');
 };
 
 export function $isEmojiNode(node: LexicalNode | null | undefined): node is EmojiNode {

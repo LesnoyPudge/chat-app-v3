@@ -45,9 +45,17 @@ const customClasses = {
         'padding-bottom': 'var(--message-y-padding)',
     },
 
-    '.message-emoji-size': {
-        'height': 'var(--message-emoji-size)!important',
-        'width': 'var(--message-emoji-size)!important',
+    '.message-emoji-wrapper-size': {
+        'height': 'var(--message-emoji-wrapper-height)',
+        'width': 'var(--message-emoji-wrapper-width)',
+    },
+
+    '.message-emoji-font-size': {
+        'font-size': 'var(--message-emoji-font-size)',
+    },
+
+    '.message-emoji-bg-size': {
+        'background-size': 'var(--message-emoji-bg-size)',
     },
 
     '.message-group-head': {

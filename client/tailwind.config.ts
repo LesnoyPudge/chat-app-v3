@@ -80,6 +80,8 @@ export default {
                     track: 'var(--scrollbar-track)',
                     thumb: 'var(--scrollbar-thumb)',
                 },
+
+                selection: 'var(--selection)',
             },
 
             textColor: {
@@ -91,6 +93,12 @@ export default {
                     error: 'var(--color-font-error)',
                     link: 'var(--color-font-link)',
                 },
+            },
+
+            caretColor: {
+                primary: 'var(--color-font-primary)',
+                secondary: 'var(--color-font-secondary)',
+                base: 'var(--color-font-base)',
             },
 
             fontSize: {

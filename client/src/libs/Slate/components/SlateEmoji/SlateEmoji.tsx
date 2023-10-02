@@ -17,7 +17,7 @@ type SlateEmoji = PropsWithChildrenAndClassName & {
 })
 
 const styles = {
-    wrapper: 'inline-block mx-0.5 message-emoji-size',
+    wrapper: 'inline-block mx-0.5 message-emoji-wrapper-size',
     emoji: 'inline-block w-full h-full',
 };
 

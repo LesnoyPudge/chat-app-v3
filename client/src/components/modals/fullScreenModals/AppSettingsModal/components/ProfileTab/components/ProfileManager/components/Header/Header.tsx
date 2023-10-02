@@ -15,7 +15,7 @@ const styles = {
     bg-primary-500 rounded-full p-[7px]`,
     avatarButton: 'relative w-full h-full rounded-full group',
     avatarOverlay: `grid place-items-center absolute inset-0 
-    rounded-full opacity-0 bg-black bg-opacity-80 pointer-events-none 
+    rounded-full opacity-0 bg-black/80 pointer-events-none 
     group-focus-within:opacity-100 group-hover:opacity-100 transition-all`,
     avatarOverlayText: 'uppercase font-bold text-2xs text-white text-center',
     avatar: 'w-full h-full rounded-full',

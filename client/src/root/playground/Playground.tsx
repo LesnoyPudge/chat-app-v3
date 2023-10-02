@@ -1,4 +1,4 @@
-import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, RichTextEditor, Emoji, emojiCodeRegExp, emojiList } from '@components';
+import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, RichTextEditor, Emoji, emojiRegExp, emojiList, getEmojiMatch } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff, setTitle } from '@utils';
@@ -1927,36 +1927,23 @@ const EmojiPlugin: FC = () => {
             if (!parent || !$isParagraphNode(parent)) return;
 
             const text = textNode.getTextContent();
-            const match = emojiCodeRegExp.exec(text);
-            if (!match) return;
+            const matchObj = getEmojiMatch(text);
+            if (!matchObj) return;
 
-            const prevSel = $getSelection();
-            console.log(textNode, '????');
-            const fullMatch = match[0] as EmojiCode;
+            const { match, emoji } = matchObj;
+
+            const code = match[0] as EmojiCode;
             const splittedNodes = textNode.splitText(
                 match.index,
-                match.index + fullMatch.length,
+                match.index + code.length,
             );
 
-            const emojiCodeNode = splittedNodes.find((node) => node.__text === fullMatch);
+            const emojiCodeNode = splittedNodes.find((node) => node.__text === code);
             if (!emojiCodeNode) return;
 
-            const emojiNode = RichTextEmoji.$createEmojiNode(fullMatch);
+            const emojiNode = RichTextEmoji.$createEmojiNode(code, emoji);
 
             emojiCodeNode.replace(emojiNode);
-
-
-
-            // spacer.select();
-
-            // emojiNode.selectNext();
-
-
-            // // $selection;
-
-            // const nextSel = $getSelection();
-
-            // console.log(nextSel);
         });
     }, [editor]);
 
@@ -1972,7 +1959,7 @@ export const RichTextEmoji = {
 
 import { TreeView } from '@lexical/react/LexicalTreeView';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { EmojiNode, $createEmojiNode, $isEmojiNode, EmojiWrapper, EmojiDecoratorNode } from './emoji';
+import { EmojiNode, $createEmojiNode, $isEmojiNode } from './emoji';
 
 
 
@@ -2002,8 +1989,8 @@ const Editor: FC = () => {
         nodes: [
             AutoLinkNode,
             RichTextEmoji.Node,
-            EmojiWrapper,
-            EmojiDecoratorNode,
+            // EmojiWrapper,
+            // EmojiDecoratorNode,
             SpacerNode,
         ],
         onError,
@@ -2011,11 +1998,19 @@ const Editor: FC = () => {
 
     return (
         <LexicalComposer initialConfig={initialConfig}>
-            <RichTextPlugin
+            <div className='message-font-size'>
+                <PlainTextPlugin
+                    contentEditable={<ContentEditable />}
+                    placeholder={<div>Enter some text...</div>}
+                    ErrorBoundary={LexicalErrorBoundary}
+                />
+            </div>
+
+            {/* <RichTextPlugin
                 contentEditable={<ContentEditable />}
                 placeholder={<div>Enter some text...</div>}
                 ErrorBoundary={LexicalErrorBoundary}
-            />
+            /> */}
 
             <HistoryPlugin/>
 

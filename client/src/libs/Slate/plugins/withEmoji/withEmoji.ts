@@ -1,4 +1,4 @@
-import { EmojiCode, emojiCodeList, emojiCodeRegExp } from '@components';
+import { EmojiCode, emojiCodeList, emojiRegExp } from '@components';
 import { Editor, Element, Text, Transforms } from 'slate';
 import { CustomEditor } from '../../types';
 
@@ -27,7 +27,7 @@ export const withEmoji = (editor: CustomEditor) => {
             if (!inParagraph) return normalizeNode(entry);
 
             const nodeText = entryNode.text.toLowerCase();
-            const match = nodeText.match(emojiCodeRegExp);
+            const match = nodeText.match(emojiRegExp);
 
             const noMatch = !match || !match.length;
 

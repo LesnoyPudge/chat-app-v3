@@ -231,6 +231,4 @@ const main = async() => {
     console.log('generation complete');
 };
 
-main().catch((e) => {
-    console.log(e);
-});
+main().catch(console.log);

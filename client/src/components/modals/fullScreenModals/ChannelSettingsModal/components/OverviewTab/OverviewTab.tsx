@@ -16,7 +16,7 @@ const styles = {
     firstFileInput: 'w-[100px] h-[100px] rounded-full relative group bg-primary-300',
     channelImage: 'h-full w-full rounded-full',
     channelImageOverlay: `grid place-items-center absolute inset-0 
-    rounded-full opacity-0 bg-black bg-opacity-80 pointer-events-none 
+    rounded-full opacity-0 bg-black/80 pointer-events-none 
     group-focus-within:opacity-100 group-hover:opacity-100 transition-all`,
     overlayText: 'uppercase font-bold text-2xs text-white text-center',
     addFileIconWrapper: `absolute top-0 right-0  w-7 h-7 
