@@ -1813,7 +1813,7 @@ const PlaygroundInner29: FC = () => {
 
 
 
-import { $applyNodeReplacement, $createTextNode, $getRoot, $getSelection, $isParagraphNode, DecoratorNode, DOMConversionMap, DOMExportOutput, EditorConfig, EditorState, ElementNode, LexicalEditor, LexicalNode, NodeKey, SerializedElementNode, SerializedLexicalNode, SerializedTextNode, TextNode } from 'lexical';
+import { $applyNodeReplacement, $createTextNode, $getRoot, $getSelection, $insertNodes, $isParagraphNode, DecoratorNode, DOMConversionMap, DOMExportOutput, EditorConfig, EditorState, ElementNode, LexicalEditor, LexicalNode, NodeKey, SerializedElementNode, SerializedLexicalNode, SerializedTextNode, TextNode } from 'lexical';
 import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -1863,7 +1863,7 @@ const ControllablePlugin: FC<ControllablePlugin> = ({
 
     useEffect(() => {
         if (value === lastStateRef.current) return;
-        console.log('controllable state set');
+
         editor.setEditorState(editor.parseEditorState(value));
     }, [editor, value]);
 
@@ -1896,28 +1896,6 @@ const linkMatchers: LinkMatcher[] = (() => {
 })();
 
 
-class SpacerNode extends TextNode {
-    static getType(): string {
-        return 'spacer';
-    }
-
-    static clone(node: SpacerNode): SpacerNode {
-        return new SpacerNode(node.__text, node.__key);
-    }
-
-    isUnmergeable(): boolean {
-        return true;
-    }
-
-    exportJSON(): SerializedTextNode {
-        return {
-            ...super.exportJSON(),
-            type: 'spacer',
-            version: 1,
-        };
-    }
-}
-
 const EmojiPlugin: FC = () => {
     const [editor] = useLexicalComposerContext();
 
@@ -1947,6 +1925,19 @@ const EmojiPlugin: FC = () => {
         });
     }, [editor]);
 
+    useTimeout(() => {
+
+        editor.update(() => {
+            $insertNodes([RichTextEmoji.$createEmojiNode(
+                ':poop:',
+                emojiList.find((item) => item.code.includes(':poop:')) ?? emojiList[0],
+            )]);
+        }, {
+        });
+
+
+    }, 5000);
+
     return null;
 };
 
@@ -1960,6 +1951,7 @@ export const RichTextEmoji = {
 import { TreeView } from '@lexical/react/LexicalTreeView';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { EmojiNode, $createEmojiNode, $isEmojiNode } from './emoji';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -1989,9 +1981,6 @@ const Editor: FC = () => {
         nodes: [
             AutoLinkNode,
             RichTextEmoji.Node,
-            // EmojiWrapper,
-            // EmojiDecoratorNode,
-            SpacerNode,
         ],
         onError,
     };
@@ -2054,6 +2043,22 @@ const PlaygroundInner30: FC = () => {
     );
 };
 
+const PlaygroundInner31: FC = () => {
+    const { t } = useTranslation();
+
+    return (
+        <>
+            <div>
+                {t('Welcome to React')}
+            </div>
+
+            <div>
+                {t('wow')}
+            </div>
+        </>
+    );
+};
+
 const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
@@ -2065,7 +2070,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
 
             <If condition={enabled}>
                 {/* <PlaygroundInner29/> */}
-                <PlaygroundInner30/>
+                {/* <PlaygroundInner30/> */}
+                <PlaygroundInner31/>
             </If>
         </>
     );

@@ -7,6 +7,7 @@ import { FC, useRef } from 'react';
 import { axeReact } from '../../helpers/components';
 import { AnyFunction } from 'ts-essentials';
 import { Key } from 'ts-key-enum';
+import { openTranslationWindow } from '@i18n';
 
 
 
@@ -39,6 +40,8 @@ const actions = {
     setAutoTheme: () => {
         document.documentElement.dataset.theme = 'auto';
     },
+
+    openTranslationWindow,
 } satisfies Actions;
 
 const styles = {

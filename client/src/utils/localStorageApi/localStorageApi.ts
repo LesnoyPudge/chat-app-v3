@@ -14,6 +14,13 @@ type Values = {
     savedMessageDrafts: Record<ChatId, Descendant[]>;
 }
 
+const myKeys: Array<keyof Values> = [
+    'lastRefresh',
+    'lastVisitedTextRooms',
+    'myId',
+    'savedMessageDrafts',
+];
+
 export const localStorageApi = {
     get: <T extends keyof Values>(key: T): Values[T] | null => {
         const value = localStorage.getItem(key);
@@ -38,12 +45,15 @@ export const localStorageApi = {
     },
 
     clear: () => {
-        localStorage.clear();
+        // localStorage.clear();
+
+        myKeys.forEach((key) => localStorage.removeItem(key));
     },
 
     removeSensitive: () => {
         localStorageApi.remove('lastRefresh');
         localStorageApi.remove('myId');
         localStorageApi.remove('lastVisitedTextRooms');
+        localStorageApi.remove('savedMessageDrafts');
     },
 };

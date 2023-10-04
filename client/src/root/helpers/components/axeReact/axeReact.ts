@@ -3,8 +3,10 @@ import React from 'react';
 
 
 
+const { CUSTOM_NODE_ENV } = getEnv();
+
 export const axeReact = async() => {
-    if (getEnv().CUSTOM_NODE_ENV === 'production') return;
+    if (CUSTOM_NODE_ENV === 'production') return;
 
     const ReactDOM = await import('react-dom');
 
