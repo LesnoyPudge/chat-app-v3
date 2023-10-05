@@ -50,6 +50,7 @@
             "@generated": ["src/generated"],
             "@vars": ["src/vars"],
             "@i18n": ["src/i18n"],
+            "@locales/*": ["./locales/*"],
         },
     },
     "include": [

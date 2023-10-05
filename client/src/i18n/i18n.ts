@@ -1,8 +1,11 @@
-import i18next, { Resource } from 'i18next';
+import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend, { HttpBackendOptions } from 'i18next-http-backend';
 import { getEnv, noop } from '@utils';
+import ruJSON from '@locales/ru/bundled.json';
+import enJSON from '@locales/en/bundled.json';
+import { ValueOf } from 'ts-essentials';
 
 
 
@@ -14,30 +17,38 @@ let translationCheck = {
     showTranslations: noop,
 };
 
-export const i18n = i18next;
-export const openTranslationWindow = () => translationCheck.showTranslations(i18n);
+const i18n = i18next;
 
-// the translations
-// (tip move them in a JSON file and import them,
-// or even better, manage them separated from your code: https://react.i18next.com/guides/multiple-translation-files)
+const openTranslationWindow = () => translationCheck.showTranslations(i18n);
 
-export const SUPPORTED_LANGUAGES = {
+const NAMESPACES = {
+    BUNDLED: 'bundled',
+    LOADABLE: 'loadable',
+} as const;
+
+const SUPPORTED_LANGUAGES = {
     RU: 'ru',
     EN: 'en',
-} satisfies Record<string, string>;
+} as const;
 
-const localResources : Resource = {
-    ru: {
-        local: {
-            'Welcome to React': 'на русском',
-        },
-    },
+export const TRANSLATION = {
+    SUPPORTED_LANGUAGES,
+    NAMESPACES,
+    i18n,
+    openTranslationWindow,
+} as const;
 
-    en: {
-        translation: {
-            'Welcome to React': 'Welcome to React and react-i18next',
-        },
-    },
+type BundledResources = Record<
+    ValueOf<typeof TRANSLATION.SUPPORTED_LANGUAGES>,
+    Record<
+        (typeof TRANSLATION.NAMESPACES)[Uppercase<typeof TRANSLATION.NAMESPACES.BUNDLED>],
+        object
+    >
+>;
+
+const bundledResources: BundledResources = {
+    [TRANSLATION.SUPPORTED_LANGUAGES.RU]: { [TRANSLATION.NAMESPACES.BUNDLED]: ruJSON },
+    [TRANSLATION.SUPPORTED_LANGUAGES.EN]: { [TRANSLATION.NAMESPACES.BUNDLED]: enJSON },
 };
 
 export const i18nInit = async() => {
@@ -51,25 +62,15 @@ export const i18nInit = async() => {
         .use(translationCheck.i18nextPlugin)
         .use(HttpBackend)
         .init<HttpBackendOptions>({
-            // resources,
+            resources: bundledResources,
             partialBundledLanguages: true,
             debug: isDev,
             interpolation: {
                 escapeValue: false,
             },
-            // defaultNS: 'local',
             load: 'languageOnly',
-            // ns: ['local'],
-            ns: [],
-            resources: {},
-            defaultNS: undefined,
-            backend: {
-                loadPath: './locales/{{lng}}/{{ns}}.json',
-
-            },
-            // fallbackLng: 'en',
+            ns: [TRANSLATION.NAMESPACES.BUNDLED],
+            fallbackLng: TRANSLATION.SUPPORTED_LANGUAGES.EN,
         })
     );
-    // i18n.loadNamespaces('local');
-    // i18next.addResourceBundle('ru', 'local', localResources.ru, true);
 };

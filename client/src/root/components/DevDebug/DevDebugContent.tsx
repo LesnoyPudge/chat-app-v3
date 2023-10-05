@@ -7,7 +7,7 @@ import { FC, useRef } from 'react';
 import { axeReact } from '../../helpers/components';
 import { AnyFunction } from 'ts-essentials';
 import { Key } from 'ts-key-enum';
-import { openTranslationWindow } from '@i18n';
+import { TRANSLATION } from '@i18n';
 
 
 
@@ -41,7 +41,7 @@ const actions = {
         document.documentElement.dataset.theme = 'auto';
     },
 
-    openTranslationWindow,
+    openTranslationWindow: TRANSLATION.openTranslationWindow,
 } satisfies Actions;
 
 const styles = {

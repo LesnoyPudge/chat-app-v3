@@ -1951,7 +1951,8 @@ export const RichTextEmoji = {
 import { TreeView } from '@lexical/react/LexicalTreeView';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { EmojiNode, $createEmojiNode, $isEmojiNode } from './emoji';
-import { useTranslation } from 'react-i18next';
+import { Translation, useTranslation } from 'react-i18next';
+import { TRANSLATION } from '@i18n';
 
 
 
@@ -2045,17 +2046,30 @@ const PlaygroundInner30: FC = () => {
 
 const PlaygroundInner31: FC = () => {
     const { t } = useTranslation();
+    const [isOpen, toggle] = useToggle(false);
 
     return (
-        <>
-            <div>
-                {t('Welcome to React')}
-            </div>
+        <div>
+            <button onClick={toggle}>
+                <>toggle</>
+            </button>
+
+            <If condition={isOpen}>
+                <Suspense fallback={<>loading...</>}>
+                    <Translation ns={[TRANSLATION.NAMESPACES.LOADABLE]} useSuspense>
+                        {(t) => (
+                            <div>
+                                {t('Welcome to React')}
+                            </div>
+                        )}
+                    </Translation>
+                </Suspense>
+            </If>
 
             <div>
-                {t('wow')}
+                {t('wow', { ns: TRANSLATION.NAMESPACES.BUNDLED })}
             </div>
-        </>
+        </div>
     );
 };
 

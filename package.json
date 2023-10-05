@@ -37,6 +37,10 @@
         "prepare": "husky install",
         "deploy": "git add . && git commit -m 'update' && git push && git status",
         "test": "npm run project:runTest",
+        "gulp:get:version": "gulp --version",
+        "gulp:get:tasks": "gulp --tasks",
+        "gulp:start:client:dev": "gulp client_dev",
+        "gulp:start:client:build": "gulp client_build",
         "//": ""
     },
     "dependencies": {
@@ -62,6 +66,14 @@
         "svgo": "^3.0.2",
         "ts-essentials": "^9.3.2",
         "types-spring": "^2.0.0",
-        "typescript": "^5.1.6"
+        "typescript": "^5.1.6",
+        "@types/gulp": "^4.0.14",
+        "@types/gulp-watch": "^4.1.36",
+        "@types/node": "^20.8.2",
+        "app-root-path": "^3.1.0",
+        "gulp": "^4.0.2",
+        "gulp-cli": "^2.3.0",
+        "gulp-watch": "^5.0.1",
+        "ts-node": "^10.9.1"
     }
 }
