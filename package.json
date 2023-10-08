@@ -41,6 +41,7 @@
         "gulp:get:tasks": "gulp --tasks",
         "gulp:start:client:dev": "gulp client_dev",
         "gulp:start:client:build": "gulp client_build",
+        "parse": "i18next 'client/**/*.{ts,tsx}'",
         "//": ""
     },
     "dependencies": {
@@ -56,24 +57,26 @@
     },
     "devDependencies": {
         "@total-typescript/ts-reset": "^0.4.2",
-        "@types/is-odd": "^3.0.1",
-        "@typescript-eslint/eslint-plugin": "^5.52.0",
-        "@typescript-eslint/parser": "^5.52.0",
-        "eslint": "^8.34.0",
-        "eslint-plugin-import": "^2.27.5",
-        "husky": "^8.0.3",
-        "rimraf": "^4.1.2",
-        "svgo": "^3.0.2",
-        "ts-essentials": "^9.3.2",
-        "types-spring": "^2.0.0",
-        "typescript": "^5.1.6",
         "@types/gulp": "^4.0.14",
         "@types/gulp-watch": "^4.1.36",
+        "@types/is-odd": "^3.0.1",
         "@types/node": "^20.8.2",
+        "@typescript-eslint/eslint-plugin": "^5.52.0",
+        "@typescript-eslint/parser": "^5.52.0",
         "app-root-path": "^3.1.0",
+        "eslint": "^8.34.0",
+        "eslint-plugin-import": "^2.27.5",
         "gulp": "^4.0.2",
         "gulp-cli": "^2.3.0",
         "gulp-watch": "^5.0.1",
-        "ts-node": "^10.9.1"
+        "husky": "^8.0.3",
+        "i18next-parser": "^8.8.0",
+        "i18next-scanner": "^4.4.0",
+        "rimraf": "^4.1.2",
+        "svgo": "^3.0.2",
+        "ts-essentials": "^9.3.2",
+        "ts-node": "^10.9.1",
+        "types-spring": "^2.0.0",
+        "typescript": "^5.1.6"
     }
 }

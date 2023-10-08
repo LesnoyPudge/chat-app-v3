@@ -1928,6 +1928,8 @@ const EmojiPlugin: FC = () => {
     useTimeout(() => {
 
         editor.update(() => {
+            // $getRoot().select();
+
             $insertNodes([RichTextEmoji.$createEmojiNode(
                 ':poop:',
                 emojiList.find((item) => item.code.includes(':poop:')) ?? emojiList[0],
@@ -2060,6 +2062,8 @@ const PlaygroundInner31: FC = () => {
                         {(t) => (
                             <div>
                                 {t('Welcome to React')}
+
+                                {t('Not defined key')}
                             </div>
                         )}
                     </Translation>
@@ -2084,8 +2088,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
 
             <If condition={enabled}>
                 {/* <PlaygroundInner29/> */}
-                {/* <PlaygroundInner30/> */}
-                <PlaygroundInner31/>
+                <PlaygroundInner30/>
+                {/* <PlaygroundInner31/> */}
             </If>
         </>
     );

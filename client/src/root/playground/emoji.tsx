@@ -78,6 +78,10 @@ export class EmojiNode extends TextNode {
         };
     }
 
+    static importJSON(jsonNode: SerializedEmojiNode): EmojiNode {
+        return $createEmojiNode(jsonNode.code, jsonNode.emojiItem);
+    }
+
     createDOM(config: EditorConfig) {
         const dom = super.createDOM(config);
 
