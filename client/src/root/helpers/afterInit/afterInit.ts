@@ -1,7 +1,8 @@
-import { axeReact } from '../components';
+import { webVitals, offlineWorker } from '../components';
 
 
 
 export const afterInit = () => {
-    // axeReact();
+    webVitals();
+    offlineWorker();
 };

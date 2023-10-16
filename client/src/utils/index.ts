@@ -33,3 +33,4 @@ export * from './idArrayToObjectsWithId';
 export * from './getTextFallback';
 export * from './getReadImagePath';
 export * from './htmlStringToElement';
+export * from './createWebWorker';

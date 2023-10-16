@@ -1,4 +1,4 @@
-import i18next from 'i18next';
+import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend, { HttpBackendOptions } from 'i18next-http-backend';
@@ -16,8 +16,6 @@ let translationCheck = {
     i18nextPlugin: { type: '3rdParty' } as const,
     showTranslations: noop,
 };
-
-const i18n = i18next;
 
 const openTranslationWindow = () => translationCheck.showTranslations(i18n);
 

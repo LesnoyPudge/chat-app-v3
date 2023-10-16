@@ -2077,6 +2077,24 @@ const PlaygroundInner31: FC = () => {
     );
 };
 
+const PlaygroundInner32: FC = () => {
+    const [res, { run }] = useWebWorker(() => {
+        return Math.random();
+    });
+
+    return (
+        <div>
+            <button onClick={() => run()}>
+                <>run</>
+            </button>
+
+            <div>
+                <>result: {String(res)}</>
+            </div>
+        </div>
+    );
+};
+
 const enabled = !!1;
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
@@ -2088,8 +2106,9 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
 
             <If condition={enabled}>
                 {/* <PlaygroundInner29/> */}
-                <PlaygroundInner30/>
+                {/* <PlaygroundInner30/> */}
                 {/* <PlaygroundInner31/> */}
+                <PlaygroundInner32/>
             </If>
         </>
     );
