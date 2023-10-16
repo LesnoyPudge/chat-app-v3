@@ -5,6 +5,6 @@ import { registerSW } from 'virtual:pwa-register';
 
 export const offlineWorker = () => {
     const updateSW = registerSW({
-        onNeedRefresh: () => updateSW(false),
+        onNeedRefresh: () => updateSW(true),
     });
 };
