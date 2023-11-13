@@ -1,5 +1,5 @@
 import { BaseQueryFn, FetchArgs, createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
-import { getEnv } from '@utils';
+import { getEnv, isDev, isProd } from '@utils';
 import { Endpoints, HTTP_STATUS_CODES } from '@shared';
 import { FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/fetchBaseQuery';
 import { CustomQueryError } from '@types';
@@ -7,8 +7,8 @@ import { triggerGlobalResetAction } from '@redux/globalReset';
 
 
 
-const { CUSTOM_NODE_ENV, CUSTOM_SERVER_URL } = getEnv();
-const maxRetries = CUSTOM_NODE_ENV === 'production' ? 5 : 2;
+const { CUSTOM_SERVER_URL } = getEnv();
+const maxRetries = isProd() ? 5 : 2;
 
 const baseQuery = fetchBaseQuery({
     baseUrl: CUSTOM_SERVER_URL,
@@ -18,7 +18,7 @@ const baseQuery = fetchBaseQuery({
 const queryWithRetry = retry(async(...args: Parameters<typeof baseQuery>) => {
     const result = await baseQuery(...args);
 
-    if (CUSTOM_NODE_ENV === 'development') {
+    if (isDev()) {
         await new Promise<void>((resolve) => {
             setTimeout(() => {
                 resolve();

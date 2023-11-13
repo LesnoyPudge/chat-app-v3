@@ -20,23 +20,29 @@ export const EntityContext = {
     [SUBSCRIBABLE_ENTITIES.USER]: createContext<ContextArgs<SliceEntityState.User>>(undefined as any),
 };
 
+type ProviderProps<Entity extends WithId> = (
+    Partial<WithId> &
+    PropsWithChildrenAsNodeOrFunction<ContextArgs<Entity>> &
+    {
+        fakeEntity?: Entity;
+    }
+)
+
 export const createEntityContextProvider = <Entity extends WithId>(
     entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>,
 ) => {
-    const Provider: FC<Partial<WithId> & PropsWithChildrenAsNodeOrFunction<ContextArgs<Entity>>> = ({
+    const Provider: FC<ProviderProps<Entity>> = ({
         id,
+        fakeEntity,
         children,
     }) => {
-        const ids = useMemo(() => {
-            if (id === undefined) return [];
-            return [id];
-        }, [id]);
+        const ids = useMemo(() => id === undefined ? [] : [id], [id]);
         const [entity] = useEntitySubscription(entityName, ids) as (Entity | undefined)[];
 
         const SelectedContext = EntityContext[entityName];
 
         const contextArgs: ContextArgs<Entity> = [
-            entity,
+            fakeEntity ?? entity,
             id,
         ];
 

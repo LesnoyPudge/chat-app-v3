@@ -8,3 +8,4 @@ export * from './FileInput';
 export * from './ColorPicker';
 export * from './TextArea';
 export * from './RichTextEditor';
+export * from './RichTextEditorV2';

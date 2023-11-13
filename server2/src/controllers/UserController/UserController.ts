@@ -1,5 +1,5 @@
 import { UserService } from '@services';
-import { getEnv } from '@utils';
+import { getEnv, isProd } from '@utils';
 import { Endpoints, Tokens, HTTP_STATUS_CODES } from '@shared';
 import { AuthorizedMiddleware, Middleware } from '@types';
 import ms from 'ms';
@@ -85,7 +85,6 @@ interface UserController {
 
 const {
     REFRESH_TOKEN_DURATION,
-    CUSTOM_NODE_ENV,
     ACCESS_TOKEN_DURATION,
 } = getEnv();
 
@@ -96,7 +95,7 @@ const sendTokenData = {
         {
             maxAge: ms(ACCESS_TOKEN_DURATION),
             httpOnly: false,
-            secure: CUSTOM_NODE_ENV === 'production',
+            secure: isProd(),
         },
     ]),
 
@@ -106,7 +105,7 @@ const sendTokenData = {
         {
             maxAge: ms(REFRESH_TOKEN_DURATION),
             httpOnly: false,
-            secure: CUSTOM_NODE_ENV === 'production',
+            secure: isProd(),
             path: Endpoints.V1.User.Refresh.Path,
         },
     ]),
@@ -116,7 +115,7 @@ const sendTokenData = {
         token,
         {
             httpOnly: false,
-            secure: CUSTOM_NODE_ENV === 'production',
+            secure: isProd(),
             path: Endpoints.V1.User.Refresh.Path,
             expires: new Date(0),
         },

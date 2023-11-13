@@ -34,3 +34,5 @@ export * from './getTextFallback';
 export * from './getReadImagePath';
 export * from './htmlStringToElement';
 export * from './createWebWorker';
+export * from './isDev';
+export * from './isProd';

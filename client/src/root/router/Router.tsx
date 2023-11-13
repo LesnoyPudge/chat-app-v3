@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom
 import { WithChannelsNavigation, WithPrivateChatList, WithRoomList } from '@layouts';
 import { GetParam, NavigateToRoom, OnlyAuthorizedRoute, OnlyUnauthorizedRoute } from './components';
 import { GlobalLoader } from '../components';
-import { getEnv, noop } from '@utils';
+import { isDev, noop } from '@utils';
 import { ErrorPage } from '@pages/ErrorPage';
 import { GlobalLoaderPage } from '@pages/GlobalLoaderPage';
 import { EntityContextProvider, ToDo } from '@components';
@@ -11,14 +11,13 @@ import { navigatorPath } from '@hooks';
 
 
 
-const { CUSTOM_NODE_ENV } = getEnv();
 
 const lazyWithDevDelay = (
     cb: Parameters<typeof lazy>[number],
     delay: number,
 ): ReturnType<typeof lazy> => {
     return lazy(async() => {
-        if (CUSTOM_NODE_ENV === 'development') {
+        if (isDev()) {
             await new Promise((res) => setTimeout(() => {
                 res('');
             }, delay));
@@ -54,7 +53,7 @@ export const Router: FC = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <If condition={CUSTOM_NODE_ENV === 'development'}>
+                <If condition={isDev()}>
                     <Route
                         path='loader'
                         element={(

@@ -1,4 +1,3 @@
-import { useAnimationFrame } from '@hooks';
 import { ChannelSelectors, ChatSelectors, MessageSelectors, PrivateChannelSelectors, RoleSelectors, RoomSelectors, UserSelectors } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
 import { nanoid } from '@reduxjs/toolkit';

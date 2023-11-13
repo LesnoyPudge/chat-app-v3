@@ -18,14 +18,12 @@ export const RoomSubPage: FC = () => {
         if (oldRecord) {
             oldRecord[room.channel] = room.id;
             localStorageApi.set('lastVisitedTextRooms', oldRecord);
+            return;
         }
 
-        if (!oldRecord) {
-            localStorageApi.set('lastVisitedTextRooms', {
-                [room.channel]: room.id,
-            });
-        }
-
+        localStorageApi.set('lastVisitedTextRooms', {
+            [room.channel]: room.id,
+        });
     }, [room?.channel, room?.id, room?.type]);
 
     return (

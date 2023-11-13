@@ -2,15 +2,12 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend, { HttpBackendOptions } from 'i18next-http-backend';
-import { getEnv, noop } from '@utils';
+import { isDev, noop } from '@utils';
 import ruJSON from '@locales/ru/bundled.json';
 import enJSON from '@locales/en/bundled.json';
 import { ValueOf } from 'ts-essentials';
 
 
-
-const { CUSTOM_NODE_ENV } = getEnv();
-const isDev = CUSTOM_NODE_ENV === 'development';
 
 let translationCheck = {
     i18nextPlugin: { type: '3rdParty' } as const,
@@ -50,7 +47,7 @@ const bundledResources: BundledResources = {
 };
 
 export const i18nInit = async() => {
-    if (isDev) {
+    if (isDev()) {
         translationCheck = await import('translation-check');
     }
 
@@ -62,7 +59,7 @@ export const i18nInit = async() => {
         .init<HttpBackendOptions>({
             resources: bundledResources,
             partialBundledLanguages: true,
-            debug: isDev,
+            debug: isDev(),
             interpolation: {
                 escapeValue: false,
             },

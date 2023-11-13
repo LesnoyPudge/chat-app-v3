@@ -5,3 +5,5 @@ export * from './getBase64Components';
 export * from './getRandomString';
 export * from './hashPassword';
 export * from './isPasswordsEquals';
+export * from './isDev';
+export * from './isProd';

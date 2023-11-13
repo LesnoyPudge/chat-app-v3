@@ -1,9 +1,9 @@
-import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, RichTextEditor, Emoji, emojiRegExp, emojiList, getEmojiMatch } from '@components';
+import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, RichTextEditor, Emoji, emojiRegExp, emojiList, getEmojiMatch, RichTextEditorV2 } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff, setTitle } from '@utils';
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, Suspense, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { useBoolean, useCounter, useDocumentTitle, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { useBoolean, useCounter, useDocumentTitle, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useLocalStorage, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
 import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useKeyboardNavigation, useLatest, usePromise, ControlledPromise, useTimeout } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
@@ -1955,6 +1955,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { EmojiNode, $createEmojiNode, $isEmojiNode } from './emoji';
 import { Translation, useTranslation } from 'react-i18next';
 import { TRANSLATION } from '@i18n';
+import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
 
 
 
@@ -2095,9 +2096,73 @@ const PlaygroundInner32: FC = () => {
     );
 };
 
-const enabled = !!1;
+const PlaygroundInner33: FC = () => {
+
+    return (
+        <ReactFocusLock>
+            <div className='grid gap-4'>
+                <button>
+                    <>1</>
+                </button>
+
+                <Ref<HTMLButtonElement>>
+                    {(ref) => (
+                        <>
+                            <button ref={ref}>
+                                <>some button</>
+                            </button>
+
+                            <Tooltip
+                                className='bg-stone-600'
+                                leaderElementRef={ref}
+                                preferredAlignment='right'
+                            >
+                                <>text</>
+                            </Tooltip>
+                        </>
+                    )}
+                </Ref>
+
+                <button>
+                    <>2</>
+                </button>
+
+                <button>
+                    <>3</>
+                </button>
+            </div>
+        </ReactFocusLock>
+    );
+};
+
+const PlaygroundInner34: FC = () => {
+    return (
+        <div>
+            {/* <EntityContextProvider.Chat id='1' fakeEntity={{
+                id: '1',
+                messages: [],
+                owner: 'Room',
+                ownerId: '2',
+            }}>
+                <ChatV3.Room/>
+            </EntityContextProvider.Chat> */}
+
+            <RichTextEditorV2.ContextProvider>
+                <RichTextEditorV2.Editable/>
+            </RichTextEditorV2.ContextProvider>
+        </div>
+    );
+};
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
+    const [enabled, setEnabled] = useLocalStorage('playground', false);
+
+    useEventListener('keydown', (e) => {
+        if (e.key !== '+') return;
+
+        setEnabled((v) => !v);
+    }, window);
+
     return (
         <>
             <If condition={!enabled}>
@@ -2108,7 +2173,7 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner29/> */}
                 {/* <PlaygroundInner30/> */}
                 {/* <PlaygroundInner31/> */}
-                <PlaygroundInner32/>
+                <PlaygroundInner34/>
             </If>
         </>
     );

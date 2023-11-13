@@ -1,7 +1,7 @@
 import { AnimatedTransition, OverlayPortal, RelativelyPositioned } from '@components';
 import { RelativePositionOptions, useEventListener, useRefWithSetter, useSharedIntersectionObserver, useFocusVisibleEvent } from '@hooks';
-import { animated } from '@react-spring/web';
-import { PropsWithChildrenAndClassName, PropsWithLeaderElementRef } from '@types';
+import { SpringValue, animated } from '@react-spring/web';
+import { Alignment, PropsWithChildrenAndClassName, PropsWithLeaderElementRef } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
 import { FC, useState } from 'react';
 import { useTooltip } from './hooks';
@@ -35,6 +35,34 @@ const styles = {
     overlayItem: 'overlay-item-wrapper',
 };
 
+const getTooltipStyle = (
+    alignment: Alignment,
+    style: {
+        offset: SpringValue<number>;
+        opacity: SpringValue<number>;
+    },
+) => {
+    const alignmentStyles = {
+        top: {
+            translateY: style.offset.to((offset => `-${offset}px`)),
+        },
+        bottom: {
+            translateY: style.offset.to((offset) => `${offset}px`),
+        },
+        left: {
+            translateX: style.offset.to((offset) => `-${offset}px`),
+        },
+        right: {
+            translateX: style.offset.to((offset) => `${offset}px`),
+        },
+    };
+
+    return {
+        opacity: style.opacity,
+        ...alignmentStyles[alignment],
+    };
+};
+
 export const Tooltip: FC<Tooltip> = ({
     className = '',
     leaderElementRef,
@@ -66,37 +94,15 @@ export const Tooltip: FC<Tooltip> = ({
                                 swappableAlignment={swappableAlignment}
                                 unbounded={unbounded}
                             >
-                                {({ alignment }) => {
-                                    const alignmentStyles = {
-                                        top: {
-                                            translateY: style.offset.to((offset => `-${offset}px`)),
-                                        },
-                                        bottom: {
-                                            translateY: style.offset.to((offset) => `${offset}px`),
-                                        },
-                                        left: {
-                                            translateX: style.offset.to((offset) => `-${offset}px`),
-                                        },
-                                        right: {
-                                            translateX: style.offset.to((offset) => `${offset}px`),
-                                        },
-                                    };
-
-                                    const styleWithOffset = {
-                                        opacity: style.opacity,
-                                        ...alignmentStyles[alignment],
-                                    };
-
-                                    return (
-                                        <animated.div
-                                            className={twClassNames(styles.base, className)}
-                                            style={styleWithOffset}
-                                            role='tooltip'
-                                        >
-                                            {children}
-                                        </animated.div>
-                                    );
-                                }}
+                                {({ alignment }) => (
+                                    <animated.div
+                                        className={twClassNames(styles.base, className)}
+                                        style={getTooltipStyle(alignment, style)}
+                                        role='tooltip'
+                                    >
+                                        {children}
+                                    </animated.div>
+                                )}
                             </RelativelyPositioned>
                         </div>
                     </OverlayPortal>

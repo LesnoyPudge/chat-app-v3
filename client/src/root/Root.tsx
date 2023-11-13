@@ -1,4 +1,4 @@
-import { FC, lazy, StrictMode, Suspense } from 'react';
+import { FC, lazy, Profiler, StrictMode, Suspense } from 'react';
 import { ErrorBoundary, DevDebug, Sprite, Masks, GlobalLoader } from './components';
 import { useInternetState, usePreventDefault, useSocketListeners, useSocketStateHandler } from './hooks';
 import { Playground } from './playground';
@@ -47,9 +47,11 @@ const RootInner: FC = () => {
 export const Root: FC = () => {
     return (
         // <StrictMode>
+        // <Profiler id='App' onRender={console.log}>
         <Provider store={store}>
             <RootInner/>
         </Provider>
+    // </Profiler>
         // </StrictMode>
     );
 };

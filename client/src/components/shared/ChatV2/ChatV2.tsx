@@ -20,7 +20,7 @@ const RoomChat: FC<PropsWithClassName> = ({
     const hasAccessToRoomChat = useMemoSelector(
         ChatSelectors.selectHasAccessToRoomChat(chat?.id),
         [chat?.id],
-    );
+    ) || true;
 
     return (
         <div className={className}>
