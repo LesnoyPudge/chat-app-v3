@@ -1959,67 +1959,8 @@ import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
 
 
 
-function TreeViewPlugin() {
-    const [editor] = useLexicalComposerContext();
 
-    return (
-        <TreeView
-            treeTypeButtonClassName=''
-            viewClassName='tree-view-output'
-            timeTravelPanelClassName='debug-timetravel-panel'
-            timeTravelButtonClassName='debug-timetravel-button'
-            timeTravelPanelSliderClassName='debug-timetravel-panel-slider'
-            timeTravelPanelButtonClassName='debug-timetravel-panel-button'
-            editor={editor}
-        />
-    );
-}
 
-const Editor: FC = () => {
-    const [editorState, setEditorState] = useState(() => getInitialState());
-
-    const initialConfig: InitialConfigType = {
-        namespace: 'MyEditor',
-        theme,
-        editorState,
-        nodes: [
-            AutoLinkNode,
-            RichTextEmoji.Node,
-        ],
-        onError,
-    };
-
-    return (
-        <LexicalComposer initialConfig={initialConfig}>
-            <div className='message-font-size'>
-                <PlainTextPlugin
-                    contentEditable={<ContentEditable />}
-                    placeholder={<div>Enter some text...</div>}
-                    ErrorBoundary={LexicalErrorBoundary}
-                />
-            </div>
-
-            {/* <RichTextPlugin
-                contentEditable={<ContentEditable />}
-                placeholder={<div>Enter some text...</div>}
-                ErrorBoundary={LexicalErrorBoundary}
-            /> */}
-
-            <HistoryPlugin/>
-
-            <AutoLinkPlugin matchers={linkMatchers}/>
-
-            {/* <ControllablePlugin
-                value={editorState}
-                onChange={setEditorState}
-            /> */}
-
-            <RichTextEmoji.Plugin/>
-
-            <TreeViewPlugin/>
-        </LexicalComposer>
-    );
-};
 
 const PlaygroundInner30: FC = () => {
     const [slateState, setSlateState] = useState(() => getInitialSlateValue());
@@ -2031,7 +1972,7 @@ const PlaygroundInner30: FC = () => {
     return (
         <div className='p-2 h-full'>
             <div className='border-orange-900 border-8 h-full flex flex-col'>
-                <Editor/>
+
 
                 {/* <RichTextEditor.ContextProvider
                     label=''
@@ -2136,6 +2077,8 @@ const PlaygroundInner33: FC = () => {
 };
 
 const PlaygroundInner34: FC = () => {
+    const [editorState, setEditorState] = useState<string>();
+    const [slateState, setSlateState] = useState(() => getInitialSlateValue());
     return (
         <div>
             {/* <EntityContextProvider.Chat id='1' fakeEntity={{
@@ -2147,9 +2090,38 @@ const PlaygroundInner34: FC = () => {
                 <ChatV3.Room/>
             </EntityContextProvider.Chat> */}
 
-            <RichTextEditorV2.ContextProvider>
+            <RichTextEditor.ContextProvider
+                label=''
+                name=''
+                placeholder='placeholder'
+                value={slateState}
+                onChange={setSlateState}
+            >
+                <RichTextEditor.Editable/>
+            </RichTextEditor.ContextProvider>
+
+            {/* <RichTextEditorV2.ContextProvider
+                label='my label'
+                name='my name'
+                placeholder='my text placeholder'
+                value={editorState}
+                onChange={setEditorState}
+                onSubmit={(v) => {
+                    console.log('submit!', v);
+                }}
+            >
                 <RichTextEditorV2.Editable/>
-            </RichTextEditorV2.ContextProvider>
+            </RichTextEditorV2.ContextProvider> */}
+
+            <div className='grid gap-2'>
+                <div>
+                    <>editor string value is {editorState}</>
+                </div>
+
+                <div>
+                    {/* <>editor parsed value is {String(parseEditorState(editorState))}</> */}
+                </div>
+            </div>
         </div>
     );
 };

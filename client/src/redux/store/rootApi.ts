@@ -8,7 +8,6 @@ import { triggerGlobalResetAction } from '@redux/globalReset';
 
 
 const { CUSTOM_SERVER_URL } = getEnv();
-const maxRetries = isProd() ? 5 : 2;
 
 const baseQuery = fetchBaseQuery({
     baseUrl: CUSTOM_SERVER_URL,
@@ -37,7 +36,9 @@ const queryWithRetry = retry(async(...args: Parameters<typeof baseQuery>) => {
     if (shouldBail) retry.fail(result.error);
 
     return result;
-}, { maxRetries });
+}, {
+    maxRetries: isProd() ? 5 : 2,
+});
 
 const queryWithReAuth = async(...args: Parameters<typeof baseQuery>) => {
     const result = await queryWithRetry(...args);

@@ -5,3 +5,5 @@ export * from './RichTextEmoji';
 export * from './LinkPlugin';
 export * from './ControllablePlugin';
 export * from './TreeViewPlugin';
+export * from './SubmitPlugin';
+export * from './SizeLimitPlugin';

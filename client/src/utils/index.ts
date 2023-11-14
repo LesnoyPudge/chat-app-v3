@@ -1,6 +1,6 @@
 export * from './getEnv';
 export * from './localStorageApi';
-export * from './log';
+export * from './logger';
 export * from './setTitle';
 export * from './debounce';
 export * from './throttle';

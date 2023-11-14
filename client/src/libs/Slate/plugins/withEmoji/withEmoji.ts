@@ -64,40 +64,40 @@ export const withEmoji = (editor: CustomEditor) => {
         }
     };
 
-    // editor.onChange = () => {
-    //     try {
-    //         if (!editor.selection) return onChange();
+    editor.onChange = () => {
+        try {
+            if (!editor.selection) return onChange();
 
-    //         const selectedPath = Editor.node(editor, editor.selection)[1];
-    //         const [selectedParentNode] = Editor.parent(editor, selectedPath);
+            const selectedPath = Editor.node(editor, editor.selection)[1];
+            const [selectedParentNode] = Editor.parent(editor, selectedPath);
 
-    //         const isEmoji = Element.isElement(selectedParentNode) && selectedParentNode.type === 'emoji';
+            const isEmoji = Element.isElement(selectedParentNode) && selectedParentNode.type === 'emoji';
 
-    //         if (!isEmoji) return onChange();
+            if (!isEmoji) return onChange();
 
-    //         const moveOperations = editor.operations.filter(operation => operation.type === 'set_selection');
-    //         const moveOperation = moveOperations.at(-1);
+            const moveOperations = editor.operations.filter(operation => operation.type === 'set_selection');
+            const moveOperation = moveOperations.at(-1);
 
-    //         if (!moveOperation || moveOperation.type !== 'set_selection') return onChange();
+            if (!moveOperation || moveOperation.type !== 'set_selection') return onChange();
 
-    //         const withProp = !!moveOperation.newProperties && !!moveOperation.properties;
-    //         const withAnchor = !!withProp && !!moveOperation.newProperties.anchor && !!moveOperation.properties.anchor;
+            const withProp = !!moveOperation.newProperties && !!moveOperation.properties;
+            const withAnchor = !!withProp && !!moveOperation.newProperties.anchor && !!moveOperation.properties.anchor;
 
-    //         if (!withAnchor) return onChange();
+            if (!withAnchor) return onChange();
 
-    //         const anchorNew = moveOperation.newProperties.anchor!;
-    //         const anchorOld = moveOperation.properties.anchor!;
+            const anchorNew = moveOperation.newProperties.anchor!;
+            const anchorOld = moveOperation.properties.anchor!;
 
-    //         const isMoveBackward = anchorNew.path[1] < anchorOld.path[1];
+            const isMoveBackward = anchorNew.path[1] < anchorOld.path[1];
 
-    //         Transforms.move(editor, { reverse: isMoveBackward });
+            Transforms.move(editor, { reverse: isMoveBackward });
 
-    //         onChange();
-    //     } catch (error) {
-    //         console.log('error caught emoji onchange', error);
-    //         onChange();
-    //     }
-    // };
+            onChange();
+        } catch (error) {
+            console.log('error caught emoji onchange', error);
+            onChange();
+        }
+    };
 
     return editor;
 };
