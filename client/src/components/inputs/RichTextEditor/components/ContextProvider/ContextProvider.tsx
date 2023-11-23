@@ -81,7 +81,7 @@ export const ContextProvider: FC<ContextProvider> = ({
         <RichTextEditorContext.Provider value={contextValues}>
             <Slate
                 editor={editor}
-                value={value}
+                initialValue={value}
                 onChange={onChange}
             >
                 {children}

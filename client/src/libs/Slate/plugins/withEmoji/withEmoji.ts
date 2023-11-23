@@ -42,7 +42,7 @@ export const withEmoji = (editor: CustomEditor) => {
             Transforms.insertNodes(editor, {
                 type: 'emoji',
                 code: emojiCode,
-                children: [{ text: '' }],
+                children: [{ text: emojiCode }],
             }, {
                 at: {
                     anchor: {

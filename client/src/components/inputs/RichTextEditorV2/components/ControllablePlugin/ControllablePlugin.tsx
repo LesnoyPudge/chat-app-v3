@@ -16,10 +16,15 @@ export const ControllablePlugin: FC<ControllablePlugin> = ({
     const lastStateRef = useRef(JSON.stringify(editor.getEditorState().toJSON()));
 
     useEffect(() => {
-        return editor.registerUpdateListener(({ editorState }) => {
-            const stateString = JSON.stringify(editorState.toJSON());
-            lastStateRef.current = stateString;
-            onChange(stateString);
+        return editor.registerUpdateListener(({ editorState, prevEditorState }) => {
+            editorState.read(() => {
+                // editorState = prevEditorState;
+                const stateString = JSON.stringify(editorState.toJSON());
+                lastStateRef.current = stateString;
+                onChange(stateString);
+
+
+            });
         });
     }, [editor, onChange]);
 

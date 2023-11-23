@@ -10,13 +10,26 @@ export const SizeLimitPlugin: FC = () => {
     const [editor] = useLexicalComposerContext();
 
     useEffect(() => {
-        const text = editor.getEditorState().read($rootTextContent);
-        editor.registerUpdateListener(({ editorState }) => {
+        let text = editor.getEditorState().read($rootTextContent);
 
-
-            console.log('update');
-            return true;
+        editor.registerTextContentListener((newText) => {
+            text = newText;
         });
+
+        // editor.registerRootListener((root) => {
+        //     if (!root) {
+        //         console.log('no root', root);
+        //         return;
+        //     }
+
+        //     (root as HTMLInputElement).addEventListener('beforeinput', (e) => {
+        //         console.log('input', e);
+        //     });
+
+        //     (root as HTMLInputElement).addEventListener('paste', (e) => {
+        //         console.log('paste', e);
+        //     });
+        // });
     }, [editor]);
 
     return null;

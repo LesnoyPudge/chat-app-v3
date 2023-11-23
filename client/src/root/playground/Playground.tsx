@@ -1956,6 +1956,8 @@ import { EmojiNode, $createEmojiNode, $isEmojiNode } from './emoji';
 import { Translation, useTranslation } from 'react-i18next';
 import { TRANSLATION } from '@i18n';
 import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
+import { Descendant } from 'slate';
+import { RichTextEditorV3 } from 'src/components/inputs/RichTextEditorV3';
 
 
 
@@ -2079,6 +2081,22 @@ const PlaygroundInner33: FC = () => {
 const PlaygroundInner34: FC = () => {
     const [editorState, setEditorState] = useState<string>();
     const [slateState, setSlateState] = useState(() => getInitialSlateValue());
+    const [states, setStates] = useState([
+        getInitialSlateValue('first'),
+        getInitialSlateValue('second'),
+        getInitialSlateValue('third'),
+    ]);
+    const [count, setCount] = useState(0);
+
+    const setStates2 = (val: Descendant[]) => {
+        setStates(prev => {
+            const newV = [...prev];
+            newV[count] = val;
+
+            return newV;
+        });
+    };
+
     return (
         <div>
             {/* <EntityContextProvider.Chat id='1' fakeEntity={{
@@ -2090,17 +2108,32 @@ const PlaygroundInner34: FC = () => {
                 <ChatV3.Room/>
             </EntityContextProvider.Chat> */}
 
+            <div className='grid gap-2 mb-2'>
+                <button onClick={() => setCount(0)}>
+                    <>1</>
+                </button>
+
+                <button onClick={() => setCount(1)}>
+                    <>2</>
+                </button>
+
+                <button onClick={() => setCount(2)}>
+                    <>3</>
+                </button>
+            </div>
+
             <RichTextEditor.ContextProvider
                 label=''
                 name=''
                 placeholder='placeholder'
-                value={slateState}
-                onChange={setSlateState}
+                value={states[count]}
+                onChange={setStates2}
+                // key={JSON.stringify(states[count])}
             >
                 <RichTextEditor.Editable/>
             </RichTextEditor.ContextProvider>
 
-            {/* <RichTextEditorV2.ContextProvider
+            <RichTextEditorV2.ContextProvider
                 label='my label'
                 name='my name'
                 placeholder='my text placeholder'
@@ -2111,11 +2144,15 @@ const PlaygroundInner34: FC = () => {
                 }}
             >
                 <RichTextEditorV2.Editable/>
-            </RichTextEditorV2.ContextProvider> */}
+            </RichTextEditorV2.ContextProvider>
 
             <div className='grid gap-2'>
                 <div>
-                    <>editor string value is {editorState}</>
+                    <>editor1 string value is {JSON.stringify(slateState)}</>
+                </div>
+
+                <div>
+                    <>editor2 string value is {JSON.stringify(editorState)}</>
                 </div>
 
                 <div>
@@ -2123,6 +2160,16 @@ const PlaygroundInner34: FC = () => {
                 </div>
             </div>
         </div>
+    );
+};
+
+const PlaygroundInner35: FC = () => {
+    return (
+        <>
+            <RichTextEditorV3.Container>
+                <RichTextEditorV3.Editable/>
+            </RichTextEditorV3.Container>
+        </>
     );
 };
 
@@ -2145,7 +2192,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner29/> */}
                 {/* <PlaygroundInner30/> */}
                 {/* <PlaygroundInner31/> */}
-                <PlaygroundInner34/>
+                {/* <PlaygroundInner34/> */}
+                <PlaygroundInner35/>
             </If>
         </>
     );

@@ -35,7 +35,7 @@ export const SlateContainer: FC<SlateContainer> = ({
     return (
         <Slate
             editor={editor}
-            value={value}
+            initialValue={value}
             onChange={onChange}
         >
             {children}

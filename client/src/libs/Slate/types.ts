@@ -16,7 +16,7 @@ export type ParagraphElement = {
 export type EmojiElement = {
     type: 'emoji';
     code: EmojiCode;
-    children: [{text: ''}];
+    children: [{text: EmojiCode}];
 }
 
 export type LinkElement = {
@@ -27,19 +27,19 @@ export type LinkElement = {
 
 export type CustomElement = ParagraphElement | LinkElement | EmojiElement;
 
-export type CustomText = { 
-    text: string; 
+export type CustomText = {
+    text: string;
     bold?: boolean;
     italic?: boolean;
 }
 
-declare module 'slate' {
-  interface CustomTypes {
-    Editor: CustomEditor
-    Element: CustomElement
-    Text: CustomText
-  }
-}
+// declare module 'slate' {
+//   interface CustomTypes {
+//     Editor: CustomEditor
+//     Element: CustomElement
+//     Text: CustomText
+//   }
+// }
 
 export type CustomRenderElementProps<T = CustomElement> = Omit<RenderElementProps, 'element'> & {
     element: T;

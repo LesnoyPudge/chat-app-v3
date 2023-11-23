@@ -16,13 +16,13 @@ const messagesContent: Descendant[][] = [
         {
             type: 'paragraph',
             children: [
-                { 
+                {
                     text: 'Я порхаю при свете луны',
                 },
                 {
                     type: 'emoji',
                     code: ':smile:',
-                    children: [{ text: '' }],
+                    children: [{ text: ':smile:' }],
                 },
             ],
         },
