@@ -281,10 +281,17 @@ const RTEModules = {
             };
 
             editor.setSelection = (selection) => {
+                // console.log('sel try');
                 if (!Range.isRange(selection)) return setSelection(selection);
-
+                // console.log('setSelection', Math.random());
                 const nodeEntry = Editor.node(editor, selection);
                 const [node, path] = nodeEntry;
+                // console.log('sel node', JSON.stringify(node), selection);
+
+
+                // if (JSON.stringify(node) === '{"text":""}') {
+                //     console.log('');
+                // }
 
                 if (
                     RTEModules.Text.isSimpleText(editor, nodeEntry) ||
@@ -312,10 +319,66 @@ const RTEModules = {
                 return setSelection(selection);
             };
 
+
+            const { mergeNodes } = editor;
+            editor.mergeNodes = (opt = {}) => {
+                return mergeNodes(opt);
+            };
+
             editor.normalizeNode = (entry, options) => {
-                // console.log('normalize');
+
+
 
                 return normalizeNode(entry, options);
+            };
+
+            const { move } = editor;
+            editor.move = (options) => {
+                // console.log('move', options);
+                return move(options);
+            };
+
+            const { collapse } = editor;
+            editor.collapse = (options) => {
+                // console.log('collapse', options);
+                return collapse(options);
+            };
+
+            const { select } = editor;
+            editor.select = (target) => {
+                // console.log('select', JSON.stringify(target));
+                return select(target);
+            };
+
+
+            const { apply } = editor;
+            editor.apply = (op) => {
+                // console.log(op);
+                return apply(op);
+            };
+
+            const { range } = editor;
+            editor.range = (at, to) => {
+                // console.log('range', JSON.stringify(at), JSON.stringify(to));
+                return range(at, to);
+            };
+
+
+
+
+
+
+
+            const { positions } = editor;
+            editor.positions = (o) => {
+                // console.log('positions', Math.random());
+                return positions(o);
+            };
+
+            const { unhangRange } = editor;
+            editor.unhangRange = (range, options) => {
+                // console.log('unhangRange', Math.random());
+                return unhangRange(range, options);
             };
 
             const { insertNodes } = editor;
@@ -323,14 +386,14 @@ const RTEModules = {
                 const nodes = (Array.isArray(n) ? n : [n]).filter((node) => {
                     return !Text.isText(node);
                 });
-                console.log('ins', o);
+                // console.log('ins', o);
                 return insertNodes(n, o);
             };
 
             const { insertText } = editor;
             editor.insertText = (n, o) => {
 
-                console.log('it', n);
+                // console.log('it', n);
                 return insertText(n, o);
             };
 
@@ -417,37 +480,42 @@ export const RichTextEditorV3 = (() => {
                 case 'emoji':
                     return (
                         <span
-                            className='text-rose-500'
+                            className='inline-block text-rose-500 mx-1'
                             data-emoji={element.code}
                             {...attributes}
-                            onSelect={(e) => {
-                                console.log('select');
-                            }}
-                            onSelectCapture={(e) => {
-                                console.log('select');
-                            }}
                             contentEditable={false}
                         >
-                            {/* <InlineChromiumBugfix/> */}
-
-                            {/* <span aria-hidden> */}
                             {children}
-                            {/* </span> */}
 
                             <span contentEditable={false}>
+
+
                                 <>{element.code}</>
                             </span>
+                        </span>
+                    );
 
-                            {/* <InlineChromiumBugfix/> */}
+                case 'paragraph':
+                    return (
+                        <p {...attributes}>
+                            {children}
+                        </p>
+                    );
+
+                case 'link':
+                    return (
+                        <span
+                            className='text-color-link'
+                            data-url={element.url}
+                            {...attributes}
+                        >
+                            {children}
                         </span>
                     );
 
                 default:
-                    return (
-                        <span data-type={element.type} {...attributes}>
-                            {children}
-                        </span>
-                    );
+                    logger.error('unhandled rendering element type');
+                    break;
             }
         }, []);
 
@@ -461,11 +529,6 @@ export const RichTextEditorV3 = (() => {
                 // clicking the end of a block puts the cursor inside the inline
                 // instead of inside the final {text: ''} node
                 // https://github.com/ianstormtaylor/slate/issues/4704#issuecomment-1006696364
-                    className={
-                        leaf.text === ''
-                            ? 'pl-[0.1px]'
-                            : ''
-                    }
                     // className='px-[0.1px]'
                     {...attributes}
                 >
@@ -480,6 +543,7 @@ export const RichTextEditorV3 = (() => {
                     renderElement={renderElement}
                     // renderPlaceholder={}
                     renderLeaf={renderLeaf}
+                    onContextMenu={(e) => e.stopPropagation()}
                     onKeyDown={(e) => {
 
                         // Default left/right behavior is unit:'character'.
@@ -501,21 +565,57 @@ export const RichTextEditorV3 = (() => {
 
                         if (!editor.selection) return;
 
-                        // if (Range.isCollapsed(editor.selection)) {
-                        if (e.key === Key.ArrowLeft) {
+                        // if (!(
+                        //     e.key === Key.ArrowLeft ||
+                        //     e.key === Key.ArrowRight
+                        // )) return;
+
+                        if (isKeyHotkey('shift+left', e.nativeEvent)) {
                             e.preventDefault();
-                            Transforms.move(editor, { unit: 'offset', reverse: true });
-                            return;
+                            console.log('handle shift left');
+
+                            Transforms.move(editor, {
+                                unit: 'offset',
+                                reverse: true,
+                                edge: 'focus',
+                            });
                         }
 
-                        if (e.key === Key.ArrowRight) {
+
+                        if (isKeyHotkey('shift+right', e.nativeEvent)) {
                             e.preventDefault();
-                            Transforms.move(editor, { unit: 'offset' });
-                            return;
+                            console.log('handle shift right');
+
+                            Transforms.move(editor, {
+                                unit: 'offset',
+                                reverse: false,
+                                edge: 'focus',
+                            });
                         }
+
+                        // if (e.key === 'ArrowRight') {
+                        //     e.preventDefault();
+                        // Transforms.move(editor, {
+                        //     unit: 'line',
+                        //     edge: 'focus',
+                        // });
                         // }
 
-                        console.log(Range.isExpanded(editor.selection));
+                        if (Range.isCollapsed(editor.selection)) {
+                            if (isKeyHotkey('left', e.nativeEvent)) {
+                                e.preventDefault();
+                                Transforms.move(editor, { unit: 'offset', reverse: true });
+                                return;
+                            }
+
+                            if (isKeyHotkey('right', e.nativeEvent)) {
+                                e.preventDefault();
+                                Transforms.move(editor, { unit: 'offset' });
+                                return;
+                            }
+                        }
+
+                        // console.log(Range.isExpanded(editor.selection));
 
                         // if (Range.isExpanded(editor.selection)) {
                         //     if (isKeyHotkey('left', e.nativeEvent)) {
