@@ -1,11 +1,13 @@
 import { FC, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
-import { BaseEditor, BaseElement, BaseOperation, BaseSelection, BaseText, createEditor, Descendant, Editor, Element, Node, NodeEntry, Point, Range, Text, Transforms } from 'slate';
+import { BaseEditor, BaseElement, BaseOperation, BaseSelection, BaseText, createEditor, Descendant, Editor, Element, Node, NodeEntry, Path, Point, Range, Text, Transforms } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 import { Slate, withReact, Editable as ContentEditable, ReactEditor, RenderElementProps, useSlate, RenderLeafProps } from 'slate-react';
 import { isKeyHotkey } from 'is-hotkey';
 import { JSONView } from '@dev';
 import { logger } from '@utils';
 import { Key } from 'ts-key-enum';
+import { EmojiCode, emojiRegExp } from '@components';
+import { SelectionMoveOptions } from 'slate/dist/interfaces/transforms/selection';
 
 
 
@@ -42,6 +44,7 @@ export module RTETypes {
         text: T;
         bold?: boolean;
         italic?: boolean;
+        some?: boolean;
     }
 
     export type SlateCustomTypes = {
@@ -195,10 +198,20 @@ const RTEModules = {
         isParagraph: (node: Node): node is RTETypes.Paragraph => {
             return Element.isElement(node) && node.type === 'paragraph';
         },
+
+        withParagraph: ({ editor }: WithEditor) => {
+            const { isSelectable } = editor;
+
+            editor.isSelectable = (element) => {
+                return RTEModules.Paragraph.isParagraph(element) || isSelectable(element);
+            };
+
+            return editor;
+        },
     },
 
     Text: {
-        createText: (text: string): Text => {
+        createText: <T extends string>(text: T): RTETypes.Text<T> => {
             return {
                 text,
             };
@@ -214,6 +227,13 @@ const RTEModules = {
                     Editor.parent(editor, nodeEntry[1])[0],
                 )
             );
+        },
+
+        isEmptySimpleText: (
+            editor: Editor,
+            nodeEntry: NodeEntry,
+        ): nodeEntry is NodeEntry<Text> => {
+            return RTEModules.Text.isSimpleText(editor, nodeEntry) && nodeEntry[0].text === '';
         },
 
         isEditableElementText: (
@@ -241,10 +261,36 @@ const RTEModules = {
 
             return Editor.isElementReadOnly(editor, parent);
         },
+
+        isTextOfSelectableElement: (
+            editor: Editor,
+            nodeEntry: NodeEntry,
+        ): nodeEntry is NodeEntry<Text> => {
+            if (!Text.isText(nodeEntry[0])) return false;
+
+            const [parent] = Editor.parent(editor, nodeEntry[1]);
+
+            if (!Element.isElement(parent)) return false;
+
+            return Editor.isSelectable(editor, parent);
+        },
+
+        isTextOfUnselectableElement: (
+            editor: Editor,
+            nodeEntry: NodeEntry,
+        ): nodeEntry is NodeEntry<Text> => {
+            if (!Text.isText(nodeEntry[0])) return false;
+
+            const [parent] = Editor.parent(editor, nodeEntry[1]);
+
+            if (!Element.isElement(parent)) return false;
+
+            return !Editor.isSelectable(editor, parent);
+        },
     },
 
     Emoji: {
-        createEmoji: (code: string): RTETypes.Emoji => {
+        createEmoji: <T extends EmojiCode>(code: T): RTETypes.Emoji<T> => {
             return {
                 type: 'emoji',
                 code,
@@ -258,10 +304,29 @@ const RTEModules = {
             return Element.isElement(node) && node.type === 'emoji';
         },
 
+        getEmojiMatch: (text: string) => {
+            text = text.toLowerCase();
+
+            const match = text.match(emojiRegExp);
+            const noMatch = !match || !match.length;
+            if (noMatch) return null;
+
+            const emojiCode = match[0] as EmojiCode;
+
+            const matchStart = text.indexOf(emojiCode);
+            const matchEnd = matchStart + emojiCode.length;
+
+            return {
+                emojiCode,
+                matchStart,
+                matchEnd,
+            };
+        },
+
         withEmoji: ({ editor }: WithEditor) => {
             const {
                 isInline, isElementReadOnly, isSelectable,
-                isVoid, setSelection, normalizeNode,
+                isVoid, normalizeNode,
             } = editor;
 
             editor.isInline = (element) => {
@@ -280,26 +345,257 @@ const RTEModules = {
                 return RTEModules.Emoji.isEmoji(element) || isVoid(element);
             };
 
+            editor.normalizeNode = (...args) => {
+                const [entry] = args;
+
+                if (!RTEModules.Text.isSimpleText(editor, entry)) return normalizeNode(...args);
+
+                const [node, path] = entry;
+
+                const match = RTEModules.Emoji.getEmojiMatch(node.text);
+                if (!match) return normalizeNode(...args);
+
+                Transforms.insertNodes(
+                    editor,
+                    RTEModules.Emoji.createEmoji(match.emojiCode),
+                    {
+                        at: {
+                            anchor: {
+                                path,
+                                offset: match.matchStart,
+                            },
+                            focus: {
+                                path,
+                                offset: match.matchEnd,
+                            },
+                        },
+                    },
+                );
+
+                return normalizeNode(...args);
+            };
+
+            return editor;
+        },
+    },
+
+    Link: {
+        createLink: <T extends string>(url: T): RTETypes.Link<T> => {
+            return {
+                type: 'link',
+                url,
+                children: [
+                    RTEModules.Text.createText(url),
+                ],
+            };
+        },
+
+        isLink: (node: Node) => {
+            return Element.isElement(node) && node.type === 'link';
+        },
+
+        getLinkMatch: (() => {
+            // eslint-disable-next-line no-useless-escape
+            const urlRegExp = /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/;
+
+            return (text: string) => {
+                const match = text.match(urlRegExp);
+                if (!match || !match.length) return null;
+
+                const url = match[0];
+
+                const matchStart = text.indexOf(url);
+                const matchEnd = matchStart + url.length;
+
+                return {
+                    url,
+                    matchStart,
+                    matchEnd,
+                };
+            };
+        })(),
+
+        withLink: ({ editor }: WithEditor) => {
+            const { normalizeNode, isInline } = editor;
+
+            editor.isInline = (element) => {
+                return RTEModules.Link.isLink(element) || isInline(element);
+            };
+
+            editor.normalizeNode = (...args) => {
+                const [entry] = args;
+
+                if (!RTEModules.Text.isSimpleText(editor, entry)) return normalizeNode(...args);
+
+                const [node, path] = entry;
+
+                const match = RTEModules.Link.getLinkMatch(node.text);
+                if (!match) return normalizeNode(...args);
+
+                Transforms.insertNodes(
+                    editor,
+                    RTEModules.Link.createLink(match.url),
+                    {
+                        at: {
+                            anchor: {
+                                path,
+                                offset: match.matchStart,
+                            },
+                            focus: {
+                                path,
+                                offset: match.matchEnd,
+                            },
+                        },
+                    },
+                );
+
+                return normalizeNode(...args);
+            };
+
+            return editor;
+        },
+    },
+
+    SelectableTuning: {
+        withSelectableTuning: ({ editor }: WithEditor) => {
+            const { move, setSelection } = editor;
+
+            const bail = (
+                nodeEntryToLookAt: NodeEntry | undefined,
+                options: SelectionMoveOptions = {},
+            ) => {
+                if (!nodeEntryToLookAt) return move(options);
+
+                const isSelectable = (
+                    RTEModules.Text.isSimpleText(editor, nodeEntryToLookAt) ||
+                    RTEModules.Text.isTextOfSelectableElement(editor, nodeEntryToLookAt) ||
+                    RTEModules.Utils.isSelectableElement(editor, nodeEntryToLookAt[0])
+                );
+
+                options.unit = isSelectable ? 'character' : 'offset';
+
+                return move(options);
+            };
+
+            editor.move = (options = {}) => {
+                if (options.unit) return move(options);
+
+                const selection = editor.selection;
+                if (!selection) return move(options);
+
+                const { reverse } = options;
+
+                const nodeEntryToLookAt = (
+                    reverse
+                        ? Editor.previous
+                        : Editor.next
+                )(editor, {
+                    at: selection.focus,
+                    voids: true,
+                    // match: (...entry) => !RTEModules.Text.isEmptySimpleText(editor, entry),
+                });
+
+                if (!nodeEntryToLookAt) return move(options);
+                console.log(JSON.stringify(nodeEntryToLookAt));
+
+                const isSelectable = (
+                    RTEModules.Text.isTextOfSelectableElement(editor, nodeEntryToLookAt) ||
+                    RTEModules.Utils.isSelectableElement(editor, nodeEntryToLookAt[0])
+                );
+                console.log(isSelectable);
+                options.unit = isSelectable ? 'character' : 'offset';
+
+                return move(options);
+
+
+
+
+
+
+                const selectionForward = Range.isForward(selection);
+
+                const selectionForwardMoveForward = selectionForward && !reverse;
+                const selectionBackwardMoveBackward = !selectionForward && reverse;
+
+                const handleAsCollapsedCaret = (
+                    Range.isCollapsed(selection) ||
+                    selectionForwardMoveForward ||
+                    selectionBackwardMoveBackward
+                );
+
+                if (handleAsCollapsedCaret) {
+                    const entry = (
+                        reverse
+                            ? Editor.previous
+                            : Editor.next
+                    )(editor, {
+                        at: selection,
+                        voids: true,
+                    });
+
+                    return bail(entry, options);
+                }
+
+                // const latestSelectedNodeEntry = Editor.node(editor, selection.focus);
+
+                // const toLook = (
+                //     reverse
+                //         ? Editor.previous
+                //         : Editor.next
+                // )(editor, { at: selection.focus, voids: true });
+
+                // return bail(toLook, options);
+
+                const selectionForwardMoveBackward = selectionForward && reverse;
+                const lastSelectedNodeEntry = Editor.last(editor, selection);
+
+                if (selectionForwardMoveBackward) {
+                    const [lastNode, lastPath] = lastSelectedNodeEntry;
+
+                    if (!Text.isText(lastNode)) return move(options);
+
+                    const isAtStartOfNode = selection.focus.offset === 0;
+                    if (isAtStartOfNode) {
+                        const prev = Editor.previous(editor, { at: lastPath, voids: true });
+                        return bail(prev, options);
+                    }
+
+                    return bail(lastSelectedNodeEntry, options);
+                }
+
+                const firstSelectedNodeEntry = Editor.first(editor, selection);
+                const selectionBackwardMoveForward = !selectionForward && !reverse;
+
+                if (selectionBackwardMoveForward) {
+                    const [firstNode] = firstSelectedNodeEntry;
+                    if (!Text.isText(firstNode)) return move(options);
+
+                    const isAtEndOfNode = selection.focus.offset === firstNode.text.length;
+                    if (isAtEndOfNode) {
+                        const next = Editor.next(editor, { at: selection.focus, voids: true });
+                        return bail(next, options);
+                    }
+
+                    if (!isAtEndOfNode) return bail(firstSelectedNodeEntry, options);
+                }
+
+                logger.error('unhandled selectable tuning');
+
+                return move(options);
+            };
+
             editor.setSelection = (selection) => {
-                // console.log('sel try');
                 if (!Range.isRange(selection)) return setSelection(selection);
-                // console.log('setSelection', Math.random());
+
                 const nodeEntry = Editor.node(editor, selection);
                 const [node, path] = nodeEntry;
-                // console.log('sel node', JSON.stringify(node), selection);
-
-
-                // if (JSON.stringify(node) === '{"text":""}') {
-                //     console.log('');
-                // }
-
+                // console.log(JSON.stringify([nodeEntry, selection]));
                 if (
-                    RTEModules.Text.isSimpleText(editor, nodeEntry) ||
-                    RTEModules.Text.isEditableElementText(editor, nodeEntry) ||
-                    RTEModules.Paragraph.isParagraph(node)
+                    RTEModules.Text.isTextOfSelectableElement(editor, nodeEntry) ||
+                    RTEModules.Utils.isSelectableElement(editor, node)
                 ) return setSelection(selection);
 
-                if (RTEModules.Text.isReadOnlyElementText(editor, nodeEntry)) {
+                if (RTEModules.Text.isTextOfUnselectableElement(editor, nodeEntry)) {
                     const [_, parentPath] = Editor.parent(editor, path);
 
                     const nextEntry = Editor.next(editor, {
@@ -312,6 +608,18 @@ const RTEModules = {
                     Transforms.collapse(editor);
 
                     return;
+
+                    // selection.anchor = {
+                    //     path: nextEntry[1],
+                    //     offset: 0,
+                    // };
+
+                    // selection.focus = {
+                    //     path: nextEntry[1],
+                    //     offset: 0,
+                    // };
+
+                    // return setSelection(selection);
                 }
 
                 logger.error('no selection handler match', node);
@@ -319,85 +627,17 @@ const RTEModules = {
                 return setSelection(selection);
             };
 
-
-            const { mergeNodes } = editor;
-            editor.mergeNodes = (opt = {}) => {
-                return mergeNodes(opt);
-            };
-
-            editor.normalizeNode = (entry, options) => {
-
-
-
-                return normalizeNode(entry, options);
-            };
-
-            const { move } = editor;
-            editor.move = (options) => {
-                // console.log('move', options);
-                return move(options);
-            };
-
-            const { collapse } = editor;
-            editor.collapse = (options) => {
-                // console.log('collapse', options);
-                return collapse(options);
-            };
-
-            const { select } = editor;
-            editor.select = (target) => {
-                // console.log('select', JSON.stringify(target));
-                return select(target);
-            };
-
-
-            const { apply } = editor;
-            editor.apply = (op) => {
-                // console.log(op);
-                return apply(op);
-            };
-
-            const { range } = editor;
-            editor.range = (at, to) => {
-                // console.log('range', JSON.stringify(at), JSON.stringify(to));
-                return range(at, to);
-            };
-
-
-
-
-
-
-
-            const { positions } = editor;
-            editor.positions = (o) => {
-                // console.log('positions', Math.random());
-                return positions(o);
-            };
-
-            const { unhangRange } = editor;
-            editor.unhangRange = (range, options) => {
-                // console.log('unhangRange', Math.random());
-                return unhangRange(range, options);
-            };
-
-            const { insertNodes } = editor;
-            editor.insertNodes = (n, o) => {
-                const nodes = (Array.isArray(n) ? n : [n]).filter((node) => {
-                    return !Text.isText(node);
-                });
-                // console.log('ins', o);
-                return insertNodes(n, o);
-            };
-
-            const { insertText } = editor;
-            editor.insertText = (n, o) => {
-
-                // console.log('it', n);
-                return insertText(n, o);
-            };
-
             return editor;
+        },
+    },
+
+    Utils: {
+        isSelectableElement: (editor: Editor, node: Node): node is Element => {
+            return Element.isElement(node) && Editor.isSelectable(editor, node);
+        },
+
+        isB: () => {
+            // Path.
         },
     },
 };
@@ -413,8 +653,11 @@ const createEditorWithPlugins = ({
 
     editor = withHistory(editor);
     editor = withReact(editor);
-    editor = RTEModules.CharacterLimit.withCharacterLimit({ editor, maxLength });
+    editor = RTEModules.Paragraph.withParagraph({ editor });
     editor = RTEModules.Emoji.withEmoji({ editor });
+    editor = RTEModules.Link.withLink({ editor });
+    editor = RTEModules.CharacterLimit.withCharacterLimit({ editor, maxLength });
+    editor = RTEModules.SelectableTuning.withSelectableTuning({ editor });
 
     return editor;
 };
@@ -422,8 +665,14 @@ const createEditorWithPlugins = ({
 const createInitialValue = (): Descendant[] => {
     return [
         RTEModules.Paragraph.createParagraph([
-            RTEModules.Text.createText('some text '),
+            RTEModules.Text.createText('so'),
+            RTEModules.Emoji.createEmoji(':ok:'),
+            RTEModules.Text.createText('me te'),
+            RTEModules.Link.createLink('https://www.youtube.com/watch?v=DxdCDviaU6U'),
+            RTEModules.Text.createText('xt '),
             RTEModules.Emoji.createEmoji(':poop:'),
+            RTEModules.Text.createText(''),
+            RTEModules.Link.createLink('https://ww'),
             RTEModules.Text.createText(''),
             RTEModules.Emoji.createEmoji(':poop:'),
             RTEModules.Text.createText(''),
@@ -564,7 +813,7 @@ export const RichTextEditorV3 = (() => {
                         // return;
 
                         if (!editor.selection) return;
-
+                        // return;
                         // if (!(
                         //     e.key === Key.ArrowLeft ||
                         //     e.key === Key.ArrowRight
@@ -575,7 +824,7 @@ export const RichTextEditorV3 = (() => {
                             console.log('handle shift left');
 
                             Transforms.move(editor, {
-                                unit: 'offset',
+                                // unit: 'offset',
                                 reverse: true,
                                 edge: 'focus',
                             });
@@ -587,12 +836,12 @@ export const RichTextEditorV3 = (() => {
                             console.log('handle shift right');
 
                             Transforms.move(editor, {
-                                unit: 'offset',
+                                // unit: 'offset',
                                 reverse: false,
                                 edge: 'focus',
                             });
                         }
-
+                        return;
                         // if (e.key === 'ArrowRight') {
                         //     e.preventDefault();
                         // Transforms.move(editor, {
@@ -603,14 +852,31 @@ export const RichTextEditorV3 = (() => {
 
                         if (Range.isCollapsed(editor.selection)) {
                             if (isKeyHotkey('left', e.nativeEvent)) {
+
+                                const prev = Editor.previous(editor, { at: editor.selection, voids: true });
+                                if (!prev) return;
+
                                 e.preventDefault();
-                                Transforms.move(editor, { unit: 'offset', reverse: true });
+                                Transforms.move(editor, {
+                                    unit: Element.isElement(prev[0]) && Editor.isSelectable(editor, prev[0]) ? 'character' : 'offset',
+                                    reverse: true,
+                                });
                                 return;
                             }
 
                             if (isKeyHotkey('right', e.nativeEvent)) {
+
+                                const next = Editor.next(editor, {
+                                    at: editor.selection,
+                                    voids: true,
+                                });
+                                if (!next) return;
+                                const isSelectable = RTEModules.Text.isEditableElementText(editor, next);
+                                console.log(JSON.stringify(next), isSelectable);
                                 e.preventDefault();
-                                Transforms.move(editor, { unit: 'offset' });
+                                Transforms.move(editor, {
+                                    unit: isSelectable ? 'character' : 'offset',
+                                });
                                 return;
                             }
                         }
