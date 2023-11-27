@@ -1,13 +1,15 @@
 import { FC, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
-import { BaseEditor, BaseElement, BaseOperation, BaseSelection, BaseText, createEditor, Descendant, Editor, Element, Node, NodeEntry, Path, Point, Range, Text, Transforms } from 'slate';
+import { BaseEditor, BaseElement, BaseOperation, BaseSelection, BaseText, createEditor, Descendant, Editor, EditorNextOptions, Element, Location, Node, NodeEntry, Path, Point, Range, Text, Transforms } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 import { Slate, withReact, Editable as ContentEditable, ReactEditor, RenderElementProps, useSlate, RenderLeafProps } from 'slate-react';
 import { isKeyHotkey } from 'is-hotkey';
 import { JSONView } from '@dev';
-import { logger } from '@utils';
+import { getEnv, isProd, logger } from '@utils';
 import { Key } from 'ts-key-enum';
 import { EmojiCode, emojiRegExp } from '@components';
 import { SelectionMoveOptions } from 'slate/dist/interfaces/transforms/selection';
+import { StrictOmit } from 'ts-essentials';
+import isUrlHttp from 'is-url-http';
 
 
 
@@ -44,7 +46,6 @@ export module RTETypes {
         text: T;
         bold?: boolean;
         italic?: boolean;
-        some?: boolean;
     }
 
     export type SlateCustomTypes = {
@@ -200,20 +201,24 @@ const RTEModules = {
         },
 
         withParagraph: ({ editor }: WithEditor) => {
-            const { isSelectable } = editor;
+            // const { isSelectable } = editor;
 
-            editor.isSelectable = (element) => {
-                return RTEModules.Paragraph.isParagraph(element) || isSelectable(element);
-            };
+            // editor.isSelectable = (element) => {
+            //     return RTEModules.Paragraph.isParagraph(element) || isSelectable(element);
+            // };
 
             return editor;
         },
     },
 
     Text: {
-        createText: <T extends string>(text: T): RTETypes.Text<T> => {
+        createText: <T extends string>(
+            text: T,
+            options: Partial<StrictOmit<RTETypes.Text, 'text'>> = {},
+        ): RTETypes.Text<T> => {
             return {
                 text,
+                ...options,
             };
         },
 
@@ -229,11 +234,18 @@ const RTEModules = {
             );
         },
 
+        isEmpty: (node: Text): node is RTETypes.Text<''> => {
+            return node.text === '';
+        },
+
         isEmptySimpleText: (
             editor: Editor,
             nodeEntry: NodeEntry,
-        ): nodeEntry is NodeEntry<Text> => {
-            return RTEModules.Text.isSimpleText(editor, nodeEntry) && nodeEntry[0].text === '';
+        ): nodeEntry is NodeEntry<RTETypes.Text<''>> => {
+            return (
+                RTEModules.Text.isSimpleText(editor, nodeEntry) &&
+                RTEModules.Text.isEmpty(nodeEntry[0])
+            );
         },
 
         isEditableElementText: (
@@ -286,6 +298,42 @@ const RTEModules = {
             if (!Element.isElement(parent)) return false;
 
             return !Editor.isSelectable(editor, parent);
+        },
+
+        isTextOfInlineElement: (
+            editor: Editor,
+            nodeEntry: NodeEntry,
+        ): nodeEntry is NodeEntry<Text> => {
+            if (!Text.isText(nodeEntry[0])) return false;
+
+            const [parent] = Editor.parent(editor, nodeEntry[1]);
+
+            if (!Element.isElement(parent)) return false;
+
+            return Editor.isInline(editor, parent);
+        },
+
+        isSpacerText: (editor: Editor, nodeEntry: NodeEntry): nodeEntry is NodeEntry<Text> => {
+            const [node, path] = nodeEntry;
+
+            if (!Text.isText(node)) return false;
+            if (node.text !== '') return false;
+
+            const prevEntry = Editor.previous(editor, { at: path, voids: true });
+            const nextEntry = Editor.next(editor, { at: path, voids: true });
+
+            if (!prevEntry && !nextEntry) return false;
+
+            const entry = prevEntry ?? nextEntry;
+            if (!entry) return false;
+
+
+            const isInline = (
+                (Element.isElement(entry[0]) && Editor.isInline(editor, entry[0])) ||
+                RTEModules.Text.isTextOfInlineElement(editor, entry)
+            );
+
+            return isInline;
         },
     },
 
@@ -390,8 +438,30 @@ const RTEModules = {
             };
         },
 
-        isLink: (node: Node) => {
+        isLink: (node: Node): node is RTETypes.Link => {
             return Element.isElement(node) && node.type === 'link';
+        },
+
+        isPossibleLink: (editor: Editor, nodeEntry: NodeEntry): nodeEntry is NodeEntry<Text> => {
+            const isText = (
+                RTEModules.Text.isSimpleText(editor, nodeEntry) &&
+                !RTEModules.Text.isEmpty(nodeEntry[0])
+            );
+
+            if (!isText) return false;
+
+            return !!nodeEntry[0].text.split(' ').find(isUrlHttp);
+        },
+
+        isTextOfLink: (
+            editor: Editor,
+            nodeEntry: NodeEntry,
+        ): nodeEntry is NodeEntry<RTETypes.Link> => {
+            if (!Text.isText(nodeEntry[0])) return false;
+
+            const [parent] = Editor.parent(editor, nodeEntry[1]);
+
+            return RTEModules.Link.isLink(parent);
         },
 
         getLinkMatch: (() => {
@@ -422,32 +492,141 @@ const RTEModules = {
                 return RTEModules.Link.isLink(element) || isInline(element);
             };
 
+            const { onChange } = editor;
+            editor.onChange = (operation) => {
+                if (!operation) return onChange(operation);
+                if (!operation.operation) return onChange(operation);
+                if (operation.operation.type === 'set_selection') return onChange(operation);
+
+
+                // const entries = Array.from(Editor.nodes(editor, {
+                //     at: [],
+                //     match: (...entry) => {
+                //         return (
+                //             RTEModules.Link.isLink(entry[0]) ||
+                //             RTEModules.Link.isPossibleLink(editor, entry)
+                //         );
+                //     },
+                // }));
+
+                // entries.forEach((entry) => {
+                //     editor.normalizeNode(entry);
+                // });
+
+                return onChange(operation);
+            };
+
             editor.normalizeNode = (...args) => {
                 const [entry] = args;
-
-                if (!RTEModules.Text.isSimpleText(editor, entry)) return normalizeNode(...args);
-
                 const [node, path] = entry;
+                // console.log(node);
 
-                const match = RTEModules.Link.getLinkMatch(node.text);
-                if (!match) return normalizeNode(...args);
-
-                Transforms.insertNodes(
-                    editor,
-                    RTEModules.Link.createLink(match.url),
-                    {
-                        at: {
-                            anchor: {
-                                path,
-                                offset: match.matchStart,
-                            },
-                            focus: {
-                                path,
-                                offset: match.matchEnd,
-                            },
-                        },
-                    },
+                const isTextNode = (
+                    RTEModules.Text.isSimpleText(editor, entry) &&
+                    !RTEModules.Text.isEmpty(entry[0])
                 );
+
+                if (isTextNode && RTEModules.Link.isPossibleLink(editor, entry)) {
+                    const [node, path] = entry;
+                    const text = node.text;
+
+                    const url = text.split(' ').find(isUrlHttp);
+                    if (!url) return normalizeNode(...args);
+
+                    const start = text.indexOf(url);
+                    if (start === -1) return normalizeNode(...args);
+                    console.log('text to link found', node, url);
+                    const end = start + url.length;
+                    // return normalizeNode(...args);
+                    const at: Location = {
+                        anchor: {
+                            path,
+                            offset: start,
+                        },
+                        focus: {
+                            path,
+                            offset: end,
+                        },
+                    };
+
+                    Transforms.wrapNodes(
+                        editor,
+                        RTEModules.Link.createLink(url),
+                        {
+                            at,
+                            split: true,
+                            // match: (...matchEntry) => {
+                            //     return RTEModules.Text.isSimpleText(editor, matchEntry);
+                            // },
+                        },
+                    );
+
+                    return;
+                }
+
+                if (isTextNode) {
+
+                }
+
+                const isLinkNode = RTEModules.Link.isLink(node);
+                if (isLinkNode) {
+
+                    console.log('in link');
+
+                    const linkText = node.children[0].text;
+                    const isChanged = node.url !== linkText;
+                    const isChangedTextValid = isChanged && isUrlHttp(linkText);
+
+                    if (isChanged && isChangedTextValid) {
+                        Transforms.setNodes(editor, { url: linkText }, { at: path });
+                    }
+
+                    if (isChanged && !isChangedTextValid) {
+                        return Transforms.unwrapNodes(editor, { at: path });
+                    }
+
+
+
+                    return;
+
+
+                    let textToValidate = linkText;
+
+                    const prevEntry = Editor.previous(editor, { at: path, voids: true });
+                    const nextEntry = Editor.next(editor, { at: path, voids: true });
+
+                    if (
+                        prevEntry &&
+                        RTEModules.Text.isSimpleText(editor, prevEntry) &&
+                        !RTEModules.Text.isEmpty(prevEntry[0]) &&
+                        prevEntry[0].text.endsWith(' ')
+                    ) {
+                        textToValidate = prevEntry[0].text + textToValidate;
+                    }
+
+                    if (
+                        nextEntry &&
+                        RTEModules.Text.isSimpleText(editor, nextEntry) &&
+                        !RTEModules.Text.isEmpty(nextEntry[0]) &&
+                        !nextEntry[0].text.startsWith(' ')
+                    ) {
+                        textToValidate = textToValidate + nextEntry[0].text;
+                    }
+
+                    const isAffectedBySiblings = linkText !== textToValidate;
+
+                    if (!isAffectedBySiblings && !isChanged) return;
+
+                    if (isAffectedBySiblings) {
+                        return Transforms.unwrapNodes(editor, { at: path });
+                    }
+
+                    if (isChanged && isUrlHttp(linkText)) {
+                        return Transforms.setNodes(editor, { url: linkText }, { at: path });
+                    }
+
+                    return Transforms.unwrapNodes(editor, { at: path });
+                }
 
                 return normalizeNode(...args);
             };
@@ -460,22 +639,22 @@ const RTEModules = {
         withSelectableTuning: ({ editor }: WithEditor) => {
             const { move, setSelection } = editor;
 
-            const bail = (
-                nodeEntryToLookAt: NodeEntry | undefined,
-                options: SelectionMoveOptions = {},
-            ) => {
-                if (!nodeEntryToLookAt) return move(options);
+            // const bail = (
+            //     nodeEntryToLookAt: NodeEntry | undefined,
+            //     options: SelectionMoveOptions = {},
+            // ) => {
+            //     if (!nodeEntryToLookAt) return move(options);
 
-                const isSelectable = (
-                    RTEModules.Text.isSimpleText(editor, nodeEntryToLookAt) ||
-                    RTEModules.Text.isTextOfSelectableElement(editor, nodeEntryToLookAt) ||
-                    RTEModules.Utils.isSelectableElement(editor, nodeEntryToLookAt[0])
-                );
+            //     const isSelectable = (
+            //         RTEModules.Text.isSimpleText(editor, nodeEntryToLookAt) ||
+            //         RTEModules.Text.isTextOfSelectableElement(editor, nodeEntryToLookAt) ||
+            //         RTEModules.Utils.isSelectableElement(editor, nodeEntryToLookAt[0])
+            //     );
 
-                options.unit = isSelectable ? 'character' : 'offset';
+            //     options.unit = isSelectable ? 'character' : 'offset';
 
-                return move(options);
-            };
+            //     return move(options);
+            // };
 
             editor.move = (options = {}) => {
                 if (options.unit) return move(options);
@@ -485,25 +664,44 @@ const RTEModules = {
 
                 const { reverse } = options;
 
-                const nodeEntryToLookAt = (
-                    reverse
-                        ? Editor.previous
-                        : Editor.next
-                )(editor, {
-                    at: selection.focus,
-                    voids: true,
-                    // match: (...entry) => !RTEModules.Text.isEmptySimpleText(editor, entry),
-                });
+                const currentNodeEntry = Editor.node(editor, selection.focus);
 
-                if (!nodeEntryToLookAt) return move(options);
-                console.log(JSON.stringify(nodeEntryToLookAt));
-
-                const isSelectable = (
-                    RTEModules.Text.isTextOfSelectableElement(editor, nodeEntryToLookAt) ||
-                    RTEModules.Utils.isSelectableElement(editor, nodeEntryToLookAt[0])
+                const isInsideInlineElement = RTEModules.Text.isTextOfInlineElement(
+                    editor,
+                    currentNodeEntry,
                 );
-                console.log(isSelectable);
-                options.unit = isSelectable ? 'character' : 'offset';
+
+                if (isInsideInlineElement) {
+                    const [currentNode] = currentNodeEntry;
+
+                    const isAtStart = selection.focus.offset === 0;
+                    const isAtEnd = selection.focus.offset === currentNode.text.length;
+
+                    if (isAtStart || isAtEnd) {
+                        options.distance = 2;
+                    }
+                }
+
+                if (!isInsideInlineElement) {
+                    const nodeEntryToLookAt = (
+                        reverse
+                            ? Editor.previous
+                            : Editor.next
+                    )(editor, { at: selection.focus, voids: true });
+
+                    if (nodeEntryToLookAt) {
+                        const isSelectableInline = (
+                            RTEModules.Text.isTextOfInlineElement(editor, nodeEntryToLookAt) &&
+                            RTEModules.Text.isTextOfSelectableElement(editor, nodeEntryToLookAt)
+                        );
+
+                        if (isSelectableInline) {
+                            options.distance = 2;
+                        }
+                    }
+                }
+
+                options.unit = 'offset';
 
                 return move(options);
 
@@ -511,73 +709,92 @@ const RTEModules = {
 
 
 
+                // options.unit = 'character';
+                // return move(options);
 
-                const selectionForward = Range.isForward(selection);
-
-                const selectionForwardMoveForward = selectionForward && !reverse;
-                const selectionBackwardMoveBackward = !selectionForward && reverse;
-
-                const handleAsCollapsedCaret = (
-                    Range.isCollapsed(selection) ||
-                    selectionForwardMoveForward ||
-                    selectionBackwardMoveBackward
-                );
-
-                if (handleAsCollapsedCaret) {
-                    const entry = (
-                        reverse
-                            ? Editor.previous
-                            : Editor.next
-                    )(editor, {
-                        at: selection,
-                        voids: true,
-                    });
-
-                    return bail(entry, options);
-                }
-
-                // const latestSelectedNodeEntry = Editor.node(editor, selection.focus);
-
-                // const toLook = (
+                // const nodeEntryToLookAt = (
                 //     reverse
                 //         ? Editor.previous
                 //         : Editor.next
-                // )(editor, { at: selection.focus, voids: true });
+                // )(editor, {
+                //     at: selection.focus,
+                //     voids: true,
+                //     // match: (...entry) => !RTEModules.Text.isEmptySimpleText(editor, entry),
+                // });
 
-                // return bail(toLook, options);
+                // if (!nodeEntryToLookAt) return move(options);
+                // console.log(JSON.stringify(nodeEntryToLookAt));
 
-                const selectionForwardMoveBackward = selectionForward && reverse;
-                const lastSelectedNodeEntry = Editor.last(editor, selection);
+                // const isSelectable = (
+                //     RTEModules.Text.isTextOfSelectableElement(editor, nodeEntryToLookAt) ||
+                //     RTEModules.Utils.isSelectableElement(editor, nodeEntryToLookAt[0])
+                // );
+                // console.log(isSelectable);
+                // options.unit = isSelectable ? 'character' : 'offset';
 
-                if (selectionForwardMoveBackward) {
-                    const [lastNode, lastPath] = lastSelectedNodeEntry;
+                // return move(options);
 
-                    if (!Text.isText(lastNode)) return move(options);
 
-                    const isAtStartOfNode = selection.focus.offset === 0;
-                    if (isAtStartOfNode) {
-                        const prev = Editor.previous(editor, { at: lastPath, voids: true });
-                        return bail(prev, options);
-                    }
 
-                    return bail(lastSelectedNodeEntry, options);
-                }
 
-                const firstSelectedNodeEntry = Editor.first(editor, selection);
-                const selectionBackwardMoveForward = !selectionForward && !reverse;
 
-                if (selectionBackwardMoveForward) {
-                    const [firstNode] = firstSelectedNodeEntry;
-                    if (!Text.isText(firstNode)) return move(options);
 
-                    const isAtEndOfNode = selection.focus.offset === firstNode.text.length;
-                    if (isAtEndOfNode) {
-                        const next = Editor.next(editor, { at: selection.focus, voids: true });
-                        return bail(next, options);
-                    }
+                // const selectionForward = Range.isForward(selection);
 
-                    if (!isAtEndOfNode) return bail(firstSelectedNodeEntry, options);
-                }
+                // const selectionForwardMoveForward = selectionForward && !reverse;
+                // const selectionBackwardMoveBackward = !selectionForward && reverse;
+
+                // const handleAsCollapsedCaret = (
+                //     Range.isCollapsed(selection) ||
+                //     selectionForwardMoveForward ||
+                //     selectionBackwardMoveBackward
+                // );
+
+                // if (handleAsCollapsedCaret) {
+                //     const entry = (
+                //         reverse
+                //             ? Editor.previous
+                //             : Editor.next
+                //     )(editor, {
+                //         at: selection,
+                //         voids: true,
+                //     });
+
+                //     return bail(entry, options);
+                // }
+
+                // const selectionForwardMoveBackward = selectionForward && reverse;
+                // const lastSelectedNodeEntry = Editor.last(editor, selection);
+
+                // if (selectionForwardMoveBackward) {
+                //     const [lastNode, lastPath] = lastSelectedNodeEntry;
+
+                //     if (!Text.isText(lastNode)) return move(options);
+
+                //     const isAtStartOfNode = selection.focus.offset === 0;
+                //     if (isAtStartOfNode) {
+                //         const prev = Editor.previous(editor, { at: lastPath, voids: true });
+                //         return bail(prev, options);
+                //     }
+
+                //     return bail(lastSelectedNodeEntry, options);
+                // }
+
+                // const firstSelectedNodeEntry = Editor.first(editor, selection);
+                // const selectionBackwardMoveForward = !selectionForward && !reverse;
+
+                // if (selectionBackwardMoveForward) {
+                //     const [firstNode] = firstSelectedNodeEntry;
+                //     if (!Text.isText(firstNode)) return move(options);
+
+                //     const isAtEndOfNode = selection.focus.offset === firstNode.text.length;
+                //     if (isAtEndOfNode) {
+                //         const next = Editor.next(editor, { at: selection.focus, voids: true });
+                //         return bail(next, options);
+                //     }
+
+                //     if (!isAtEndOfNode) return bail(firstSelectedNodeEntry, options);
+                // }
 
                 logger.error('unhandled selectable tuning');
 
@@ -631,13 +848,43 @@ const RTEModules = {
         },
     },
 
+    Dev: {
+        withDevWindow: ({ editor }: WithEditor) => {
+            if (isProd()) return editor;
+
+            // @ts-ignore
+            if (!window.slate) {
+                // @ts-ignore
+                window.slate = {
+                    editor,
+                    Editor,
+                    RTEModules,
+                    Node,
+                    Text,
+                    Range,
+                    Element,
+                };
+            }
+
+            return editor;
+        },
+    },
+
     Utils: {
         isSelectableElement: (editor: Editor, node: Node): node is Element => {
             return Element.isElement(node) && Editor.isSelectable(editor, node);
         },
 
-        isB: () => {
-            // Path.
+        getNextNextEntry: (editor: Editor, options?: EditorNextOptions<Descendant>) => {
+            const nextEntry = Editor.next(editor, options);
+            if (!nextEntry) return nextEntry;
+
+            const nextNextEntry = Editor.next(editor, {
+                ...options,
+                at: nextEntry[1],
+            });
+
+            return nextNextEntry;
         },
     },
 };
@@ -658,6 +905,7 @@ const createEditorWithPlugins = ({
     editor = RTEModules.Link.withLink({ editor });
     editor = RTEModules.CharacterLimit.withCharacterLimit({ editor, maxLength });
     editor = RTEModules.SelectableTuning.withSelectableTuning({ editor });
+    editor = RTEModules.Dev.withDevWindow({ editor });
 
     return editor;
 };
@@ -690,17 +938,15 @@ export const RichTextEditorV3 = (() => {
 
         const [value, setValue] = useState(() => createInitialValue());
 
+        useEffect(() => {
+            editor.normalize({ force: true });
+        }, [editor]);
+
         return (
             <Slate
                 editor={editor}
                 initialValue={value}
                 onValueChange={setValue}
-                onSelectionChange={(selection) => {
-                    // console.log(editor.node(selection.))
-                    // if (!selection) return;
-                    // const selectedNode = editor.selection && Editor.node(editor, selection.focus);
-                    // console.log(JSON.stringify(selectedNode));
-                }}
                 key={''}
             >
                 {children}
@@ -711,7 +957,7 @@ export const RichTextEditorV3 = (() => {
     const InlineChromiumBugfix: FC = () => (
         <span
             contentEditable={false}
-            className='text-[0px]'
+            className={'text-[0px]'}
         >
             {String.fromCodePoint(160) /* Non-breaking space */}
         </span>
@@ -734,6 +980,7 @@ export const RichTextEditorV3 = (() => {
                             {...attributes}
                             contentEditable={false}
                         >
+                            <InlineChromiumBugfix/>
                             {children}
 
                             <span contentEditable={false}>
@@ -741,6 +988,7 @@ export const RichTextEditorV3 = (() => {
 
                                 <>{element.code}</>
                             </span>
+                            <InlineChromiumBugfix/>
                         </span>
                     );
 
@@ -754,11 +1002,13 @@ export const RichTextEditorV3 = (() => {
                 case 'link':
                     return (
                         <span
-                            className='text-color-link'
+                            className='text-color-link inline-block'
                             data-url={element.url}
                             {...attributes}
                         >
+                            <InlineChromiumBugfix/>
                             {children}
+                            <InlineChromiumBugfix/>
                         </span>
                     );
 
