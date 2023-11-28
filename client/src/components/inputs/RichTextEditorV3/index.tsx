@@ -9,7 +9,7 @@ import { Key } from 'ts-key-enum';
 import { EmojiCode, emojiRegExp } from '@components';
 import { SelectionMoveOptions } from 'slate/dist/interfaces/transforms/selection';
 import { StrictOmit } from 'ts-essentials';
-import isUrlHttp from 'is-url-http';
+import isUrlHtpp from 'is-url-http';
 
 
 
@@ -54,6 +54,10 @@ export module RTETypes {
         Text: RTETypes.Text;
     }
 }
+
+const isUrl = (text: string): boolean => {
+    return !text.includes(' ') && isUrlHtpp(text);
+};
 
 
 declare module 'slate' {
@@ -450,7 +454,7 @@ const RTEModules = {
 
             if (!isText) return false;
 
-            return !!nodeEntry[0].text.split(' ').find(isUrlHttp);
+            return !!nodeEntry[0].text.split(' ').find(isUrl);
         },
 
         isTextOfLink: (
@@ -518,7 +522,7 @@ const RTEModules = {
 
             editor.normalizeNode = (...args) => {
                 const [entry] = args;
-                const [node, path] = entry;
+
                 // console.log(node);
 
                 const isTextNode = (
@@ -530,7 +534,7 @@ const RTEModules = {
                     const [node, path] = entry;
                     const text = node.text;
 
-                    const url = text.split(' ').find(isUrlHttp);
+                    const url = text.split(' ').find(isUrl);
                     if (!url) return normalizeNode(...args);
 
                     const start = text.indexOf(url);
@@ -565,27 +569,61 @@ const RTEModules = {
                 }
 
                 if (isTextNode) {
+                    const [node, path] = entry;
+                    const prevEntry = Editor.previous(editor, { at: path, voids: true });
+                    const nextEntry = Editor.next(editor, { at: path, voids: true });
+                    console.log('in text node', JSON.stringify([prevEntry, entry, nextEntry]));
+                    if (
+                        prevEntry &&
+                        RTEModules.Link.isLink(prevEntry[0])
+                    ) {
+                        if (!node.text.startsWith(' ')) {
+                            Transforms.unwrapNodes(editor, {
+                                at: prevEntry[1],
+                                match: RTEModules.Link.isLink,
+                            });
 
+                            Transforms.mergeNodes(editor, {
+                                at: path,
+                            });
+                        }
+                    }
+
+                    if (
+                        nextEntry &&
+                        RTEModules.Link.isLink(nextEntry[0])
+                    ) {
+                        if (!node.text.endsWith(' ')) {
+                            Transforms.unwrapNodes(editor, {
+                                at: nextEntry[1],
+                                match: RTEModules.Link.isLink,
+                            });
+
+                            Transforms.mergeNodes(editor, {
+                                at: nextEntry[1],
+                            });
+                        }
+                    }
+
+                    return normalizeNode(...args);
                 }
 
-                const isLinkNode = RTEModules.Link.isLink(node);
-                if (isLinkNode) {
-
+                if (RTEModules.Link.isLink(entry[0])) {
+                    const [node, path] = entry;
                     console.log('in link');
 
                     const linkText = node.children[0].text;
                     const isChanged = node.url !== linkText;
-                    const isChangedTextValid = isChanged && isUrlHttp(linkText);
+                    const isValid = isUrl(linkText);
 
-                    if (isChanged && isChangedTextValid) {
+                    console.log(linkText, isChanged, isValid);
+                    if (isChanged && isValid) {
                         Transforms.setNodes(editor, { url: linkText }, { at: path });
                     }
 
-                    if (isChanged && !isChangedTextValid) {
+                    if (!isValid) {
                         return Transforms.unwrapNodes(editor, { at: path });
                     }
-
-
 
                     return;
 
@@ -621,7 +659,7 @@ const RTEModules = {
                         return Transforms.unwrapNodes(editor, { at: path });
                     }
 
-                    if (isChanged && isUrlHttp(linkText)) {
+                    if (isChanged && isUrl(linkText)) {
                         return Transforms.setNodes(editor, { url: linkText }, { at: path });
                     }
 
@@ -1080,7 +1118,6 @@ export const RichTextEditorV3 = (() => {
                             });
                         }
 
-
                         if (isKeyHotkey('shift+right', e.nativeEvent)) {
                             e.preventDefault();
                             console.log('handle shift right');
@@ -1091,6 +1128,37 @@ export const RichTextEditorV3 = (() => {
                                 edge: 'focus',
                             });
                         }
+
+                        // if (isKeyHotkey('up', e.nativeEvent)) {
+                        //     e.preventDefault();
+                        //     Transforms.move(editor, {
+                        //         unit: 'line',
+                        //     });
+                        // }
+
+                        // if (isKeyHotkey('down', e.nativeEvent)) {
+                        //     e.preventDefault();
+                        //     Transforms.move(editor, {
+                        //         unit: 'line',
+                        //         reverse: true,
+                        //     });
+                        // }
+
+                        // if (isKeyHotkey('up', e.nativeEvent)) {
+                        //     e.preventDefault()
+                        //     Transforms.move(editor, {
+                        //         unit: 'line'
+                        //     })
+                        // }
+
+                        // if (isKeyHotkey('down', e.nativeEvent)) {
+                        //     e.preventDefault()
+                        //     Transforms.move(editor, {
+                        //         unit: 'line',
+                        //         reverse: true
+                        //     })
+                        // }
+
                         return;
                         // if (e.key === 'ArrowRight') {
                         //     e.preventDefault();
