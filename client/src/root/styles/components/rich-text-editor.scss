@@ -1,0 +1,11 @@
+@tailwind components;
+
+
+
+@layer components {
+    .rich-text-editor {
+        [data-slate-spacer=true] {
+            position: static !important;
+        }
+    }
+}
