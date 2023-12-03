@@ -1,15 +1,16 @@
-import { FC, PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react';
-import { BaseEditor, BaseElement, BaseOperation, BaseSelection, BaseText, createEditor, Descendant, edges, Editor, EditorNextOptions, Element, Location, Node, NodeEntry, Path, Point, Range, Text, Transforms } from 'slate';
+import { FC, PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { BaseEditor, BaseElement, BaseOperation, BaseSelection, BaseText, createEditor, Descendant, Editor, EditorNextOptions, Element, Location, Node, NodeEntry, Path, Point, Range, Text, Transforms } from 'slate';
 import { HistoryEditor, withHistory } from 'slate-history';
 import { Slate, withReact, Editable as ContentEditable, ReactEditor, RenderElementProps, useSlate, RenderLeafProps } from 'slate-react';
 import { isKeyHotkey } from 'is-hotkey';
 import { JSONView } from '@dev';
-import { getEnv, isProd, logger } from '@utils';
+import { getEnv, isProd, logger, noop, tryParseJSON } from '@utils';
 import { Key } from 'ts-key-enum';
-import { Emoji, EmojiCode, Space, emojiRegExp } from '@components';
+import { Emoji, EmojiCode, Link, Space, emojiRegExp } from '@components';
 import { SelectionMoveOptions } from 'slate/dist/interfaces/transforms/selection';
 import { StrictOmit } from 'ts-essentials';
 import isUrlHtpp from 'is-url-http';
+import { nanoid } from '@reduxjs/toolkit';
 
 
 
@@ -48,15 +49,10 @@ export module RTETypes {
         italic?: boolean;
     }
 
-    export type LinkText<T extends string = string> = {
-        text: T;
-        link: true;
-    }
-
     export type SlateCustomTypes = {
         Editor: RTETypes.Editor;
         Element: RTETypes.Element;
-        Text: RTETypes.Text | RTETypes.LinkText;
+        Text: RTETypes.Text;
     }
 }
 
@@ -79,6 +75,18 @@ type WithCharacterLimit = {
 }
 
 const RTEModules = {
+    Operations: {
+        INSERT_NODE: 'insert_node',
+        MERGE_NODE: 'merge_node',
+        MOVE_NODE: 'move_node',
+        REMOVE_NODE: 'remove_node',
+        SET_NODE: 'set_node',
+        SPLIT_NODE: 'split_node',
+        INSERT_TEXT: 'insert_text',
+        REMOVE_TEXT: 'remove_text',
+        SET_SELECTION: 'set_selection',
+    },
+
     CharacterLimit: {
         withCharacterLimit: ({ editor, maxLength }: WithEditor<WithCharacterLimit>) => {
             const { onChange } = editor;
@@ -109,6 +117,20 @@ const RTEModules = {
                             distance: charsLeft,
                             reverse: true,
                             unit: 'character',
+                        });
+
+                        return next();
+                    }
+
+                    if (
+                        RTEModules.Text.isEmpty(lastNode) &&
+                        !RTEModules.Text.isSpacerText(editor, lastEntry)
+                    ) {
+                        const parent = Editor.parent(editor, lastPath);
+
+                        Transforms.removeNodes(editor, {
+                            at: parent[1],
+                            match: (node) => RTEModules.Utils.isBlockElement(editor, node),
                         });
 
                         return next();
@@ -171,22 +193,30 @@ const RTEModules = {
                 logger.log('character limit deletion is not handled');
             };
 
-            editor.onChange = (operation) => {
-                const op = operation?.operation;
-                console.log('change');
-                if (!(
-                    op?.type === 'insert_text' ||
-                    op?.type === 'insert_node'
-                )) return onChange(operation);
+            editor.onChange = (options) => {
+                const op = options?.operation;
+
+                const shouldContinue = (
+                    !op ||
+                    (
+                        op &&
+                        (
+                            op.type === RTEModules.Operations.INSERT_TEXT ||
+                            op.type === RTEModules.Operations.INSERT_NODE ||
+                            op.type === RTEModules.Operations.SPLIT_NODE
+                        )
+                    )
+                );
+                if (!shouldContinue) return onChange(options);
 
                 const charsToDelete = getNumberOfCharsToDelete();
-                if (charsToDelete <= 0) return onChange(operation);
+                if (charsToDelete <= 0) return onChange(options);
 
                 Editor.withoutNormalizing(editor, () => {
                     deleteLoop(charsToDelete);
                 });
 
-                return onChange(operation);
+                return onChange(options);
             };
 
             return editor;
@@ -344,7 +374,7 @@ const RTEModules = {
 
 
             const isInline = (
-                (Element.isElement(entry[0]) && Editor.isInline(editor, entry[0])) ||
+                RTEModules.Utils.isInlineElement(editor, entry[0]) ||
                 RTEModules.Text.isTextOfInlineElement(editor, entry)
             );
 
@@ -526,7 +556,9 @@ const RTEModules = {
             editor.onChange = (operation) => {
                 if (!operation) return onChange(operation);
                 if (!operation.operation) return onChange(operation);
-                if (operation.operation.type === 'set_selection') return onChange(operation);
+                if (operation.operation.type === RTEModules.Operations.SET_SELECTION) {
+                    return onChange(operation);
+                }
 
                 const entries = Array.from(Editor.nodes(editor, {
                     at: [],
@@ -656,185 +688,6 @@ const RTEModules = {
         },
     },
 
-    TextLink: {
-        createTextLink: (url: string): RTETypes.LinkText => {
-            return {
-                link: true,
-                text: url,
-            };
-        },
-
-        isTextLink: (node: Node): node is RTETypes.LinkText => {
-            return Text.isText(node) && 'link' in node;
-        },
-
-        withTextLink: ({ editor }: WithEditor) => {
-            const { normalizeNode, isInline } = editor;
-
-            editor.isInline = (element) => {
-                return RTEModules.TextLink.isTextLink(element) || isInline(element);
-            };
-
-            editor.normalizeNode = (...args) => {
-                const [entry] = args;
-
-                // console.log(node);
-
-                const isTextNode = (
-                    RTEModules.Text.isSimpleText(editor, entry) &&
-                    !RTEModules.Text.isEmpty(entry[0]) &&
-                    !RTEModules.TextLink.isTextLink(entry[0])
-                );
-
-                if (isTextNode && RTEModules.Link.isPossibleLink(editor, entry)) {
-                    const [node, path] = entry;
-                    const text = node.text;
-
-                    const url = text.split(' ').find(isUrl);
-                    if (!url) return normalizeNode(...args);
-
-                    const start = text.indexOf(url);
-                    if (start === -1) return normalizeNode(...args);
-
-                    const end = start + url.length;
-                    console.log('text to link found', node, url, start, end, path);
-                    // return normalizeNode(...args);
-                    const at: Location = {
-                        anchor: {
-                            path,
-                            offset: start,
-                        },
-                        focus: {
-                            path,
-                            offset: end,
-                        },
-                    };
-
-                    Transforms.select(editor, at);
-
-
-
-                    // if (!Range.isCollapsed(at)) {
-                    //     Transforms.delete(editor);
-                    // }
-
-                    // Transforms.setNodes(editor, { link: true }, {
-                    // });
-
-                    // Transforms.setNodes(editor, {
-                    //     link: true,
-                    // }, {
-                    //     at,
-                    //     // split: true,
-                    // });
-
-                    // Editor.withoutNormalizing(editor, () => {
-                    // Transforms.insertNodes(
-                    //     editor,
-                    //     RTEModules.TextLink.createTextLink(url),
-                    //     {
-                    //         at,
-                    //     },
-                    // );
-
-                    // if (selection) Transforms.setSelection(editor, selection);
-                    // });
-
-
-                    // Transforms.wrapNodes(
-                    //     editor,
-                    //     RTEModules.TextLink.createTextLink(url),
-                    //     {
-                    //         at,
-                    //         split: true,
-                    //         // match: (...matchEntry) => {
-                    //         //     return RTEModules.Text.isSimpleText(editor, matchEntry);
-                    //         // },
-                    //     },
-                    // );
-
-                    return;
-                }
-
-                if (isTextNode) {
-                    console.log('in text node start');
-                    const [node, path] = entry;
-                    const prevEntry = Editor.previous(editor, { at: path, voids: true });
-                    const nextEntry = Editor.next(editor, { at: path, voids: true });
-                    console.log('in text node', JSON.stringify([prevEntry, entry, nextEntry]));
-                    if (
-                        prevEntry &&
-                        RTEModules.TextLink.isTextLink(prevEntry[0])
-                    ) {
-                        if (!node.text.startsWith(' ')) {
-                            // Transforms.unwrapNodes(editor, {
-                            //     at: prevEntry[1],
-                            //     match: RTEModules.TextLink.isTextLink,
-                            // });
-                            console.log('unset text link');
-                            Transforms.setNodes(editor, {
-                                link: undefined,
-                            }, {
-                                at: prevEntry[1],
-                            });
-
-                            Transforms.mergeNodes(editor, {
-                                at: path,
-                            });
-                        }
-                    }
-
-                    if (
-                        nextEntry &&
-                        RTEModules.TextLink.isTextLink(nextEntry[0])
-                    ) {
-                        if (!node.text.endsWith(' ')) {
-                            console.log('unset text link 2');
-                            // Transforms.unwrapNodes(editor, {
-                            //     at: nextEntry[1],
-                            //     match: RTEModules.Link.isLink,
-                            // });
-
-                            Transforms.setNodes(editor, {
-                                link: undefined,
-                            }, {
-                                at: nextEntry[1],
-                            });
-                            Transforms.mergeNodes(editor, {
-                                at: nextEntry[1],
-                            });
-
-
-                        }
-                    }
-
-                    return normalizeNode(...args);
-                }
-
-                if (RTEModules.TextLink.isTextLink(entry[0])) {
-                    const [node, path] = entry;
-                    console.log('in link', node);
-
-                    const linkText = node.text;
-                    // const isChanged = node.url !== linkText;
-                    const isValid = isUrl(linkText);
-
-                    // console.log(linkText, isChanged, isValid);
-                    if (!isValid) {
-                        console.log('not valid', linkText);
-                        return Transforms.setNodes(editor, { link: undefined }, { at: path });
-                    }
-
-                    return;
-                }
-
-                return normalizeNode(...args);
-            };
-
-            return editor;
-        },
-    },
-
     SelectableTuning: {
         withSelectableTuning: ({ editor }: WithEditor) => {
             const { move, setSelection } = editor;
@@ -952,26 +805,192 @@ const RTEModules = {
             return Element.isElement(node) && Editor.isSelectable(editor, node);
         },
 
-        getNextNextEntry: (editor: Editor, options?: EditorNextOptions<Descendant>) => {
-            const nextEntry = Editor.next(editor, options);
-            if (!nextEntry) return nextEntry;
+        isInlineElement: (editor: Editor, node: Node): node is Element => {
+            return Element.isElement(node) && Editor.isInline(editor, node);
+        },
 
-            const nextNextEntry = Editor.next(editor, {
-                ...options,
-                at: nextEntry[1],
-            });
+        isBlockElement: (editor: Editor, node: Node): node is Element => {
+            return Element.isElement(node) && Editor.isBlock(editor, node);
+        },
+    },
 
-            return nextNextEntry;
+    Render: {
+        renderElement: (() => {
+            const InlineChromiumBugfix: FC = () => {
+                return (
+                    <span
+                        contentEditable={false}
+                        className={'text-[0px]'}
+                    >
+                        {String.fromCodePoint(160) /* Non-breaking space */}
+                    </span>
+                );
+            };
+
+            // eslint-disable-next-line react/display-name
+            return ({
+                attributes,
+                children,
+                element,
+            }: RenderElementProps) => {
+                switch (true) {
+                    case RTEModules.Emoji.isEmoji(element): {
+                        return (
+                            <span
+                                className='inline-block mx-0.5 message-emoji-wrapper-size'
+                                data-emoji={element.code}
+                                {...attributes}
+                                contentEditable={false}
+                            >
+                                <InlineChromiumBugfix/>
+                                {children}
+
+                                <span
+                                    className='text-[0px]'
+                                    contentEditable={false}
+                                >
+                                    {element.code}
+                                </span>
+
+                                <Emoji
+                                    className='inline-block w-full h-full'
+                                    code={element.code}
+                                />
+                                <InlineChromiumBugfix/>
+                            </span>
+                        );
+                    }
+
+                    case RTEModules.Link.isLink(element): {
+                        return (
+                            <span
+                                className='text-color-link'
+                                data-url={element.url}
+                                {...attributes}
+                            >
+                                <InlineChromiumBugfix/>
+                                {children}
+                                <InlineChromiumBugfix/>
+                            </span>
+                        );
+                    }
+
+                    case RTEModules.Paragraph.isParagraph(element): {
+                        return (
+                            <p {...attributes}>
+                                {children}
+                            </p>
+                        );
+                    }
+
+                    default: {
+                        logger.error('unhandled rendering element type');
+                        break;
+                    }
+                }
+            };
+        })(),
+
+        renderLeaf: (props: RenderLeafProps) => {
+            const { attributes, children, leaf } = props;
+
+            return (
+                <span
+                    {...attributes}
+                >
+                    {children}
+                </span>
+            );
+        },
+
+        serialize: (() => {
+            const loop = (node: Descendant): ReactNode => {
+                const key = String(Math.random());
+
+                if (Text.isText(node)) return (
+                    <span key={key}>{node.text}</span>
+                );
+
+                const value = node.children.map(loop);
+
+                switch (true) {
+                    case RTEModules.Paragraph.isParagraph(node): {
+                        return (
+                            <p key={key}>
+                                {value}
+                            </p>
+                        );
+                    }
+
+                    case RTEModules.Emoji.isEmoji(node): {
+                        return (
+                            <Emoji
+                                className='mx-0.5 message-emoji-wrapper-size'
+                                code={node.code}
+                                key={key}
+                            />
+                        );
+                    }
+
+                    case RTEModules.Link.isLink(node): {
+                        return (
+                            <Link
+                                className='text-color-link'
+                                href={node.url}
+                                label='Ссылка на внешний ресурс'
+                                key={key}
+                            >
+                                {value}
+                            </Link>
+                        );
+                    }
+
+                    default: {
+                        logger.error('unhandled element serialization');
+                        return value;
+                    }
+                }
+            };
+
+            return (nodes: Descendant[]) => {
+                return nodes.map(loop);
+            };
+        })(),
+    },
+
+    Events: {
+        KeyDown: (editor: Editor) => {
+            return (e: React.KeyboardEvent<HTMLDivElement>) => {
+                if (!editor.selection) return;
+
+                if (isKeyHotkey('shift+left', e.nativeEvent)) {
+                    e.preventDefault();
+
+                    Transforms.move(editor, {
+                        reverse: true,
+                        edge: 'focus',
+                    });
+                }
+
+                if (isKeyHotkey('shift+right', e.nativeEvent)) {
+                    e.preventDefault();
+
+                    Transforms.move(editor, {
+                        reverse: false,
+                        edge: 'focus',
+                    });
+                }
+            };
         },
     },
 };
 
-type EditorCreatorOptions = (
-    WithCharacterLimit
-);
+type EditorCreatorOptions = {
+    characterLimit: WithCharacterLimit;
+};
 
 const createEditorWithPlugins = ({
-    maxLength,
+    characterLimit,
 }: EditorCreatorOptions) => {
     let editor = createEditor();
 
@@ -980,8 +999,7 @@ const createEditorWithPlugins = ({
     editor = RTEModules.Paragraph.withParagraph({ editor });
     editor = RTEModules.Emoji.withEmoji({ editor });
     editor = RTEModules.Link.withLink({ editor });
-    // editor = RTEModules.TextLink.withTextLink({ editor });
-    editor = RTEModules.CharacterLimit.withCharacterLimit({ editor, maxLength });
+    editor = RTEModules.CharacterLimit.withCharacterLimit({ editor, ...characterLimit });
     editor = RTEModules.SelectableTuning.withSelectableTuning({ editor });
     editor = RTEModules.Dev.withDevWindow({ editor });
 
@@ -1013,7 +1031,9 @@ const createInitialValue = (): Descendant[] => {
 export const RichTextEditorV3 = (() => {
     const Container: FC<PropsWithChildren> = ({ children }) => {
         const editor = useMemo(() => createEditorWithPlugins({
-            maxLength: 20,
+            characterLimit: {
+                maxLength: 2000,
+            },
         }), []);
 
         const [value, setValue] = useState(() => createInitialValue());
@@ -1021,18 +1041,6 @@ export const RichTextEditorV3 = (() => {
         useEffect(() => {
             editor.normalize({ force: true });
             editor.onChange();
-
-            Transforms.select(editor, Editor.end(editor, []));
-
-            // if (!editor.selection) {
-            //     const end = Editor.end(editor, []);
-
-            //     editor.selection = {
-            //         anchor: end,
-            //         focus: end,
-            //     };
-
-            // }
         }, [editor]);
 
         return (
@@ -1047,143 +1055,49 @@ export const RichTextEditorV3 = (() => {
         );
     };
 
-    const InlineChromiumBugfix: FC = () => {
-        return (
-            <span
-                contentEditable={false}
-                style={{ userSelect: 'none' }}
-                className={'text-[0px]'}
-            >
-                {String.fromCodePoint(160) /* Non-breaking space */}
-            </span>
-        );
-    };
     const Editable: FC = () => {
         const editor = useSlate();
-
-        const renderElement = useCallback(({
-            attributes,
-            children,
-            element,
-        }: RenderElementProps) => {
-            switch (element.type) {
-                case 'emoji':
-                    return (
-                        <span
-                            className='inline-block mx-0.5 message-emoji-wrapper-size'
-                            data-emoji={element.code}
-                            {...attributes}
-                            contentEditable={false}
-                        >
-                            {children}
-
-                            <span
-                                className='text-[0px]'
-                                contentEditable={false}
-                            >
-                                {/* <Space/> */}
-
-                                {element.code}
-
-                                {/* <Space/> */}
-                            </span>
-
-                            <Emoji
-                                className='inline-block w-full h-full'
-                                code={element.code}
-                            />
-                        </span>
-                    );
-
-                case 'paragraph':
-                    return (
-                        <p {...attributes}>
-                            {children}
-                        </p>
-                    );
-
-                case 'link':
-                    return (
-                        <span
-                            className='text-color-link inline-block'
-                            data-url={element.url}
-                            {...attributes}
-                        >
-                            {children}
-                        </span>
-                    );
-
-                default:
-                    logger.error('unhandled rendering element type');
-                    break;
-            }
-        }, []);
-
-        const renderLeaf = useCallback((props: RenderLeafProps) => {
-            const { attributes, children, leaf } = props;
-
-            if (RTEModules.TextLink.isTextLink(leaf)) {
-                return (
-                    <span
-                        className='text-color-link'
-                        data-url={children}
-                        {...attributes}
-                    >
-                        {children}
-                    </span>
-                );
-            }
-
-
-            return (
-                <span
-                    {...attributes}
-                >
-                    {children}
-                </span>
-            );
-        }, []);
 
         return (
             <>
                 <ContentEditable
-                    renderElement={renderElement}
+                    className='rich-text-editor'
+                    renderElement={RTEModules.Render.renderElement}
                     // renderPlaceholder={}
-                    renderLeaf={renderLeaf}
+                    renderLeaf={RTEModules.Render.renderLeaf}
                     suppressContentEditableWarning
                     onContextMenu={(e) => e.stopPropagation()}
-                    onKeyDown={(e) => {
-                        if (!editor.selection) return;
-
-                        if (isKeyHotkey('shift+left', e.nativeEvent)) {
-                            e.preventDefault();
-                            console.log('handle shift left');
-
-                            Transforms.move(editor, {
-                                // unit: 'offset',
-                                reverse: true,
-                                edge: 'focus',
-                            });
-                        }
-
-                        if (isKeyHotkey('shift+right', e.nativeEvent)) {
-                            e.preventDefault();
-                            console.log('handle shift right');
-
-                            Transforms.move(editor, {
-                                // unit: 'offset',
-                                reverse: false,
-                                edge: 'focus',
-                            });
-                        }
-
-                        return;
-                    }}
+                    onKeyDown={RTEModules.Events.KeyDown(editor)}
                 />
 
-                <JSONView data={editor.selection ?? []}/>
+                {/* <JSONView data={editor.selection ?? []}/>
 
-                <JSONView data={editor.children}/>
+                <JSONView data={editor.children}/> */}
+
+                <Serialized value={editor.children}/>
+            </>
+        );
+    };
+
+    const Serialized: FC<{value: string | Descendant[]}> = ({ value }) => {
+        const result = useMemo(() => {
+            const parsed = (
+                typeof value === 'string'
+                    ? tryParseJSON<Descendant[]>(value)
+                    : value
+            );
+            if (!parsed) return null;
+
+            try {
+                return RTEModules.Render.serialize(parsed);
+            } catch (error) {
+                return null;
+            }
+        }, [value]);
+
+        return (
+            <>
+                {result}
             </>
         );
     };
@@ -1191,5 +1105,6 @@ export const RichTextEditorV3 = (() => {
     return {
         Container,
         Editable,
+        Serialized,
     };
 })();

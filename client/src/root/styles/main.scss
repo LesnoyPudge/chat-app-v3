@@ -10,10 +10,6 @@
 
 
 @layer base { 
-    [data-slate-spacer=true] {
-        position: static !important;
-    }
-
     * {        
         @apply min-w-0 outline-[3px] outline outline-transparent text-inherit;
 
