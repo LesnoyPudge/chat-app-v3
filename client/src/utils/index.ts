@@ -37,3 +37,4 @@ export * from './createWebWorker';
 export * from './isDev';
 export * from './isProd';
 export * from './tryParseJSON';
+export * from './isUrlHttp';

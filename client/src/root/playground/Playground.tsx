@@ -1957,7 +1957,7 @@ import { Translation, useTranslation } from 'react-i18next';
 import { TRANSLATION } from '@i18n';
 import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
 import { Descendant } from 'slate';
-import { RichTextEditorV3 } from 'src/components/inputs/RichTextEditorV3';
+import { RichTextEditorV3 } from 'src/components/inputs/RichTextEditorV3/index2';
 
 
 
