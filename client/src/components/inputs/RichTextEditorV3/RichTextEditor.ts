@@ -1,9 +1,9 @@
-import { RTEContainer, RTEContentEditable, RTESerialized } from './components';
+import { RTEContextProvider, RTEContentEditable, RTESerialized } from './components';
 
 
 
-export const RichTextEditor = {
-    Container: RTEContainer,
+export const RichTextEditorV3 = {
+    ContextProvider: RTEContextProvider,
     ContentEditable: RTEContentEditable,
     Serialized: RTESerialized,
 };

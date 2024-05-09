@@ -10,7 +10,7 @@ type MutationErrorContextProvider = PropsWithChildren & {
     error: Error;
 }
 
-export const MutationErrorContext = createContext<Error>(undefined);
+export const MutationErrorContext = createContext<Error>();
 
 export const MutationErrorContextProvider: FC<MutationErrorContextProvider> = ({
     error,

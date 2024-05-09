@@ -12,7 +12,7 @@ export const Render = {
             return (
                 <span
                     contentEditable={false}
-                    className={'text-[0px]'}
+                    className='text-[0px]'
                 >
                     <Space/>
                 </span>
@@ -61,7 +61,9 @@ export const Render = {
                             {...attributes}
                         >
                             <InlineChromiumBugfix/>
+
                             {children}
+
                             <InlineChromiumBugfix/>
                         </span>
                     );

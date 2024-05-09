@@ -23,7 +23,9 @@ export const createWebWorker = <Arg = void, Return = void>(
     const run = (arg: Arg) => {
         return new Promise<Return | null>((resolve, reject) => {
             const workerCode = getWorkerCode(fn);
-            const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
+            const workerBlob = new Blob([workerCode], {
+                type: 'application/javascript',
+            });
 
             worker = new Worker(URL.createObjectURL(workerBlob));
 

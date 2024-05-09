@@ -27,7 +27,7 @@ const shakeStack = {
     step: 0.5,
 };
 
-export const ScreenShakeContext = createContext(undefined as unknown as ScreenShakeContext);
+export const ScreenShakeContext = createContext<ScreenShakeContext>();
 
 export const ScreenShake: FC<ScreenShake> = ({
     children,

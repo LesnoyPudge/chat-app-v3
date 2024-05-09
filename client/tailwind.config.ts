@@ -25,7 +25,12 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: [ 'Inter', 'Arial', 'Helvetica', ...defaultTheme.fontFamily.sans],
+                sans: [ 
+                    'Inter', 
+                    'Arial', 
+                    'Helvetica', 
+                    ...defaultTheme.fontFamily.sans
+                ],
             },
 
             colors: {

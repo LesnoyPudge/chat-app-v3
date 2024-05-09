@@ -16,10 +16,10 @@ export const Link: FC<Link> = ({
     children,
 }) => {
     return (
-        <a 
+        <a
             className={twClassNames('inline-block', className)}
-            href={href} 
-            rel='noopener noreferrer' 
+            href={href}
+            rel='noopener noreferrer'
             target='_blank'
             aria-label={label}
         >

@@ -2,7 +2,6 @@ export * from './getEnv';
 export * from './localStorageApi';
 export * from './logger';
 export * from './setTitle';
-export * from './debounce';
 export * from './throttle';
 export * from './copyToClipboard';
 export * from './fpsToMs';

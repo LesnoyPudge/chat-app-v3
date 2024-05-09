@@ -11,6 +11,8 @@ const customClasses = {
 
     '.slider-input': {},
 
+    '.rich-text-editor': {},
+
     '.image-bg-fullscreen': {
         '@apply fixed top-0 left-0 w-screen h-screen -z-[1] object-cover object-center': {},
     },

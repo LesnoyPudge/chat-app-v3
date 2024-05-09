@@ -14,7 +14,7 @@ interface GlobalLoaderContext {
     reset: () => void;
 }
 
-const GlobalLoaderContext = createContext(undefined as unknown as GlobalLoaderContext);
+const GlobalLoaderContext = createContext<GlobalLoaderContext>();
 
 const transitionOptions = getTransitionOptions.empty({
     enter: {

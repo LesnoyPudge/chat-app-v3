@@ -11,13 +11,13 @@ type ContextArgs<Entity extends WithId> = [Entity | undefined, Id | undefined];
 type LoadedContextArgs<Entity extends WithId> = [Entity, Id];
 
 export const EntityContext = {
-    [SUBSCRIBABLE_ENTITIES.CHANNEL]: createContext<ContextArgs<SliceEntityState.Channel>>(undefined as any),
-    [SUBSCRIBABLE_ENTITIES.CHAT]: createContext<ContextArgs<SliceEntityState.Chat>>(undefined as any),
-    [SUBSCRIBABLE_ENTITIES.MESSAGE]: createContext<ContextArgs<SliceEntityState.Message>>(undefined as any),
-    [SUBSCRIBABLE_ENTITIES.PRIVATE_CHANNEL]: createContext<ContextArgs<SliceEntityState.PrivateChannel>>(undefined as any),
-    [SUBSCRIBABLE_ENTITIES.ROLE]: createContext<ContextArgs<SliceEntityState.Role>>(undefined as any),
-    [SUBSCRIBABLE_ENTITIES.ROOM]: createContext<ContextArgs<SliceEntityState.Room>>(undefined as any),
-    [SUBSCRIBABLE_ENTITIES.USER]: createContext<ContextArgs<SliceEntityState.User>>(undefined as any),
+    [SUBSCRIBABLE_ENTITIES.CHANNEL]: createContext<ContextArgs<SliceEntityState.Channel>>(),
+    [SUBSCRIBABLE_ENTITIES.CHAT]: createContext<ContextArgs<SliceEntityState.Chat>>(),
+    [SUBSCRIBABLE_ENTITIES.MESSAGE]: createContext<ContextArgs<SliceEntityState.Message>>(),
+    [SUBSCRIBABLE_ENTITIES.PRIVATE_CHANNEL]: createContext<ContextArgs<SliceEntityState.PrivateChannel>>(),
+    [SUBSCRIBABLE_ENTITIES.ROLE]: createContext<ContextArgs<SliceEntityState.Role>>(),
+    [SUBSCRIBABLE_ENTITIES.ROOM]: createContext<ContextArgs<SliceEntityState.Room>>(),
+    [SUBSCRIBABLE_ENTITIES.USER]: createContext<ContextArgs<SliceEntityState.User>>(),
 };
 
 type ProviderProps<Entity extends WithId> = (

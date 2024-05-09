@@ -1,4 +1,4 @@
-import {  EmojiCode, Memo, Message, Scrollable, Static } from '@components';
+import { EmojiCode, Memo, Message, Scrollable, Static } from '@components';
 import { PropsWithClassName } from '@types';
 import { createContext, FC, RefObject, useCallback, useState } from 'react';
 import { IMessage } from '@backendTypes';
@@ -35,7 +35,7 @@ interface ChatContext {
     setMessageInRedactorMode: (id: string) => void;
 }
 
-export const ChatContext = createContext(undefined as unknown as ChatContext);
+export const ChatContext = createContext<ChatContext>();
 
 export const Chat: FC<Chat> = ({
     className = '',

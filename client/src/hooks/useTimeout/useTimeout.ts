@@ -6,7 +6,7 @@ import { useLatest } from '@hooks';
 
 export const useTimeout = (
     cb: AnyFunction,
-    providedDelay = 0,
+    providedDelay: number,
     manual = false,
 ) => {
     const timeoutIdRef = useRef(0);

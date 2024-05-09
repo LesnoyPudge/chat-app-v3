@@ -1,1 +1,1 @@
-/// <reference types="../shared/sharedDecloration.d.ts" />
+/// <reference types="../shared/sharedDeclaration.d.ts" />

@@ -38,7 +38,7 @@ interface TabContextProvider<VALUES extends ProvidedTabs> extends PropsWithChild
     onTabChange?: (prevent: () => void) => void;
 }
 
-export const TabContext = createContext(undefined as unknown as TabContext<any>);
+export const TabContext = createContext<TabContext<any>>();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProvider<T>) => {

@@ -10,7 +10,7 @@ interface ErrorContext {
     onCrush: () => void;
 }
 
-const ErrorContext = createContext(undefined as unknown as ErrorContext);
+const ErrorContext = createContext<ErrorContext>();
 
 export const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
     const isMounted = useIsMounted();

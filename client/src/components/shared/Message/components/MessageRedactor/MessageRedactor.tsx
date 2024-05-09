@@ -1,4 +1,4 @@
-import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, MessageEditor, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, RichTextEditor } from '@components';
+import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, MessageEditor, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, RichTextEditorV3 } from '@components';
 import { isDescendantArray, isDescendantEmpty, parseSlateContent, useSlateAddEmoji } from '@libs';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
@@ -69,17 +69,17 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
                 onSubmit={handleSubmit}
             >
                 {({ submitForm, values, setFieldValue }) => (
-                    <RichTextEditor.ContextProvider
-                        value={values.content}
+                    <RichTextEditorV3.ContextProvider
+                        initialValue={values.content}
                         label='Редактор'
                         name='content'
                         placeholder='Введите сообщение'
-                        onSubmit={submitForm}
-                        onKeyDown={handleEscape}
+                        // onSubmit={submitForm}
+                        // onKeyDown={handleEscape}
                         onChange={(v) => setFieldValue('content', v)}
                     >
                         <MessageRedactorInner className={className}/>
-                    </RichTextEditor.ContextProvider>
+                    </RichTextEditorV3.ContextProvider>
                 )}
             </Formik>
         </If>

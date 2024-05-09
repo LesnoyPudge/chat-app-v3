@@ -1,7 +1,8 @@
-import { Descendant, Editor, Element, Node, createEditor } from 'slate';
+import { Descendant, Editor, Element, Node, Transforms, createEditor } from 'slate';
 import { RTEModules, RTETypes } from '@components';
 import { withHistory } from 'slate-history';
 import { withReact } from 'slate-react';
+import { AnyFunction } from 'ts-essentials';
 
 
 
@@ -36,6 +37,23 @@ export const Utils = {
         editor = RTEModules.SelectableTuning.withSelectableTuning({ editor });
         editor = RTEModules.Dev.withDevWindow({ editor });
 
+        const withReset = ({ editor }: RTETypes.Helpers.WithEditor): RTETypes.Editor & {reset: AnyFunction} => {
+            const reset = () => {
+                console.log('reset');
+            };
+
+            // editor.reset = reset;
+
+            return {
+                ...editor,
+                reset,
+            };
+        };
+
+        // editor = withReset({ editor });
+
+
+
         return editor;
     },
 
@@ -45,5 +63,18 @@ export const Utils = {
                 RTEModules.Text.createText(text),
             ]),
         ];
+    },
+
+    resetEditor: (
+        editor: RTETypes.Editor,
+        initialValue: Descendant[],
+    ) => {
+        editor.children = initialValue;
+        editor.history.redos = [];
+        editor.history.undos = [];
+        // editor.onChange();
+        console.log('reset');
+        Editor.normalize(editor, { force: true });
+        Transforms.select(editor, Editor.end(editor, []));
     },
 };

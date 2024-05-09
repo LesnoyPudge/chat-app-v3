@@ -42,7 +42,7 @@ export interface MessageContext extends Required<SharedProps> {
     handleAddReaction: (code: EmojiCode) => void;
 }
 
-export const MessageContext = createContext(undefined as unknown as MessageContext);
+export const MessageContext = createContext<MessageContext>();
 
 const styles = {
     wrapper: `group relative bg-primary-200 

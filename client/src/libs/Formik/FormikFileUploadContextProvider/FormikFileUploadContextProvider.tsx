@@ -34,7 +34,7 @@
 //     multiple?: MULTIPLE,
 // }
 
-// export const FormikFileUploadContext = createContext(undefined as unknown as FormikFileUploadContext<boolean>);
+// export const FormikFileUploadContext = createContext<FormikFileUploadContext<boolean>>();
 
 // // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // export const FormikFileUploadContextProvider = <MULTIPLE extends boolean>({

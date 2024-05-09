@@ -1,7 +1,7 @@
-import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, RichTextEditor, Emoji, emojiRegExp, emojiList, getEmojiMatch, RichTextEditorV2 } from '@components';
+import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, Emoji, emojiRegExp, emojiList, getEmojiMatch } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
-import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff, setTitle } from '@utils';
+import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff, setTitle, logger } from '@utils';
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, Suspense, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { useBoolean, useCounter, useDocumentTitle, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useLocalStorage, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
@@ -1957,7 +1957,9 @@ import { Translation, useTranslation } from 'react-i18next';
 import { TRANSLATION } from '@i18n';
 import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
 import { Descendant } from 'slate';
-import { RichTextEditorV3 } from 'src/components/inputs/RichTextEditorV3/index2';
+import { RichTextEditorV3, RichTextEditorV3 as RTE, RTEModules, RTETypes } from 'src/components/inputs/RichTextEditorV3/index';
+import { Editable, Slate, useSlate } from 'slate-react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 
 
@@ -2122,30 +2124,6 @@ const PlaygroundInner34: FC = () => {
                 </button>
             </div>
 
-            <RichTextEditor.ContextProvider
-                label=''
-                name=''
-                placeholder='placeholder'
-                value={states[count]}
-                onChange={setStates2}
-                // key={JSON.stringify(states[count])}
-            >
-                <RichTextEditor.Editable/>
-            </RichTextEditor.ContextProvider>
-
-            <RichTextEditorV2.ContextProvider
-                label='my label'
-                name='my name'
-                placeholder='my text placeholder'
-                value={editorState}
-                onChange={setEditorState}
-                onSubmit={(v) => {
-                    console.log('submit!', v);
-                }}
-            >
-                <RichTextEditorV2.Editable/>
-            </RichTextEditorV2.ContextProvider>
-
             <div className='grid gap-2'>
                 <div>
                     <>editor1 string value is {JSON.stringify(slateState)}</>
@@ -2163,13 +2141,154 @@ const PlaygroundInner34: FC = () => {
     );
 };
 
-const PlaygroundInner35: FC = () => {
+
+const MidMidTest: FC<PropsWithChildren> = ({ children }) => {
     return (
-        <>
-            <RichTextEditorV3.Container>
-                <RichTextEditorV3.Editable/>
-            </RichTextEditorV3.Container>
-        </>
+        <div>
+            <>midmid: {Math.random()}</>
+
+            {children}
+        </div>
+    );
+};
+
+const MidTest: FC<PropsWithChildren> = ({ children }) => {
+    return (
+        <div>
+            <>mid: {Math.random()}</>
+
+            <MidMidTest>
+                {children}
+            </MidMidTest>
+        </div>
+    );
+};
+
+const InnerTest: FC = () => {
+    const { counter = null } = useContext(TestContext) ?? {};
+
+    return (
+        <div>
+            <div>count: {counter}</div>
+            <div>inner: {Math.random()}</div>
+        </div>
+    );
+};
+
+const TestContext = createContext<{ counter: number }>();
+
+const PlaygroundInner35: FC = () => {
+    const c = useCounter(0);
+
+    const contextValues = useMemo(() => ({
+        counter: c.count,
+    }), [c.count]);
+
+    return (
+        <TestContext.Provider value={contextValues}>
+            {/* <If condition>
+
+            </If> */}
+            <div>
+                <button onClick={c.increment}>
+                    <>inc</>
+                </button>
+
+                <Memo>
+                    <MidTest>
+                        <InnerTest/>
+                    </MidTest>
+                </Memo>
+            </div>
+        </TestContext.Provider>
+    );
+};
+
+const initial = RTEModules.Utils.createInitialValue('initial');
+
+const Inner: FC<PropsWithChildren & {reff: MutableRefObject<RTETypes.Editor | null>}> = ({
+    reff,
+    children,
+}) => {
+    const editor = useSlate();
+
+    reff.current = editor;
+
+    return (
+        <>{children}</>
+    );
+};
+
+const PlaygroundInner36: FC = () => {
+    const [val, setVal] = useState(initial);
+    const editorRef = useRef<RTETypes.Editor | null>(null);
+    const onSubmit = useCallback((v: Descendant[]) => {
+        logger.log(v);
+        setVal(initial);
+        if (!editorRef.current) return;
+        RTEModules.Utils.resetEditor(editorRef.current, initial);
+    }, []);
+
+
+
+    return (
+        <div>
+            <div>wow</div>
+
+            <RichTextEditorV3.ContextProvider
+                name='editor'
+                initialValue={initial}
+                onChange={setVal}
+                onSubmit={onSubmit}
+            >
+                <Inner reff={editorRef}>
+                    <RichTextEditorV3.ContentEditable/>
+                </Inner>
+            </RichTextEditorV3.ContextProvider>
+
+            <RichTextEditorV3.Serialized value={val}/>
+        </div>
+    );
+};
+
+const FallbackScreen: FC = () => {
+    return (
+        <div>
+            <>fallback</>
+        </div>
+    );
+};
+
+const PlaygroundInner37: FC = () => {
+    const [val, setVal] = useState(initial);
+
+    const onSubmit = useCallback((v: Descendant[]) => {
+        logger.log(v);
+        setVal(initial);
+    }, []);
+
+    const editor = useMemo(() => RTEModules.Utils.createEditorWithPlugins({
+        characterLimit: {
+            maxLength: 15,
+        },
+    }), []);
+
+    useEffect(() => console.log('2) 1'));
+
+    return (
+        <div>
+            <div>wow 2</div>
+
+            {/* <Button stylingPreset='brand' onLeftClick={editor.reset}>
+                <>reset</>
+            </Button> */}
+
+            {/* <ErrorBoundary fallbackRender={FallbackScreen}> */}
+            <Slate editor={editor} initialValue={initial}>
+                <Editable/>
+            </Slate>
+            {/* </ErrorBoundary> */}
+        </div>
     );
 };
 
@@ -2193,7 +2312,9 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner30/> */}
                 {/* <PlaygroundInner31/> */}
                 {/* <PlaygroundInner34/> */}
-                <PlaygroundInner35/>
+                {/* <PlaygroundInner35/> */}
+                <PlaygroundInner36/>
+                {/* <PlaygroundInner37/> */}
             </If>
         </>
     );

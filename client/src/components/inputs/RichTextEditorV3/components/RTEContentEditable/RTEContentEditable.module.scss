@@ -3,9 +3,14 @@
 
 
 @layer components {
-    .rich-text-editor {
+    .editor {
         [data-slate-spacer=true] {
             position: static !important;
+        }
+
+        [data-slate-placeholder=true] {
+            @apply truncate;
+            opacity: 1 !important;
         }
     }
 }
