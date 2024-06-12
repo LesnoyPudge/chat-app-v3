@@ -1,6 +1,6 @@
 import { IMAGES } from '@generated';
 import { defaultAvatar } from '@shared';
-import { getReadImagePath, isDev } from '@utils';
+import { getReadImagePath, isDev, logger } from '@utils';
 
 
 
@@ -16,12 +16,14 @@ export const getAvatarPath = <T extends string | undefined | null>(
 
     if (isDev()) {
         if (avatarId.includes('http')) {
-            console.warn('fake avatar found', avatarId);
+            logger.log('fake avatar found', avatarId);
             return avatarId as Return<T>;
         }
     }
 
-    if (defaultAvatar.isAvatar(avatarId)) return IMAGES.COMMON[avatarId].PATH as Return<T>;
+    if (defaultAvatar.isAvatar(avatarId)) {
+        return IMAGES.COMMON[avatarId].PATH as Return<T>;
+    }
 
     return getReadImagePath(avatarId) as Return<T>;
 };

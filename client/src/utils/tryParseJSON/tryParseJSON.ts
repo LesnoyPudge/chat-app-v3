@@ -1,7 +1,7 @@
 
 
 
-export const tryParseJSON = <ExpectedValue = unknown>(
+export const tryParseJSON = <ExpectedValue = never>(
     json: string,
 ): ExpectedValue | undefined => {
     try {

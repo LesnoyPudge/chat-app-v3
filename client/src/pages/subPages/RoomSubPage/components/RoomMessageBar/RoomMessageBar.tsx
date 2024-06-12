@@ -1,4 +1,4 @@
-import { EntityContext, MessageInputBar } from '@components';
+import { EntityContext } from '@components';
 import { FC, useContext } from 'react';
 
 
@@ -11,7 +11,7 @@ export const RoomMessageBar: FC = () => {
 
     return (
         <>
-            <MessageInputBar placeholder={placeholder}/>
+            {/* <MessageInputBar placeholder={placeholder}/> */}
         </>
     );
 };

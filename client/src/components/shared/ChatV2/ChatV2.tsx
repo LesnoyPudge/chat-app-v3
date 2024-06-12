@@ -144,7 +144,7 @@ export const ChatV2: FC<PropsWithClassName> = ({
                 {({ owner }) => (
                     <>
                         <If condition={owner === 'Room'}>
-
+                            <></>
                         </If>
                     </>
                 )}

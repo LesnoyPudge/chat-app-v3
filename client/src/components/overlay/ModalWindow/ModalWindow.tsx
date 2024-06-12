@@ -10,7 +10,8 @@ interface ModalWindow extends PropsWithChildrenAsNodeOrFunction<OverlayContext> 
     label: string;
     withBackdrop?: boolean;
     transitionOptions?: UseTransitionProps;
-    noPointerEvents?: boolean;
+    noContainerPointerEvents?: boolean;
+    noBackdropPointerEvents?: boolean;
 }
 
 const defaultTransitionOptions = getTransitionOptions.defaultModal();
@@ -27,13 +28,16 @@ export const ModalWindow: FC<ModalWindow> = ({
     label,
     withBackdrop = false,
     transitionOptions = defaultTransitionOptions,
-    noPointerEvents = false,
+    noContainerPointerEvents = false,
+    noBackdropPointerEvents = false,
     children,
 }) => {
     const overlayValues = useContext(OverlayContext);
     const { closeOverlay, isOverlayExist } = overlayValues;
 
-    const pointerClass = noPointerEvents ? 'pointer-events-none' : 'pointer-events-auto';
+    const getPointerClass = (pointerDisabled: boolean) => {
+        return pointerDisabled ? 'pointer-events-none' : 'pointer-events-auto'
+    }
 
     return (
         <AnimatedTransition
@@ -60,7 +64,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                                 <div
                                     className={twClassNames(
                                         styles.backdrop,
-                                        pointerClass,
+                                        getPointerClass(noBackdropPointerEvents),
                                     )}
                                     onClick={closeOverlay}
                                 ></div>
@@ -69,7 +73,7 @@ export const ModalWindow: FC<ModalWindow> = ({
                             <div className={styles.contentWrapper}>
                                 <div className={twClassNames(
                                     styles.contentScrollable,
-                                    pointerClass,
+                                    getPointerClass(noContainerPointerEvents),
                                 )}>
                                     <ChildrenAsNodeOrFunction args={overlayValues}>
                                         {children}

@@ -1,4 +1,4 @@
-import { useAnimationFrame, useLatest } from '@hooks';
+import { useAnimationFrame } from '@hooks';
 import { isOmittedRect } from '@typeGuards';
 import { Alignment, OmittedRect } from '@types';
 import { RefObject, useState } from 'react';

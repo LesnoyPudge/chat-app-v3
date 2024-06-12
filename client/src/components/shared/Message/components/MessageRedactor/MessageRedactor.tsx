@@ -1,18 +1,16 @@
-import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, MessageEditor, OverlayContextProvider, OverlayItem, Ref, RelativelyPositioned, RichTextEditorV3 } from '@components';
-import { isDescendantArray, isDescendantEmpty, parseSlateContent, useSlateAddEmoji } from '@libs';
+import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, MessageEditor, OverlayContextProvider, OverlayItem, RTEModules, RTETypes, Ref, RelativelyPositioned, RichTextEditor } from '@components';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { createValidationSchema, getTransitionOptions, twClassNames } from '@utils';
-import { FC, useContext, useMemo } from 'react';
+import { FC, useContext } from 'react';
 import { MessageContext } from '../../Message';
 import { Form, Formik } from 'formik';
-import { Descendant } from 'slate';
 import { Key } from 'ts-key-enum';
 
 
 
 type RedactorFormValues = {
-    content: Descendant[];
+    content: RTETypes.Nodes;
 }
 
 const styles = {
@@ -25,18 +23,6 @@ const styles = {
 
 const transitionOptions = getTransitionOptions.withOpacity();
 
-const validationSchema = createValidationSchema<RedactorFormValues>(({
-    yup,
-    VALIDATION_MESSAGES,
-}) => ({
-    content: yup.array().test({
-        test: (v) => {
-            return isDescendantArray(v) && !isDescendantEmpty(v);
-        },
-        message: VALIDATION_MESSAGES.REQUIRED,
-    }),
-}));
-
 export const MessageRedactor: FC<PropsWithClassName> = ({
     className = '',
 }) => {
@@ -48,7 +34,7 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
     } = useContext(MessageContext);
 
     const initialValues: RedactorFormValues = {
-        content: parseSlateContent(message.content),
+        content: RTEModules.Utils.parse(message.content),
     };
 
     const handleEscape = (e: KeyboardEvent) => {
@@ -61,6 +47,31 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
         handleSaveEditor(values.content);
     };
 
+    const validationSchema = createValidationSchema<RedactorFormValues>(({
+        yup,
+        VALIDATION_MESSAGES,
+    }) => ({
+        content: yup.array().test({
+            test: (v) => {
+                throw new Error(`todo ${JSON.stringify(v)}`);
+
+                if (!message.attachments.length) {
+                    // текст должен быть не пустым тк нет вложений
+                }
+
+                return true
+            },
+            message: VALIDATION_MESSAGES.REQUIRED,
+        })
+        // content: yup.array().test({
+        //     test: (v) => {
+        //         return true
+        //         // return isDescendantArray(v) && !isDescendantEmpty(v);
+        //     },
+        //     message: VALIDATION_MESSAGES.REQUIRED,
+        // }),
+    }));
+
     return (
         <If condition={isInRedactorMode}>
             <Formik
@@ -69,7 +80,7 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
                 onSubmit={handleSubmit}
             >
                 {({ submitForm, values, setFieldValue }) => (
-                    <RichTextEditorV3.ContextProvider
+                    <RichTextEditor.ContextProvider
                         initialValue={values.content}
                         label='Редактор'
                         name='content'
@@ -79,7 +90,7 @@ export const MessageRedactor: FC<PropsWithClassName> = ({
                         onChange={(v) => setFieldValue('content', v)}
                     >
                         <MessageRedactorInner className={className}/>
-                    </RichTextEditorV3.ContextProvider>
+                    </RichTextEditor.ContextProvider>
                 )}
             </Formik>
         </If>
@@ -90,13 +101,13 @@ const MessageRedactorInner: FC<PropsWithClassName> = ({
     className = '',
 }) => {
     const { handleCloseEditor } = useContext(MessageContext);
-    const { addEmoji } = useSlateAddEmoji();
+    const { insert } = RTEModules.Emoji.useInsertEmoji();
 
     return (
         <Form className={className}>
             <MessageEditor.Wrapper>
                 <div className={styles.inner}>
-                    <RichTextEditor.Editable className={styles.editable}/>
+                    <RichTextEditor.ContentEditable className={styles.editable}/>
 
                     <OverlayContextProvider>
                         {({ isOverlayExist, openOverlay }) => (
@@ -145,7 +156,7 @@ const MessageRedactorInner: FC<PropsWithClassName> = ({
                                                             role='dialog'
                                                             aria-label='Выбрать эмодзи'
                                                         >
-                                                            <EmojiPicker onEmojiAdd={addEmoji}/>
+                                                            <EmojiPicker onEmojiPick={insert}/>
                                                         </animated.div>
                                                     </RelativelyPositioned>
                                                 </OverlayItem>

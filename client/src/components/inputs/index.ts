@@ -7,4 +7,4 @@ export * from './RadioInput';
 export * from './FileInput';
 export * from './ColorPicker';
 export * from './TextArea';
-export * from './RichTextEditorV3';
+export * from './RichTextEditor';

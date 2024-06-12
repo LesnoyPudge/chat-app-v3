@@ -1,5 +1,5 @@
+import { RTETypes } from '@components';
 import { Id, Timestamp } from '@shared';
-import { Descendant } from 'slate';
 
 
 
@@ -11,7 +11,7 @@ type Values = {
     lastRefresh: Timestamp;
     myId: string;
     lastVisitedTextRooms: Record<ChannelId, RoomId>;
-    savedMessageDrafts: Record<ChatId, Descendant[]>;
+    savedMessageDrafts: Record<ChatId, RTETypes.Nodes>;
 }
 
 const myKeys: Array<keyof Values> = [

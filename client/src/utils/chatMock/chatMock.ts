@@ -1,6 +1,6 @@
 import { getRandomNumber } from '@utils';
 import { loremIpsum } from 'lorem-ipsum';
-import { EmojiCode } from '@components';
+import { EmojiCode, RTETypes } from '@components';
 import { IMessage } from '@backendTypes';
 import { Descendant } from 'slate';
 
@@ -88,7 +88,7 @@ export class ChatMock {
     }
 }
 
-export const createSingleMessage = (content: Descendant[]): Message => ({
+export const createSingleMessage = (content: RTETypes.Nodes): Message => ({
     id: Math.random().toString(),
     chat: Math.random().toString(),
     content: JSON.stringify(content),

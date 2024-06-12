@@ -138,6 +138,14 @@ export default {
                 // md: { max: '767px' }, // => @media (max-width: 767px) { ... }
                 // sm: { max: '639px' }, // => @media (max-width: 639px) { ... }
             },
+
+            height: {
+                'message-editor': 'var(--message-editor-height)',
+            },
+
+            minHeight: {
+                'message-editor': 'var(--message-editor-height)',
+            },
         },
     },
 } satisfies Config;

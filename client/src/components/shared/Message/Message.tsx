@@ -1,7 +1,7 @@
 import { PropsWithClassName, PropsWithInnerRef } from '@types';
 import { createContext, FC } from 'react';
 import { Descendant } from 'slate';
-import { EmojiCode } from '@components';
+import { EmojiCode, RTETypes } from '@components';
 import { Heading } from '@libs';
 import { twClassNames } from '@utils';
 import { CompactMessage, CozyMessage, MessageControlBar } from './components';
@@ -30,7 +30,7 @@ export interface MessageComponent extends PropsWithClassName,
     displayMode: 'cozy' | 'compact';
     openEditor: (id: string) => void;
     closeEditor: () => void;
-    saveEditor: (id: string, value: Descendant[]) => void;
+    saveEditor: (id: string, value: RTETypes.Nodes) => void;
     addReaction: (id: string, code: EmojiCode) => void;
 }
 
@@ -38,11 +38,13 @@ export interface MessageContext extends Required<SharedProps> {
     ids: Ids;
     handleOpenEditor: () => void;
     handleCloseEditor: () => void;
-    handleSaveEditor: (value: Descendant[]) => void;
+    handleSaveEditor: (value: RTETypes.Nodes) => void;
     handleAddReaction: (code: EmojiCode) => void;
 }
 
 export const MessageContext = createContext<MessageContext>();
+
+Object.keys({ wow: 'data' });
 
 const styles = {
     wrapper: `group relative bg-primary-200 

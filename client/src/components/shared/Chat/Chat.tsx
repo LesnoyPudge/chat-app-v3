@@ -1,4 +1,4 @@
-import { EmojiCode, Memo, Message, Scrollable, Static } from '@components';
+import { EmojiCode, Memo, Message, RTETypes, Scrollable, Static } from '@components';
 import { PropsWithClassName } from '@types';
 import { createContext, FC, RefObject, useCallback, useState } from 'react';
 import { IMessage } from '@backendTypes';
@@ -71,7 +71,7 @@ export const Chat: FC<Chat> = ({
         console.log('add reaction', id, code);
     }, []);
 
-    const saveEditor = useCallback((id: string, value: Descendant[]) => {
+    const saveEditor = useCallback((id: string, value: RTETypes.Nodes) => {
         console.log('save editor', id, value);
         closeEditor();
     }, [closeEditor]);

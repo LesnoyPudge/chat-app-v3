@@ -12,7 +12,7 @@ export const MessageEditorDisabled: FC<PropsWithChildrenAndClassName> = ({
     return (
         <div className={twClassNames(
             styles.wrapper,
-            styles.sizeLimit,
+            styles.wrapperHeight,
             styles.disabled,
             className,
         )}>

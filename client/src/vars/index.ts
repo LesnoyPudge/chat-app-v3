@@ -5,7 +5,7 @@ import { Entities, Status } from '@shared';
 export const VALIDATION_MESSAGES = {
     REQUIRED: 'Значение не указано',
     INVALID_EMAIL: 'Некорректный email',
-};
+} as const;
 
 export const FOCUSABLE_SELECTOR = [
     'a:not([tabindex="-1"])',

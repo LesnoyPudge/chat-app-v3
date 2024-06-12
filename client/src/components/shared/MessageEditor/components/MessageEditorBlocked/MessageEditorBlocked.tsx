@@ -22,7 +22,7 @@ export const MessageEditorBlocked: FC<PropsWithClassName> = ({
     return (
         <div className={twClassNames(
             styles.wrapper,
-            styles.sizeLimit,
+            styles.wrapperHeight,
             className,
         )}>
             <Button

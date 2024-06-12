@@ -621,7 +621,6 @@ import isObject from 'is-object';
 import { Placeholder } from 'src/components/shared/Placeholder';
 import { socketIO } from '../features/soket';
 import { EntityContext, EntityContextHelpers, EntityContextProvider } from 'src/components/contexts/EntityContext/EntityContext';
-import { getInitialSlateValue } from '@libs';
 
 
 
@@ -1956,10 +1955,12 @@ import { EmojiNode, $createEmojiNode, $isEmojiNode } from './emoji';
 import { Translation, useTranslation } from 'react-i18next';
 import { TRANSLATION } from '@i18n';
 import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
-import { Descendant } from 'slate';
-import { RichTextEditorV3, RichTextEditorV3 as RTE, RTEModules, RTETypes } from 'src/components/inputs/RichTextEditorV3/index';
-import { Editable, Slate, useSlate } from 'slate-react';
+import { createEditor, Descendant } from 'slate';
+import { RichTextEditor, RTEModules, RTETypes } from 'src/components/inputs/RichTextEditor/index';
+import { Editable, Slate, useSlate, withReact } from 'slate-react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { MessageInputBar } from 'src/components/shared/ChatV2/components';
+import { JSONView } from '@dev';
 
 
 
@@ -1967,10 +1968,10 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 
 const PlaygroundInner30: FC = () => {
-    const [slateState, setSlateState] = useState(() => getInitialSlateValue());
+    const [slateState, setSlateState] = useState(() => RTEModules.Utils.createInitialValue());
 
     useTimeout(() => {
-        setSlateState(getInitialSlateValue());
+        setSlateState(RTEModules.Utils.createInitialValue());
     }, 3000);
 
     return (
@@ -2082,15 +2083,15 @@ const PlaygroundInner33: FC = () => {
 
 const PlaygroundInner34: FC = () => {
     const [editorState, setEditorState] = useState<string>();
-    const [slateState, setSlateState] = useState(() => getInitialSlateValue());
+    const [slateState, setSlateState] = useState(() => RTEModules.Utils.createInitialValue());
     const [states, setStates] = useState([
-        getInitialSlateValue('first'),
-        getInitialSlateValue('second'),
-        getInitialSlateValue('third'),
+        RTEModules.Utils.createInitialValue('first'),
+        RTEModules.Utils.createInitialValue('second'),
+        RTEModules.Utils.createInitialValue('third'),
     ]);
     const [count, setCount] = useState(0);
 
-    const setStates2 = (val: Descendant[]) => {
+    const setStates2 = (val: RTETypes.Nodes) => {
         setStates(prev => {
             const newV = [...prev];
             newV[count] = val;
@@ -2206,7 +2207,9 @@ const PlaygroundInner35: FC = () => {
 
 const initial = RTEModules.Utils.createInitialValue('initial');
 
-const Inner: FC<PropsWithChildren & {reff: MutableRefObject<RTETypes.Editor | null>}> = ({
+const Inner: FC<PropsWithChildren & {
+    reff: MutableRefObject<RTETypes.Editor | null>
+}> = ({
     reff,
     children,
 }) => {
@@ -2222,7 +2225,7 @@ const Inner: FC<PropsWithChildren & {reff: MutableRefObject<RTETypes.Editor | nu
 const PlaygroundInner36: FC = () => {
     const [val, setVal] = useState(initial);
     const editorRef = useRef<RTETypes.Editor | null>(null);
-    const onSubmit = useCallback((v: Descendant[]) => {
+    const onSubmit = useCallback((v: RTETypes.Nodes) => {
         logger.log(v);
         setVal(initial);
         if (!editorRef.current) return;
@@ -2235,18 +2238,18 @@ const PlaygroundInner36: FC = () => {
         <div>
             <div>wow</div>
 
-            <RichTextEditorV3.ContextProvider
+            <RichTextEditor.ContextProvider
                 name='editor'
                 initialValue={initial}
                 onChange={setVal}
                 onSubmit={onSubmit}
             >
                 <Inner reff={editorRef}>
-                    <RichTextEditorV3.ContentEditable/>
+                    <RichTextEditor.ContentEditable/>
                 </Inner>
-            </RichTextEditorV3.ContextProvider>
+            </RichTextEditor.ContextProvider>
 
-            <RichTextEditorV3.Serialized value={val}/>
+            <RichTextEditor.Serialized value={val}/>
         </div>
     );
 };
@@ -2262,7 +2265,7 @@ const FallbackScreen: FC = () => {
 const PlaygroundInner37: FC = () => {
     const [val, setVal] = useState(initial);
 
-    const onSubmit = useCallback((v: Descendant[]) => {
+    const onSubmit = useCallback((v: RTETypes.Nodes) => {
         logger.log(v);
         setVal(initial);
     }, []);
@@ -2292,6 +2295,68 @@ const PlaygroundInner37: FC = () => {
     );
 };
 
+const PlaygroundInner38: FC = () => {
+    return (
+        <>
+            <EntityContextProvider.Chat 
+                id='1' 
+                fakeEntity={{
+                    id: '1', 
+                    messages: [], 
+                    owner: 'PrivateChannel',
+                    ownerId: '123'
+                }}
+            >
+                <MessageInputBar/>
+            </EntityContextProvider.Chat>
+        </>
+    )
+}
+import reactFastCompare from "react-fast-compare";
+import { Main } from 'src/dev/WIP';
+const PlaygroundInner39: FC = () => {
+    const [state, setState] = useState(
+        RTEModules.Utils.createInitialValue('hehe:poop:xd')
+    );
+    useEffect(() => {
+        console.log(state)
+    }, [state])
+    const editor2 = useMemo(() => withReact(createEditor()), []);
+
+    return (
+        <div className='[&>button]:block'>
+            <button 
+                onClick={() => setState(
+                    RTEModules.Utils.createInitialValue('hehe:poop:xdd')
+                )}
+            >
+                <>reset</>
+            </button>
+
+            <button onClick={() => setState(
+                RTEModules.Utils.createInitialValue()
+            )}>
+                <>clear</>
+            </button>
+
+            <RichTextEditor.ContextProvider
+                name='message'
+                value={state}
+                onChange={(value) => {
+                    if (Object.is(value, state)) return;
+
+                    setState(value)
+                }}
+            >
+                <RichTextEditor.ContentEditable/>
+            </RichTextEditor.ContextProvider>
+
+            <JSONView data={state}/>
+        </div>
+    )
+}
+
+
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     const [enabled, setEnabled] = useLocalStorage('playground', false);
 
@@ -2313,8 +2378,11 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner31/> */}
                 {/* <PlaygroundInner34/> */}
                 {/* <PlaygroundInner35/> */}
-                <PlaygroundInner36/>
+                {/* <PlaygroundInner36/> */}
                 {/* <PlaygroundInner37/> */}
+                {/* <PlaygroundInner38/> */}
+                {/* <PlaygroundInner39/> */}
+                <Main/>
             </If>
         </>
     );

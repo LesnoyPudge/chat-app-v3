@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import {  Tooltip, UserStatus, Image, Ref } from '@components';
+import { Tooltip, UserStatus, Image, Ref } from '@components';
 import { getAvatarPath, twClassNames } from '@utils';
 import { PropsWithClassName } from '@types';
 import { STATUS_LABEL } from '@vars';

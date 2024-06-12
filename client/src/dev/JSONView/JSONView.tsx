@@ -36,7 +36,7 @@ export const JSONView: FC<{data: unknown}> = ({ data }) => {
             className='[&>*]:max-h-[500px]'
             data={data}
             onJSONPrettyError={logger.error}
-            space='4'
-        />
+            space={4}
+        ></FixedJSON>
     );
 };

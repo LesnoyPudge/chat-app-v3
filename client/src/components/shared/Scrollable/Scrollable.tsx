@@ -160,7 +160,12 @@ export const Scrollable: FC<Scrollable> = ({
         const wrapper = simpleBarApi.contentWrapperEl;
         if (!wrapper) return;
 
-        wrapper.tabIndex = focusable ? 0 : -1;
+        if (focusable) {
+            wrapper.tabIndex = 0;
+            return;
+        }
+
+        wrapper.removeAttribute('tabIndex');
     }, [focusable, simpleBarApi]);
 
     return (

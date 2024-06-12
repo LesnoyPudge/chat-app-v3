@@ -3,7 +3,6 @@ export * from './UserAvatar';
 export * from './Time';
 export * from './UserStatus';
 export * from './TopBar';
-export * from './MessageInputBar';
 export * from './RelativelyPositioned';
 export * from './TabList';
 export * from './TabPanel';

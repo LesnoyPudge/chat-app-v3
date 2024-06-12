@@ -1,5 +1,5 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { MessageInputBar, Chat, EntityContext, EntityContextProvider } from '@components';
+import { EntityContext, EntityContextProvider } from '@components';
 import { useNavigator } from '@hooks';
 import { FC, useContext } from 'react';
 import { Header } from './components';

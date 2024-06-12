@@ -31,30 +31,30 @@ export const emojiRegExp = new RegExp(emojiCodeList.map(code => code.replace(/[^
 export const emojiList: EmojiItem[] = [
     {
         code: [':smile:'],
-        label: '😀',
+        // label: '😀',
         path: IMAGES.COMMON.SMILE.PATH,
     },
     {
         code: [':poop:', ':shit:'],
-        label: '💩',
+        // label: '💩',
         path: IMAGES.COMMON.POOP.PATH,
     },
     {
         code: [':thumbsup:'],
-        label: '👍',
+        // label: '👍',
         path: IMAGES.COMMON.THUMBSUP.PATH,
     },
     {
         code: [':thumbsdown:'],
-        label: '👎',
+        // label: '👎',
         path: IMAGES.COMMON.THUMBSDOWN.PATH,
     },
     {
         code: [':ok_hand:', ':ok:'],
-        label: '👌',
+        // label: '👌',
         path: IMAGES.COMMON.OK_HAND.PATH,
     },
-];
+].map((item) => ({ ...item, label: item.code[0] } as EmojiItem));
 
 export const uniqueEmojiCodeList = emojiList.map((item) => item.code[0]);
 

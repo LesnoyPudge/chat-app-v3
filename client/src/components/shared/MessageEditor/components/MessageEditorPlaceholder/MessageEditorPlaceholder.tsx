@@ -12,7 +12,7 @@ export const MessageEditorPlaceholder: FC<PropsWithClassName> = ({
     return (
         <Placeholder className={twClassNames(
             styles.wrapper,
-            styles.sizeLimit,
+            styles.wrapperHeight,
             className,
         )}/>
     );

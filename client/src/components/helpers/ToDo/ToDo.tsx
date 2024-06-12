@@ -1,4 +1,4 @@
-import { isProd } from '@utils';
+import { isProd, logger } from '@utils';
 import { FC, PropsWithChildren, useEffect } from 'react';
 
 
@@ -13,7 +13,7 @@ export const ToDo: FC<ToDo> = ({
 }) => {
     useEffect(() => {
         if (isProd()) return;
-        console.warn(`ToDo: ${text}`);
+        logger.log(`ToDo: ${text}`);
     }, [text]);
 
     return (

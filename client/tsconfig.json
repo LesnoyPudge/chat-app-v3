@@ -1,7 +1,22 @@
 {
+    "include": [
+        "src", 
+        "./declaration.d.ts",
+        // "../node_modules/types-string"
+    ],
     "compilerOptions": {
         "target": "ESNext",
-        "types": ["vite/client", "vite-plugin-pwa/client"],
+        "types": [
+            "vite/client", 
+            "vite-plugin-pwa/client", 
+            // too strict, enable on next app iteration / app repair
+            // "@lesnoypudge/types-global-base",
+            // not working for some reason
+            // "@lesnoypudge/types-global-react",
+            "babel-plugin-jsx-control-statements",
+            "./declaration.d.ts",
+            // "../node_modules/types-string"
+        ],
         "downlevelIteration": true,
         "lib": [
             "dom",
@@ -53,10 +68,5 @@
             "@locales/*": ["./locales/*"],
             "@dev": ["src/dev"],
         },
-    },
-    "include": [
-        "src", 
-        "decloration.d.ts",
-        "../node_modules/types-string"
-    ]
+    }, 
 }

@@ -5,7 +5,7 @@
         "this:start": "env-cmd -f ../.env vite",
         "this:build": "env-cmd -f ../.env tsc && vite build",
         "this:preview": "env-cmd -f ../.env vite preview",
-        "this:lint": "eslint .",
+        "this:lint": "eslint . --quiet",
         "this:lintFix": "eslint --fix .",
         "this:generateImageStuff": "tsc scripts/generateImageStuff.ts && node scripts/generateImageStuff.js && rimraf scripts/*.js",
         "//": ""
@@ -24,6 +24,8 @@
     },
     "dependencies": {
         "@juggle/resize-observer": "^3.4.0",
+        "@lesnoypudge/types-global-base": "^1.2.0",
+        "@lesnoypudge/types-global-react": "^1.1.0",
         "@lexical/react": "^0.12.2",
         "@oyyds/react-auto-sizer": "^1.2.11",
         "@react-hook/intersection-observer": "^3.1.1",
@@ -35,6 +37,7 @@
         "container-query-polyfill": "^1.0.2",
         "date-fns": "^2.29.3",
         "eslint-plugin-jsx-a11y": "^6.7.1",
+        "eslint-plugin-react-compiler": "^0.0.0-experimental-51a85ea-20240601",
         "formik": "^2.2.9",
         "i18next": "^23.5.1",
         "i18next-browser-languagedetector": "^7.1.0",
@@ -79,9 +82,11 @@
         "translation-check": "^1.0.3",
         "ts-deepmerge": "^6.0.2",
         "ts-key-enum": "^2.0.12",
+        "typescript": "^5.4.5",
         "usehooks-ts": "^2.9.1",
         "web-vitals": "^3.3.0",
-        "yup": "^1.0.2"
+        "yup": "^1.0.2",
+        "zod": "^3.23.8"
     },
     "devDependencies": {
         "@axe-core/react": "^4.6.0",

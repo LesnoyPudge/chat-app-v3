@@ -10,4 +10,8 @@
 
 :root {
     --message-gap: 10px;
+    --message-editor-height: calc(
+        var(--message-line-height) + 
+        (var(--message-y-padding) * 2)
+    );
 }

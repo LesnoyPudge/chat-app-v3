@@ -7,7 +7,7 @@ import { FC, useMemo, useState } from 'react';
 
 
 interface EmojiPicker extends PropsWithClassName {
-    onEmojiAdd: (code: EmojiCode) => void;
+    onEmojiPick: (code: EmojiCode) => void;
 }
 
 const styles = {
@@ -30,7 +30,7 @@ const styles = {
 
 export const EmojiPicker: FC<EmojiPicker> = ({
     className = '',
-    onEmojiAdd,
+    onEmojiPick,
 }) => {
     const { value, deferredValue, handleChange, handleReset } = useTextInput();
     const [currentEmoji, setCurrentEmoji] = useState(emojiList[getRandomNumber(0, emojiList.length - 1)]);
@@ -63,7 +63,7 @@ export const EmojiPicker: FC<EmojiPicker> = ({
                                     const emojiCode = emoji.code[0];
 
                                     const changeCurrentEmoji = () => setCurrentEmoji(emoji);
-                                    const handleClick = () => onEmojiAdd(emojiCode);
+                                    const handleClick = () => onEmojiPick(emojiCode);
 
                                     return (
                                         <li>

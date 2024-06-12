@@ -131,7 +131,7 @@ export const MessageReactions: FC<PropsWithClassName> = ({
                                                         swappableAlignment
                                                         leaderElementOrRectRef={ref}
                                                     >
-                                                        <EmojiPicker onEmojiAdd={handleAddReaction}/>
+                                                        <EmojiPicker onEmojiPick={handleAddReaction}/>
                                                     </RelativelyPositioned>
                                                 </animated.div>
                                             </OverlayItem>

@@ -1,11 +1,11 @@
-import { List, Message } from '@components';
+import { List, Message, RTETypes } from '@components';
 import { createSingleMessage, noop, twClassNames } from '@utils';
 import { FC } from 'react';
 import { Descendant } from 'slate';
 
 
 
-const messagesContent: Descendant[][] = [
+const messagesContent: RTETypes.Nodes[] = [
     [
         {
             type: 'paragraph',

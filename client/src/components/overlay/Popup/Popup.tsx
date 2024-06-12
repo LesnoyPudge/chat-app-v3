@@ -10,8 +10,8 @@ type Popup = PropsWithChildren &
 Partial<Pick<AnimatedTransition<object>, 'transitionOptions'>> &
 Partial<StrictOmit<OverlayItem, 'children' | 'isRendered'>> &
 StrictOmit<RelativelyPositioned, 'children'> & {
-    role: 'dialog' | 'menu';
-    label: string;
+    role?: 'dialog' | 'menu';
+    label?: string;
 }
 
 const defaultTransitionOptions = getTransitionOptions.withOpacity();

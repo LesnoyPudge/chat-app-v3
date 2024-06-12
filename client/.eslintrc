@@ -5,6 +5,7 @@
     "extends": [
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
+        // "react-compiler",
         // "plugin:jsx-a11y/recommended"
     ],
     "parserOptions": {
@@ -23,6 +24,7 @@
         }
     },
     "rules": {
+        // "react-compiler/react-compiler": "error",
         "no-console": "warn",
         "jsx-quotes": [
             "warn",

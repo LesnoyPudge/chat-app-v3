@@ -1,6 +1,7 @@
 import { yup } from '@reExport';
 import { VALIDATION_MESSAGES } from '@vars';
-import { AnyArray, ToType } from '@shared';
+import { AnyArray, ToType, Writable } from '@shared';
+import { AnyRecord } from 'ts-essentials/dist/any-record';
 
 
 
@@ -18,16 +19,47 @@ type ConditionalSchema<T> = (
                         : yup.AnySchema
 );
 
-type Shape<Fields> = {
-    [Key in keyof Fields]: ConditionalSchema<Fields[Key]>;
+// type ConditionalSchema<_Value> = (
+//     _Value extends Writable<AnyArray> ?
+//         yup.ArraySchema<_Value, unknown>
+//         : never
+// );
+
+type Shape<_Form> = {
+    [_Key in keyof _Form]: ConditionalSchema<_Form[_Key]>;
 };
 
-type CallbackArg = {
-    yup: typeof yup,
-    VALIDATION_MESSAGES: typeof VALIDATION_MESSAGES,
-}
+// type CallbackArg = {
+//     yup: typeof yup,
+//     VALIDATION_MESSAGES: typeof VALIDATION_MESSAGES,
+// }
 
-export const createValidationSchema = <T>(fn: (v: CallbackArg) => Shape<T>) => {
+// type Some = {
+//     data: 'qwe',
+//     arr: {some: 5}[]
+// }
+
+
+// export type Shape2<Fields extends Record<string, unknown>> = {
+//     [Key in keyof Fields]: ConditionalSchema<Fields[Key]>;
+// };
+  
+// export type UserFields = {
+//     firstName: string;
+//     lastName?: string[];
+// };
+  
+// const validationSchema = yup.object<Shape2<UserFields>>({
+//     firstName: yup.string().default(''),
+//     lastName: yup.string().default(''),
+// });
+
+export const createValidationSchema = <_Form>(
+    fn: (props: {
+        yup: typeof yup,
+        VALIDATION_MESSAGES: typeof VALIDATION_MESSAGES,
+    }) => Shape<_Form>,
+) => {
     return yup.object(fn({
         yup,
         VALIDATION_MESSAGES,

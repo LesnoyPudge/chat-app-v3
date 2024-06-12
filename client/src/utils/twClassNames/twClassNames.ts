@@ -1,6 +1,5 @@
 import classNames, { Argument } from 'classnames';
 import { createTailwindMerge, getDefaultConfig, mergeConfigs } from 'tailwind-merge';
-import { ClassNameValue } from 'tailwind-merge/dist/lib/tw-join';
 
 
 
@@ -28,3 +27,5 @@ export const twClassNames = (...args: Argument[]): string => {
 
     return customTwMerge(classNames(args));
 };
+
+export const cn = twClassNames;
