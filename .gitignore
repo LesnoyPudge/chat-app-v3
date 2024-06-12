@@ -2,7 +2,6 @@ node_modules
 **/node_modules
 .git
 # .env
-todo.txt
 **/coverage
 APIendpoints.txt
 tmp
