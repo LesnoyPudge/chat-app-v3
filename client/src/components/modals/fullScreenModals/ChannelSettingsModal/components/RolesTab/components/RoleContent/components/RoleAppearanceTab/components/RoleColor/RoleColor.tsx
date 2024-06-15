@@ -69,7 +69,7 @@ export const RoleColor: FC<PropsWithClassName> = ({
     const getLabel = (color: string) => getIsActive(color) ? `Цвет выбран: ${color}` : `Выбрать цвет ${color}`;
 
     return (
-        <div className={twClassNames(className)}>
+        <div className={className}>
             <FieldLabel>
                 <>Цвет роли</>
 

@@ -171,7 +171,7 @@ export const Button: FC<Button> = ({
 
     const validTabIndex = conditional(-1, tabIndex, hidden);
 
-    const disabledState = (isDisabled || isLoading) ? true : false;
+    const disabledState = isDisabled || isLoading;
 
     return (
         <button

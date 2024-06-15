@@ -1959,7 +1959,6 @@ import { createEditor, Descendant } from 'slate';
 import { RichTextEditor, RTEModules, RTETypes } from 'src/components/inputs/RichTextEditor/index';
 import { Editable, Slate, useSlate, withReact } from 'slate-react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { MessageInputBar } from 'src/components/shared/ChatV2/components';
 import { JSONView } from '@dev';
 
 
@@ -2307,7 +2306,7 @@ const PlaygroundInner38: FC = () => {
                     ownerId: '123'
                 }}
             >
-                <MessageInputBar/>
+                {/* <MessageInputBar/> */}
             </EntityContextProvider.Chat>
         </>
     )

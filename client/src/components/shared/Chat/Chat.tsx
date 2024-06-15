@@ -82,6 +82,7 @@ export const Chat: FC<Chat> = ({
             setScrollable={setContentElement}
             setScrollableWrapper={setContentWrapperElement}
             direction='vertical'
+            followContentSize
             label='Сообщения'
         >
             <div
@@ -112,7 +113,7 @@ export const Chat: FC<Chat> = ({
                     </div>
                 </If>
 
-                <If condition={!!messageList.length}>
+                <If condition={!!messageList.length && false}>
                     <ViewportList
                         items={messageList}
                         initialIndex={messageList.length - 1}
@@ -145,6 +146,23 @@ export const Chat: FC<Chat> = ({
                         )}
                     </ViewportList>
                 </If>
+
+                {messageList.map(({id}) => (
+                    <ChatListItem
+                        key={id}
+                        id={id}
+                        virtualItemsRef={normalizedViewportItemRefs}
+                        isFirst={messageList[0].id === id}
+                        isInRedactorMode={redactorId === id}
+                        isFocused={getIsFocused(id)}
+                        getTabIndex={getTabIndex}
+                        setFocusedId={setFocusedId}
+                        addReaction={addReaction}
+                        closeEditor={closeEditor}
+                        openEditor={setRedactorId}
+                        saveEditor={saveEditor}
+                    />
+                ))}
 
                 <div
                     className='h-px'

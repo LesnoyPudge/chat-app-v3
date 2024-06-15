@@ -41,7 +41,7 @@ export const Time: FC<Time> = ({
 
     return (
         <time
-            className={twClassNames(className)}
+            className={className}
             id={id}
             aria-label={label}
             dateTime={dateTime}

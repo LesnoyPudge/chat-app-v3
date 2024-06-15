@@ -62,7 +62,6 @@ export const Emoji = {
         };
 
         editor.normalizeNode = (...args) => {
-            console.log('normalize in emoji')
             const [entry] = args;
 
             if (!RTEModules.Text.isSimpleText(editor, entry)) return normalizeNode(...args);
@@ -118,7 +117,6 @@ export const Emoji = {
         const editor = useSlate();
         
         const insert = useCallback((code: EmojiCode) => {
-            console.log('insert', code)
             Emoji.insertEmoji(editor, code);
         }, [editor]);
 

@@ -1,4 +1,4 @@
-import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, MessageEditor, OverlayContextProvider, OverlayItem, RTEModules, RTETypes, Ref, RelativelyPositioned, RichTextEditor } from '@components';
+import { AnimatedTransition, Button, EmojiPicker, EmojiSwitcher, OverlayContextProvider, OverlayItem, RTEModules, RTETypes, Ref, RelativelyPositioned, RichTextEditor } from '@components';
 import { animated } from '@react-spring/web';
 import { PropsWithClassName } from '@types';
 import { createValidationSchema, getTransitionOptions, twClassNames } from '@utils';

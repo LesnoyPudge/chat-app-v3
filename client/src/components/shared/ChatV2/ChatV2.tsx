@@ -1,9 +1,9 @@
 import { FC, useContext } from 'react';
-import { EntityContext, EntityContextHelpers, LoadedEntityContext, MessageEditor } from '@components';
+import { EntityContext, EntityContextHelpers, LoadedEntityContext } from '@components';
 import { PropsWithClassName, SliceEntityState } from '@types';
 import { ChatSelectors, PrivateChannelSelectors, UserSelectors } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
-import { MessageFeed, MessageInputBar } from './components';
+import { MessageFeed } from './components';
 import { useEntitySubscription } from '@hooks';
 import { SUBSCRIBABLE_ENTITIES } from '../../../../../shared/vars';
 

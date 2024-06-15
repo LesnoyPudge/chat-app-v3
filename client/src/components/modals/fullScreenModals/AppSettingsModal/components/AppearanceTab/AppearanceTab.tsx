@@ -80,7 +80,7 @@ export const AppearanceTab: FC = () => {
 
                     <div className='grid gap-2'>
                         <FormikRadioInput
-                            name='messageDisplayType'
+                            name='messageDisplayMode'
                             label='Стандартное отображение'
                             value='cozy'
                         >
@@ -97,7 +97,7 @@ export const AppearanceTab: FC = () => {
                         </FormikRadioInput>
 
                         <FormikRadioInput
-                            name='messageDisplayType'
+                            name='messageDisplayMode'
                             label='Компактное отображение'
                             value='compact'
                         >

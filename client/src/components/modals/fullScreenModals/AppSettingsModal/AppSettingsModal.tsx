@@ -19,7 +19,7 @@ const tabs = {
 const initialValues = {
     avatar: [],
     theme: 'dark',
-    messageDisplayType: 'cozy',
+    messageDisplayMode: 'cozy',
 };
 
 export const AppSettingsModal: FC = () => {

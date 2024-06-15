@@ -18,7 +18,7 @@ export const MessageContent: FC<PropsWithClassName> = ({
     const { ids, isInRedactorMode, message } = useContext(MessageContext);
 
     return (
-        <p 
+        <div 
             className={twClassNames(styles.wrapper, className)}
             id={ids.contentId}
         >
@@ -27,6 +27,6 @@ export const MessageContent: FC<PropsWithClassName> = ({
                 
                 <MessageEditTimestamp/>
             </If>
-        </p>
+        </div>
     );
 };

@@ -58,7 +58,6 @@ export const SelectableTuning = {
         };
 
         editor.setSelection = (selection) => {
-            console.log('setSelection')
             if (!Range.isRange(selection)) return setSelection(selection);
 
             const nodeEntry = Editor.node(editor, selection);

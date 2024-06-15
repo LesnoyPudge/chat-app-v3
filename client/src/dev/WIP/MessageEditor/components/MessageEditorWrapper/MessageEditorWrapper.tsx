@@ -1,28 +1,21 @@
 import { PropsWithChildrenAndClassName } from "@types";
 import { cn } from "@utils";
 import { FC } from "react";
+import { sharedStyles } from "../../MessageEditor.styles";
 
 
-
-type MessageEditorWrapper = PropsWithChildrenAndClassName & {
-    focused?: boolean;
-}
 
 const styles = {
-    wrapper: 'px-4 pt-4 pb-6',
-    inner: 'rounded-lg bg-primary-100',
+    inner: 'has-[[role=textbox]:focus-visible]:focused',
 }
 
-export const MessageEditorWrapper: FC<MessageEditorWrapper> = ({
+export const MessageEditorWrapper: FC<PropsWithChildrenAndClassName> = ({
     className = '',
-    focused = false,
     children
 }) => {
     return (
-        <div className={cn(styles.wrapper, className)}>
-            <div className={cn(styles.inner, {
-                ['focused']: focused,
-            })}>
+        <div className={cn(sharedStyles.wrapper, className)}>
+            <div className={cn(sharedStyles.inner, styles.inner)}>
                 {children}
             </div>
         </div>

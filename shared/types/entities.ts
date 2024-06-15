@@ -19,6 +19,7 @@ export module Entities {
                 theme: 'auto' | 'dark' | 'light';
                 fontSize: 12 | 14 | 16 | 18 | 20;
                 messageGroupSpacing: 16 | 20;
+                messageDisplayMode: 'cozy' | 'compact';
             };
         }
 

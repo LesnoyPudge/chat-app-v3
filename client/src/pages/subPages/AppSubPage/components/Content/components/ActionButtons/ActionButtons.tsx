@@ -175,7 +175,7 @@ export const ActionButtons: FC<ActionButtons> = ({
                     {(ref) => (
                         <>
                             <Button
-                                className={twClassNames(styles.button)}
+                                className={styles.button}
                                 label='Разблокировать пользователя'
                                 tabIndex={tabIndex}
                                 innerRef={ref}

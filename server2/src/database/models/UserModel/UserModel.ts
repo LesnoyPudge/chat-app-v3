@@ -21,6 +21,7 @@ const UserSchema = new Schema<Entities.User.Default>({
         theme: { type: SchemaTypes.String, default: 'auto' },
         fontSize: { type: SchemaTypes.Number, default: 16 },
         messageGroupSpacing: { type: SchemaTypes.Number, default: 20 },
+        messageDisplayMode: { type: SchemaTypes.String, default: 'cozy' },
     },
     isActivated: { type: SchemaTypes.Boolean, default: false },
     isDeleted: { type: SchemaTypes.Boolean, default: false },
