@@ -4,6 +4,7 @@ export interface ClientAccessibleEnv {
     readonly CUSTOM_CLIENT_URL: string;
     readonly CUSTOM_SERVER_URL: string;
     readonly CUSTOM_API_V1_URL: '/api/v1';
+    readonly CUSTOM_CLIENT_ONLY: '0' | '1';
 }
 
 export interface Env extends ClientAccessibleEnv {

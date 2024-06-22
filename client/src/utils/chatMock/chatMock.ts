@@ -3,6 +3,8 @@ import { loremIpsum } from 'lorem-ipsum';
 import { EmojiCode, RTETypes } from '@components';
 import { IMessage } from '@backendTypes';
 import { Descendant } from 'slate';
+import { SliceEntityState } from '@types';
+import { chance } from '@lesnoypudge/utils';
 
 
 
@@ -12,6 +14,7 @@ type Message = IMessage & {
         users: string[];
     }[];
 }
+// type Message = SliceEntityState.Message
 
 export class ChatMock {
     messages: Message[];
@@ -58,11 +61,11 @@ export class ChatMock {
             }]),
             createdAt: this.timeline[index] ? this.timeline[index] : createdAt,
             updatedAt: Date.now(),
-            isChanged: !!getRandomNumber(0, 1),
+            isChanged: chance(1 / 5),
             isDeleted: false,
-            respondOn: [],
             attachments: [],
             reactions: [],
+            respondOn: []
         };
     }
 
@@ -94,10 +97,10 @@ export const createSingleMessage = (content: RTETypes.Nodes): Message => ({
     content: JSON.stringify(content),
     user: Math.random().toString(),
     attachments: [],
-    reactions: [],
-    respondOn: [],
     isChanged: false,
     isDeleted: false,
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    reactions: [],
+    respondOn: []
 });

@@ -13,5 +13,5 @@ export const combinedReducer = combineReducers({
     message: MessageSlice.reducer,
     privateChannel: PrivateChannelSlice.reducer,
     role: RoleSlice.reducer,
-    chat: ChatSlice.reducer,
+    chat: ChatSlice.reducer, 
 });

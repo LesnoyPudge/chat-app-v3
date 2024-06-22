@@ -1,6 +1,6 @@
-import { ChildrenAsNodeOrFunction } from '@components';
 import { useThrottle } from '@hooks';
-import { animated, useReducedMotion, useSpringValue } from '@react-spring/web';
+import { renderFunction } from '@lesnoypudge/utils-react';
+import { Interpolation, useReducedMotion, useSpringValue } from '@react-spring/web';
 import { PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getRandomNumber, noop } from '@utils';
 import { createContext, FC, useRef } from 'react';
@@ -12,14 +12,16 @@ export interface ScreenShakeContext {
     isThrottling: boolean;
     triggerScreenShake: () => void;
     resetShakeStacks: () => void;
-    withResetShakeStacks: <T extends AnyFunction>(fn: T) => (...args: Parameters<T>) => void;
+    withResetShakeStacks: <T extends AnyFunction>(
+        fn: T
+    ) => (...args: Parameters<T>) => void;
+    getWindowShakeValue: () => Interpolation;
 }
 
-type ScreenShake = PropsWithClassName & PropsWithChildrenAsNodeOrFunction<ScreenShakeContext>
-
-const styles = {
-    screenShake: 'will-change-transform transition-transform ease-linear duration-[20ms]',
-};
+type ScreenShake = (
+    PropsWithClassName 
+    & PropsWithChildrenAsNodeOrFunction<ScreenShakeContext>
+);
 
 const shakeStack = {
     min: 1,
@@ -57,11 +59,14 @@ export const ScreenShake: FC<ScreenShake> = ({
             },
         }).then(() => windowShake.reset());
 
-        shakeStackRef.current = Math.min(shakeStackRef.current + shakeStack.step, shakeStack.max);
+        shakeStackRef.current = Math.min(
+            shakeStackRef.current + shakeStack.step, 
+            shakeStack.max
+        );
     };
 
-    const getWindowShakeValue = () => (
-        windowShake.to({
+    const getWindowShakeValue = () => {
+        return windowShake.to({
             range: [0, 0.01, 1],
             output: [0, 1, 0],
         }).to((value) => {
@@ -73,28 +78,19 @@ export const ScreenShake: FC<ScreenShake> = ({
 
             return `${result}px`;
         })
-    );
+    };
 
     const contextValues: ScreenShakeContext = {
         isThrottling,
         resetShakeStacks,
         triggerScreenShake,
         withResetShakeStacks,
+        getWindowShakeValue,
     };
 
     return (
         <ScreenShakeContext.Provider value={contextValues}>
-            <animated.div
-                className={styles.screenShake}
-                style={{
-                    translateX: getWindowShakeValue(),
-                    translateY: getWindowShakeValue(),
-                }}
-            >
-                <ChildrenAsNodeOrFunction args={contextValues}>
-                    {children}
-                </ChildrenAsNodeOrFunction>
-            </animated.div>
+            {renderFunction(children, contextValues)}
         </ScreenShakeContext.Provider>
     );
 };

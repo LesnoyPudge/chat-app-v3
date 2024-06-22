@@ -17,13 +17,13 @@ const baseQuery = fetchBaseQuery({
 const queryWithRetry = retry(async(...args: Parameters<typeof baseQuery>) => {
     const result = await baseQuery(...args);
 
-    if (isDev()) {
-        await new Promise<void>((resolve) => {
-            setTimeout(() => {
-                resolve();
-            }, 1400);
-        });
-    }
+    // if (isDev()) {
+    //     await new Promise<void>((resolve) => {
+    //         setTimeout(() => {
+    //             resolve();
+    //         }, 1400);
+    //     });
+    // }
 
     const shouldBail = (
         !!result.error &&

@@ -4,6 +4,8 @@ import { useNavigator } from '@hooks';
 import { FC, useContext } from 'react';
 import { Header } from './components';
 import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
+import { MessageFeedV2 } from 'src/dev/WIP/MessageFeedV2';
+import { SendMessageInputBar } from 'src/dev/WIP/SendMessageInputBar';
 
 
 
@@ -71,7 +73,11 @@ export const PrivateChatSubPage: FC = () => {
         <EntityContextProvider.Chat id={privateChannel?.chat}>
             <Header/>
 
-            <ChatV3.PrivateChannel/>
+            {/* <ChatV3.PrivateChannel/> */}
+
+            <MessageFeedV2 chatId={privateChannel?.chat ?? 'qwe'}/>
+
+            <SendMessageInputBar chatId={privateChannel?.chat ?? 'qwe'}/>
         </EntityContextProvider.Chat>
     );
 };

@@ -5,6 +5,7 @@ import { FeedContext } from "../FeedContextProvider";
 import { pick } from "@lesnoypudge/utils";
 import { FeedItem } from "./components";
 import { PropsWithClassName } from "@types";
+import { Memo } from "@components";
 
 
 
@@ -40,7 +41,9 @@ export const RealFeed: FC<PropsWithClassName> = ({
                 onViewportIndexesChange={setViewportIndexes}
             >
                 {({ id }) => (
-                    <FeedItem id={id} key={id}/>
+                    <Memo key={id}>
+                        <FeedItem id={id}/>
+                    </Memo>
                 )}
             </ViewportList>
         </div>

@@ -7,10 +7,10 @@ import { MessageFeedV2 } from "./MessageFeedV2";
 export const Main: FC = () => {
     return (
         <ReactFocusLock>
-            <div className="h-screen py-8">
+            <div className="h-[100dvh] py-8">
                 {/* <Chat/> */}
                 {/* <MessageFeed messages={undefined}/> */}
-                <MessageFeedV2 messages={undefined}/>
+                <MessageFeedV2 chatId="qwe"/>
             </div>
         </ReactFocusLock>
     )

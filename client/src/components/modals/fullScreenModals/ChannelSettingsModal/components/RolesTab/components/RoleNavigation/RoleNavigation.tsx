@@ -8,7 +8,7 @@ import { useKeyboardNavigation } from '@hooks';
 
 
 const styles = {
-    wrapper: 'sticky top-0 h-screen max-w-[231px] w-full flex flex-col pt-[60px]',
+    wrapper: 'sticky top-0 h-[100dvh] max-w-[231px] w-full flex flex-col pt-[60px]',
     header: 'flex justify-between gap-2 mb-6 pr-4 pl-6',
     title: 'mb-0',
     createRoleButton: 'w-6 h-6 p-1 fill-icon-100',

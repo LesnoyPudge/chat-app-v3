@@ -52,14 +52,15 @@ export const useEntitySubscriptionV2 = <
 >(
     entityName: ValueOf<typeof SUBSCRIBABLE_ENTITIES>,
     ids: EntityId[] | undefined,
-    selector: (
-        v: MapEntityNameToValue[_EntityName]
-    ) => _SelectedValue = defaultSelector
+    // selector: (
+    //     v: MapEntityNameToValue[_EntityName][]
+    // ) => _SelectedValue = defaultSelector
 ) => {
     const componentId = useConst(() => nanoid());
     const entities = useMemoSelector((state) => {
         if (!ids) return [];
-        return selector(selectors[entityName].selectByIds(ids)(state));
+        return selectors[entityName].selectByIds(ids)(state);
+        // return selector(selectors[entityName].selectByIds(ids)(state));
     }, [ids]);
 
     useEffect(() => {

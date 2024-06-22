@@ -32,7 +32,7 @@ export default defineConfig(() => {
                     icon: true,
                 },
             }),
-            checker({ typescript: true }),
+            // checker({ typescript: true }),
             VitePWA({
                 workbox: {
                     globPatterns: ['**/*'],

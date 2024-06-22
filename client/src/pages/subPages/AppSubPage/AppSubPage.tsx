@@ -20,7 +20,7 @@ const styles = {
 };
 
 export const AppSubPage: FC = () => {
-    const { value, handleChange, handleReset } = useTextInput();
+    const { value, handleChange, handleReset, deferredValue } = useTextInput();
 
     return (
         <TabContextProvider tabs={tabs}>
@@ -36,7 +36,7 @@ export const AppSubPage: FC = () => {
                     onReset={handleReset}
                 />
 
-                <Content value={value}/>
+                <Content value={deferredValue}/>
             </div>
 
         </TabContextProvider>

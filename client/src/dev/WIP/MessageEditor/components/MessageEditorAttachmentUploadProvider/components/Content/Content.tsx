@@ -13,7 +13,7 @@ interface Content extends PropsWithClassName {
 }
 
 const styles = {
-    container: 'h-screen grid place-items-center',
+    container: 'h-[100dvh] grid place-items-center',
     button: 'rounded-xl p-2 w-[min(310px,100vw)] pointer-events-auto',
     inner: 'flex flex-col rounded-md border-2 border-white border-dashed',
     imageWrapper: 'self-center relative h-9 w-24',

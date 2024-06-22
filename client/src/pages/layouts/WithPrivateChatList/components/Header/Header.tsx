@@ -1,15 +1,21 @@
 import { TopBar, Button,SpriteImage } from '@components';
 import { useNavigator } from '@hooks';
-import { twClassNames } from '@utils';
+import { cn } from '@utils';
 import { FC } from 'react';
 
 
 
 const styles = {
-    button: `flex w-full items-center px-3 h-full
-    hover:bg-primary-hover focus-visible:bg-primary-hover group`,
-    icon: `w-6 h-6 mr-3 fill-icon-300 group-hover:fill-icon-200 
-    group-focus-visible:fill-icon-200 transition-none`,
+    button: {
+        base: `flex w-full items-center px-3 h-full font-medium
+        hover:bg-primary-hover focus-visible:bg-primary-hover group`,
+        active: 'bg-primary-hover'
+    },
+    icon: {
+        base: `w-6 h-6 mr-3 fill-icon-300 group-hover:fill-icon-200 
+        group-focus-visible:fill-icon-200 transition-none`,
+        active: 'fill-icon-200'
+    },
 };
 
 export const Header: FC = () => {
@@ -19,23 +25,23 @@ export const Header: FC = () => {
     return (
         <TopBar>
             <Button
-                className={twClassNames(
-                    styles.button,
-                    { 'bg-primary-hover': isActive },
+                className={cn(
+                    styles.button.base,
+                    { [styles.button.active]: isActive },
                 )}
                 isActive={isActive}
                 onLeftClick={() => navigateTo.app()}
             >
                 <SpriteImage
-                    className={twClassNames(
-                        styles.icon,
-                        { 'fill-icon-200': isActive },
+                    className={cn(
+                        styles.icon.base,
+                        { [styles.icon.active]: isActive },
                     )}
                     name='FRIEND_ICON'
                 />
 
-                <span className='font-medium'>
-                        Друзья
+                <span>
+                    <>Друзья</>
                 </span>
             </Button>
         </TopBar>

@@ -1,7 +1,8 @@
 import { useAnimationFrame } from '@hooks';
 import { isOmittedRect } from '@typeGuards';
 import { Alignment, OmittedRect } from '@types';
-import { RefObject, useState } from 'react';
+import { RefObject, useLayoutEffect, useState } from 'react';
+import { useIsFirstRender } from 'usehooks-ts';
 
 
 
@@ -44,7 +45,8 @@ export const useRelativePosition = ({
     unbounded = false,
 }: UseRelativePositionArgs): WithAlignment => {
     const [alignment, setAlignment] = useState(preferredAlignment);
-
+    const isFirstRender = useIsFirstRender()
+    
     const calculate = () => {
         if (!followerElementRef.current || !leaderElementOrRectRef.current) return;
 
@@ -74,6 +76,13 @@ export const useRelativePosition = ({
 
         follower.style.transform = transformValue;
     };
+
+    useLayoutEffect(() => {
+        if (!isFirstRender) return;
+
+        calculate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useAnimationFrame(calculate);
 

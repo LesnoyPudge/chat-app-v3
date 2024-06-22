@@ -12,7 +12,7 @@ type SendMessageInputBar = PropsWithClassName & {
     chatId: string;
 }
 
-const SendMessageInputBar: FC<SendMessageInputBar> = ({
+export const SendMessageInputBar: FC<SendMessageInputBar> = ({
     className = '',
     chatId,
 }) => {

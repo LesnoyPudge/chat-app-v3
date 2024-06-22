@@ -1,12 +1,12 @@
 import { useSharedIntersectionObserver, useSharedResizeObserver } from '@hooks';
-import { ObjectWithId } from '@types';
+import { SliceEntityState } from '@types';
 import { RefObject, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { ViewportListRef } from 'react-viewport-list';
 
 
 
 interface UseChatScrollProps {
-    messages: ObjectWithId[];
+    messages: SliceEntityState.Message[];
     contentWrapperElement: HTMLElement | null;
     contentElement: HTMLElement | null;
     autoScrollTriggerElement: HTMLElement | null;

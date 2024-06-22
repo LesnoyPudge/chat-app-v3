@@ -46,7 +46,12 @@ const styles = {
 };
 
 export const Content: FC<Content> = ({ value }) => {
-    const { currentTab, tabs, tabPanelProps, isActive } = useContext<TabContext<AppSubPageTabs>>(TabContext);
+    const { 
+        currentTab, 
+        tabs, 
+        tabPanelProps, 
+        isActive 
+    } = useContext<TabContext<AppSubPageTabs>>(TabContext);
 
     const filterByName = (users: Entities.User.Preview[]) => {
         if (!value) return users;
@@ -54,7 +59,10 @@ export const Content: FC<Content> = ({ value }) => {
         return users.filter((user) => user.username.includes(value));
     };
 
-    const filters: Record<keyof typeof tabs, () => ReturnType<typeof filterByName>> = {
+    const filters: Record<
+        keyof typeof tabs, 
+        () => ReturnType<typeof filterByName>
+    > = {
         allFriends: () => filterByName(friends.allFriends),
         blocked: () => filterByName(friends.blocked),
         friendRequests: () => filterByName(friends.friendRequests),
@@ -63,6 +71,7 @@ export const Content: FC<Content> = ({ value }) => {
 
     const listToShow = filters[currentTab.identifier]();
     const showList = !!listToShow.length;
+    const searchIsEmpty = !value;
 
     const listToShowRef = useRef(listToShow);
     const {
@@ -138,7 +147,13 @@ export const Content: FC<Content> = ({ value }) => {
 
                     <ToDo text='показывается даже при пустом поле ввода'>
                         <div className={styles.notFoundText}>
-                            <>Вампус внимательно искал, но не нашёл никого с таким именем.</>
+                            <If condition={searchIsEmpty}>
+                                <>Никто не хочет играть с Вампусом.</>
+                            </If>
+
+                            <If condition={!searchIsEmpty}>
+                                <>Вампус внимательно искал, но не нашёл никого с таким именем.</>
+                            </If>
                         </div>
                     </ToDo>
                 </div>

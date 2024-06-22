@@ -2,12 +2,13 @@
     "name": "client",
     "scripts": {
         "this:install": "npm ci",
-        "this:start": "env-cmd -f ../.env vite",
+        "this:start": "env-cmd -f ../.env vite --host",
         "this:build": "env-cmd -f ../.env tsc && vite build",
         "this:preview": "env-cmd -f ../.env vite preview",
         "this:lint": "eslint . --quiet",
         "this:lintFix": "eslint --fix .",
         "this:generateImageStuff": "tsc scripts/generateImageStuff.ts && node scripts/generateImageStuff.js && rimraf scripts/*.js",
+        "this:devtools": "react-devtools",
         "//": ""
     },
     "browserslist": {
@@ -25,9 +26,11 @@
     "dependencies": {
         "@juggle/resize-observer": "^3.4.0",
         "@lesnoypudge/types-global-base": "^1.2.0",
-        "@lesnoypudge/types-global-react": "^1.1.0",
-        "@lesnoypudge/utils": "^8.1.1",
-        "@lesnoypudge/utils-react": "^0.0.2",
+        "@lesnoypudge/types-global-react": "^2.0.1",
+        "@lesnoypudge/types-utils-base": "^3.2.0",
+        "@lesnoypudge/types-utils-react": "^5.0.0",
+        "@lesnoypudge/utils": "^8.3.0",
+        "@lesnoypudge/utils-react": "^1.0.0",
         "@lexical/react": "^0.12.2",
         "@oyyds/react-auto-sizer": "^1.2.11",
         "@react-hook/intersection-observer": "^3.1.1",
@@ -60,6 +63,7 @@
         "react-async": "^10.0.1",
         "react-colorful": "^5.6.1",
         "react-content-loader": "^6.2.1",
+        "react-devtools": "^5.2.0",
         "react-dom": "^18.2.0",
         "react-error-boundary": "^4.0.2",
         "react-fast-compare": "^3.2.2",

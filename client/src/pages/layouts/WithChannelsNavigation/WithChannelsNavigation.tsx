@@ -4,14 +4,16 @@ import { ChannelsNavigation } from './components';
 
 
 
+const styles = {
+    wrapper: 'flex h-[100dvh] w-[100dvw]',
+}
+
 export const WithChannelsNavigation: FC = () => {
     return (
-        <div className='flex h-screen w-screen'>
+        <div className={styles.wrapper}>
             <ChannelsNavigation/>
 
-            <div className='flex w-full overflow-hidden'>
-                <Outlet/>
-            </div>
+            <Outlet/>
         </div>
     );
 };

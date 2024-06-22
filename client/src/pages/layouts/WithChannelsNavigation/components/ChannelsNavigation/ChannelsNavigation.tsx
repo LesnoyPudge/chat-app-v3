@@ -2,15 +2,17 @@ import { FC } from 'react';
 import { SpriteImage, Tooltip, OverlayContextProvider, CreateChannelModal, Button, Separator, ContextMenu, FindChannelModal, ChannelAvatar, Ref, ToDo } from '@components';
 import { ChannelList, WrapperWithBullet } from './components';
 import { useNavigator } from '@hooks';
-import { getReadImagePath, getTextFallback, twClassNames } from '@utils';
-import { useMemoSelector } from '@redux/hooks';
+import { cn, getReadImagePath, getTextFallback, twClassNames } from '@utils';
+import { useMemoSelector, useMemoSelectorV2 } from '@redux/hooks';
 import { AppSelectors } from '@redux/features';
-import { RootState } from '@redux/store';
 
 
 
 const styles = {
-    wrapper: 'h-screen w-[72px] flex flex-col gap-2 shrink-0 py-2 bg-primary-500',
+    wrapper: {
+        base: 'h-[100dvh] w-[72px] flex flex-col gap-2 shrink-0 py-2 bg-primary-500',
+        hidden: 'hidden',
+    },
     button: {
         base: `w-12 h-12 mx-auto flex justify-center items-center bg-primary-300 
         rounded-3xl overflow-hidden transition-all ease-linear duration-75
@@ -37,9 +39,14 @@ export const ChannelsNavigation: FC = () => {
     const { myLocationIs, navigateTo } = useNavigator();
     const showChannels = useMemoSelector((s) => !!AppSelectors.selectMe(s).channels.length, []);
     const isInAppOrPrivateChatSubPage = myLocationIs.app() || myLocationIs.anyPrivateChat();
+    const {
+        isMobileContentShown
+    } = useMemoSelectorV2(AppSelectors.isMobileContentShown)
 
     return (
-        <div className={styles.wrapper}>
+        <div className={cn(styles.wrapper.base, {
+            [styles.wrapper.hidden]: isMobileContentShown
+        })}>
             <WrapperWithBullet isActive={isInAppOrPrivateChatSubPage}>
                 <Ref<HTMLButtonElement>>
                     {(ref) => (

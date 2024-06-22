@@ -2,6 +2,8 @@ import { useCallback, useRef } from 'react';
 import { NavigateOptions, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useLatest } from '@hooks';
 import { localStorageApi } from '@utils';
+import { useAppDispatch } from '@redux/hooks';
+import { AppSlice } from '@redux/features';
 
 
 
@@ -31,6 +33,11 @@ export const useNavigator = () => {
     const { pathname } = useLocation();
     const latestPathRef = useLatest(pathname);
     const stateRef = useRef({ from: navigatorPath.app() });
+    const {dispatch} = useAppDispatch()
+    
+    const closeMobileMenu = () => {
+        dispatch(AppSlice.actions.setMobileMenuState(false))
+    }
 
     const navigate = useCallback((to: string, options?: NavigateOptions) => {
         console.log(`Navigate to: ${to}`);
@@ -64,6 +71,7 @@ export const useNavigator = () => {
             navigate(navigatorPath.auth(), options);
         },
         app: (options?: CustomNavigateOptions) => {
+            closeMobileMenu()
             if (myLocationIsRef.current.app()) return;
 
             if (options?.withState) {
@@ -73,6 +81,8 @@ export const useNavigator = () => {
             navigate(navigatorPath.app(), options);
         },
         privateChat: (privateChatId: string, options?: CustomNavigateOptions) => {
+            closeMobileMenu()
+
             if (myLocationIsRef.current.privateChat(privateChatId)) return;
 
             if (options?.withState) {
@@ -82,6 +92,8 @@ export const useNavigator = () => {
             navigate(navigatorPath.privateChat(privateChatId), options);
         },
         channel: (channelId: string, options?: CustomNavigateOptions) => {
+            closeMobileMenu()
+
             if (myLocationIsRef.current.channel(channelId)) return;
 
             if (options?.withState) {
@@ -97,6 +109,7 @@ export const useNavigator = () => {
             navigate(navigatorPath.channel(channelId), options);
         },
         room: (channelId: string, roomId: string, options?: CustomNavigateOptions) => {
+            closeMobileMenu()
             if (myLocationIsRef.current.room(channelId, roomId)) return;
 
             if (options?.withState) {

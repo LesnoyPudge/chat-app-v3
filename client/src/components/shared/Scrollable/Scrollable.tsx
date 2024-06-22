@@ -1,30 +1,48 @@
 import { PropsWithChildrenAsNodeOrFunction, PropsWithClassName, Size } from '@types';
 import { conditional, noop, twClassNames } from '@utils';
-import { FC, MutableRefObject, RefObject, useCallback, useEffect, useRef } from 'react';
-import { useSharedResizeObserver, useStateAndRef, useThrottle, useLatest } from '@hooks';
+import { FC, MutableRefObject, RefObject, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useSharedResizeObserver, useThrottle, useLatest } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
-import { isCallable, SimpleBarCore } from '@reExport';
+import { SimpleBarCore } from '@reExport';
 import SimpleBar from 'simplebar-react';
-import { ChildrenAsNodeOrFunction } from '@components';
+import { renderFunction, mergeRefs } from '@lesnoypudge/utils-react';
 
 
 
-export interface Scrollable extends PropsWithClassName,
-PropsWithChildrenAsNodeOrFunction<RefObject<SimpleBarCore>>
-{
-    label?: string;
-    direction?: 'horizontal' | 'vertical',
-    autoHide?: boolean;
-    hidden?: boolean;
-    withOppositeGutter?: boolean;
-    small?: boolean;
-    focusable?: boolean;
-    followContentSize?: boolean;
-    // setSimpleBar?: MutableRefObject<SimpleBarCore | null> | ((el: SimpleBarCore | null) => void);
-    setScrollableWrapper?: MutableRefObject<HTMLElement | null> | ((el: HTMLElement | null) => void);
-    setScrollable?: MutableRefObject<HTMLElement | null> | ((el: HTMLElement | null) => void);
-    onContentResize?: (size: Size) => void;
+type ConditionalProps = {
+    small?: false;
+    hidden?: false;
+} | {
+    small?: true;
+    hidden?: false;
+} | {
+    small?: false;
+    hidden?: true;
 }
+
+export type Scrollable = (
+    PropsWithClassName 
+    & PropsWithChildrenAsNodeOrFunction<RefObject<SimpleBarCore>>
+    & ConditionalProps
+    & {
+        innerClassName?: string;
+        label?: string;
+        direction?: 'horizontal' | 'vertical',
+        autoHide?: boolean;
+        withOppositeGutter?: boolean;
+        focusable?: boolean;
+        followContentSize?: boolean;
+        setScrollableWrapper?: (
+            MutableRefObject<HTMLElement | null> 
+            | ((el: HTMLElement | null) => void)
+        );
+        setScrollable?: (
+            MutableRefObject<HTMLElement | null> 
+            | ((el: HTMLElement | null) => void)
+        );
+        onContentResize?: (size: Size) => void;
+    }
+)
 
 const styles = {
     wrapper: {
@@ -36,6 +54,7 @@ const styles = {
 
 export const Scrollable: FC<Scrollable> = ({
     className = '',
+    innerClassName = '',
     label,
     direction = 'vertical',
     autoHide = false,
@@ -48,11 +67,12 @@ export const Scrollable: FC<Scrollable> = ({
     onContentResize,
     setScrollable = noop,
     setScrollableWrapper = noop,
-    // setSimpleBar = noop,
 }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const { throttle, isThrottling: isAlive } = useThrottle();
-    const [simpleBarApi, simpleBarApiRef, setSimpleBarApi] = useStateAndRef<SimpleBarCore | null>(null);
+    const simpleBarApiRef = useRef<SimpleBarCore>(null)
+    const localWrapperRef = useRef<HTMLDivElement>(null)
+    const localContentRef = useRef<HTMLDivElement>(null)
     const handleKeepAliveRef = useLatest(() => {
         if (autoHide) throttle(noop, 1000)();
     });
@@ -74,27 +94,6 @@ export const Scrollable: FC<Scrollable> = ({
         '--scrollbar-thickness': scrollbarSizesRef.current['--scrollbar-thickness'] + 'px',
         '--track-thickness': scrollbarSizesRef.current['--track-thickness'] + 'px',
         '--thumb-thickness': scrollbarSizesRef.current['--thumb-thickness'] + 'px',
-    };
-
-    const setRef = (simpleBarApi: SimpleBarCore | null) => {
-        if (!simpleBarApi) return;
-
-        setSimpleBarApi(simpleBarApi);
-
-        // isCallable(setSimpleBar)
-        //     ? setSimpleBar(simpleBarApi)
-        //     : setSimpleBar.current = simpleBarApi
-        // ;
-
-        isCallable(setScrollable)
-            ? setScrollable(simpleBarApi.contentEl)
-            : setScrollable.current = simpleBarApi.contentEl
-        ;
-
-        isCallable(setScrollableWrapper)
-            ? setScrollableWrapper(simpleBarApi.contentWrapperEl)
-            : setScrollableWrapper.current = simpleBarApi.contentWrapperEl
-        ;
     };
 
     const getCorrectContentSize = useCallback((width: number, height: number) => {
@@ -130,13 +129,15 @@ export const Scrollable: FC<Scrollable> = ({
         };
     }, [direction, scrollbarSizesRef, withOppositeGutter]);
 
-    useSharedResizeObserver(simpleBarApi?.contentEl, (entry) => {
+    useSharedResizeObserver(localContentRef, (entry) => {
         if (!onContentResize && !followContentSize) return;
 
-        const size = getCorrectContentSize(entry.borderBoxSize[0].inlineSize, entry.borderBoxSize[0].blockSize);
+        const size = getCorrectContentSize(
+            entry.borderBoxSize[0].inlineSize, 
+            entry.borderBoxSize[0].blockSize
+        );
 
         if (wrapperRef.current) {
-            // wrapperRef.current.style.width = size.width + 'px';
             wrapperRef.current.style.height = size.height + 'px';
         }
 
@@ -144,29 +145,26 @@ export const Scrollable: FC<Scrollable> = ({
     });
 
     useEffect(() => {
-        if (!simpleBarApi) return;
+        if (!simpleBarApiRef.current) return;
 
-        const defaultListener = simpleBarApi.drag;
+        const defaultListener = simpleBarApiRef.current.drag;
 
-        simpleBarApi.drag = (...rest) => {
+        simpleBarApiRef.current.drag = (...rest) => {
             handleKeepAliveRef.current();
             defaultListener(...rest);
         };
-    }, [handleKeepAliveRef, simpleBarApi]);
+    }, [handleKeepAliveRef]);
 
-    useEffect(() => {
-        if (!simpleBarApi) return;
-
-        const wrapper = simpleBarApi.contentWrapperEl;
-        if (!wrapper) return;
+    useLayoutEffect(() => {
+        if (!localWrapperRef.current) return;
 
         if (focusable) {
-            wrapper.tabIndex = 0;
+            localWrapperRef.current.tabIndex = 0;
             return;
         }
 
-        wrapper.removeAttribute('tabIndex');
-    }, [focusable, simpleBarApi]);
+        localWrapperRef.current.removeAttribute('tabIndex');
+    }, [focusable]);
 
     return (
         <div
@@ -186,11 +184,30 @@ export const Scrollable: FC<Scrollable> = ({
                 ariaLabel={label}
                 {...dataAttributes}
                 onPointerMove={handleKeepAliveRef.current}
-                ref={setRef}
+                // ref={simpleBarApiRef}
             >
-                <ChildrenAsNodeOrFunction args={simpleBarApiRef}>
-                    {children}
-                </ChildrenAsNodeOrFunction>
+                {({contentNodeProps, scrollableNodeProps}) => (
+                    <div
+                        className={scrollableNodeProps.className}
+                        ref={mergeRefs(
+                            scrollableNodeProps.ref, 
+                            setScrollableWrapper,
+                            localWrapperRef
+                        )}
+                    >
+                        <div
+                            {...contentNodeProps}
+                            className={`${contentNodeProps.className} ${innerClassName}`}
+                            ref={mergeRefs(
+                                contentNodeProps.ref, 
+                                setScrollable,
+                                localContentRef
+                            )}
+                        >
+                            {renderFunction(children, simpleBarApiRef)}
+                        </div>
+                    </div>
+                )}
             </SimpleBar>
         </div>
     );

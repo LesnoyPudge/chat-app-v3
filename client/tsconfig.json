@@ -67,6 +67,7 @@
             "@i18n": ["src/i18n"],
             "@locales/*": ["./locales/*"],
             "@dev": ["src/dev"],
+            "@store": ["src/redux/usableStore"]
         },
     }, 
 }

@@ -1,9 +1,9 @@
 import { AnimatedTransition, OverlayPortal, RelativelyPositioned } from '@components';
-import { RelativePositionOptions, useEventListener, useRefWithSetter, useSharedIntersectionObserver, useFocusVisibleEvent } from '@hooks';
+import { RelativePositionOptions } from '@hooks';
 import { SpringValue, animated } from '@react-spring/web';
 import { Alignment, PropsWithChildrenAndClassName, PropsWithLeaderElementRef } from '@types';
 import { getTransitionOptions, twClassNames } from '@utils';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { useTooltip } from './hooks';
 
 

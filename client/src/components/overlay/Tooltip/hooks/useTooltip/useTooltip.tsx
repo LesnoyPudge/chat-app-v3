@@ -33,7 +33,9 @@ export const useTooltip = (
         changeState();
     };
 
-    const handleMouseEnter = () => {
+    const handleMouseEnter = (e: PointerEvent) => {
+        if (e.pointerType !== 'mouse') return;
+
         setWithMouse(true);
         changeState();
     };
@@ -44,8 +46,8 @@ export const useTooltip = (
     };
 
     useFocusVisibleEvent(handleFocusIn, handleFocusOut, leaderElementRef);
-    useEventListener('mouseenter', handleMouseEnter, leaderElementRef);
-    useEventListener('mouseleave', handleMouseLeave, leaderElementRef);
+    useEventListener('pointerenter', handleMouseEnter, leaderElementRef);
+    useEventListener('pointerleave', handleMouseLeave, leaderElementRef);
 
     useSharedIntersectionObserver(leaderElementRef, ({ isIntersecting }) => {
         if (isIntersecting === isExist) return;

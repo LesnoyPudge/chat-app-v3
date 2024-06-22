@@ -1,8 +1,9 @@
 import { animated, UseTransitionProps } from '@react-spring/web';
 import { FC, useContext } from 'react';
-import { AnimatedTransition, ChildrenAsNodeOrFunction, OverlayContext, OverlayItem } from '@components';
-import { getTransitionOptions, twClassNames } from '@utils';
+import { AnimatedTransition, ChildrenAsNodeOrFunction, OverlayContext, OverlayItem, Scrollable } from '@components';
+import { cn, getTransitionOptions, twClassNames } from '@utils';
 import { PropsWithChildrenAsNodeOrFunction } from '@types';
+import { renderFunction } from '@lesnoypudge/utils-react';
 
 
 
@@ -21,7 +22,7 @@ const styles = {
     inner: 'h-full relative isolate',
     backdrop: 'absolute inset-0 z-0 bg-black focus-hidden opacity-70 scale-[999]',
     contentWrapper: 'absolute inset-0 z-10 grid place-items-center',
-    contentScrollable: 'overflow-x-hidden overflow-y-scroll scrollbar-hidden max-h-full',
+    contentScrollable: 'overflow-x-hidden overflow-y-scroll max-h-full',
 };
 
 export const ModalWindow: FC<ModalWindow> = ({
@@ -69,6 +70,15 @@ export const ModalWindow: FC<ModalWindow> = ({
                                     onClick={closeOverlay}
                                 ></div>
                             </If>
+                            
+                            {/* <Scrollable
+                                className={cn(
+                                    'absolute inset-0 z-10', 
+                                )}
+                                innerClassName={getPointerClass(noContainerPointerEvents)}
+                            >
+                                {renderFunction(children, overlayValues)}
+                            </Scrollable> */}
 
                             <div className={styles.contentWrapper}>
                                 <div className={twClassNames(

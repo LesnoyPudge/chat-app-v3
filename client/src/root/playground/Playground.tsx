@@ -764,7 +764,7 @@ interface SomeForm {
 
 const PlaygroundInner16: FC = () => {
     return (
-        <div className='flex flex-col gap-2 h-screen'>
+        <div className='flex flex-col gap-2 h-[100dvh]'>
             {/* <Image
                 placeholder={<div className='bg-red-700'>qwe</div>}
                 src='https://images.placeholders.dev'
@@ -997,12 +997,12 @@ const PlaygroundInner18: FC = () => {
 const PlaygroundInner19: FC = () => {
     // console.log(IMAGES);
     return (
-        <Scrollable followContentSize className='max-h-screen'>
+        <Scrollable followContentSize className='max-h-[100dvh]'>
             <div className='grid gap-20'>
                 <List list={objectKeys(IMAGES)}>
                     {(key) => {
                         return (
-                            <div className='[&>*]:w-1/2 h-screen [&>*]:h-auto [&>*]:object-contain flex [&>*]:bg-slate-300 [&>*]:outline [&>*]:outline-red-700 [&>*]:outline-4'>
+                            <div className='[&>*]:w-1/2 h-[100dvh] [&>*]:h-auto [&>*]:object-contain flex [&>*]:bg-slate-300 [&>*]:outline [&>*]:outline-red-700 [&>*]:outline-4'>
                                 {/* <img src={IMAGES[key].path.replace('generatedImages', 'rawImages')}/>
 
                                 <img src={IMAGES[key].path}/> */}
@@ -1057,7 +1057,7 @@ const TmpSetTest: FC<{add: AnyFunction}> = ({ add }) => {
 
 const PlaygroundInner21: FC = () => {
     return (
-        <div className='h-screen w-screen overflow-scroll bg-slate-400'>
+        <div className='h-[100dvh] w-[100dvw] overflow-scroll bg-slate-400'>
             <div className='w-[3000px] h-[3000px]'>
                 <div className='overflow-scroll h-[50vh] w-[50vw]'>
                     <div className='w-[3000px] h-[3000px] p-20'>

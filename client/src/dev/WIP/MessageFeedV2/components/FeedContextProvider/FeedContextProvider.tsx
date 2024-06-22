@@ -1,12 +1,12 @@
 import { FC, PropsWithChildren } from "react";
 import { useChat } from "./hooks";
-import { SliceEntityState } from "@types";
 import { createContextSelectable } from "@lesnoypudge/utils-react";
+import { SliceEntityState } from "@types";
 
 
 
 type WithMessages = {
-    messages: SliceEntityState.Message[]
+    messages: SliceEntityState.Message[];
 }
 
 type FeedContextProvider = PropsWithChildren & WithMessages;
@@ -20,7 +20,7 @@ export const FeedContextProvider: FC<FeedContextProvider> = ({
     children,
 }) => {
     const value = useChat(messages);
-    
+
     return (
         <FeedContext.Provider value={{
             messages,

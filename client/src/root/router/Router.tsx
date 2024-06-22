@@ -17,7 +17,7 @@ const lazyWithDevDelay = (
     delay: number,
 ): ReturnType<typeof lazy> => {
     return lazy(async() => {
-        if (isDev()) {
+        if (isDev() && false){
             await new Promise((res) => setTimeout(() => {
                 res('');
             }, delay));

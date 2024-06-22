@@ -2,18 +2,6 @@
 
 
 
-@layer components {
-    .scrollbar-hidden {
-        &::-webkit-scrollbar {
-            @apply w-0 h-0;
-        }
-
-        & {
-            scrollbar-width: none;
-        }
-    }
-}
-
 /*
     simplebar-custom
         simplebar-wrapper

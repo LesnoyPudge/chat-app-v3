@@ -5,8 +5,6 @@ import plugin from 'tailwindcss/plugin';
 const customClasses = {
     '.simplebar-custom': {},
 
-    '.scrollbar-hidden': {},
-
     '.color-picker': {},
 
     '.slider-input': {},
@@ -14,7 +12,7 @@ const customClasses = {
     '.rich-text-editor': {},
 
     '.image-bg-fullscreen': {
-        '@apply fixed top-0 left-0 w-screen h-screen -z-[1] object-cover object-center': {},
+        '@apply fixed top-0 left-0 w-[100dvw] h-[100dvh] -z-[1] object-cover object-center': {},
     },
 
     '.overlay-item-wrapper': {
@@ -65,7 +63,7 @@ const customClasses = {
     },
 
     '.page': {
-        '@apply h-screen w-screen isolate': {},
+        '@apply h-[100dvh] w-[100dvw] isolate': {},
     },
 };
 

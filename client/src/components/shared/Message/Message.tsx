@@ -1,4 +1,4 @@
-import { PropsWithClassName, PropsWithInnerRef } from '@types';
+import { PropsWithClassName, PropsWithInnerRef, SliceEntityState } from '@types';
 import { createContext, FC } from 'react';
 import { Descendant } from 'slate';
 import { EmojiCode, RTETypes } from '@components';
@@ -18,6 +18,8 @@ export interface Ids {
 
 interface SharedProps {
     message: IMessage & {reactions: {code: EmojiCode, users: string[]}[]};
+    
+    // message: SliceEntityState.Message;
     isGroupHead: boolean;
     tabIndex?: number;
     isInRedactorMode: boolean;
@@ -94,7 +96,12 @@ export const Message: FC<MessageComponent> = ({
                 aria-hidden={false}
                 aria-setsize={-1}
                 tabIndex={tabIndex}
-                aria-labelledby={`${ids.timestampId} ${ids.usernameId} ${ids.contentId} ${ids.editTimestampId}`}
+                aria-labelledby={`
+                    ${ids.timestampId} 
+                    ${ids.usernameId} 
+                    ${ids.contentId} 
+                    ${ids.editTimestampId}
+                `}
                 ref={innerRef}
             >
                 <Heading

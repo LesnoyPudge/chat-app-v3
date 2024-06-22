@@ -1,19 +1,29 @@
-import { twClassNames } from '@utils';
-import { FC, PropsWithChildren } from 'react';
+import { PropsWithChildrenAndClassName } from '@types';
+import { cn } from '@utils';
+import { FC } from 'react';
+import { MobileMenuButton } from './components';
 
 
 
-interface TopBar extends PropsWithChildren {
-    className?: string;
+type TopBar = PropsWithChildrenAndClassName & {
+    withMobileButton?: boolean;
 }
 
 const styles = {
     base: 'flex shrink-0 items-center h-12 shadow-elevation-low',
 };
 
-export const TopBar: FC<TopBar> = ({ children, className = '' }) => {
+export const TopBar: FC<TopBar> = ({ 
+    className = '',
+    withMobileButton = false,
+    children, 
+}) => {
     return (
-        <div className={twClassNames(styles.base, className)}>
+        <div className={cn(styles.base, className)}>
+            <If condition={withMobileButton}>
+                <MobileMenuButton/>
+            </If>
+
             {children}
         </div>
     );

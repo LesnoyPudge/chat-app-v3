@@ -2,10 +2,13 @@
 import { useNavigator } from '@hooks';
 import { AppSelectors, UserApi } from '@redux/features';
 import { useMemoSelector } from '@redux/hooks';
+import { getEnv } from '@utils';
 import { FC, PropsWithChildren, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 
+
+const { CUSTOM_CLIENT_ONLY } = getEnv();
 
 export const OnlyUnauthorizedRoute: FC<PropsWithChildren> = () => {
     const isAuthorized = useMemoSelector(AppSelectors.selectIsAuthorized, []);
@@ -18,13 +21,13 @@ export const OnlyUnauthorizedRoute: FC<PropsWithChildren> = () => {
         isInitialized &&
         !isRefreshing &&
         !isAuthorized
-    );
+    ) || !!Number(CUSTOM_CLIENT_ONLY);
 
     const navigateOutside = (
         isInitialized &&
         !isRefreshing &&
         isAuthorized
-    );
+    ) || !Number(CUSTOM_CLIENT_ONLY);
 
     useEffect(() => {
         if (isInitialized) return;
