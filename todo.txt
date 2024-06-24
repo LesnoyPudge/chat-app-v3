@@ -68,4 +68,5 @@ EntityNameSlice.actions.actionName и функцию комбинирующию 
 -!!! Валидацию сообщений можно сделать через Node.isNodeList(value)
 -!!! добавить возможность оптимистичных обновлений в redux api, дать ожилаемый
 результат и применить его, а после он изменится из за redux api
+https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
 -??? смена онлайн статуса долго грузится, сделать оптимистичый запрос
