@@ -1,10 +1,9 @@
-import { RichTextEditor } from "@components";
-import { PropsWithClassName } from "@types";
-import { Formik } from "formik";
-import { FC } from "react";
-import { MessageEditor } from "../MessageEditor";
-import { useSendMessageFormControls } from "./hooks";
-import { Form } from "formik";
+import { RichTextEditor } from '@components';
+import { PropsWithClassName } from '@types';
+import { Formik, Form } from 'formik';
+import { FC } from 'react';
+import { MessageEditor } from '../MessageEditor';
+import { useSendMessageFormControls } from './hooks';
 
 
 
@@ -31,7 +30,7 @@ export const SendMessageInputBar: FC<SendMessageInputBar> = ({
         >
             {({ values, submitForm, setFieldValue }) => (
                 <RichTextEditor.ContextProvider
-                    name="content"
+                    name='content'
                     value={values.content}
                     onChange={onRTEValueChangeWrapper((v) => {
                         setFieldValue('content', v);
@@ -61,5 +60,5 @@ export const SendMessageInputBar: FC<SendMessageInputBar> = ({
                 </RichTextEditor.ContextProvider>
             )}
         </Formik>
-    )
-}
+    );
+};

@@ -12,7 +12,7 @@ const customClasses = {
     '.rich-text-editor': {},
 
     '.image-bg-fullscreen': {
-        '@apply fixed top-0 left-0 w-[100dvw] h-[100dvh] -z-[1] object-cover object-center': {},
+        '@apply fixed top-0 left-0 w-dvw h-dvh -z-[1] object-cover object-center': {},
     },
 
     '.overlay-item-wrapper': {
@@ -63,7 +63,7 @@ const customClasses = {
     },
 
     '.page': {
-        '@apply h-[100dvh] w-[100dvw] isolate': {},
+        '@apply h-dvh w-dvw isolate': {},
     },
 };
 

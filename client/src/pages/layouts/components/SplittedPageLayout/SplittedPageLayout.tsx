@@ -4,6 +4,8 @@ import { UserToolBar } from './components';
 import { useMemoSelectorV2 } from '@redux/hooks';
 import { AppSelectors } from '@redux/features';
 import { cn } from '@utils';
+import { FocusInside } from '@components';
+import { MoveFocusInside } from 'react-focus-lock';
 
 
 
@@ -39,11 +41,18 @@ export const SplittedPageLayout: FC<PropsWithChildren> = ({ children }) => {
                 <UserToolBar/>
             </div>
 
-            <div className={cn(styles.content.base, {
-                [styles.content.hidden]: isMobileMenuShown,
-            })}>
-                <Outlet/>
-            </div>
+            <FocusInside focused={isMobileContentShown}>
+                {({wrapperRef}) => (
+                    <div 
+                        className={cn(styles.content.base, {
+                            [styles.content.hidden]: isMobileMenuShown,
+                        })}
+                        ref={wrapperRef}
+                    >
+                        <Outlet/>
+                    </div>
+                )}
+            </FocusInside>
         </div>
     );
 };

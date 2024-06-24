@@ -5,7 +5,7 @@ import { ChannelsNavigation } from './components';
 
 
 const styles = {
-    wrapper: 'flex h-[100dvh] w-[100dvw]',
+    wrapper: 'flex h-dvh w-dvw',
 }
 
 export const WithChannelsNavigation: FC = () => {

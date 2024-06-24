@@ -4,6 +4,7 @@ import { useLatest } from '@hooks';
 import { localStorageApi } from '@utils';
 import { useAppDispatch } from '@redux/hooks';
 import { AppSlice } from '@redux/features';
+import { useConst } from '@lesnoypudge/utils-react';
 
 
 
@@ -45,7 +46,7 @@ export const useNavigator = () => {
         navigateInner(to, options);
     }, [navigateInner]);
 
-    const myLocationIsRef = useRef({
+    const myLocationIs = useConst(() => ({
         auth: () => latestPathRef.current === navigatorPath.auth(),
         app: () => latestPathRef.current === navigatorPath.app(),
         anyPrivateChat: () => latestPathRef.current.includes(navigatorPath.anyPrivateChat()),
@@ -58,11 +59,11 @@ export const useNavigator = () => {
         room: (...args: Parameters<typeof navigatorPath.room>) => {
             return latestPathRef.current === navigatorPath.room(...args);
         },
-    });
+    }));
 
-    const navigateToRef = useRef({
+    const navigateTo = useConst(() => ({
         auth: (options?: CustomNavigateOptions) => {
-            if (myLocationIsRef.current.auth()) return;
+            if (myLocationIs.auth()) return;
 
             if (options?.withState) {
                 stateRef.current.from = latestPathRef.current;
@@ -72,7 +73,8 @@ export const useNavigator = () => {
         },
         app: (options?: CustomNavigateOptions) => {
             closeMobileMenu()
-            if (myLocationIsRef.current.app()) return;
+            
+            if (myLocationIs.app()) return;
 
             if (options?.withState) {
                 stateRef.current.from = latestPathRef.current;
@@ -83,7 +85,7 @@ export const useNavigator = () => {
         privateChat: (privateChatId: string, options?: CustomNavigateOptions) => {
             closeMobileMenu()
 
-            if (myLocationIsRef.current.privateChat(privateChatId)) return;
+            if (myLocationIs.privateChat(privateChatId)) return;
 
             if (options?.withState) {
                 stateRef.current.from = latestPathRef.current;
@@ -94,7 +96,7 @@ export const useNavigator = () => {
         channel: (channelId: string, options?: CustomNavigateOptions) => {
             closeMobileMenu()
 
-            if (myLocationIsRef.current.channel(channelId)) return;
+            if (myLocationIs.channel(channelId)) return;
 
             if (options?.withState) {
                 stateRef.current.from = latestPathRef.current;
@@ -110,7 +112,8 @@ export const useNavigator = () => {
         },
         room: (channelId: string, roomId: string, options?: CustomNavigateOptions) => {
             closeMobileMenu()
-            if (myLocationIsRef.current.room(channelId, roomId)) return;
+
+            if (myLocationIs.room(channelId, roomId)) return;
 
             if (options?.withState) {
                 stateRef.current.from = latestPathRef.current;
@@ -118,14 +121,24 @@ export const useNavigator = () => {
 
             navigate(navigatorPath.room(channelId, roomId), options);
         },
-    });
+    }));
+
+    const navigateToDev = useConst(() => ({
+        app: () => navigate('app'),
+        loader: () => navigate('/dev/loader'),
+        error: () => navigate('/dev/error'),
+        auth: () => navigate('/dev/auth'),
+        playground: () => navigate('/dev/playground'),
+        invitation: () => navigate('/dev/invitation/fake-link'),
+    }))
 
     return {
-        myLocationIs: myLocationIsRef.current,
-        navigateTo: navigateToRef.current,
+        myLocationIs,
+        navigateTo,
         params,
         stateRef,
         navigatorPath,
         navigate,
+        navigateToDev,
     };
 };

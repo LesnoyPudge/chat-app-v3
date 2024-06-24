@@ -6,6 +6,7 @@ import { RTEContext } from '../RTEContextProvider';
 import { twClassNames } from '@utils';
 
 
+
 const styles = {
     editor: 'w-full message-font-size focus-hidden message-y-padding',
 }
@@ -28,6 +29,7 @@ export const RTEContentEditable: FC<PropsWithClassName> = ({
             placeholder={cv.placeholder}
             maxLength={cv.maxLength}
             name={cv.name}
+            readOnly={cv.disabled}
             suppressContentEditableWarning
             spellCheck
         />

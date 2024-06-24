@@ -1,15 +1,16 @@
 import { renderFunction, useLatest } from "@lesnoypudge/utils-react";
 import { RT } from "@lesnoypudge/types-utils-react/namespace";
-import { RefObject, useCallback, useLayoutEffect, useRef } from "react";
+import { FC, RefObject, useCallback, useLayoutEffect, useRef } from "react";
 
 
 
-type RenderProps<_Element> = [{
-    focusableRef: RefObject<_Element>;
+type RenderProps = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    focusableRef: RefObject<any>;
     focus: (options: FocusOptions) => void;
-}]
+}
 
-type ConditionalProps = {
+type ConditionalScrollOptions = {
     scrollIntoView: true;
     vertical?: ScrollLogicalPosition;
     horizontal?: ScrollLogicalPosition;
@@ -21,23 +22,36 @@ type ConditionalProps = {
     behavior?: never;
 }
 
-type FocusAtProps<_Element> = RT.PropsWithRenderFunction<
-    RenderProps<_Element>
-> & ConditionalProps & {
-    focused: boolean;
-    providedFocusableRef?: RefObject<_Element>;
-};
+type ConditionalRef = (
+    RT.PropsWithRequiredRenderFunction<[RenderProps]>
+    & {
+        providedRef?: never;
+    }
+) | (
+    RT.PropsWithRenderFunctionOrNode<[Pick<RenderProps, 'focus'>]>
+    & {
+        providedRef: RefObject<HTMLElement>;
+    }
+);
 
-export const FocusAt = <_Element extends HTMLElement>({
+type FocusAt = (
+    ConditionalRef
+    & ConditionalScrollOptions
+    & {
+        focused: boolean;
+    }
+);
+
+export const FocusAt: FC<FocusAt> = ({
     focused,
-    providedFocusableRef,
+    providedRef,
     scrollIntoView = false,
     horizontal,
     vertical,
     behavior,
     children
-}: FocusAtProps<_Element>) => {
-    const focusableRef = useRef<_Element>(providedFocusableRef?.current ?? null);
+}) => {
+    const focusableRef = useRef<HTMLElement>(null);
     const shouldScrollRef = useLatest(scrollIntoView);
     const scrollOptionsRef = useLatest({
         inline: horizontal,
@@ -46,9 +60,10 @@ export const FocusAt = <_Element extends HTMLElement>({
     });
 
     const focus = useCallback((options?: FocusOptions) => {
-        if (!focusableRef.current) return;
+        const actualRef = providedRef ?? focusableRef;
+        if (!actualRef.current) return;
         
-        focusableRef.current.focus(options ?? {
+        actualRef.current.focus(options ?? {
             preventScroll: false,
             // @ts-expect-error https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#focusvisible
             focusVisible: true,
@@ -56,8 +71,8 @@ export const FocusAt = <_Element extends HTMLElement>({
 
         if (!shouldScrollRef.current) return;
         
-        focusableRef.current.scrollIntoView(scrollOptionsRef.current)
-    }, [scrollOptionsRef, shouldScrollRef])
+        actualRef.current.scrollIntoView(scrollOptionsRef.current)
+    }, [providedRef, scrollOptionsRef, shouldScrollRef])
     
     useLayoutEffect(() => {
         if (!focused) return;
@@ -65,7 +80,7 @@ export const FocusAt = <_Element extends HTMLElement>({
         focus()
     }, [focused, focus])
 
-    return renderFunction<RenderProps<_Element>>(children, { 
+    return renderFunction(children, { 
         focusableRef,
         focus,
     })

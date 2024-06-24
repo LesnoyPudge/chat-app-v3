@@ -1,22 +1,20 @@
 import { FC, PropsWithChildren, useMemo, useEffect, createContext, useRef, useCallback } from 'react';
 import { Slate } from 'slate-react';
 import { RTEModules, RTETypes } from '@components';
-import { BaseSelection, Descendant } from 'slate';
-import { isProd, logger, noop } from '@utils';
-import { shallowEqual } from 'react-redux';
+import { BaseSelection } from 'slate';
+import { noop } from '@utils';
 import reactFastCompare from "react-fast-compare";
-import { useLatest } from '@hooks';
-import { JSONView } from '@dev';
+import { useAnimationFrame } from '@hooks';
+import { useConst } from '@lesnoypudge/utils-react';
+
 
 
 type RTEContextProvider = PropsWithChildren & {
     name: string;
     value?: RTETypes.Nodes,
-    initialValue?: RTETypes.Nodes,
     label?: string;
     placeholder?: string;
     maxLength?: number;
-    id?: string;
     disabled?: boolean;
     onChange?: (value: RTETypes.Nodes) => void;
     onSubmit?: (value: RTETypes.Nodes, editor: RTETypes.Editor) => void;
@@ -30,52 +28,25 @@ export type RTEContextValues = Required<Pick<
 
 export const RTEContext = createContext<RTEContextValues>();
 
-const usePropsDifference = (...props: unknown[]) => {
-    const prev = useRef<null | unknown[]>(null);
-    if (isProd()) {
-        logger.prod.warn('usePropsDifference in production mode');
-        return null;
-    }
-
-    if (prev.current === null) {
-        prev.current = props;
-        return null;
-    }
-
-    const difference = props.filter((prop, i) => prop !== prev.current![i]);
-
-    if (difference.length === 0) return null;
-
-    return difference;
-};
-
 export const RTEContextProvider: FC<RTEContextProvider> = ({
     name,
     value = RTEModules.Utils.createInitialValue(),
-    initialValue = RTEModules.Utils.createInitialValue(),
     label = 'Редактор текста',
     placeholder = 'Введите текст',
     maxLength = 2000,
-    id = '',
     disabled = false,
     onChange,
     onSubmit = noop,
     onSelectionChange = noop,
     children,
 }) => {
-    // const diff = usePropsDifference(
-    //     name, initialValue, label,
-    //     placeholder, maxLength, id,
-    //     onChange, onSubmit, children,
-    // );
-    const valueRef = useLatest(value);
+    const lastValueRef = useRef(value);
+    const isAndroid = useConst(() => navigator.userAgent.includes('Android'));
     const editor = useMemo(() => RTEModules.Utils.createEditorWithPlugins({
         characterLimit: {
             maxLength,
         },
     }), [maxLength]);
-
-    // useEffect(() => console.log('diff is: ', diff));
 
     useEffect(() => {
         // todo: import from lesnoypudge/utils, not from redux
@@ -92,7 +63,14 @@ export const RTEContextProvider: FC<RTEContextProvider> = ({
         editor.children = value;
         editor.normalize({ force: true });
         editor.onChange();
+
     }, [value, editor]);
+
+    useAnimationFrame(() => {
+        if (value !== editor.children) return;
+
+        onChange?.(editor.children)
+    }, isAndroid)
 
     useEffect(() => {
         editor.normalize({ force: true });
@@ -101,10 +79,11 @@ export const RTEContextProvider: FC<RTEContextProvider> = ({
 
     const _onChange: NonNullable<typeof onChange> = useCallback((newValue) => {
         if (!onChange) return;
-        if (Object.is(newValue, valueRef.current)) return;
+        if (Object.is(newValue, lastValueRef.current)) return;
 
+        lastValueRef.current = newValue;
         onChange(newValue);
-    }, [onChange, valueRef]);
+    }, [onChange]);
 
     const contextValues: RTEContextValues = useMemo(() => ({
         maxLength,
@@ -119,13 +98,8 @@ export const RTEContextProvider: FC<RTEContextProvider> = ({
         <Slate
             editor={editor}
             initialValue={value}
-            onValueChange={_onChange}
+            onChange={_onChange}
             onSelectionChange={onSelectionChange}
-            // key={(() => {
-            //     const k = id + JSON.stringify(initialValue);
-            //     console.log(`key ${k}`);
-            //     return k;
-            // })()}
         >
             <RTEContext.Provider value={contextValues}>
                 {children}

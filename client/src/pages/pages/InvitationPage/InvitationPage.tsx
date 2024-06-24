@@ -17,7 +17,7 @@ export const InvitationPage: FC = () => {
     };
 
     return (
-        <div className='flex h-[100dvh] isolate'>
+        <div className='flex h-dvh isolate'>
             <Image
                 className='image-bg-fullscreen'
                 src={IMAGES.COMMON.FANCY_BG.PATH}

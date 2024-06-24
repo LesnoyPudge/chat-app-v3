@@ -19,7 +19,7 @@ const styles = {
     input: 'h-full',
     button: `flex shrink-0 h-full aspect-square rounded fill-icon-300 
     hover:fill-icon-200 focus-visible:fill-icon-200`,
-    icon: 'h-2/3 aspect-square m-auto',
+    icon: 'h-2/3 aspect-square shrink-0 m-auto',
 };
 
 export const SearchBar: FC<SearchBar> = ({

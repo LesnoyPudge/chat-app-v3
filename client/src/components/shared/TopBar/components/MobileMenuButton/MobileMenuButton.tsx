@@ -7,7 +7,7 @@ import { Button } from "@components";
 
 
 const styles = {
-    button: `shrink-0 hidden xl:flex flex-col justify-between h-full 
+    button: `shrink-0 hidden max-xl:flex flex-col justify-between h-full 
     aspect-square px-3 py-4`,
     bar: 'bg-white-black w-full h-[2px]',
 }

@@ -764,7 +764,7 @@ interface SomeForm {
 
 const PlaygroundInner16: FC = () => {
     return (
-        <div className='flex flex-col gap-2 h-[100dvh]'>
+        <div className='flex flex-col gap-2 h-dvh'>
             {/* <Image
                 placeholder={<div className='bg-red-700'>qwe</div>}
                 src='https://images.placeholders.dev'
@@ -997,12 +997,12 @@ const PlaygroundInner18: FC = () => {
 const PlaygroundInner19: FC = () => {
     // console.log(IMAGES);
     return (
-        <Scrollable followContentSize className='max-h-[100dvh]'>
+        <Scrollable followContentSize className='max-h-dvh'>
             <div className='grid gap-20'>
                 <List list={objectKeys(IMAGES)}>
                     {(key) => {
                         return (
-                            <div className='[&>*]:w-1/2 h-[100dvh] [&>*]:h-auto [&>*]:object-contain flex [&>*]:bg-slate-300 [&>*]:outline [&>*]:outline-red-700 [&>*]:outline-4'>
+                            <div className='[&>*]:w-1/2 h-dvh [&>*]:h-auto [&>*]:object-contain flex [&>*]:bg-slate-300 [&>*]:outline [&>*]:outline-red-700 [&>*]:outline-4'>
                                 {/* <img src={IMAGES[key].path.replace('generatedImages', 'rawImages')}/>
 
                                 <img src={IMAGES[key].path}/> */}
@@ -1057,7 +1057,7 @@ const TmpSetTest: FC<{add: AnyFunction}> = ({ add }) => {
 
 const PlaygroundInner21: FC = () => {
     return (
-        <div className='h-[100dvh] w-[100dvw] overflow-scroll bg-slate-400'>
+        <div className='h-dvh w-dvw overflow-scroll bg-slate-400'>
             <div className='w-[3000px] h-[3000px]'>
                 <div className='overflow-scroll h-[50vh] w-[50vw]'>
                     <div className='w-[3000px] h-[3000px] p-20'>
@@ -2286,9 +2286,9 @@ const PlaygroundInner37: FC = () => {
             </Button> */}
 
             {/* <ErrorBoundary fallbackRender={FallbackScreen}> */}
-            <Slate editor={editor} initialValue={initial}>
+            {/* <Slate editor={editor} initialValue={initial}>
                 <Editable/>
-            </Slate>
+            </Slate> */}
             {/* </ErrorBoundary> */}
         </div>
     );
@@ -2355,23 +2355,83 @@ const PlaygroundInner39: FC = () => {
     )
 }
 
+import {} from 'slate-react'
+import { withHistory } from 'slate-history';
+
+const initialValue: Descendant[] = [
+    {
+      type: 'paragraph',
+      children: [{ text: '' }],
+    },
+]
+
+const PlaygroundInner40: FC = () => {
+    const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+    const styles = {
+        editor: ' before:bg-green-800 before:content-[""] before:absolute before:inset-0',
+    }
+    
+    const _styles = styles;
+    
+    const [state, setState] = useState(initialValue)
+    
+    return (
+        <>
+            <RichTextEditor.ContextProvider 
+                name=''
+                onChange={setState}
+                value={state}
+                placeholder='hold me'
+            >
+                <RichTextEditor.ContentEditable/>
+            </RichTextEditor.ContextProvider>
+
+            {/* <Slate 
+                editor={editor} 
+                initialValue={initialValue}
+                // onChange={setState}
+                onValueChange={setState}
+                // onChange={(v) => {
+                //     console.log(JSON.stringify(v))
+                // }}
+            >   
+                <Editable
+                    className={_styles.editor}
+                    placeholder='place'
+                    renderPlaceholder={({ children, attributes }) => {
+                        return (
+                            <div {...attributes}>
+                                <p>{children}</p>
+                            </div>
+                        )
+                    }}
+                />
+            </Slate> */}
+            
+            {window.navigator.userAgent}
+
+            <JSONView data={state}/>
+        </>
+    )
+}
+
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
-    const [enabled, setEnabled] = useLocalStorage('playground', false);
+    // const [enabled, setEnabled] = useLocalStorage('playground', false);
 
-    useEventListener('keydown', (e) => {
-        if (e.key !== '+') return;
+    // useEventListener('keydown', (e) => {
+    //     if (e.key !== '+') return;
 
-        setEnabled((v) => !v);
-    }, window);
+    //     setEnabled((v) => !v);
+    // }, window);
 
     return (
         <>
-            <If condition={!enabled}>
+            {/* <If condition={!enabled}>
                 {children}
-            </If>
+            </If> */}
 
-            <If condition={enabled}>
+            {/* <If condition={enabled}> */}
                 {/* <PlaygroundInner29/> */}
                 {/* <PlaygroundInner30/> */}
                 {/* <PlaygroundInner31/> */}
@@ -2381,8 +2441,9 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner37/> */}
                 {/* <PlaygroundInner38/> */}
                 {/* <PlaygroundInner39/> */}
-                <Main/>
-            </If>
+                {/* <Main/> */}
+                <PlaygroundInner40/>
+            {/* </If> */}
         </>
     );
 };

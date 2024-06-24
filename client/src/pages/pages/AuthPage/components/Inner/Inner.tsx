@@ -53,7 +53,7 @@ export const Inner: FC = () => {
             >
                 {({ isAnimatedExist, style }) => (
                     <If condition={isAnimatedExist}>
-                        <MoveFocusInside>
+                        <MoveFocusInside enabled>
                             <div className={styles.wrapper}>
                                 <animated.div
                                     className={styles.item}
@@ -73,7 +73,7 @@ export const Inner: FC = () => {
             >
                 {({ isAnimatedExist, style }) => (
                     <If condition={isAnimatedExist}>
-                        <MoveFocusInside>
+                        <MoveFocusInside enabled>
                             <div className={styles.wrapper}>
                                 <animated.div
                                     className={styles.item}

@@ -1,5 +1,5 @@
 import { Button, List, MoveFocusInside } from '@components';
-import { useKeyboardNavigation } from '@hooks';
+import { useKeyboardNavigation, useNavigator } from '@hooks';
 import { triggerGlobalReset } from '@redux/globalReset';
 import { ObjectWithId } from '@types';
 import { objectKeysToIdArray } from '@utils';
@@ -8,6 +8,8 @@ import { axeReact } from '../../helpers/components';
 import { AnyFunction } from 'ts-essentials';
 import { Key } from 'ts-key-enum';
 import { TRANSLATION } from '@i18n';
+import { useConst } from '@lesnoypudge/utils-react';
+import { T } from '@lesnoypudge/types-utils-base/namespace';
 
 
 
@@ -45,20 +47,30 @@ const actions = {
 } satisfies Actions;
 
 const styles = {
-    wrapper: 'fixed left-1/2 -translate-x-1/2 pointer-events-auto w-[400px] max-w-full',
+    wrapper: `fixed left-1/2 -translate-x-1/2 
+    pointer-events-auto w-[calc(min(400px,100%))] max-h-[50%] overflow-auto`,
     inner: 'flex flex-col gap-2 m-3 p-3 bg-black text-white font-semibold',
     button: 'data-[active="true"]:bg-white data-[active="true"]:text-black',
 };
 
 export const DevDebugContent: FC = () => {
-    const focusableList = useRef<ObjectWithId[]>(objectKeysToIdArray(actions));
+    const {navigateToDev} = useNavigator();
+    const _actions = useConst(() => ({
+        ...actions,
+        ...Object.keys(navigateToDev).reduce<T.UnknownRecord>((acc, cur) => {
+            acc[`navigate to ${cur}`] = navigateToDev[cur];
+            return acc;
+        }, {})
+    }))
+    const focusableListRef = useRef(objectKeysToIdArray(_actions));
+
     const {
         getIsFocused,
         getTabIndex,
         setRoot,
         withFocusSet,
     } = useKeyboardNavigation(
-        focusableList,
+        focusableListRef,
         null,
         { loop: true, direction: 'vertical' },
     );
@@ -75,7 +87,7 @@ export const DevDebugContent: FC = () => {
                         <>{Key.ArrowUp} / {Key.ArrowDown}</>
                     </div>
 
-                    <List list={Object.keys(actions)}>
+                    <List list={Object.keys(_actions)}>
                         {(key) => {
                             return (
                                 <MoveFocusInside enabled={getIsFocused(key)}>
@@ -83,7 +95,7 @@ export const DevDebugContent: FC = () => {
                                         className={styles.button}
                                         isActive={getIsFocused(key)}
                                         tabIndex={getTabIndex(key)}
-                                        onLeftClick={withFocusSet(key, actions[key])}
+                                        onLeftClick={withFocusSet(key, _actions[key])}
                                     >
                                         {key}
                                     </Button>

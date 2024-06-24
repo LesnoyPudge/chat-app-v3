@@ -45,7 +45,7 @@ export const useRelativePosition = ({
     unbounded = false,
 }: UseRelativePositionArgs): WithAlignment => {
     const [alignment, setAlignment] = useState(preferredAlignment);
-    const isFirstRender = useIsFirstRender()
+    // const isFirstRender = useIsFirstRender()
     
     const calculate = () => {
         if (!followerElementRef.current || !leaderElementOrRectRef.current) return;
@@ -77,14 +77,14 @@ export const useRelativePosition = ({
         follower.style.transform = transformValue;
     };
 
-    useLayoutEffect(() => {
-        if (!isFirstRender) return;
+    // useLayoutEffect(() => {
+    //     if (!isFirstRender) return;
 
-        calculate()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    //     calculate()
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [])
 
-    useAnimationFrame(calculate);
+    useAnimationFrame(calculate, true);
 
     return {
         alignment,

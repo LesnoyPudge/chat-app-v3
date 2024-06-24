@@ -19,3 +19,4 @@ export * from './FormError';
 export * from './MoveFocusInside';
 export * from './Placeholder';
 export * from './FocusAt'
+export * from './FocusInside'

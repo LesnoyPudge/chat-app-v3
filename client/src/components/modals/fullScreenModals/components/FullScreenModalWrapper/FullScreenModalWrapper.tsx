@@ -5,7 +5,7 @@ import { ScreenShakeContext } from '../ScreenShake';
 
 
 const styles = {
-    wrapper: 'relative h-[100dvh] w-[100dvw] bg-primary-200 overflow-hidden',
+    wrapper: 'relative h-dvh w-dvw bg-primary-200 overflow-hidden',
     inner: `flex absolute inset-0 will-change-transform transition-transform 
     ease-linear duration-[20ms]`,
 };

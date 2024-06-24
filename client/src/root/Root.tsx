@@ -1,15 +1,14 @@
-import { FC, lazy, StrictMode, Suspense } from 'react';
+import { FC, StrictMode } from 'react';
 import { ErrorBoundary, DevDebug, Sprite, Masks, GlobalLoader } from './components';
 import { useInternetState, useMobileMedia, usePreventDefault, useSocketListeners, useSocketStateHandler } from './hooks';
-import { Playground } from './playground';
 import { Heading, HeadingLevel } from '@libs';
 import { Provider } from 'react-redux';
 import { store } from '@redux/store';
 import './styles/main.scss';
+import { VisuallyHidden } from '@lesnoypudge/utils-react';
+import { Router } from './router';
 
 
-
-const Router = lazy(() => import('./router'));
 
 const RootInner: FC = () => {
     usePreventDefault();
@@ -20,26 +19,24 @@ const RootInner: FC = () => {
 
     return (
         <>
-            <DevDebug/>
-
-            <Heading className='sr-only'>
-                <>ChatApp</>
-            </Heading>
+            <VisuallyHidden>
+                <Heading>
+                    <>ChatApp</>
+                </Heading>
+            </VisuallyHidden>
 
             <Masks/>
 
             <Sprite/>
 
             <HeadingLevel>
-                <Playground>
-                    <ErrorBoundary>
-                        <GlobalLoader.Wrapper>
-                            <Suspense>
-                                <Router/>
-                            </Suspense>
-                        </GlobalLoader.Wrapper>
-                    </ErrorBoundary>
-                </Playground>
+                <ErrorBoundary>
+                    <GlobalLoader.Wrapper>
+                        <Router>
+                            <DevDebug/>
+                        </Router>
+                    </GlobalLoader.Wrapper>
+                </ErrorBoundary>
             </HeadingLevel>
         </>
     );

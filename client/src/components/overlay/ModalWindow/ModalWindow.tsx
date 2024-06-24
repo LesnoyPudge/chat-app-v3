@@ -22,7 +22,7 @@ const styles = {
     inner: 'h-full relative isolate',
     backdrop: 'absolute inset-0 z-0 bg-black focus-hidden opacity-70 scale-[999]',
     contentWrapper: 'absolute inset-0 z-10 grid place-items-center',
-    contentScrollable: 'overflow-x-hidden overflow-y-scroll max-h-full',
+    contentScrollable: 'overflow-hidden max-h-full',
 };
 
 export const ModalWindow: FC<ModalWindow> = ({
