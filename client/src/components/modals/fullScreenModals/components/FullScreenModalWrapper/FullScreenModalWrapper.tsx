@@ -1,6 +1,7 @@
 import { animated } from '@react-spring/web';
 import { FC, PropsWithChildren, useContext } from 'react';
 import { ScreenShakeContext } from '../ScreenShake';
+import { FullScreenModalContextProvider } from '../FullScreenModalContextProvider';
 
 
 
@@ -24,7 +25,9 @@ export const FullScreenModalWrapper: FC<PropsWithChildren> = ({
                     translateY: getWindowShakeValue(),
                 }}
             >
-                {children}
+                <FullScreenModalContextProvider>
+                    {children}
+                </FullScreenModalContextProvider>
             </animated.div>
         </div>
     );

@@ -1,14 +1,21 @@
-import { noop, tryInside } from '@utils';
-import { isKeyHotkey } from 'is-hotkey';
+import { noop } from '@utils';
 import { Transforms } from 'slate';
 import { RTETypes } from '@components';
 import { ReactEditor } from 'slate-react';
+import { KEY, hotKey } from '@lesnoypudge/utils';
 
 
 
-const isSelectLeftHotkey = isKeyHotkey('shift+left');
-const isSelectRightHotkey = isKeyHotkey('shift+right');
-const isSubmitHotkey = isKeyHotkey('enter');
+// const isSelectLeftHotkey = isKeyHotkey('shift+left');
+// const isSelectRightHotkey = isKeyHotkey('shift+right');
+// const isSubmitHotkey = isKeyHotkey('enter');
+// const isDeleteBackwardHotkey = isKeyHotkey(KEY.Backspace);
+
+
+const isSelectLeftHotkey = hotKey.matcher([KEY.Shift, KEY.ArrowLeft]);
+const isSelectRightHotkey = hotKey.matcher([KEY.Shift, KEY.ArrowRight]);
+const isSubmitHotkey = hotKey.matcher([KEY.Enter]);
+const isDeleteBackwardHotkey = hotKey.matcher([KEY.Backspace]);
 
 export const Events = {
     KeyDown: (
@@ -44,6 +51,19 @@ export const Events = {
                 e.preventDefault();
 
                 onSubmit(editor.children, editor);
+
+                return;
+            }
+
+            if (isDeleteBackwardHotkey(e.nativeEvent)) {
+                e.preventDefault()
+
+                // 'manual delete for android'
+                Transforms.delete(editor, {
+                    reverse: true,
+                    distance: 1,
+                    at: editor.selection,
+                })
 
                 return;
             }

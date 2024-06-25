@@ -30,4 +30,4 @@ export const MIME = {
 
 export const RICK = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
-export const MOBILE_QUERY = '(max-width: 1279px)'
+export const MOBILE_QUERY = '(max-width: 1280px)'

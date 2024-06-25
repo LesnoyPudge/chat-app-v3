@@ -5,7 +5,7 @@ import { FC } from 'react';
 
 
 const styles = {
-    wrapper: `flex flex-col justify-between max-h-dvh w-[min(440px,100vw)] 
+    wrapper: `flex flex-col justify-between w-[min(440px,100vw)] 
     shadow-elevation-high bg-primary-200 rounded`,
 };
 

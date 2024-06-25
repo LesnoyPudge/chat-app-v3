@@ -3,9 +3,7 @@ import { Slate } from 'slate-react';
 import { RTEModules, RTETypes } from '@components';
 import { BaseSelection } from 'slate';
 import { noop } from '@utils';
-import reactFastCompare from "react-fast-compare";
-import { useAnimationFrame } from '@hooks';
-import { useConst } from '@lesnoypudge/utils-react';
+import reactFastCompare from 'react-fast-compare';
 
 
 
@@ -41,7 +39,6 @@ export const RTEContextProvider: FC<RTEContextProvider> = ({
     children,
 }) => {
     const lastValueRef = useRef(value);
-    const isAndroid = useConst(() => navigator.userAgent.includes('Android'));
     const editor = useMemo(() => RTEModules.Utils.createEditorWithPlugins({
         characterLimit: {
             maxLength,
@@ -65,12 +62,6 @@ export const RTEContextProvider: FC<RTEContextProvider> = ({
         editor.onChange();
 
     }, [value, editor]);
-
-    useAnimationFrame(() => {
-        if (value !== editor.children) return;
-
-        onChange?.(editor.children)
-    }, isAndroid)
 
     useEffect(() => {
         editor.normalize({ force: true });

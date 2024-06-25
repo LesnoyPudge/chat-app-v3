@@ -29,7 +29,7 @@
         "@lesnoypudge/types-global-react": "^2.0.1",
         "@lesnoypudge/types-utils-base": "^3.2.0",
         "@lesnoypudge/types-utils-react": "^5.0.0",
-        "@lesnoypudge/utils": "^8.3.0",
+        "@lesnoypudge/utils": "^9.0.1",
         "@lesnoypudge/utils-react": "^1.0.0",
         "@lexical/react": "^0.12.2",
         "@oyyds/react-auto-sizer": "^1.2.11",

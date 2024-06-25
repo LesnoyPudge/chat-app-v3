@@ -25,6 +25,15 @@ export default {
     theme: {
         extend: {
             fontFamily: {
+                // sans: [
+                //     'gg sans', 
+                //     'Noto Sans', 
+                //     'Helvetica Neue', 
+                //     'Helvetica', 
+                //     'Arial', 
+                //     'sans-serif', 
+                //     'Apple Symbols'
+                // ]
                 sans: [ 
                     'Inter', 
                     'Arial', 
@@ -132,6 +141,7 @@ export default {
                 md: '768px',
                 lg: '1024px',
                 xl: '1280px',
+                mobile: '1280px',
                 '2xl': '1536px',
 
                 // '2xl': {'max': '1535px'}, // @media (max-width: 1535px)

@@ -70,3 +70,8 @@ EntityNameSlice.actions.actionName и функцию комбинирующию 
 результат и применить его, а после он изменится из за redux api
 https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
 -??? смена онлайн статуса долго грузится, сделать оптимистичый запрос
+-!!! добавить правильный шрифт, исправить все размеры текста, проверить все
+font-weight
+- заменить все contextValues на contextValue, т.к. value всего одно (объект)
+-!!! заменить всё что связано с redux на store, useStore, Store
+-??? найти tw плагин для замены focus-visible и hover на чтото типо focus-visible-hover
