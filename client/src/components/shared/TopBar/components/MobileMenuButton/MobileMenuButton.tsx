@@ -2,14 +2,13 @@ import { pick } from "@lesnoypudge/utils";
 import { AppSelectors, AppSlice } from "@redux/features";
 import { useAppDispatch, useMemoSelectorV2 } from "@redux/hooks";
 import { FC } from "react";
-import { Button } from "@components";
+import { Button, SpriteImage } from "@components";
 
 
 
 const styles = {
-    button: `shrink-0 hidden max-xl:flex flex-col justify-between h-full 
-    aspect-square px-3 py-4`,
-    bar: 'bg-white-black w-full h-[2px]',
+    button: 'shrink-0 mobile:hidden h-full aspect-square p-2.5',
+    icon: 'stroke-white-black'
 }
 
 export const MobileMenuButton: FC = () => {
@@ -30,9 +29,10 @@ export const MobileMenuButton: FC = () => {
             label='Перейти к меню'
             onLeftClick={handleClick}
         >
-            <div className={styles.bar}></div>
-            <div className={styles.bar}></div>
-            <div className={styles.bar}></div>
+            <SpriteImage
+                className={styles.icon}
+                name='BURGER_BARS'
+            />
         </Button>
     )
 }

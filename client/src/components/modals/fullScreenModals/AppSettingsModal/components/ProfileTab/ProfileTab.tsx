@@ -12,7 +12,7 @@ export const ProfileTab: FC = () => {
 
     return (
         <HeadingLevel>
-            <TabPanel className='pt-[60px] pl-10 pb-24' {...tabPanelProps.profileTab}>
+            <TabPanel {...tabPanelProps.profileTab}>
                 <TabTitle>
                     <>Моя учётная запись</>
                 </TabTitle>

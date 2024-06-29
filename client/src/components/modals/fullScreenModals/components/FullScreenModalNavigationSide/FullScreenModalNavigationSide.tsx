@@ -1,10 +1,10 @@
-import { useContextSelectable } from '@lesnoypudge/utils-react';
+import { useContextProxy } from '@lesnoypudge/utils-react';
 import { cn } from '@utils';
 import { FC, PropsWithChildren } from 'react';
 import { FullScreenModalContext } from '../FullScreenModalContextProvider';
-import { pick } from '@lesnoypudge/utils';
+import { FocusInside, Scrollable } from '@components';
+import { FullScreenModalMobileControls } from '../FullScreenModalMobileControls';
 import { ScrollableV2 } from 'src/dev/WIP/ScrollableV2';
-import { FocusInside } from '@components';
 
 
 
@@ -23,14 +23,8 @@ export const FullScreenModalNavigationSide: FC<PropsWithChildren> = ({
     const {
         isMobileContentVisible,
         isMobileMenuVisible,
-    } = useContextSelectable(FullScreenModalContext, (v) => {
-        return pick(
-            v, 
-            'isMobileContentVisible',
-            'isMobileMenuVisible'
-        )
-    });
-
+    } = useContextProxy(FullScreenModalContext);
+    
     return (
         <FocusInside focused={isMobileMenuVisible}>
             {({wrapperRef}) => (
@@ -42,6 +36,8 @@ export const FullScreenModalNavigationSide: FC<PropsWithChildren> = ({
                 >
                     <ScrollableV2 className={styles.scrollable}>
                         <div className={styles.content}>
+                            <FullScreenModalMobileControls/>
+
                             {children}
                         </div>
                     </ScrollableV2>

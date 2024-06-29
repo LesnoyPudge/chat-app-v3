@@ -16,7 +16,7 @@ export const getAvatarPath = <T extends string | undefined | null>(
 
     if (isDev()) {
         if (avatarId.includes('http')) {
-            logger.log('fake avatar found', avatarId);
+            // logger.log('fake avatar found', avatarId);
             return avatarId as Return<T>;
         }
     }

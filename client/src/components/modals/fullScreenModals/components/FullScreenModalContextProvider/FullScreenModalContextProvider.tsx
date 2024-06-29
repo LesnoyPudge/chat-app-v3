@@ -1,33 +1,33 @@
-import { pick } from "@lesnoypudge/utils";
 import { createContextSelectable } from "@lesnoypudge/utils-react";
-import { AppSelectors } from "@redux/features";
-import { useMemoSelectorV2 } from "@redux/hooks";
-import { Dispatch, FC, PropsWithChildren, SetStateAction, useState } from "react";
+import { FC, PropsWithChildren } from "react";
+import { useMobileMenu, useShake } from "./hooks";
+import { useRefWithSetter } from "@hooks";
 
 
 
-type ContextValue = {
-    isMobileMenuOpen: boolean;
-    setIsMobileMenuOpen: Dispatch<SetStateAction<boolean>>;
-    isMobileMenuVisible: boolean;
-    isMobileContentVisible: boolean;
-}
+type ContextValue = (
+    ReturnType<typeof useMobileMenu>
+    & ReturnType<typeof useShake>
+    & {
+        isDirtyRef: ReturnType<typeof useRefWithSetter<boolean>>[0];
+        setIsDirty: ReturnType<typeof useRefWithSetter<boolean>>[1];
+    }
+)
 
 export const FullScreenModalContext = createContextSelectable<ContextValue>();
 
 export const FullScreenModalContextProvider: FC<PropsWithChildren> = ({
     children
 }) => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
-    const {isMobile} = useMemoSelectorV2((state) => {
-        return pick(AppSelectors.selectAppState(state), 'isMobile')
-    })
+    const mobileMenu = useMobileMenu()
+    const shake = useShake()
+    const [isDirtyRef, setIsDirty] = useRefWithSetter(false)
     
     const contextValue: ContextValue = {
-        isMobileMenuOpen,
-        setIsMobileMenuOpen,
-        isMobileContentVisible: isMobile && !isMobileMenuOpen,
-        isMobileMenuVisible: isMobile && isMobileMenuOpen,
+        ...mobileMenu,
+        ...shake,
+        isDirtyRef,
+        setIsDirty,
     }
 
     return (

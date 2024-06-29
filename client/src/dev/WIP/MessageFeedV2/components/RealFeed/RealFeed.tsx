@@ -1,4 +1,4 @@
-import { useContextSelectable } from "@lesnoypudge/utils-react";
+import { useContextProxy } from "@lesnoypudge/utils-react";
 import { FC } from "react";
 import { ViewportList } from "react-viewport-list";
 import { FeedContext } from "../FeedContextProvider";
@@ -17,13 +17,7 @@ export const RealFeed: FC<PropsWithClassName> = ({
         indexesShift,
         setViewportIndexes,
         setViewportList,
-    } = useContextSelectable(FeedContext, (v) => pick(
-        v, 
-        'messages',
-        'indexesShift',
-        'setViewportList',
-        'setViewportIndexes'
-    ))
+    } = useContextProxy(FeedContext)
 
     return (
         <div className={className}>

@@ -5,6 +5,6 @@ export * from './NavigationHeading';
 export * from './NavigationItem';
 export * from './TabTitle';
 export * from './FormConfirmationBar';
-export * from './ScreenShake';
 export * from './FullScreenModalContextProvider'
 export * from './FullScreenModalCloseButton'
+export * from './FullScreenModalMobileControls'

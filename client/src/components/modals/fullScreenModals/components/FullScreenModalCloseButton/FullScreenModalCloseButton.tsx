@@ -42,9 +42,9 @@ export const FullScreenModalCloseButton: FC<FullScreenModalCloseButton> = ({
                 />
             </div>
 
-            <span className={styles.text}>
+            <div className={styles.text}>
                 {hint}
-            </span>
+            </div>
         </Button>
     )
 }

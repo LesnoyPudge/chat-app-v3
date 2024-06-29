@@ -1,7 +1,6 @@
-import { useContextSelectable } from "@lesnoypudge/utils-react";
+import { useContextProxy } from "@lesnoypudge/utils-react";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { FeedContext } from "../../../../../FeedContextProvider";
-import { pick } from "@lesnoypudge/utils";
 
 
 
@@ -16,12 +15,7 @@ export const useMessageLayout = ({
 }: useMessageLayoutProps) => {
     const messageWrapperRef = useRef<HTMLDivElement | null>(null);
     const messageRef = useRef<HTMLElement | null>(null);
-    const {
-        normalizedViewportItemRefs,
-    } = useContextSelectable(FeedContext, (v) => pick(
-        v,
-        'normalizedViewportItemRefs',
-    ))
+    const { normalizedViewportItemRefs } = useContextProxy(FeedContext)
 
     useEffect(() => {
         if (!messageRef.current || !messageWrapperRef.current) return;

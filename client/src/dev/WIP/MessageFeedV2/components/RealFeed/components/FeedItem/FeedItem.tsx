@@ -1,4 +1,4 @@
-import { useContextSelectable } from "@lesnoypudge/utils-react";
+import { useContextProxy } from "@lesnoypudge/utils-react";
 import { FC, useEffect, useRef } from "react";
 import { FeedContext } from "../../../FeedContextProvider";
 import { pick } from "@lesnoypudge/utils";
@@ -31,13 +31,7 @@ export const FeedItem: FC<FeedItem> = ({id}) => {
         setFocusedId,
         getTabIndex,
         getIsFocused,
-    } = useContextSelectable(FeedContext, (v) => pick(
-        v,
-        'setFocusedId',
-        'messages',
-        'getTabIndex',
-        'getIsFocused'
-    ))
+    } = useContextProxy(FeedContext)
     
     const {messageRef, messageWrapperRef} = useMessageLayout({
         id,

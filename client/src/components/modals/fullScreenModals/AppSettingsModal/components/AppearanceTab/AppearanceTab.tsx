@@ -12,7 +12,7 @@ export const AppearanceTab: FC = () => {
 
     return (
         <HeadingLevel>
-            <TabPanel className='pt-[60px] pl-10 pb-24' {...tabPanelProps.appearanceTab}>
+            <TabPanel {...tabPanelProps.appearanceTab}>
                 <TabTitle>
                     <>Внешний вид</>
                 </TabTitle>

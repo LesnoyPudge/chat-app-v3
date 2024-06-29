@@ -1812,145 +1812,7 @@ const PlaygroundInner29: FC = () => {
 
 
 
-import { $applyNodeReplacement, $createTextNode, $getRoot, $getSelection, $insertNodes, $isParagraphNode, DecoratorNode, DOMConversionMap, DOMExportOutput, EditorConfig, EditorState, ElementNode, LexicalEditor, LexicalNode, NodeKey, SerializedElementNode, SerializedLexicalNode, SerializedTextNode, TextNode } from 'lexical';
-import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer';
-import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import { AutoLinkPlugin, LinkMatcher } from '@lexical/react/LexicalAutoLinkPlugin';
-import { AutoLinkNode, LinkNode } from '@lexical/link';
-import { } from '@lexical/utils';
-import { $generateHtmlFromNodes } from '@lexical/html';
 
-
-
-const theme = {
-};
-
-const onError = (error: Error, editor: LexicalEditor) => {
-    console.error(error);
-};
-
-const getInitialState = () => {
-    const value = '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
-
-    return value;
-};
-
-type ControllablePlugin = {
-    value: string;
-    onChange: (value: string) => void;
-}
-
-const ControllablePlugin: FC<ControllablePlugin> = ({
-    value,
-    onChange,
-}) => {
-    const [editor] = useLexicalComposerContext();
-    const lastStateRef = useRef<string>(JSON.stringify(editor.getEditorState().toJSON()));
-
-    useEffect(() => {
-        editor.registerUpdateListener(({ editorState }) => {
-            const stateString = JSON.stringify(editorState.toJSON());
-            lastStateRef.current = stateString;
-            onChange(stateString);
-        });
-    }, [editor, onChange]);
-
-    useEffect(() => {
-        if (value === lastStateRef.current) return;
-
-        editor.setEditorState(editor.parseEditorState(value));
-    }, [editor, value]);
-
-    return null;
-};
-
-const linkMatchers: LinkMatcher[] = (() => {
-    const URL_MATCHER = /((https?:\/\/(www\.)?)|(www\.))[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
-
-    const matcher: LinkMatcher = (text) => {
-        const match = URL_MATCHER.exec(text);
-        if (!match) return null;
-
-        const fullMatch = match[0];
-
-        return {
-            index: match.index,
-            length: fullMatch.length,
-            text: fullMatch,
-            url: fullMatch.startsWith('http') ? fullMatch : `https://${fullMatch}`,
-            attributes: {
-                title: 'Внешняя ссылка',
-                rel: 'noreferrer',
-                target: '_blank',
-            },
-        };
-    };
-
-    return [matcher];
-})();
-
-
-const EmojiPlugin: FC = () => {
-    const [editor] = useLexicalComposerContext();
-
-    useEffect(() => {
-        return editor.registerNodeTransform(TextNode, (textNode) => {
-            const parent = textNode.getParent();
-            if (!parent || !$isParagraphNode(parent)) return;
-
-            const text = textNode.getTextContent();
-            const matchObj = getEmojiMatch(text);
-            if (!matchObj) return;
-
-            const { match, emoji } = matchObj;
-
-            const code = match[0] as EmojiCode;
-            const splittedNodes = textNode.splitText(
-                match.index,
-                match.index + code.length,
-            );
-
-            const emojiCodeNode = splittedNodes.find((node) => node.__text === code);
-            if (!emojiCodeNode) return;
-
-            const emojiNode = RichTextEmoji.$createEmojiNode(code, emoji);
-
-            emojiCodeNode.replace(emojiNode);
-        });
-    }, [editor]);
-
-    useTimeout(() => {
-
-        editor.update(() => {
-            // $getRoot().select();
-
-            $insertNodes([RichTextEmoji.$createEmojiNode(
-                ':poop:',
-                emojiList.find((item) => item.code.includes(':poop:')) ?? emojiList[0],
-            )]);
-        }, {
-        });
-
-
-    }, 5000);
-
-    return null;
-};
-
-export const RichTextEmoji = {
-    Node: EmojiNode,
-    Plugin: EmojiPlugin,
-    $createEmojiNode,
-    $isEmojiNode,
-};
-
-import { TreeView } from '@lexical/react/LexicalTreeView';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { EmojiNode, $createEmojiNode, $isEmojiNode } from './emoji';
 import { Translation, useTranslation } from 'react-i18next';
 import { TRANSLATION } from '@i18n';
@@ -2221,37 +2083,6 @@ const Inner: FC<PropsWithChildren & {
     );
 };
 
-const PlaygroundInner36: FC = () => {
-    const [val, setVal] = useState(initial);
-    const editorRef = useRef<RTETypes.Editor | null>(null);
-    const onSubmit = useCallback((v: RTETypes.Nodes) => {
-        logger.log(v);
-        setVal(initial);
-        if (!editorRef.current) return;
-        RTEModules.Utils.resetEditor(editorRef.current, initial);
-    }, []);
-
-
-
-    return (
-        <div>
-            <div>wow</div>
-
-            <RichTextEditor.ContextProvider
-                name='editor'
-                initialValue={initial}
-                onChange={setVal}
-                onSubmit={onSubmit}
-            >
-                <Inner reff={editorRef}>
-                    <RichTextEditor.ContentEditable/>
-                </Inner>
-            </RichTextEditor.ContextProvider>
-
-            <RichTextEditor.Serialized value={val}/>
-        </div>
-    );
-};
 
 const FallbackScreen: FC = () => {
     return (
@@ -2415,6 +2246,28 @@ const PlaygroundInner40: FC = () => {
     )
 }
 
+const PlaygroundInner41: FC = () => {
+    return (
+        <div>
+            <ReactFocusLock autoFocus>
+                <button>
+                    <>b1</>
+                </button>
+
+                <button className='hidden'>
+                    <>hidden</>
+                </button>
+            </ReactFocusLock>
+
+            <MoveFocusInside enabled>
+                <button>
+                    <>b2</>
+                </button>
+            </MoveFocusInside>
+        </div>
+    )
+}
+
 
 export const Playground: FC<PropsWithChildren> = ({ children }) => {
     // const [enabled, setEnabled] = useLocalStorage('playground', false);
@@ -2442,7 +2295,8 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner38/> */}
                 {/* <PlaygroundInner39/> */}
                 {/* <Main/> */}
-                <PlaygroundInner40/>
+                {/* <PlaygroundInner40/> */}
+                <PlaygroundInner41/>
             {/* </If> */}
         </>
     );

@@ -21,8 +21,8 @@ export const Content: FC = () => {
 
     const username = 'лошок111';
     const revealedEmail = 'wow@mail.ru';
-    const splitedEmail = revealedEmail.split('@');
-    const unrevealedEmail = '*'.repeat(splitedEmail[0].length) + '@' + splitedEmail[1];
+    const splittedEmail = revealedEmail.split('@');
+    const unrevealedEmail = '*'.repeat(splittedEmail[0].length) + '@' + splittedEmail[1];
     const email = conditional(revealedEmail, unrevealedEmail, isEmailRevealed);
     const revealEmailButtonText = conditional('Скрыть', 'Показать', isEmailRevealed);
 

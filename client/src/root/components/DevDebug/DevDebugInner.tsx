@@ -2,6 +2,7 @@ import { OverlayContext, OverlayContextProvider, OverlayItem } from '@components
 import { useEventListener } from '@hooks';
 import { FC, useContext, useRef } from 'react';
 import { DevDebugContent } from './DevDebugContent';
+import { KEY } from '@lesnoypudge/utils';
 
 
 
@@ -17,6 +18,12 @@ const DevDebugInner: FC = () => {
 
         overlayApiRef.current.openOverlay();
     }, document);
+
+    useEventListener('keydown', (e) => {
+        if (e.key !== KEY.Slash) return;
+
+        console.clear()
+    }, window)
 
     return (
         <OverlayContextProvider>

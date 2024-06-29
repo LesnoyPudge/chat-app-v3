@@ -56,7 +56,7 @@ export const TabContextProvider = <T extends ProvidedTabs>(props: TabContextProv
 
     const changeTab = tabsArray.reduce((acc, key) => {
         acc[key] = () => {
-            if (key === currentTab.identifier) return;
+            // if (key === currentTab.identifier) return;
             if (!onTabChange) return setCurrentTab(getCurrentTab(key));
 
             let isPrevented = false;

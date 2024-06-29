@@ -1,11 +1,15 @@
 import { FC, useContext, useMemo } from 'react';
 import { LoadedEntityContext, ModalWindow, TabContextProvider } from '@components';
-import { FullScreenModalContentSide, FullScreenModalNavigationSide, FullScreenModalWrapper, ScreenShake } from '../components';
+import { 
+    FullScreenModalContentSide, FullScreenModalContext, FullScreenModalContextProvider, 
+    FullScreenModalNavigationSide, FullScreenModalWrapper 
+} from '../components';
 import { Form, Formik } from 'formik';
 import { createValidationSchema, getTransitionOptions } from '@utils';
 import { Navigation, OverviewTab } from './components';
 import { SliceEntityState } from '@types';
 import { RoomApi } from '@redux/features';
+import { ContextConsumerProxy } from '@lesnoypudge/utils-react';
 
 
 
@@ -33,6 +37,7 @@ const validationSchema = createValidationSchema<Pick<RoomSettingsModalFormValues
 export const RoomSettingsModal: FC = () => {
     const [room] = useContext(LoadedEntityContext.Room);
     const [update] = RoomApi.useRoomUpdateMutation();
+
     const initialValues: RoomSettingsModalFormValues = useMemo(() => ({
         name: room.name,
         isPrivate: room.isPrivate,
@@ -52,42 +57,54 @@ export const RoomSettingsModal: FC = () => {
             label='Настройки комнаты'
             transitionOptions={transitionOptions}
         >
-            <ScreenShake>
-                {({ triggerScreenShake, resetShakeStacks, withResetShakeStacks }) => (
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={validationSchema}
-                        onSubmit={withResetShakeStacks(handleSubmit)}
-                        onReset={resetShakeStacks}
-                        enableReinitialize
-                    >
-                        {({ dirty }) => (
-                            <TabContextProvider
-                                tabs={tabs}
-                                onTabChange={(prevent) => {
-                                    if (!dirty) return;
-                                    prevent();
-                                    triggerScreenShake();
-                                }}
-                            >
-                                {({ currentTab }) => (
-                                    <Form>
-                                        <FullScreenModalWrapper>
-                                            <FullScreenModalNavigationSide>
-                                                <Navigation/>
-                                            </FullScreenModalNavigationSide>
-
-                                            <FullScreenModalContentSide>
-                                                {currentTab.tab}
-                                            </FullScreenModalContentSide>
-                                        </FullScreenModalWrapper>
-                                    </Form>
-                                )}
-                            </TabContextProvider>
-                        )}
-                    </Formik>
-                )}
-            </ScreenShake>
+            <FullScreenModalContextProvider>
+                <ContextConsumerProxy context={FullScreenModalContext}>
+                    {({
+                        resetShakeStacks, triggerScreenShake, 
+                        closeMobileMenu, withResetShakeStacks,
+                        setIsDirty, isDirtyRef
+                    }) => (
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={validationSchema}
+                            onSubmit={withResetShakeStacks(handleSubmit)}
+                            onReset={resetShakeStacks}
+                            enableReinitialize
+                        >
+                            {({ dirty }) => {
+                                setIsDirty(dirty);
+                                
+                                return (
+                                    <TabContextProvider
+                                        tabs={tabs}
+                                        onTabChange={(prevent) => {
+                                            if (!isDirtyRef.current) {
+                                                return closeMobileMenu()
+                                            }
+                                            prevent();
+                                            triggerScreenShake();
+                                        }}
+                                    >
+                                        {({ currentTab }) => (
+                                            <Form>
+                                                <FullScreenModalWrapper>
+                                                    <FullScreenModalNavigationSide>
+                                                        <Navigation/>
+                                                    </FullScreenModalNavigationSide>
+    
+                                                    <FullScreenModalContentSide>
+                                                        {currentTab.tab}
+                                                    </FullScreenModalContentSide>
+                                                </FullScreenModalWrapper>
+                                            </Form>
+                                        )}
+                                    </TabContextProvider>
+                                )
+                            }}
+                        </Formik>
+                    )}
+                </ContextConsumerProxy>
+            </FullScreenModalContextProvider>
         </ModalWindow>
     );
 };

@@ -12,10 +12,10 @@ const styles = {
     wrapper : 'px-2 items-center',
     icon: 'h-6 w-6 fill-icon-300 mx-2',
     heading: 'text-heading-m text-color-primary font-medium',
-    scrollableInner: 'flex',
-    tabList: 'flex gap-4 shrink-0',
+    scrollableInner: 'flex w-fit [&>*]:shrink-0 items-center',
+    tabList: 'flex gap-4',
     button: {
-        base: `px-2 py-0.5 shrink-0 rounded text-color-secondary 
+        base: `px-2 py-0.5 rounded text-color-secondary 
         font-semibold transition-all duration-75 hover:text-color-primary 
         hover:bg-primary-active focus-visible:text-color-primary 
         focus-visible:bg-primary-active`,
@@ -51,17 +51,6 @@ export const Navigation: FC = () => {
             className={styles.wrapper}
             withMobileButton
         >
-            <SpriteImage
-                className={styles.icon}
-                name='FRIEND_ICON'
-            />
-
-            <Heading className={styles.heading}>
-                <>Друзья</>
-            </Heading>
-
-            <Separator spacing={16} orientation='vertical' height={24}/>
-
             <Scrollable
                 direction='horizontal'
                 innerClassName={styles.scrollableInner}
@@ -70,6 +59,17 @@ export const Navigation: FC = () => {
                 hidden
                 label={tabListLabel}
             >
+                <SpriteImage
+                    className={styles.icon}
+                    name='FRIEND_ICON'
+                />
+
+                <Heading className={styles.heading}>
+                    <>Друзья</>
+                </Heading>
+
+                <Separator spacing={16} orientation='vertical' height={24}/>
+
                 <TabList
                     className={styles.tabList}
                     label={tabListLabel}
@@ -79,7 +79,7 @@ export const Navigation: FC = () => {
                 >
                     <List list={objectKeys(tabs)}>
                         {(tabId) => (
-                            <FocusAt<HTMLButtonElement> 
+                            <FocusAt
                                 focused={getIsFocused(tabId)}
                                 scrollIntoView
                                 horizontal='center'

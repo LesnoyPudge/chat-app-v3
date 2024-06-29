@@ -75,3 +75,8 @@ font-weight
 - заменить все contextValues на contextValue, т.к. value всего одно (объект)
 -!!! заменить всё что связано с redux на store, useStore, Store
 -??? найти tw плагин для замены focus-visible и hover на чтото типо focus-visible-hover
+-??? изменить все accessible wrappers на прокси контексты вместо render functions
+-??? заменить способ определения заблокирован OverlayItem или нет, сейчас
+стрёмная проверка html елементов с аттрибутом blocked, изменить на хранение стейта
+в контексте, если выше есть OverlayContext и у него значение isBlocked: true,
+тогда возвращяем true

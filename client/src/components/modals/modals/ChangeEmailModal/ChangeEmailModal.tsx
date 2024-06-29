@@ -38,11 +38,12 @@ export const ChangeEmailModal: FC = () => {
                             console.log(`submit on step ${currentTab.identifier} with value ${values}`);
                             closeOverlay();
                         };
-
+                        
                         return (
                             <Formik
                                 initialValues={initialValues}
                                 onSubmit={handleSubmit}
+                                // validationSchema={validationSchemas[currentTab]}
                             >
                                 <Form>
                                     {currentTab.tab}

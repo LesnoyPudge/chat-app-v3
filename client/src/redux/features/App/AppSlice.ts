@@ -189,13 +189,13 @@ const userDummy: Entities.User.WithoutCredentials = {
 const selectMe = (state: RootState): Entities.User.WithoutCredentials => {
     const id = selectAppState(state).myId;
     if (!id) {
-        console.log('Unauthorized user selector', id);
+        // console.log('Unauthorized user selector', id);
         return userDummy;
     }
 
     const user = UserSelectors.selectUserState(state).entities[id];
     if (!user) {
-        console.log('Unauthorized user selector', id);
+        // console.log('Unauthorized user selector', id);
         return userDummy;
     }
 
