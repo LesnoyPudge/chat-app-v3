@@ -45,7 +45,7 @@ export const useSocketStateHandler = () => {
 
     useEffect(() => {
         socketIO.on('connect_error', (err) => {
-            console.log(`Socket event: connect_error | reason: ${err.message}`);
+            console.log(`Socket event: connect_error`, err);
         });
 
         socketIO.onAny((event, ...args) => {

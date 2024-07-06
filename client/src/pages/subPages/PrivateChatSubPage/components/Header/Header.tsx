@@ -1,7 +1,9 @@
-import { TopBar, UserStatus, Button,SpriteImage, Tooltip, UserAvatar, Ref } from '@components';
+import { TopBar, UserStatus } from '@components';
 import { Heading } from '@libs';
-import { twClassNames } from '@utils';
+import { cn } from '@utils';
 import { FC, useState } from 'react';
+import { Conversation, StartConversationButton } from './components';
+import { createContextSelectable } from '@lesnoypudge/utils-react';
 
 
 
@@ -13,84 +15,72 @@ const friend = {
     extraStatus: 'default',
 };
 
-export const Header: FC = () => {
-    const [inCall, setInCall] = useState(false);
+const styles = {
+    wrapper: {
+        base: 'flex flex-col w-full',
+        active: 'bg-primary-500 shadow-elevation-low',
+    },
+    topBar: {
+        base: 'px-4',
+        active: 'shadow-none',
+    },
+    userInfo: 'flex items-center m',
+    username: 'font-bold truncated',
+    status: 'size-2.5 mx-2.5',
+    button: 'ml-auto',
+}
 
-    const handleClick = () => setInCall(prev => !prev);
+type TMPConversationContext = {
+    isInConversation: boolean;
+    startConversation: () => void;
+    endConversation: () => void;
+}
+
+export const TMPConversationContext = createContextSelectable<
+    TMPConversationContext
+>()
+
+export const Header: FC = () => {
+    const [isInConversation, setIsInConversation] = useState(true);
+
+    const contextValue: TMPConversationContext = {
+        isInConversation,
+        startConversation: () => setIsInConversation(true),
+        endConversation: () => setIsInConversation(false),
+    }
 
     return (
-        <div className={twClassNames('flex flex-col w-full', { 'bg-primary-500 shadow-elevation-low': inCall })}>
-            <TopBar 
-                className={twClassNames('px-4', { 'shadow-none': inCall })}
-                withMobileButton
-            >
-                <Heading className='font-bold truncated'>
-                    {friend.username}
-                </Heading>
-
-                <UserStatus
-                    className='w-2.5 h-2.5 mx-2.5'
-                    status='online'
-                />
-
-                <Ref<HTMLButtonElement>>
-                    {(ref) => (
-                        <>
-                            <Button
-                                className='ml-auto fill-icon-200 hover:fill-icon-100'
-                                innerRef={ref}
-                                onLeftClick={handleClick}
-                            >
-                                <SpriteImage
-                                    className='w-6 h-6'
-                                    name='CALL'
-                                />
-                            </Button>
-
-                            <Tooltip
-                                preferredAlignment='bottom'
-                                leaderElementRef={ref}
-                            >
-                                <>Начать голосовой звонок</>
-                            </Tooltip>
-                        </>
-                    )}
-                </Ref>
-            </TopBar>
-
-            <If condition={inCall}>
-                <div
-                    className='flex flex-col justify-between items-center
-                        gap-2 pb-4 px-4
-                        min-h-[min(150px,50vh)] max-h-[max(150px,50vh)]'
+        <TMPConversationContext.Provider value={contextValue}>
+            <div className={cn(styles.wrapper.base, { 
+                [styles.wrapper.active]: isInConversation 
+            })}>
+                
+                <TopBar 
+                    className={cn(styles.topBar.base, { 
+                        [styles.topBar.active]: isInConversation 
+                    })}
+                    withMobileButton
                 >
-                    <UserAvatar
-                        className='h-20 w-20'
-                        avatarId='https://i.pravatar.cc/200'
-                        username='me'
-                    />
+                    <div className={styles.userInfo}>
+                        <Heading className={styles.username}>
+                            {friend.username}
+                        </Heading>
 
-                    <div className='flex gap-4 h-[56px] shrink-0'>
-                        <Button
-                            className='rounded-full'
-                        >
-                            wow
-                        </Button>
-
-                        <Button
-                            className='rounded-full'
-                        >
-                            amazing
-                        </Button>
-
-                        <Button
-                            className='rounded-full'
-                        >
-                            cool
-                        </Button>
+                        <UserStatus
+                            className={styles.status}
+                            status='online'
+                        />
                     </div>
-                </div>
-            </If>
-        </div>
+
+                    <If condition={!isInConversation}>
+                        <StartConversationButton className={styles.button}/>
+                    </If>
+                </TopBar>
+
+                <If condition={isInConversation}>
+                    <Conversation/>
+                </If>
+            </div>
+        </TMPConversationContext.Provider>
     );
 };

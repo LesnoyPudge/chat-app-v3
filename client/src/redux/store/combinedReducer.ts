@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { rootApi } from '@redux/rootApi';
-import { AppSlice, ChannelSlice, UserSlice, RoomSlice, MessageSlice, PrivateChannelSlice, RoleSlice, ChatSlice } from '@redux/features';
+import { AppSlice, ChannelSlice, UserSlice, RoomSlice, MessageSlice, PrivateChannelSlice, RoleSlice, ChatSlice, ConversationSlice } from '@redux/features';
 
 
 
@@ -14,4 +14,5 @@ export const combinedReducer = combineReducers({
     privateChannel: PrivateChannelSlice.reducer,
     role: RoleSlice.reducer,
     chat: ChatSlice.reducer, 
+    conversation: ConversationSlice.reducer,
 });

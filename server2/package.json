@@ -17,6 +17,7 @@
         "is-callable": "^1.2.7",
         "is-svg": "^4.4.0",
         "jsonwebtoken": "^9.0.0",
+        "mediasoup": "^3.14.8",
         "merge": "^2.1.1",
         "mongoose": "^7.1.0",
         "ms": "^2.1.3",

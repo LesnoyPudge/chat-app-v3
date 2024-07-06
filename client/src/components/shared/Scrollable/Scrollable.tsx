@@ -1,5 +1,5 @@
 import { PropsWithChildrenAsNodeOrFunction, PropsWithClassName, Size } from '@types';
-import { conditional, noop, twClassNames } from '@utils';
+import { cn, conditional, noop, twClassNames } from '@utils';
 import { FC, MutableRefObject, RefObject, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useSharedResizeObserver, useThrottle, useLatest } from '@hooks';
 import 'simplebar-react/dist/simplebar.min.css';
@@ -139,6 +139,7 @@ export const Scrollable: FC<Scrollable> = ({
 
         if (wrapperRef.current) {
             wrapperRef.current.style.height = size.height + 'px';
+            // wrapperRef.current.style.width = size.width + 'px';
         }
 
         (onContentResize || noop)(size);
@@ -197,7 +198,10 @@ export const Scrollable: FC<Scrollable> = ({
                     >
                         <div
                             {...contentNodeProps}
-                            className={`${contentNodeProps.className} ${innerClassName}`}
+                            className={cn(
+                                contentNodeProps.className,
+                                innerClassName
+                            )}
                             ref={mergeRefs(
                                 contentNodeProps.ref, 
                                 setScrollable,

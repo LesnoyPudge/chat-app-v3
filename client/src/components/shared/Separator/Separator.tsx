@@ -1,9 +1,9 @@
-import { twClassNames } from '@utils';
+import { cn } from '@utils';
 import { CSSProperties, FC } from 'react';
 
 
 
-interface Separator {
+type Separator = {
     className?: string;
     spacing?: number;
     thickness?: number;
@@ -11,9 +11,13 @@ interface Separator {
     orientation?: 'horizontal' | 'vertical';
 }
 
-const orientations = {
-    vertical: 'h-[var(--height)] w-[var(--thickness)] my-auto mx-[var(--spacing)]',
-    horizontal: 'h-[var(--thickness)] mx-auto my-[var(--spacing)]',
+const styles = {
+    wrapper: {
+        base: 'shrink-0 bg-primary-100',
+        vertical: `h-[var(--height)] w-[var(--thickness)] my-auto 
+        mx-[var(--spacing)]`,
+        horizontal: 'h-[var(--thickness)] mx-auto my-[var(--spacing)]',
+    }
 };
 
 export const Separator: FC<Separator> = ({ 
@@ -31,12 +35,13 @@ export const Separator: FC<Separator> = ({
     
     return (
         <div 
-            className={twClassNames(
-                'shrink-0 bg-primary-100',
-                orientations[orientation],
+            className={cn(
+                styles.wrapper.base,
+                styles.wrapper[orientation],
                 className,
             )}
             style={style}
+            role='separator'
         ></div>
     );
 };

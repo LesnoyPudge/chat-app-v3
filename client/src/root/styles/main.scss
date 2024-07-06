@@ -13,7 +13,7 @@
     * {        
         @apply min-w-0 outline-[3px] outline outline-transparent text-inherit;
 
-        scrollbar-width: thin;
+        // scrollbar-width: thin;
 
         &:focus:not(:focus-visible) {
             @apply focus-hidden;

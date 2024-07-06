@@ -1,11 +1,11 @@
-import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, Emoji, emojiRegExp, emojiList, getEmojiMatch } from '@components';
+import { Image, ChannelSettingsModal, OverlayContextProvider, AppSettingsModal, ColorPicker, Scrollable, CreateRoomModal, InviteToChannelModal, ChildrenAsNodeOrFunction, List, SearchBar, BanMemberModal, KickMemberModal, ChangeChannelOwnerModal, BlockUserModal, AddMemberToRoleModal, DeleteRoleModal, AddFriendModal, RoomSettingsModal, FindChannelModal, EmojiPicker, uniqueEmojiCodeList, EmojiCode , Message, Button, ModalWindow, Memo, Static, Tooltip, OverlayItem, AnimatedTransition, OverlayPortal, ContextMenu , OverlayContext, RelativelyPositioned, CheckBox, RadioInput, TextInput,SpriteImage, Space, Ref, MoveFocusInside, TabContext, TabContextProvider, CreateChannelModal, UserStatus, Emoji, emojiRegExp, emojiList, getEmojiMatch, FocusInside, Separator } from '@components';
 import { animated, useInView, useSpring, useSpringValue } from '@react-spring/web';
 import { Alignment, EncodedFile, OmittedRect, PropsWithChildrenAndClassName, PropsWithChildrenAsNodeOrFunction, PropsWithClassName } from '@types';
 import { getHTML, noop, throttle, twClassNames , sharedResizeObserver, sharedIntersectionObserver, getEnv, getTransitionOptions, getDiff, setTitle, logger } from '@utils';
 import React, { Component, createContext, CSSProperties, FC, Fragment, MutableRefObject, PropsWithChildren, PropsWithRef, PureComponent, ReactNode, RefObject, Suspense, useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { useBoolean, useCounter, useDocumentTitle, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useLocalStorage, useToggle, useUpdateEffect } from 'usehooks-ts';
+import { Actions, useBoolean, useCounter, useDocumentTitle, useEffectOnce, useElementSize, useHover, useImageOnLoad, useInterval, useIsFirstRender, useIsMounted, useLocalStorage, useMap, useToggle, useUpdateEffect } from 'usehooks-ts';
 import { VariableSizeList } from 'react-window';
-import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useKeyboardNavigation, useLatest, usePromise, ControlledPromise, useTimeout } from '@hooks';
+import { useFileDrop, useSharedIntersectionObserver, useSharedResizeObserver, useTextInput, useThrottle, useWebWorker, useEventListener, useRelativePosition, useAnimationFrame, useRefWithSetter, useProvidedValue, useStateAndRef, UseRelativePositionArgs, useKeyboardNavigation, useLatest, usePromise, ControlledPromise, useTimeout, useSet } from '@hooks';
 import { ViewportList } from 'react-viewport-list';
 import SimpleBarCore from 'simplebar-core';
 
@@ -124,187 +124,7 @@ import { audioBase } from './audioBase64';
 
 
 
-class VoiceChatService {
-    myId: string;
-    socket: Socket;
-    peerConnection: RTCPeerConnection | null;
-    currentId: string | null;
-    stunServers: string[] | null;
-    iceCandidate: RTCIceCandidate | null;
-    offer: {
-        sdp: string | undefined;
-        type: RTCSdpType;
-    } | null;
-    connections: {
-        iceCandidate: RTCIceCandidateInit;
-        offer: {
-            sdp: string | undefined;
-            type: RTCSdpType;
-        }
-    }[] | null;
-    localStream: MediaStream | null;
-    remoteStream: MediaStream | null;
 
-
-    constructor(socket: Socket) {
-        this.myId = String(Math.random());
-        this.socket = socket;
-        this.currentId = null;
-        this.peerConnection = null;
-        this.stunServers = null;
-        this.iceCandidate = null;
-        this.offer = null;
-        this.connections = null;
-        this.localStream = null;
-        this.remoteStream = null;
-    }
-
-    async init() {
-        console.log('init start');
-        const url = 'https://raw.githubusercontent.com/pradt2/always-online-stun/master/valid_hosts.txt';
-        const stunServersResponse = await fetch(url).catch((e) => console.log(e));
-        if (!stunServersResponse) return;
-
-        const stunServersText = await stunServersResponse.text();
-        this.stunServers = stunServersText.split('\n').filter(Boolean).map((server) => {
-            return `stun:${server}`;
-        });
-
-        this.peerConnection = new RTCPeerConnection({
-            iceCandidatePoolSize: 10,
-            iceServers: [{ urls: this.stunServers.slice(0, 3) }],
-        });
-
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true }).catch(() => null);
-        if (!stream) return;
-
-        this.localStream = stream;
-        this.remoteStream = new MediaStream();
-
-        const audio = new Audio();
-        audio.autoplay = true;
-        audio.srcObject = this.remoteStream;
-
-
-        // const audio2 = new Audio();
-        // audio2.autoplay = true;
-        // audio2.srcObject = this.localStream;
-
-        this.localStream.getTracks().forEach((track) => {
-            if (!this.peerConnection || !this.localStream) return;
-
-            this.peerConnection.addTrack(track, this.localStream);
-        });
-
-        this.peerConnection.ontrack = (event) => {
-            console.log('on track', event.streams);
-
-            event.streams[0].getTracks().forEach((track) => {
-                if (!this.remoteStream) return;
-
-                this.remoteStream.addTrack(track);
-                this.peerConnection?.addTrack(track, event.streams[0]);
-            });
-        };
-
-        this.peerConnection.onicecandidate = (event) => {
-            if (!event.candidate) return;
-            console.log('on ice', event.candidate);
-            this.iceCandidate = event.candidate;
-        };
-
-        const offerDescription = await this.peerConnection.createOffer();
-        await this.peerConnection.setLocalDescription(offerDescription);
-
-
-        this.offer = {
-            sdp: offerDescription.sdp,
-            type: offerDescription.type,
-        };
-
-        console.log('init finish');
-    }
-
-    async join(voiceChatId: string) {
-        console.log('join start', this.peerConnection, this.iceCandidate, this.offer, this.stunServers?.at(0));
-        if (voiceChatId === this.currentId) return;
-        if (
-            !this.peerConnection ||
-            !this.iceCandidate ||
-            !this.offer ||
-            !this.stunServers ||
-            !this.localStream ||
-            !this.remoteStream
-        ) return;
-
-        // const audio = new Audio();
-        // audio.autoplay = true;
-        // audio.src = audioBase;
-
-        // setTimeout(() => {
-        //     const audio2 = new Audio();
-        //     audio2.autoplay = true;
-        //     audio2.src = audioBase;
-        // }, 500);
-        // audio.play();
-
-        console.log('get in join');
-
-        // const localAudio = document.createElement('audio');
-        // localAudio.autoplay = true;
-        // localAudio.srcObject = this.localStream;
-        // document.body.appendChild(localAudio);
-
-        // const remoteAudio = document.createElement('audio');
-        // remoteAudio.autoplay = true;
-        // remoteAudio.srcObject = this.remoteStream;
-        // document.body.appendChild(remoteAudio);
-
-        this.currentId = voiceChatId;
-
-        console.log('my id is:', this.myId);
-        this.socket.emit('VoiceChat_join', {
-            myId: this.myId,
-            iceCandidate: this.iceCandidate.toJSON(),
-            offer: this.offer,
-        });
-
-        this.socket.on('VoiceChat_data', (
-            connections: {
-                myId: string;
-                iceCandidate: RTCIceCandidateInit;
-                offer: {
-                    sdp: string | undefined;
-                    type: RTCSdpType;
-                }
-            }[],
-        ) => {
-            console.log('get connect', connections);
-
-            connections.forEach((connection) => {
-                if (connection.myId === this.myId) return;
-                const answerDescription = new RTCSessionDescription(connection.offer);
-                this.peerConnection?.setRemoteDescription(answerDescription);
-
-                const candidate = new RTCIceCandidate(connection.iceCandidate);
-                this.peerConnection?.addIceCandidate(candidate);
-
-
-
-            });
-
-            this.connections = connections;
-        });
-
-
-        console.log('join end');
-    }
-
-    leave() {
-        this.currentId = null;
-        this.socket.removeAllListeners();
-    }
-}
 
 // const socket = io('ws://localhost:5000', { autoConnect: true, auth: { id: '648835dfc82aa7e61fd0f39f' } });
 
@@ -2188,6 +2008,13 @@ const PlaygroundInner39: FC = () => {
 
 import {} from 'slate-react'
 import { withHistory } from 'slate-history';
+import { useConst } from '@lesnoypudge/utils-react';
+import { randomUUID } from 'crypto';
+import { nanoid } from '@reduxjs/toolkit';
+import { ConversationService } from './ConversationService';
+import { PopupMenu } from 'src/components/overlay/PopupMenu';
+import { ScrollableV2 } from 'src/dev/WIP/ScrollableV2';
+import { loremIpsum } from 'lorem-ipsum';
 
 const initialValue: Descendant[] = [
     {
@@ -2246,24 +2073,677 @@ const PlaygroundInner40: FC = () => {
     )
 }
 
+const getStunServers = async() => {
+    const url = [
+        'https://raw.githubusercontent.com/',
+        'pradt2/always-online-stun/master/valid_hosts.txt'
+    ].join('');
+    
+    const stunServers = await (
+        fetch(url)
+        .then((res) => res.text())
+        .catch(() => undefined)
+    );
+    if (!stunServers) return;
+
+    return stunServers.split('\n').filter(Boolean).map((server) => {
+        return `stun:${server}`;
+    });
+}
+
+
+class VoiceChatService {
+    private myId: string;
+    private socket: Socket;
+    private peerConnection: RTCPeerConnection | null = null;
+    private currentId: string | null = null;
+    private stunServers: string[] | null = null;
+    private iceCandidate: RTCIceCandidate | null = null;
+    private offer: {
+        sdp: string | undefined;
+        type: RTCSdpType;
+    } | null = null;
+    private connections: {
+        iceCandidate: RTCIceCandidateInit;
+        offer: {
+            sdp: string | undefined;
+            type: RTCSdpType;
+        }
+    }[] | null = null;
+    private localStream: MediaStream | null = null;
+    private remoteStream: MediaStream | null = null;
+
+
+    constructor(userId: string, socket: Socket) {
+        this.myId = userId;
+        this.socket = socket;
+    }
+
+    reset() {
+        this.currentId = null;
+        this.peerConnection = null;
+        this.stunServers = null;
+        this.iceCandidate = null;
+        this.offer = null;
+        this.connections = null;
+        this.localStream = null;
+        this.remoteStream = null;
+    }
+
+    async init() {
+        console.log('init start');
+        const url = 'https://raw.githubusercontent.com/pradt2/always-online-stun/master/valid_hosts.txt';
+        const stunServersResponse = await fetch(url).catch((e) => console.log(e));
+        if (!stunServersResponse) return;
+
+        const stunServersText = await stunServersResponse.text();
+        this.stunServers = stunServersText.split('\n').filter(Boolean).map((server) => {
+            return `stun:${server}`;
+        });
+
+        this.peerConnection = new RTCPeerConnection({
+            iceCandidatePoolSize: 10,
+            iceServers: [{ urls: this.stunServers.slice(0, 3) }],
+        });
+        console.log(navigator.mediaDevices)
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true }).catch(() => null);
+        if (!stream) return;
+
+        this.localStream = stream;
+        this.remoteStream = new MediaStream();
+
+        const audio = new Audio();
+        audio.autoplay = true;
+        audio.srcObject = this.remoteStream;
+
+
+        // const audio2 = new Audio();
+        // audio2.autoplay = true;
+        // audio2.srcObject = this.localStream;
+
+        this.localStream.getTracks().forEach((track) => {
+            if (!this.peerConnection || !this.localStream) return;
+
+            this.peerConnection.addTrack(track, this.localStream);
+        });
+
+        this.peerConnection.ontrack = (event) => {
+            console.log('on track', event.streams);
+
+            event.streams[0].getTracks().forEach((track) => {
+                if (!this.remoteStream) return;
+
+                this.remoteStream.addTrack(track);
+                this.peerConnection?.addTrack(track, event.streams[0]);
+            });
+        };
+
+        this.peerConnection.onicecandidate = (event) => {
+            if (!event.candidate) return;
+            console.log('on ice', event.candidate);
+            this.iceCandidate = event.candidate;
+        };
+
+        const offerDescription = await this.peerConnection.createOffer();
+        await this.peerConnection.setLocalDescription(offerDescription);
+
+
+        this.offer = {
+            sdp: offerDescription.sdp,
+            type: offerDescription.type,
+        };
+
+        console.log('init finish');
+    }
+
+    async join(voiceChatId: string) {
+        console.log('join start', this.peerConnection, this.iceCandidate, this.offer, this.stunServers?.at(0));
+        if (voiceChatId === this.currentId) return;
+        if (
+            !this.peerConnection ||
+            !this.iceCandidate ||
+            !this.offer ||
+            !this.stunServers ||
+            !this.localStream ||
+            !this.remoteStream
+        ) return;
+
+        // const audio = new Audio();
+        // audio.autoplay = true;
+        // audio.src = audioBase;
+
+        // setTimeout(() => {
+        //     const audio2 = new Audio();
+        //     audio2.autoplay = true;
+        //     audio2.src = audioBase;
+        // }, 500);
+        // audio.play();
+
+        console.log('get in join');
+
+        // const localAudio = document.createElement('audio');
+        // localAudio.autoplay = true;
+        // localAudio.srcObject = this.localStream;
+        // document.body.appendChild(localAudio);
+
+        // const remoteAudio = document.createElement('audio');
+        // remoteAudio.autoplay = true;
+        // remoteAudio.srcObject = this.remoteStream;
+        // document.body.appendChild(remoteAudio);
+
+        this.currentId = voiceChatId;
+
+        console.log('my id is:', this.myId);
+        this.socket.emit('VoiceChat_join', {
+            myId: this.myId,
+            iceCandidate: this.iceCandidate.toJSON(),
+            offer: this.offer,
+        });
+
+        this.socket.on('VoiceChat_data', (
+            connections: {
+                myId: string;
+                iceCandidate: RTCIceCandidateInit;
+                offer: {
+                    sdp: string | undefined;
+                    type: RTCSdpType;
+                }
+            }[],
+        ) => {
+            console.log('get connect', connections);
+
+            connections.forEach((connection) => {
+                if (connection.myId === this.myId) return;
+                const answerDescription = new RTCSessionDescription(connection.offer);
+                this.peerConnection?.setRemoteDescription(answerDescription);
+
+                const candidate = new RTCIceCandidate(connection.iceCandidate);
+                this.peerConnection?.addIceCandidate(candidate);
+
+
+
+            });
+
+            this.connections = connections;
+        });
+
+
+        console.log('join end');
+    }
+
+    leave() {
+        this.currentId = null;
+        this.socket.removeAllListeners();
+    }
+}
+
+
+
+const AudioItem: FC<{
+    streamEntry: [string, MediaStream],
+    streamsMethods: Actions<string, MediaStream>,
+}> = ({
+    streamEntry,
+    streamsMethods,
+}) => {
+    const [userId, stream] = streamEntry
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const [volume, setVolume] = useState(1);
+
+    const onVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setVolume(Number(e.target.value));
+        if (!audioRef.current) return;
+        audioRef.current.volume = volume;
+    }
+
+    const toggleMute = () => {
+        const el = audioRef.current;
+        if (!el) return;
+        
+        el.muted = !el.muted;
+    }
+
+    const stop = () => {
+        stream.getTracks().forEach((track) => stream.removeTrack(track))
+        streamsMethods.remove(userId)
+    }
+
+    useEffect(() => {
+        const el = audioRef.current;
+        if (!el) return;
+
+        el.srcObject = stream
+    }, [])
+
+    return (
+        <li className='flex gap-2'>
+            <div>
+                <>user: {userId}</>
+            </div>
+            
+            <button onClick={toggleMute}>
+                <>toggleMute</>
+            </button>
+
+            <button onClick={stop}>
+                <>stop</>
+            </button>
+
+            <audio 
+                autoPlay
+                ref={audioRef}
+            />
+
+            <input 
+                type='range' 
+                value={volume}
+                min={0} 
+                max={1} 
+                step={0.01}
+                onChange={onVolumeChange}
+            />
+        </li>
+    )
+}
+
+type UserId = string;
+type SocketId = string;
+
+const stunServers = await getStunServers();
+
+// const conversation = new ConversationService(nanoid(5));
+
+const EMPTY_STATE = Symbol.for('EMPTY_STATE')
+
+const USE_CONST_WEAKMAP = new WeakMap();
+
+const useConst2 = <_Value,>(
+    factory: () => _Value, 
+    cleanup?: (v: _Value) => void
+) => {
+    const ref = useRef<_Value>(EMPTY_STATE as _Value);
+
+    if (ref.current === EMPTY_STATE) {
+        ref.current = factory()
+    }
+
+    useEffect(() => {
+        return () => cleanup?.(ref.current)
+    }, [])
+
+    return ref.current;
+}
+
+const myId = nanoid(5);
+const conversation = new ConversationService(myId)
+
 const PlaygroundInner41: FC = () => {
+    const c = useCounter(0)
+    // const ref = useConst2(() => nanoid(), (v) => console.log('clean', v))
+    // console.log('ref', ref)
+
+    // const myId = useConst2(() => nanoid(5));
+    // const [users, usersMethods] = useMap<UserId, {
+    //     socketId: SocketId;
+    //     data: Record<string, unknown>
+    // }>()
+    // const [streams, streamsMethods] = useMap<UserId, MediaStream>()
+    // const [peerData, setPeerData] = useState<{
+    //     iceCandidate: RTCIceCandidate;
+    //     offer: {
+    //         sdp: string | undefined;
+    //         type: RTCSdpType;
+    //     };
+    // } | null>(null);
+    // const peerConnection = useConst(() => new RTCPeerConnection({
+    //     iceCandidatePoolSize: 10,
+    //     iceServers: [{ urls: stunServers?.slice(0, 3) ?? '' }],
+    // }))
+    // const [remoteStream] = useState(new MediaStream())
+    // const conversation = useConst2(() => {
+    //     console.log('USE_CONST')
+    //     return new ConversationService((() => {
+    //         console.log('generateID')
+    //         return nanoid(5)
+    //     })())
+    // }, (v) => v.cleanup());
+    // const conversation = useConst2(() => {
+    //     // console.log('USE_CONST')
+    //     return new ConversationService((() => {
+    //         console.log('generateID')
+    //         return myId
+    //     })())
+    // }, (v) => v.cleanup());
+
+    console.log('id:', myId, conversation)
+    
+    // const join = async() => {
+    //     if (!peerData) {
+    //         const localStream = streams.get(myId);
+    //         if (!localStream) {
+    //             console.log('local stream required')
+    //             return;
+    //         }
+
+    //         localStream.getTracks().forEach((track) => {
+    //             if (!peerConnection || !localStream) return;
+
+    //             peerConnection.addTrack(track, localStream);
+    //         });
+
+    //         peerConnection.ontrack = (event) => {
+    //             console.log('on track', event.streams);
+
+    //             event.streams.forEach((stream) => {
+    //                 stream.getAudioTracks().forEach((track) => {
+
+    //                 })
+    //             })
+
+    //             event.streams[0].getTracks().forEach((track) => {
+    //                 // streamsMethods.set(event.)
+    //                 remoteStream.addTrack(track);
+    //                 peerConnection?.addTrack(track, event.streams[0]);
+    //             });
+    //         };
+
+    //         peerConnection.onicecandidate = (event) => {
+    //             if (!event.candidate) return;
+    //             // if (!peerData) return;
+    //             console.log('on ice', event.candidate);
+    //             // peerData.iceCandidate = event.candidate;
+    //             // @ts-expect-error
+    //             setPeerData((prev) => ({
+    //                 ...prev,
+    //                 iceCandidate: event.candidate
+    //             }))
+    //         };
+
+    //         const offerDescription = await peerConnection.createOffer();
+    //         await peerConnection.setLocalDescription(offerDescription);
+
+    //         // @ts-expect-error
+    //         setPeerData((prev) => ({
+    //             ...prev,
+    //             offer: {
+    //                 sdp: offerDescription.sdp,
+    //                 type: offerDescription.type,
+    //             }
+    //         }))
+            
+    //         return;
+    //     }
+
+    //     // @ts-expect-error
+    //     socketIO.emit('Conversation_subscribe', {
+    //         userId: myId,
+    //         data: {
+    //             iceCandidate: peerData.iceCandidate?.toJSON(),
+    //             offer: peerData.offer,
+    //         }
+    //     })
+    // }
+
+    // const leave = () => {
+    //     // conversation.leave()
+    //     // @ts-expect-error
+    //     socketIO.emit('Conversation_unsubscribe')
+    // }
+
+    const isMounted = useIsMounted()
+
+    // const requestMedia = () => {
+    //     navigator.mediaDevices.getUserMedia({
+    //         audio: {
+    //             echoCancellation: false,
+    //             noiseSuppression: true,
+    //         }
+    //     }).then((stream) => {
+    //         if (!isMounted()) return;
+            
+    //         streamsMethods.set(myId, stream)
+    //         // console.log('got media', stream)
+    //     });
+    // }
+
+    // useEffect(() => {
+    //     return;
+    //     // if (!onceRef.current)
+    //     console.log('effect run')
+    //     socketIO.connect();
+
+    //     const handler = (
+    //         conversationId: string, 
+    //         data: {
+    //             users: [string, {
+    //                 socketId: string;
+    //                 data: NonNullable<typeof peerData>
+    //             }][]}
+    //     ) => {
+    //         console.log('got data', data)
+    //         usersMethods.setAll(data.users)
+
+    //         data.users.forEach(([userId, userPeerData]) => {
+    //             if (userId === myId) return;
+
+    //             const answerDescription = new RTCSessionDescription(
+    //                 userPeerData.data.offer
+    //             );
+                
+    //             peerConnection.setRemoteDescription(answerDescription);
+
+    //             const candidate = new RTCIceCandidate(peerData?.iceCandidate);
+    //             peerConnection.addIceCandidate(candidate);
+
+
+
+    //         });
+    //     }
+
+    //     // @ts-expect-error
+    //     socketIO.on('Conversation_data', handler)
+
+    //     // socketIO.onAny((...data) => {
+    //     //     console.log('anyEvent', data)
+    //     // })
+    //     socketIO.on('connect', () => {
+    //         // usersMethods.set(myId, socketIO.id);
+    //     })
+        
+        
+
+    //     return () => {
+    //         // socketIO.off('Conversation_data', handler)
+    //         // socketIO.emit('Conversation_unsubscribe', myId)
+           
+    //         socketIO.removeAllListeners()
+    //         socketIO.disconnect()
+    //     }
+    // }, [])
+
+    // useEffect(() => {
+    //     fetch(getEnv().CUSTOM_SERVER_URL, {
+    //         method: 'get'
+    //     }).then((v) => {
+    //         console.log('wow')
+    //     }).catch((e) => {
+    //         console.log('err', e)
+    //     })
+    // }, [])
+
+    const [isConnected, setIsConnected] = useState(() => socketIO.connected)
+
+    useEffect(() => {
+        socketIO.on('connect', () => {
+            setIsConnected(socketIO.connected)
+        })
+
+        socketIO.on('disconnect', () => {
+            setIsConnected(socketIO.connected)
+        })
+    }, [])
+
+    const message = useTextInput('')
+    
     return (
         <div>
-            <ReactFocusLock autoFocus>
-                <button>
-                    <>b1</>
+            <div className='flex flex-col gap-4 [&>*]:outline-zinc-500'>
+                <div>
+                    <>count: {c.count}</>
+                </div>
+
+                <button onClick={c.increment}>
+                    <>inc</>
                 </button>
 
-                <button className='hidden'>
-                    <>hidden</>
-                </button>
-            </ReactFocusLock>
+                <div>
+                    <>isConnected: {String(isConnected)}</>
+                </div>
 
-            <MoveFocusInside enabled>
-                <button>
-                    <>b2</>
+                <div>
+                    <>userId: {myId} socket.id: {String(socketIO.id)}</>
+                </div>
+
+                <button onClick={() => socketIO.connect()}>
+                    <>connect</>
                 </button>
-            </MoveFocusInside>
+
+                <button onClick={() => conversation.join('zxc')}>
+                    <>join</>
+                </button>
+
+                <button onClick={() => {
+                    conversation.sendMessage(message.value)
+                }}>
+                    <>send message</>
+                </button>
+
+                <input 
+                    type='text' 
+                    name='message'
+                    value={message.value}
+                    onChange={message.handleChange}
+                />
+
+                <div id='chat'></div>
+            </div>
+        </div>
+    )
+
+    // return (
+    //     <div>
+    //         <div>my id: {myId}</div>
+
+    //         <div className='flex flex-col gap-4'>
+    //             <div>controls</div>
+            
+    //             <button onClick={join}>
+    //                 <>join</>
+    //             </button>
+
+    //             <button onClick={leave}>
+    //                 <>leave</>
+    //             </button>
+
+    //             <button onClick={requestMedia}>
+    //                 <>requestMedia</>
+    //             </button>
+    //         </div>
+
+    //         <div>
+    //             <div>users count: {users.size}</div>
+
+    //             <ul>
+    //                 {Array.from(users.entries()).map(([userId, data]) => {
+    //                     return (
+    //                         <li key={userId}>
+    //                             <>
+    //                                 {
+    //                                     myId === userId 
+    //                                         ? 'me' 
+    //                                         : 'user'
+    //                                 }: {userId} : {data.socketId}
+    //                             </>
+    //                         </li>
+    //                     )
+    //                 })}
+    //             </ul>
+    //         </div>
+
+    //         <div>
+    //             <div>streams count: {streams.size}</div>
+
+    //             <ul>
+    //                 {Array.from(streams.entries()).map((streamEntry) => (
+    //                     <AudioItem 
+    //                         key={streamEntry[0]} 
+    //                         streamEntry={streamEntry}
+    //                         streamsMethods={streamsMethods}
+    //                     />
+    //                 ))}
+
+    //                     <AudioItem 
+    //                         streamEntry={['qwe', remoteStream]}
+    //                         streamsMethods={streamsMethods}
+    //                     />
+    //             </ul>
+    //         </div>
+    //     </div>
+    // )
+}
+
+
+const PlaygroundInner42: FC = () => {
+    const ref = useRef<HTMLButtonElement>(null)
+
+    return (
+        <div>
+            <OverlayContextProvider isOverlayExistInitial>
+                {({openOverlay}) => (
+                    <>
+                        <button onClick={openOverlay} ref={ref}>
+                            <>wow</>
+                        </button>
+
+                        <PopupMenu.Wrapper 
+                            leaderElementOrRectRef={ref}
+                            label=''
+                        >
+                            <PopupMenu.Item>
+                                <>qwezxc</>
+                            </PopupMenu.Item>
+
+                            <PopupMenu.Separator/>
+
+                            <PopupMenu.Item>
+                                <>zxcqwe</>
+                            </PopupMenu.Item>
+                        </PopupMenu.Wrapper>
+                    </>
+                )}
+            </OverlayContextProvider>
+        </div>
+    )
+}
+
+const PlaygroundInner43: FC = () => {
+    return (
+        <div className='h-[500px] bg-slate-500'>
+            <ScrollableV2
+                direction='vertical'
+                size='small'
+                withOppositeGutter
+            >
+                <div>
+                    {Array(999).fill('').map((_, id) => {
+                        return (
+                            <div key={id} className='text-nowrap'>
+                                <>item {id} {loremIpsum({count: 50})}</>
+                            </div>
+                        )
+                    })}
+                </div>
+            </ScrollableV2>
         </div>
     )
 }
@@ -2296,7 +2776,7 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner39/> */}
                 {/* <Main/> */}
                 {/* <PlaygroundInner40/> */}
-                <PlaygroundInner41/>
+                <PlaygroundInner42/>
             {/* </If> */}
         </>
     );

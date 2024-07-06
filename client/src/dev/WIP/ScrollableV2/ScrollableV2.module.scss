@@ -2,6 +2,107 @@
 
 
 .scrollable {
-    overflow-x: hidden;
-    overflow-y: scroll;
+    // direction?: 'horizontal' | 'vertical' | 'both';
+    // withOppositeGutter?: boolean;
+    // size?: 'default' | 'small' | 'hidden';
+
+    // '--scrollbar-thickness': small ? 10 : hidden ? 0 : 10,
+    // '--track-thickness': small ? 6 : hidden ? 0 : 8,
+    // '--thumb-thickness': small ? 6 : hidden ? 0 : 8,
+
+    --thumb-accessible-size: 44px;
+    --scrollbar-thickness: 0px;
+    --track-thickness: 0px;
+    --thumb-thickness: 0px;
+    --border-width: 2px;
+    --track-border-width: calc(
+        (    
+            var(--scrollbar-thickness) 
+            - var(--track-thickness)
+        ) / 2
+    );
+    --thumb-border-width: calc(
+        (    
+            var(--scrollbar-thickness) 
+            - var(--thumb-thickness)
+        ) / 2
+    );
+
+    @supports not selector(::-webkit-scrollbar) {
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        scrollbar-width: var(--firefox-width);
+    }
+
+    &::-webkit-scrollbar-button {
+        display: none;
+    }
+
+    &::-webkit-scrollbar-corner {
+        display: none;
+    }
+
+    &::-webkit-scrollbar {
+        width: var(--scrollbar-thickness);
+        height: var(--scrollbar-thickness);
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: var(--scrollbar-track);
+        border-radius: var(--track-thickness); 
+        border: var(--track-border-width) solid rgba(0, 0, 0, 0);  
+        background-clip: padding-box;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--scrollbar-thumb);
+        border-radius: var(--thumb-thickness);
+        border: var(--thumb-border-width) solid rgba(0, 0, 0, 0);  
+        background-clip: padding-box;
+        min-height: var(--thumb-accessible-size);
+        min-width: var(--thumb-accessible-size);
+    }
+
+    &[data-size="default"] {
+        --firefox-width: auto;
+        --scrollbar-thickness: 10px;
+        --track-thickness: 8px;
+        --thumb-thickness: 8px;
+    }
+
+    &[data-size="small"] {
+        --firefox-width: thin;
+        --scrollbar-thickness: 8px;
+        --track-thickness: 6px;
+        --thumb-thickness: 6px;
+    }
+
+    &[data-size="hidden"] {
+        --firefox-width: none;
+        --scrollbar-thickness: 0px;
+        --track-thickness: 0px;
+        --thumb-thickness: 0px;
+    }
+
+    &[data-direction="horizontal"] {
+        overflow-x: auto;
+        overflow-y: hidden;    
+    }
+    
+    &[data-direction="vertical"] {
+        overflow-x: hidden;
+        overflow-y: auto;    
+    }
+    
+    &[data-direction="both"] {
+        overflow-x: auto;
+        overflow-y: auto;    
+    }
+
+    &[data-with-opposite-gutter="false"] {
+        scrollbar-gutter: stable;
+    }
+    
+    &[data-with-opposite-gutter="true"] {
+        scrollbar-gutter: stable both-edges;
+    }
 }

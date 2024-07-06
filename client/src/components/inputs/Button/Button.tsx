@@ -14,28 +14,32 @@ type StylingPresets = (
     'invisibleBrand'
 );
 
-interface Button extends PropsWithChildrenAndClassName, PropsWithInnerRef<HTMLButtonElement> {
-    id?: string;
-    style?: React.CSSProperties;
-    stylingPreset?: StylingPresets,
-    size?: 'small' | 'medium' | 'big';
-    type?: 'button' | 'submit' | 'reset';
-    isActive?: boolean;
-    isDisabled?: boolean;
-    isLoading?: boolean;
-    tabIndex?: number;
-    label?: string;
-    controls?: string;
-    hasPopup?: 'dialog' | 'menu';
-    role?: 'button' | 'menuitem' | 'tab';
-    hidden?: boolean;
-    onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
-    onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
-    onMiddleClick?: (e?: React.MouseEvent) => void;
-    onRightClick?: (e?: React.MouseEvent) => void;
-    onMouseEnter?: (e?: React.MouseEvent) => void;
-    onFocus?: (e?: React.FocusEvent) => void;
-}
+export type Button = (
+    PropsWithChildrenAndClassName
+    & PropsWithInnerRef<HTMLButtonElement>
+    & {
+        id?: string;
+        style?: React.CSSProperties;
+        stylingPreset?: StylingPresets,
+        size?: 'small' | 'medium' | 'big';
+        type?: 'button' | 'submit' | 'reset';
+        isActive?: boolean;
+        isDisabled?: boolean;
+        isLoading?: boolean;
+        tabIndex?: number;
+        label?: string;
+        controls?: string;
+        hasPopup?: 'dialog' | 'menu';
+        role?: 'button' | 'menuitem' | 'tab';
+        hidden?: boolean;
+        onAnyClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
+        onLeftClick?: (e?: React.MouseEvent | React.KeyboardEvent) => void;
+        onMiddleClick?: (e?: React.MouseEvent) => void;
+        onRightClick?: (e?: React.MouseEvent) => void;
+        onMouseEnter?: (e?: React.MouseEvent) => void;
+        onFocus?: (e?: React.FocusEvent) => void;
+    }
+)
 
 const styles = {
     base: `flex shrink-0 items-center justify-center w-fit h-fit

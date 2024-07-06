@@ -1,6 +1,6 @@
 import { Button, OverlayContextProvider, Popup, Ref, UserAvatar } from '@components';
 import { AppSelectors } from '@redux/features';
-import { useMemoSelector } from '@redux/hooks';
+import { useMemoSelector, useMemoSelectorV2 } from '@redux/hooks';
 import { FC } from 'react';
 import { Menu } from './components';
 
@@ -14,9 +14,11 @@ const styles = {
 };
 
 export const UserInfo: FC = () => {
-    const username = useMemoSelector((s) => AppSelectors.selectMe(s).username, []);
-    const avatarId = useMemoSelector((s) => AppSelectors.selectMe(s).avatarId, []);
-    const extraStatus = useMemoSelector((s) => AppSelectors.selectMe(s).extraStatus, []);
+    const {
+        username,
+        avatarId,
+        extraStatus,
+    } = useMemoSelectorV2(AppSelectors.selectMe);
 
     return (
         <Ref<HTMLButtonElement>>

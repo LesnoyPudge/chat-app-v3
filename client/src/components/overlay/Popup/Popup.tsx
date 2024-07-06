@@ -6,15 +6,22 @@ import { StrictOmit } from 'ts-essentials';
 
 
 
-type Popup = PropsWithChildren &
-Partial<Pick<AnimatedTransition<object>, 'transitionOptions'>> &
-Partial<StrictOmit<OverlayItem, 'children' | 'isRendered'>> &
-StrictOmit<RelativelyPositioned, 'children'> & {
-    role?: 'dialog' | 'menu';
-    label?: string;
-}
+type Popup = (
+    PropsWithChildren 
+    & Partial<Pick<AnimatedTransition<object>, 'transitionOptions'>> 
+    & Partial<StrictOmit<OverlayItem, 'children' | 'isRendered'>> 
+    & StrictOmit<RelativelyPositioned, 'children'> 
+    & {
+        role?: 'dialog' | 'menu';
+        label?: string;
+    }
+)
 
 const defaultTransitionOptions = getTransitionOptions.withOpacity();
+
+const styles = {
+    wrapper: 'pointer-events-auto'
+}
 
 export const Popup: FC<Popup> = ({
     transitionOptions = defaultTransitionOptions,
@@ -60,6 +67,7 @@ export const Popup: FC<Popup> = ({
                         unbounded={unbounded}
                     >
                         <animated.div
+                            className={styles.wrapper}
                             style={style}
                             role={role}
                             aria-label={label}
