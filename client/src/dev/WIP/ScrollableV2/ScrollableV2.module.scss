@@ -15,6 +15,7 @@
     --track-thickness: 0px;
     --thumb-thickness: 0px;
     --border-width: 2px;
+    --gutter: auto;
     --track-border-width: calc(
         (    
             var(--scrollbar-thickness) 
@@ -27,6 +28,8 @@
             - var(--thumb-thickness)
         ) / 2
     );
+
+    scrollbar-gutter: var(--gutter);
 
     @supports not selector(::-webkit-scrollbar) {
         scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
@@ -98,11 +101,11 @@
         overflow-y: auto;    
     }
 
-    &[data-with-opposite-gutter="false"] {
-        scrollbar-gutter: stable;
-    }
-    
-    &[data-with-opposite-gutter="true"] {
-        scrollbar-gutter: stable both-edges;
+    &[data-direction="vertical"], &[data-direction="both"] {
+        --gutter: stable;
+
+        &[data-with-opposite-gutter="true"] {
+            --gutter: stable both-edges;
+        }
     }
 }

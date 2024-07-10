@@ -9,9 +9,7 @@ import { Memo } from "@components";
 
 
 
-export const RealFeed: FC<PropsWithClassName> = ({
-    className = ''
-}) => {
+export const RealFeed = () => {
     const {
         messages,
         indexesShift,
@@ -20,26 +18,24 @@ export const RealFeed: FC<PropsWithClassName> = ({
     } = useContextProxy(FeedContext)
 
     return (
-        <div className={className}>
-            <ViewportList
-                items={messages}
-                initialIndex={messages.length - 1}
-                withCache
-                overscan={3}
-                indexesShift={indexesShift}
-                initialPrerender={10}
-                axis='y'
-                initialAlignToTop={true}
-                scrollThreshold={0}
-                ref={setViewportList}
-                onViewportIndexesChange={setViewportIndexes}
-            >
-                {({ id }) => (
-                    <Memo key={id}>
-                        <FeedItem id={id}/>
-                    </Memo>
-                )}
-            </ViewportList>
-        </div>
+        <ViewportList
+            items={messages}
+            initialIndex={messages.length - 1}
+            withCache
+            overscan={3}
+            indexesShift={indexesShift}
+            initialPrerender={10}
+            axis='y'
+            initialAlignToTop={true}
+            scrollThreshold={0}
+            ref={setViewportList}
+            onViewportIndexesChange={setViewportIndexes}
+        >
+            {({ id }) => (
+                <Memo key={id}>
+                    <FeedItem id={id}/>
+                </Memo>
+            )}
+        </ViewportList>
     )
 }

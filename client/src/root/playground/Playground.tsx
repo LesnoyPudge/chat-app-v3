@@ -2009,12 +2009,13 @@ const PlaygroundInner39: FC = () => {
 import {} from 'slate-react'
 import { withHistory } from 'slate-history';
 import { useConst } from '@lesnoypudge/utils-react';
-import { randomUUID } from 'crypto';
 import { nanoid } from '@reduxjs/toolkit';
 import { ConversationService } from './ConversationService';
 import { PopupMenu } from 'src/components/overlay/PopupMenu';
 import { ScrollableV2 } from 'src/dev/WIP/ScrollableV2';
 import { loremIpsum } from 'lorem-ipsum';
+import { PGRoom1 } from './rooms/PGRoom1/PGRoom1';
+import { PGRoom2 } from './rooms/PGRoom2/PGRoom2';
 
 const initialValue: Descendant[] = [
     {
@@ -2730,7 +2731,7 @@ const PlaygroundInner43: FC = () => {
     return (
         <div className='h-[500px] bg-slate-500'>
             <ScrollableV2
-                direction='vertical'
+                direction='both'
                 size='small'
                 withOppositeGutter
             >
@@ -2776,7 +2777,9 @@ export const Playground: FC<PropsWithChildren> = ({ children }) => {
                 {/* <PlaygroundInner39/> */}
                 {/* <Main/> */}
                 {/* <PlaygroundInner40/> */}
-                <PlaygroundInner42/>
+                {/* <PlaygroundInner43/> */}
+                <PGRoom1/>
+                {/* <PGRoom2/> */}
             {/* </If> */}
         </>
     );

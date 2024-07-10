@@ -14,7 +14,7 @@
         "client:productionDev": "cross-env NODE_ENV=production CUSTOM_NODE_ENV=production npm run this:start --prefix client",
         "client:lint": "npm run this:lint --prefix client",
         "client:lintFix": "npm run this:lintFix --prefix client",
-        "client:generateImageStuff": "npm run this:generateImageStuff --prefix client",
+        "client:generateImages": "npm run this:generateImages --prefix client",
         "//1": "",
         "server:install": "npm run this:install --prefix server",
         "server:uninstall": "rimraf server/node_modules",

@@ -35,19 +35,19 @@ export const useKeyboardNavigation = (
         onFocusChange = noop,
     } = options || {};
 
-    const providedListRef = useLatest(providedFocusableListRef.current ? providedFocusableListRef.current : []);
+    const providedListRef = useLatest(providedFocusableListRef.current ?? []);
     const [virtualListRef, setVirtualListRef] = useRefWithSetter<ObjectWithId[]>([]);
 
     const focusableListRef = useLatest(
         virtualized
-            ? (virtualListRef.current || [])
-            : (providedListRef.current || []),
+            ? (virtualListRef.current ?? [])
+            : (providedListRef.current ?? []),
     );
 
     const setViewportIndexes = useCallback(([first, second]: [number, number]) => {
         const startIndex = Math.max(0, first - 1 - overscan);
         const endIndex = Math.min(providedListRef.current.length, second + 1 + overscan);
-
+        
         setVirtualListRef(providedListRef.current.slice(
             startIndex,
             endIndex,
@@ -98,7 +98,7 @@ export const useKeyboardNavigation = (
 
     useEventListener('keydown', (e) => {
         const key = e.key;
-
+        
         const isForward = key === Key.ArrowDown || key === Key.ArrowRight;
         const isBackward = key === Key.ArrowUp || key === Key.ArrowLeft;
 

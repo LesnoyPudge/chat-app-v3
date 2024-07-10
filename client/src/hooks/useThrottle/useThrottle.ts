@@ -1,4 +1,5 @@
-import { useStateAndRef } from '@hooks';
+import { useLatest, useStateAndRef } from '@hooks';
+import { AnyFunction } from '@shared';
 import { fpsToMs } from '@utils';
 import { useCallback, useRef, useState } from 'react';
 
@@ -11,7 +12,7 @@ export const useThrottle = () => {
 
     const throttle = useCallback(<F extends (...args: never[]) => void>(
         callback: F, 
-        delayMS = fpsToMs(60),
+        delayMS: number,
     ) => {
         const timeoutFunc = () => {
             if (!calledDuringThrottleRef.current) {

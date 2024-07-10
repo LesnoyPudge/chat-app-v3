@@ -1,0 +1,303 @@
+import { useAnimationFrame, useEventListener, useEventListenerV2, useKeyboardNavigation, useLatest, useResizeObserver, useTimeout } from "@hooks";
+import { inRange, noop } from "@lesnoypudge/utils";
+import { FC, PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ViewportList } from "react-viewport-list";
+import { ScrollableV2 } from "src/dev/WIP/ScrollableV2";
+import { useInterval } from "usehooks-ts";
+import { ListChildComponentProps, VariableSizeList } from 'react-window';
+import { useAutoScroll } from "./useAutoScroll";
+
+
+
+const List: FC<{count: number, prefix?: string}> = ({count, prefix}) => {
+    return Array(count).fill('').map((_, i) => {
+        return (
+            <div key={i}>
+                <>{prefix} item {i}</>
+            </div>
+        )
+    })
+}
+
+export const PGRoom1: FC = () => {
+    const [resizable, setResizable] = useState(300);
+    const [newCount, setNewCount] = useState(0);
+
+    useInterval(() => {
+        // setResizable(inRange(250, 400));
+    }, 1000)
+
+    useInterval(() => {
+        // setNewCount((prev) => prev + 1)
+    }, 500)
+
+    useTimeout(() => {
+        location.reload()
+    }, 3 * 60 * 1000)
+
+    const list = [
+        ...Array(resizable).fill('').map((_, i) => ({
+            id: `resizable-${i}`
+        })),
+        ...Array(newCount).fill('').map((_, i) => ({
+            id: `new-${i}`
+        })),
+    ]
+
+    return (
+        <>
+            <AutoScrollable list={list}>
+                <List count={resizable} prefix="resizable"/>
+
+                <List count={newCount} prefix="new"/>
+
+                {/* {({}) => (
+                    
+        
+                    <div>
+                        <>last item</>
+                    </div>
+                )} */}
+            </AutoScrollable>
+
+            <button onClick={() => setNewCount((prev) => prev + 1)}>
+                <>add item</>
+            </button>
+        </>
+    )
+}
+
+type AutoScrollable = (
+    PropsWithChildren
+    & {
+        list: {id: string}[];
+    }
+)
+
+import { useVirtualizer } from '@tanstack/react-virtual'
+import { cn } from "@utils";
+import { FocusAt } from "@components";
+import { mergeRefs } from "@lesnoypudge/utils-react";
+import { useAutoScrollV2 } from "./useAutoScrollV2/useAutoScrollV2";
+import { useKeyboardNavigationV2 } from "./useKeyboardNavigationV2/useKeyboardNavigationV2";
+
+const AutoScrollable: FC<AutoScrollable> = ({
+    list,
+    children,
+}) => {
+    const contentRef = useRef<HTMLDivElement>(null);
+    const scrollableRef = useRef<HTMLDivElement>(null)
+    // const {
+    //     scrollToBottom,
+    // } = useAutoScroll(scrollableRef);
+    // const scrollToBottom = noop;
+
+    const {
+        shouldAutoScroll,
+        scrollToBottom,
+    } = useAutoScrollV2(scrollableRef, contentRef);
+
+    const virtualizer = useVirtualizer({
+        count: list.length,
+        getScrollElement: () => scrollableRef.current,
+        estimateSize: () => 100,
+        getItemKey: (index) => list[index].id,
+        overscan: 3,
+        // onChange(instance) {
+        //     const vItems = instance.getVirtualItems(); 
+        //     console.log(
+        //         vItems[0].index, 
+        //         vItems[vItems.length - 1].index
+        //     )
+        //     setViewportIndexes([
+        //         vItems[0].index, 
+        //         vItems[vItems.length - 1].index
+        //     ])
+        // },
+    })
+    
+    const items = virtualizer.getVirtualItems()
+
+    const latestItemsRef = useLatest(items.map((value) => list[value.index]))
+    const listRef = useRef(list)
+    const {
+        getTabIndex,
+        setViewportIndexes,
+        getIsFocused,
+    } = useKeyboardNavigation(listRef, contentRef, {
+        direction: 'vertical',
+        loop: false,
+        onFocusChange(_item) {
+            return;
+            console.log('focus change')
+            const indexToScrollTo = list.findIndex((item) => {
+                return item.id === _item?.id
+            })
+
+            virtualizer.scrollToIndex(indexToScrollTo, {align: 'center'})
+        },
+        // overscan: 3,
+        initialFocusableId: list.at(-1)?.id,
+    })
+
+    return (
+        <div className="h-[90dvh] flex flex-col">
+            <If condition={true}>
+                <ScrollableV2 
+                    className="h-full contain-strict"
+                    withOppositeGutter
+                    direction="vertical"
+                    innerRef={scrollableRef}
+                >
+                    <div
+                        // ref={setRoot}
+                        ref={contentRef}
+                        tabIndex={0}
+                        className="relative"
+                        style={{
+                            height: virtualizer.getTotalSize(),
+                        }}
+                    >
+                        <div
+                            className="will-change-transform absolute top-0 left-0 w-full"
+                            style={{
+                                transform: `translateY(${items[0]?.start ?? 0}px)`,
+                            }}
+                        >
+                            {items.map((item) => (
+                                <FocusAt 
+                                    key={item.key} 
+                                    focused={getIsFocused(String(item.key))} 
+                                    // scrollIntoView
+                                    // vertical="center"
+                                >
+                                    {(({focusableRef}) => (
+                                        <div     
+                                            data-index={item.index}
+                                            data-key={item.key}
+                                            ref={mergeRefs(
+                                                virtualizer.measureElement,
+                                                focusableRef,
+                                            )}
+                                            tabIndex={getTabIndex(String(item.key))}
+        
+                                        >
+                                            <div>{list[item.index].id}</div>
+                                        </div>
+                                    ))}
+                                </FocusAt>
+                            ))}
+                        </div>
+                    </div>
+                </ScrollableV2>
+            </If>
+
+            <If condition={false}>
+                <ScrollableV2 
+                    className=""
+                    direction="vertical"
+                    withOppositeGutter
+                    innerRef={scrollableRef}
+                >
+                    <div
+                        style={{
+                            height: virtualizer.getTotalSize(),
+                            // width: '100%',
+                            position: 'relative',
+                        }}
+                    >
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                transform: `translateY(${items[0]?.start ?? 0}px)`,
+                            }}
+                        >
+                            {items.map((virtualRow) => (
+                                <div
+                                    key={virtualRow.key}
+                                    data-index={virtualRow.index}
+                                    ref={virtualizer.measureElement}
+                                    className={
+                                        virtualRow.index % 2 ? 'ListItemOdd' : 'ListItemEven'
+                                    }
+                                >
+                                    <div style={{ padding: '10px 0' }}>
+                                        <div>Row {virtualRow.index}</div>
+                                        <div>{list[virtualRow.index].id}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </ScrollableV2>
+            </If>
+
+            <If condition={false}>
+                <ScrollableV2 
+                    direction="vertical"
+                    withOppositeGutter
+                    innerRef={scrollableRef}
+                >
+                    <div ref={contentRef}>
+                        {/* <ViewportList
+                            viewportRef={scrollableRef}
+                            items={list}
+                            // overscan={3}
+                            // itemMargin={0}
+                            // indexesShift={list.length}
+                            axis='y'
+                            // initialIndex={list.length - 1}
+                            // initialPrerender={20}
+                            // withCache
+                            // scrollThreshold={0}
+                            
+                            // ref={setViewportList}
+                            // onViewportIndexesChange={setViewportIndexes}
+                            
+
+                            // getItemBoundingClientRect={}
+                            // initialAlignToTop
+                            // initialDelay={}
+                            // initialIndex={}
+                            // initialOffset={}
+                            // initialPrerender={}
+                            // itemSize={}
+                            // onViewportIndexesChange={}
+                            // overflowAnchor=""
+                            // ref={}
+                            // renderSpacer={}
+                            // scrollThreshold={}
+                            // withCache
+                        >
+                            {(item) => (
+                                <div key={item.id}>
+                                    {item.id}
+                                </div>
+                            )}
+                        </ViewportList> */}
+
+                        {/* <List count={100}/> */}
+
+                        {children}
+                            
+                        <div>
+                            <>last item</>
+                        </div>
+                    </div>
+                </ScrollableV2>
+            </If>
+            
+            <button onClick={scrollToBottom}>
+                <>to bottom</>
+            </button>
+            
+            <div>
+                <div>data</div>
+                <div>shouldAutoScroll: {String(shouldAutoScroll)}</div>
+            </div>
+        </div>
+    )
+}

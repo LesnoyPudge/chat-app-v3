@@ -21,3 +21,7 @@ export * from './useMountedApiWrapper';
 export * from './usePromise';
 export * from './useTimeout';
 export * from './useEntitySubscription';
+export * from './useMutationObserver'
+export * from './useResizeObserverV2'
+export * from './useEventListenerV2'
+export * from './useFocusVisibleWithinEvent'

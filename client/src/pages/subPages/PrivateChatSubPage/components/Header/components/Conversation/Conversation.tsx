@@ -3,12 +3,12 @@ import { FC } from "react";
 import { Controls, Participant } from "./components";
 import { useMemoSelectorV2 } from "@redux/hooks";
 import { AppSelectors } from "@redux/features";
+import { ScrollableV2 } from "src/dev/WIP/ScrollableV2";
 
 
 
 const styles = {
     wrapper: `flex flex-col justify-between items-center gap-3 p-4`,
-    scrollable: 'w-full',
     list: 'flex w-fit gap-6 mx-auto p-1.5',
 }
 
@@ -17,11 +17,7 @@ export const Conversation: FC = () => {
 
     return (
         <div className={styles.wrapper}>
-            <Scrollable 
-                className={styles.scrollable} 
-                followContentSize 
-                direction="horizontal"
-            >
+            <ScrollableV2 direction="horizontal">
                 <div className={styles.list}>
                     <List list={[
                         {id: id}, 
@@ -40,7 +36,7 @@ export const Conversation: FC = () => {
                         )}
                     </List>
                 </div>
-            </Scrollable>
+            </ScrollableV2>
 
             <Controls/>
         </div>

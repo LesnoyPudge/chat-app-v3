@@ -3,9 +3,12 @@ import { RefObject } from 'react';
 import { noop } from 'ts-essentials';
 
 
+
+// same as useFocusVisibleEvent but with focusin/focusout instead
+// of focus/blur
+
 // react version of
 // https://github.com/WICG/focus-visible/blob/main/src/focus-visible.js
-
 
 let hadKeyboardEvent = true;
 let hadFocusVisibleRecently = false;
@@ -168,14 +171,14 @@ document.addEventListener('visibilitychange', onVisibilityChange, true);
 
 addInitialPointerMoveListeners();
 
-export const useFocusVisibleEvent = (
+export const useFocusVisibleWithinEvent = (
     onFocus: ((e: FocusEvent) => void) | null,
     onBlur: ((e: FocusEvent) => void) | null,
     providedElement: RefObject<HTMLElement> | HTMLElement | null,
 ) => {
     const [element, setElement] = useProvidedValue(providedElement);
 
-    useEventListener('focus', (e) => {
+    useEventListener('focusin', (e) => {
         if (!e.target) return;
         if (!isValidFocusTarget(e.target)) return;
         if (!hadKeyboardEvent && !focusTriggersKeyboardModality(e.target)) return;
@@ -183,7 +186,7 @@ export const useFocusVisibleEvent = (
         (onFocus || noop)(e);
     }, element);
 
-    useEventListener('blur', (e) => {
+    useEventListener('focusout', (e) => {
         if (!e.target) return;
         if (!isValidFocusTarget(e.target)) return;
 

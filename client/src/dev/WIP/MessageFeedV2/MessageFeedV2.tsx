@@ -12,6 +12,7 @@ type MessageFeedV2 = PropsWithClassName & {
     chatId: string;
 }
 import { ChatMock } from "@utils";
+import { useInterval } from "usehooks-ts";
 const chatMock = new ChatMock(150, 20);
 
 const initialMessages = chatMock.getLastMessagesChunk();
@@ -28,7 +29,14 @@ export const MessageFeedV2: FC<MessageFeedV2> = ({
     //     'Message',
     //     chat.messages,
     // );
-    const [messages] = useState(initialMessages)
+    const [messages, setMessages] = useState(initialMessages)
+
+    useInterval(() => {
+        const [_, newMessage] = chatMock.addNewMessage()
+        setMessages((prev) => {
+            return [...prev, newMessage]
+        })
+    }, 1000)
 
     const isLoading = !messages;
     const isEmpty = !isLoading && !messages.length;

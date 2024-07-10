@@ -7,6 +7,7 @@ import { useChat } from './hooks';
 import { ViewportList } from 'react-viewport-list';
 import { Descendant } from 'slate';
 import { ChatMock } from '@utils';
+import { useInterval } from 'usehooks-ts';
 
 
 
@@ -42,6 +43,10 @@ export const Chat: FC<Chat> = ({
 }) => {
     const [messageList, setMessageList] = useState(initialMessages);
     const [redactorId, setRedactorId] = useState<string | null>(null);
+
+    useInterval(() => {
+        setMessageList((prev) => [...prev, chatMock.addNewMessage()[1]])
+    }, 500)
 
     const {
         indexesShift,
@@ -113,7 +118,7 @@ export const Chat: FC<Chat> = ({
                     </div>
                 </If>
 
-                <If condition={!!messageList.length && false}>
+                <If condition={!!messageList.length}>
                     <ViewportList
                         items={messageList}
                         initialIndex={messageList.length - 1}
@@ -147,7 +152,7 @@ export const Chat: FC<Chat> = ({
                     </ViewportList>
                 </If>
 
-                {messageList.map(({id}) => (
+                {/* {messageList.map(({id}) => (
                     <ChatListItem
                         key={id}
                         id={id}
@@ -162,7 +167,7 @@ export const Chat: FC<Chat> = ({
                         openEditor={setRedactorId}
                         saveEditor={saveEditor}
                     />
-                ))}
+                ))} */}
 
                 <div
                     className='h-px'
