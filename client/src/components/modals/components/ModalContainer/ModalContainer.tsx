@@ -1,6 +1,7 @@
 import { PropsWithChildrenAndClassName } from '@types';
 import { twClassNames } from '@utils';
 import { FC } from 'react';
+import { ScrollableV2 } from 'src/dev/WIP/ScrollableV2';
 
 
 
@@ -15,7 +16,14 @@ export const ModalContainer: FC<PropsWithChildrenAndClassName> = ({
 }) => {
     return (
         <div className={twClassNames(styles.wrapper, className)}>
-            {children}
+            <ScrollableV2 
+                className='max-h-[90dvh]'
+                size='small' 
+                direction='vertical'
+                withoutGutter
+            >
+                {children}
+            </ScrollableV2>
         </div>
     );
 };

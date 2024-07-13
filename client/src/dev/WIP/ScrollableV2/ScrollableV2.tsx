@@ -10,7 +10,7 @@ type ScrollableV2 = (
     & (
         {
             direction?: 'vertical' | 'both';
-            withOppositeGutter?: true;
+            withOppositeGutter?: boolean;
         } 
         | {
             direction?: 'horizontal';
@@ -18,10 +18,9 @@ type ScrollableV2 = (
         }
     )
     & {
+        withoutGutter?: boolean;
         innerRef?: RefObject<HTMLDivElement>;
         label?: string;
-        // direction?: 'horizontal' | 'vertical' | 'both';
-        // withOppositeGutter?: boolean;
         size?: 'default' | 'small' | 'hidden';
     }
 );
@@ -37,14 +36,21 @@ export const ScrollableV2: FC<ScrollableV2> = ({
     direction = 'vertical',
     size = 'default',
     withOppositeGutter = false,
+    withoutGutter = false,
     children,
 }) => {
-    const withGutter = direction !== 'horizontal';
+    const notHorizontal = direction !== 'horizontal';
+    const withGutter = !withoutGutter;
 
     const data = {
-        'data-with-opposite-gutter': withGutter && withOppositeGutter,
+        'data-with-opposite-gutter': (
+            withGutter 
+            && notHorizontal
+            && withOppositeGutter
+        ),
         'data-size': size,
         'data-direction': direction,
+        'data-with-gutter': withGutter && notHorizontal,
     };
 
     return (

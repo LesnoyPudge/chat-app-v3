@@ -1,7 +1,7 @@
 import { useAnimationFrame, useEventListener, useEventListenerV2, useKeyboardNavigation, useLatest, useResizeObserver, useTimeout } from "@hooks";
 import { inRange, noop } from "@lesnoypudge/utils";
 import { FC, PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ViewportList } from "react-viewport-list";
+import { ViewportList, ViewportListRef } from "react-viewport-list";
 import { ScrollableV2 } from "src/dev/WIP/ScrollableV2";
 import { useInterval } from "usehooks-ts";
 import { ListChildComponentProps, VariableSizeList } from 'react-window';
@@ -80,22 +80,30 @@ import { FocusAt } from "@components";
 import { mergeRefs } from "@lesnoypudge/utils-react";
 import { useAutoScrollV2 } from "./useAutoScrollV2/useAutoScrollV2";
 import { useKeyboardNavigationV2 } from "./useKeyboardNavigationV2/useKeyboardNavigationV2";
+import { useInfiniteScroll } from "./useInfiniteScroll/useInfiniteScroll";
 
+// rename to FeedScrollable
 const AutoScrollable: FC<AutoScrollable> = ({
-    list,
     children,
 }) => {
+    // const [list, setList] = useState(Array(50).fill('').map((_, i) => ({
+    //     id: `${Date.now()}-item-${i}`
+    // })))
+
     const contentRef = useRef<HTMLDivElement>(null);
     const scrollableRef = useRef<HTMLDivElement>(null)
-    // const {
-    //     scrollToBottom,
-    // } = useAutoScroll(scrollableRef);
-    // const scrollToBottom = noop;
+    const placeholderWrapperRef = useRef<HTMLDivElement>(null)
 
+    const {
+        showIntroduction,
+        showPlaceholders,
+        list,
+    } = useInfiniteScroll(scrollableRef, placeholderWrapperRef)
+    
     const {
         shouldAutoScroll,
         scrollToBottom,
-    } = useAutoScrollV2(scrollableRef, contentRef);
+    } = useAutoScrollV2(scrollableRef);
 
     const virtualizer = useVirtualizer({
         count: list.length,
@@ -103,46 +111,30 @@ const AutoScrollable: FC<AutoScrollable> = ({
         estimateSize: () => 100,
         getItemKey: (index) => list[index].id,
         overscan: 3,
-        // onChange(instance) {
-        //     const vItems = instance.getVirtualItems(); 
-        //     console.log(
-        //         vItems[0].index, 
-        //         vItems[vItems.length - 1].index
-        //     )
-        //     setViewportIndexes([
-        //         vItems[0].index, 
-        //         vItems[vItems.length - 1].index
-        //     ])
-        // },
     })
     
     const items = virtualizer.getVirtualItems()
-
-    const latestItemsRef = useLatest(items.map((value) => list[value.index]))
-    const listRef = useRef(list)
+    const viewportListRef = useRef<ViewportListRef>(null)
     const {
-        getTabIndex,
-        setViewportIndexes,
         getIsFocused,
-    } = useKeyboardNavigation(listRef, contentRef, {
-        direction: 'vertical',
+        getTabIndex,
+    } = useKeyboardNavigationV2(contentRef, {
+        list: list,
         loop: false,
-        onFocusChange(_item) {
-            return;
-            console.log('focus change')
-            const indexToScrollTo = list.findIndex((item) => {
-                return item.id === _item?.id
+        direction: 'vertical',
+        initialFocusedId: list.at(-1)?.id,
+        onFocusChange: ({next}) => {
+            viewportListRef.current?.scrollToIndex({
+                index: next.index,
             })
-
-            virtualizer.scrollToIndex(indexToScrollTo, {align: 'center'})
         },
-        // overscan: 3,
-        initialFocusableId: list.at(-1)?.id,
     })
+
+    
 
     return (
         <div className="h-[90dvh] flex flex-col">
-            <If condition={true}>
+            <If condition={false}>
                 <ScrollableV2 
                     className="h-full contain-strict"
                     withOppositeGutter
@@ -164,6 +156,10 @@ const AutoScrollable: FC<AutoScrollable> = ({
                                 transform: `translateY(${items[0]?.start ?? 0}px)`,
                             }}
                         >
+                            <div className="hidden h-[500px] bg-slate-800">
+                                <>placeholder</>
+                            </div>
+
                             {items.map((item) => (
                                 <FocusAt 
                                     key={item.key} 
@@ -235,20 +231,35 @@ const AutoScrollable: FC<AutoScrollable> = ({
                 </ScrollableV2>
             </If>
 
-            <If condition={false}>
+            <If condition={true}>
                 <ScrollableV2 
+                    className="grow flex flex-col"
                     direction="vertical"
                     withOppositeGutter
                     innerRef={scrollableRef}
                 >
-                    <div ref={contentRef}>
-                        {/* <ViewportList
+                    <div 
+                        ref={contentRef} 
+                        tabIndex={0}
+                    >
+                        <If condition={showIntroduction}>
+                            <div>introduction</div>
+                        </If>
+
+                        <If condition={showPlaceholders}>
+                            <div ref={placeholderWrapperRef}>
+                                <>placeholders...</>
+                            </div>
+                        </If>
+
+                        <ViewportList
                             viewportRef={scrollableRef}
                             items={list}
-                            // overscan={3}
+                            overscan={3}
                             // itemMargin={0}
-                            // indexesShift={list.length}
+                            indexesShift={list.length}
                             axis='y'
+                            ref={viewportListRef}
                             // initialIndex={list.length - 1}
                             // initialPrerender={20}
                             // withCache
@@ -273,15 +284,27 @@ const AutoScrollable: FC<AutoScrollable> = ({
                             // withCache
                         >
                             {(item) => (
-                                <div key={item.id}>
-                                    {item.id}
-                                </div>
+                                <FocusAt 
+                                    key={item.id} 
+                                    focused={getIsFocused(item.id)} 
+                                    scrollIntoView
+                                    vertical="center"
+                                >
+                                    {(({focusableRef}) => (
+                                        <div
+                                            ref={mergeRefs(
+                                                // virtualizer.measureElement,
+                                                focusableRef,
+                                            )}
+                                            tabIndex={getTabIndex(item.id)}
+        
+                                        >
+                                            <div>{item.id}</div>
+                                        </div>
+                                    ))}
+                                </FocusAt>
                             )}
-                        </ViewportList> */}
-
-                        {/* <List count={100}/> */}
-
-                        {children}
+                        </ViewportList>
                             
                         <div>
                             <>last item</>

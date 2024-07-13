@@ -1,7 +1,6 @@
-import { useEventListenerV2, useLatest } from "@hooks";
+import { useEventListenerV2, useLatest, useNamedState } from "@hooks";
 import { ObjectWithId } from "@types";
 import { RefObject, useCallback } from "react";
-import { useNamedState } from "../useNamedState/useNamedState";
 import { hotKey, KEY } from "@lesnoypudge/utils";
 
 

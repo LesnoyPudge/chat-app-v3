@@ -1,11 +1,12 @@
 import { ExtraStatusType, StatusType } from '@backendTypes';
-import { EntityContext, EntityContextProvider } from '@components';
+import { EntityContext, EntityContextProvider, LoadedEntityContext } from '@components';
 import { useNavigator } from '@hooks';
 import { FC, useContext } from 'react';
 import { Header } from './components';
 import { ChatV3 } from 'src/components/shared/ChatV2/ChatV2';
 import { MessageFeedV2 } from 'src/dev/WIP/MessageFeedV2';
 import { SendMessageInputBar } from 'src/dev/WIP/SendMessageInputBar';
+import { Feed } from 'src/root/playground/rooms/PGRoom1/Feed/Feed';
 
 
 
@@ -65,7 +66,7 @@ const privateChats: PrivateChat[] = [
 
 export const PrivateChatSubPage: FC = () => {
     const { params } = useNavigator();
-    const [privateChannel] = useContext(EntityContext.PrivateChannel);
+    const [privateChannel] = useContext(LoadedEntityContext.PrivateChannel);
     // const friend = privateChats.filter(item => item.id === params.privateChatId)[0]?.friend || privateChats[0].friend;
     // const placeholder = `Отправьте сообщение для ${friend.username}`;
 
@@ -75,9 +76,11 @@ export const PrivateChatSubPage: FC = () => {
 
             {/* <ChatV3.PrivateChannel/> */}
 
-            <MessageFeedV2 chatId={privateChannel?.chat ?? 'qwe'}/>
+            {/* <MessageFeedV2 chatId={privateChannel.chat ?? 'qwe'}/> */}
 
-            <SendMessageInputBar chatId={privateChannel?.chat ?? 'qwe'}/>
+            <Feed/>
+
+            <SendMessageInputBar chatId={privateChannel.chat ?? 'qwe'}/>
         </EntityContextProvider.Chat>
     );
 };

@@ -1,11 +1,9 @@
 import { useEventListenerV2, useMutationObserver, useResizeObserverV2 } from "@hooks";
-import { RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useIsInteracting } from "./useIsInteracting/useIsInteracting";
-import { useIsScrolling } from "../useIsScrolling/useIsScrolling";
+import { RefObject, useLayoutEffect, useRef, useState } from "react";
+import { useIsInteracting } from "./hooks";
 
 
-
-export const useAutoScrollV2 = (scrollableRef: RefObject<HTMLElement>) => {
+export const useAutoScroll = (scrollableRef: RefObject<HTMLElement>) => {
     const {isInteracting} = useIsInteracting(scrollableRef)
     const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true);
     const skipNextScrollEventRef = useRef(false);
