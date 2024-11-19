@@ -7,7 +7,6 @@ import { store } from '@redux/store';
 import './styles/main.scss';
 import { VisuallyHidden } from '@lesnoypudge/utils-react';
 import { Router } from './router';
-import { useEventListener } from '@hooks';
 
 
 

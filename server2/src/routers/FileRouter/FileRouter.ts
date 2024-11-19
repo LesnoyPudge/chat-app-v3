@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { FileController } from '@controllers';
-import { authorizationMiddleware, errorCatcherMiddleware, paramsToBodyMiddleware } from '@middlewares';
+import { authorizationMiddleware, errorCatcherMiddleware, paramsToBodyMiddleware } from 'src/middlewares';
 import { FileValidator } from '@validators';
 import { Endpoints } from '@shared';
 

@@ -50,7 +50,9 @@ const RouteNotFound = (
     />
 );
 
-export const Router: FC<PropsWithChildren> = ({children}) => {
+export const Router: FC<PropsWithChildren> = ({
+    children
+}) => {
     return (
         <BrowserRouter>
             <Routes>

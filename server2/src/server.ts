@@ -6,7 +6,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { getEnv, isDev, token } from '@utils';
-import { errorHandlerMiddleware } from '@middlewares';
+import { errorHandlerMiddleware } from 'src/middlewares';
 import { Server } from 'socket.io';
 import { ApiError } from '@errors';
 import { Sockets } from './subscription/Sockets';
@@ -259,16 +259,6 @@ import {
 } from '@routers';
 import { emails } from './emails/emails';
 
-
-app.get('/', (req, res) => { 
-    res.json("welcome to our server") 
-});
-
-app.use((req, res, next) => {
-    console.log('Get request:', req.url);
-
-    next();
-});
 
 app.use([
     UserRouter,

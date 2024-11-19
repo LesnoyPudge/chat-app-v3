@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ChatController } from '@controllers';
-import { authorizationMiddleware, errorCatcherMiddleware } from '@middlewares';
+import { authorizationMiddleware, errorCatcherMiddleware } from 'src/middlewares';
 import { ChatValidator } from '@validators';
 import { Endpoints } from '@shared';
 

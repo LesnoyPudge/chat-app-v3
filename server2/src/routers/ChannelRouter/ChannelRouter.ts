@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ChannelController } from '@controllers';
-import { authorizationMiddleware, errorCatcherMiddleware } from '@middlewares';
+import { authorizationMiddleware, errorCatcherMiddleware } from 'src/middlewares';
 import { ChannelValidator } from '@validators';
 import { Endpoints } from '@shared';
 
